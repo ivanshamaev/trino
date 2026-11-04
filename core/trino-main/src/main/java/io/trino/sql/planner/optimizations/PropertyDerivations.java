@@ -27,6 +27,7 @@ import io.trino.spi.connector.ColumnHandle;
 import io.trino.spi.connector.ConstantProperty;
 import io.trino.spi.connector.GroupingProperty;
 import io.trino.spi.connector.LocalProperty;
+import io.trino.spi.connector.SortOrder;
 import io.trino.spi.predicate.NullableValue;
 import io.trino.spi.type.Type;
 import io.trino.sql.PlannerContext;
@@ -558,7 +559,7 @@ public final class PropertyDerivations
 
             boolean unordered = spillPossible(session, node.getType());
 
-            return switch (node.getType()) {
+            ActualProperties properties = switch (node.getType()) {
                 case INNER -> {
                     probeProperties = probeProperties.translate(column -> filterOrRewrite(node.getOutputSymbols(), node.getCriteria(), column));
                     buildProperties = buildProperties.translate(column -> filterOrRewrite(node.getOutputSymbols(), node.getCriteria(), column));
@@ -595,6 +596,25 @@ public final class PropertyDerivations
                         .global(probeProperties.isSingleNode() ? singlePartition() : arbitraryPartition())
                         .build();
             };
+
+            // The merge join output is sorted by the left equi-criteria in the canonical
+            // order (both inputs are pre-sorted by the planner); the order is stable
+            // regardless of spilling of the underlying sorts
+            if (node.getAlgorithm().isPresent()
+                    && (node.getType() == io.trino.sql.planner.plan.JoinType.INNER || node.getType() == io.trino.sql.planner.plan.JoinType.LEFT)) {
+                List<Symbol> leftKeySymbols = node.getCriteria().stream()
+                        .map(JoinNode.EquiJoinClause::getLeft)
+                        .collect(toImmutableList());
+                if (node.getOutputSymbols().containsAll(leftKeySymbols)) {
+                    Map<Symbol, SortOrder> orderings = leftKeySymbols.stream()
+                            .collect(toImmutableMap(symbol -> symbol, _ -> SortOrder.ASC_NULLS_LAST));
+                    properties = ActualProperties.builderFrom(properties)
+                            .local(new OrderingScheme(leftKeySymbols, orderings).toLocalProperties())
+                            .unordered(false)
+                            .build();
+                }
+            }
+            return properties;
         }
 
         @Override

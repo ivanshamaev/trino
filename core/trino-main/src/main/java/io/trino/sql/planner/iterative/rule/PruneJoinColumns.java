@@ -50,7 +50,7 @@ public class PruneJoinColumns
                         joinNode.getFilter(),
                         joinNode.getDistributionType(),
                         joinNode.isSpillable(),
-                        Optional.empty(),
+                        joinNode.getAlgorithm(),
                         joinNode.getDynamicFilters(),
                         joinNode.getReorderJoinStatsAndCost()));
     }

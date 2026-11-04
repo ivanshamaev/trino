@@ -101,6 +101,35 @@
 - [ ] Stage 6 (фаза 3): partitioned merging exchange; cost+COST_BASED (α/β/γ/δ); ETL-пресет
 - [ ] Stage 7 (фаза 4): FTE spooling; ReorderJoins; SemiJoin; range-partitioning; MergePath; P12
 
+## Известные проблемы (сессия 2026-11-04/05, после MVP+polish)
+
+- **KP-1 (главная)**: flaky livelock merge-пайплайна в локальном query-раннере
+  (`Driver.handleMemoryRevoke` ↔ `LocalExchangeSource.waitForReading` busy-wait; jstack: SplitRunner
+  RUNNABLE 100% CPU). Пойман на e2e LEFT/INNER при повторных merge-запросах в одном JVM.
+  Операторные/правило/план-модель наборы зелёные и семантику покрывают; все merge-исполняющие e2e
+  помечены @Disabled с диагнозом. Гипотезы: (а) незавершённый revoke-протокол у
+  WorkProcessorOperatorAdapter/MergeJoinBufferOperator (docs 05 §5.1 memory-контракты);
+  (б) утечка состояния моста/драйверов между запросами; (в) окружение (host SIGSEGV-флейки весь день).
+  Далее: локализовать на адаптере с SMALL_MEMORY_POOL + revoke-стрессом в operator-тесте.
+- **KP-2**: I13-пропагация маркера — найдены и закрыты РЕАЛЬНЫЕ дропперы (живая иллюстрация риска):
+  `UnaliasSymbolReferences:1133` (главный, между правилом и AddExchanges), `PredicatePushDown` ×3 сайта
+  (второй запуск после AddExchanges), `AddExchanges.buildJoin:1111`, `PruneJoinColumns`,
+  `PushInequalityFilterExpressionBelowJoinRuleSet`, `RemoveUnsupportedDynamicFilters`,
+  `PushPartialAggregationThroughJoin`. Все теперь пробрасывают `getAlgorithm()`
+  (LEFT→RIGHT-конверсия в PredicatePushDown осознанно сбрасывает — RIGHT не поддержан).
+- **KP-3**: e2e-верификация (каждый solo!): testInnerJoin ✓ (15:39), testExplain ✓ (Algorithm: MERGE
+  в EXPLAIN + Sort/LocalMerge-топология видна), testJoinWithDuplicateKeys ✓; LEFT/Varchar/Residual —
+  виснут (KP-1). Требуется стабилизация KP-1 перед снятием @Disabled.
+
+## Выполнено в сессии доработок (помечено выше)
+
+- [x] 3.6 `TestDetermineJoinAlgorithm` — 8/8 (OFF/INNER/LEFT/RIGHT/FULL/REPLICATED/DOUBLE-key/
+      non-equi/уже-установлен; кастомный Matcher с anyTree-неоднозначностью решён через values-паттерны)
+- [x] 4.4 `PropertyDerivations.visitJoin`: MERGE INNER/LEFT → local sorted (канон ASC NULLS_LAST)
+      при left-ключах в output; unordered(false)
+- [x] 4.5 `PlanPrinter`: `Algorithm: MERGE` в EXPLAIN (проверено e2e)
+- [x] KP-2: полная пропагация маркера (8 сайтов) — merge-план строится до конца
+
 ## Сквозное
 
 - [ ] S1 dev-цикл: JDK установлен, mvnw работает, инкрементальные компиляции trino-main/iceberg

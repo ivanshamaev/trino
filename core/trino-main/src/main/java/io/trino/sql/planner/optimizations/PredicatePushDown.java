@@ -591,7 +591,7 @@ public class PredicatePushDown
                         newJoinFilter,
                         node.getDistributionType(),
                         node.isSpillable(),
-                        Optional.empty(),
+                        node.getAlgorithm(),
                         dynamicFilters,
                         node.getReorderJoinStatsAndCost());
             }
@@ -1099,7 +1099,7 @@ public class PredicatePushDown
                             node.getFilter(),
                             node.getDistributionType(),
                             node.isSpillable(),
-                            Optional.empty(),
+                            node.getAlgorithm(), // INNER -> INNER keeps the marker
                             node.getDynamicFilters(),
                             node.getReorderJoinStatsAndCost());
                 }
@@ -1136,7 +1136,7 @@ public class PredicatePushDown
                     node.getFilter(),
                     node.getDistributionType(),
                     node.isSpillable(),
-                    Optional.empty(),
+                    node.getAlgorithm(), // LEFT/RIGHT -> INNER keeps the marker
                     node.getDynamicFilters(),
                     node.getReorderJoinStatsAndCost());
         }

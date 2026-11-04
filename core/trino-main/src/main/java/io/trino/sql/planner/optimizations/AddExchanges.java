@@ -1108,7 +1108,7 @@ public class AddExchanges
                     node.getFilter(),
                     Optional.of(newDistributionType),
                     node.isSpillable(),
-                    Optional.empty(),
+                    node.getAlgorithm(),
                     node.getDynamicFilters(),
                     node.getReorderJoinStatsAndCost());
 

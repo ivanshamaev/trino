@@ -307,7 +307,7 @@ public class PushPartialAggregationThroughJoin
                 child.getFilter(),
                 child.getDistributionType(),
                 child.isSpillable(),
-                Optional.empty(),
+                child.getAlgorithm(),
                 child.getDynamicFilters(),
                 child.getReorderJoinStatsAndCost());
         PlanNode result = restrictOutputs(context.getIdAllocator(), joinNode, ImmutableSet.copyOf(aggregation.getOutputSymbols())).orElse(joinNode);

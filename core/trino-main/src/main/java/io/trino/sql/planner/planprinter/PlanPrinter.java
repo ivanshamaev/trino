@@ -680,6 +680,7 @@ public class PlanPrinter
             }
 
             node.getDistributionType().ifPresent(distributionType -> nodeOutput.appendDetails("Distribution: %s", distributionType));
+            node.getAlgorithm().ifPresent(algorithm -> nodeOutput.appendDetails("Algorithm: %s", algorithm));
             if (node.isMaySkipOutputDuplicates()) {
                 nodeOutput.appendDetails("maySkipOutputDuplicates = %s", node.isMaySkipOutputDuplicates());
             }
