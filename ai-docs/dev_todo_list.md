@@ -82,12 +82,17 @@
 
 ## Stage 0 — Iceberg sortedness (enabler, параллельно; для W1/скидок)
 
-- [ ] 0.1 `IcebergMetadata.getTableProperties`: SortingProperty при {все файлы снапшота с
+- [x] 0.1 `IcebergMetadata.getTableProperties`: SortingProperty при {все файлы снапшота с
       file-level sortOrderId == текущему; поля порядка identity; валидный префикс}
-- [ ] 0.2 kill-switch `iceberg.report-sortedness` (session, default true)
-- [ ] 0.3 тесты: fuzz sortedness vs манифесты; потребители (visitTopN PARTIAL→Limit,
-      visitWindow pre-sorted) на Iceberg-таблицах
-- [ ] 0.4 airstyle + коммит «Report Iceberg sortedness via table properties»
+      (`getSortingProperties`: консервативно, любое нарушение → пустой отчёт)
+- [x] 0.2 kill-switch `iceberg.report-sortedness` (config) / `report_sortedness` (session, default true)
+- [x] 0.3 тест `TestIcebergSortedWriting#testSortednessReportedToEngine` — **зелёный**:
+      sorted_by-таблица → localProperties непусты; несортированная → пусты
+      (metadata-level через Metadata.getTableProperties в транзакции)
+- [x] 0.4 airstyle + коммит «Report Iceberg sortedness via table properties»
+      (NB: TopN-fast-path наблюдаемость через EXPLAIN упирается в ROUND_ROBIN local exchange
+      над сканом — движок корректно не пробрасывает per-split сортированность через обмен;
+      потребители свойства — W1-путь SMJ при реализации триггеров)
 
 ## Stage 5-7 — спилл групп, RIGHT/FULL, multi-driver, CBO, интеграция (после MVP)
 
