@@ -1,0 +1,41 @@
+{
+  "purpose": "Analytical model only; not benchmark or Trino configuration",
+  "left_rows": 15000000000,
+  "right_rows": 17000000000,
+  "input_order": "unsorted",
+  "distribution": "uniform over effective paired join partitions",
+  "payload_bytes_per_row_cases": [
+    32,
+    64,
+    256,
+    1024
+  ],
+  "effective_pair_partitions_cases": [
+    64,
+    128,
+    512,
+    2048
+  ],
+  "run_resident_budget_bytes": 268435456,
+  "assumed_resident_extra_bytes_per_row": 16,
+  "fan_in": 16,
+  "all_initial_runs_materialized": true,
+  "merge_schedule": "balanced full-data levels; final merge streams to join",
+  "compression_ratio": 1,
+  "excluded": [
+    "source scan",
+    "network",
+    "FTE storage",
+    "duplicate replay",
+    "result output",
+    "page fragmentation",
+    "uneven run sizes",
+    "reader buffers and other task memory"
+  ],
+  "formulas": {
+    "rows_per_run": "floor(run_resident_budget_bytes / (payload_bytes + resident_extra_bytes))",
+    "runs_per_partition_side": "ceil(ceil(side_rows / paired_partitions) / rows_per_run)",
+    "merge_levels": "max(1, ceil(log_fan_in(runs)))",
+    "sort_temporary_io_bytes": "sum_sides(2 * merge_levels_side * side_rows * payload_bytes)"
+  }
+}
