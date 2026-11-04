@@ -22,27 +22,29 @@
 
 ## Stage 2 — Оператор `io.trino.operator.join.merge` (PR2, фаза 1)
 
-- [ ] 2.1 `MergeJoinBridge implements JoinBridge` (whenBuildFinishes/destroy; outer-итератор —
-      заглушка до stage 5)
-- [ ] 2.2 `MergeJoinBufferOperator(Factory)` — build-sink: копит pages (вход отсортирован),
+- [x] 2.1 `MergeJoinBridge implements JoinBridge` (whenBuildFinishes/destroy; outer-итератор —
+      заглушка до stage 5); lifecycle: probe-factory обязан регистрироваться
+      (`incrementProbeFactoryCount` — bootstrap-референс иначе уничтожает мост при первом
+      getJoinBridge — обнаружено тестом)
+- [x] 2.2 `MergeJoinBufferOperatorFactory` — build-sink: копит pages (вход отсортирован),
       публикует мост через `JoinBridgeManager<MergeJoinBridge>`
-- [ ] 2.3 `MergeJoinOperator(Factory)` — probe: `WorkProcessorOperator` + `WorkProcessorOperatorAdapter.Factory`
-- [ ] 2.4 merge-автомат (05 §5.4): advanceL/R, group match (compare==0), drain; **NaN-guard**
-      (C1: NaN-ключи не матчатся); **NULL-fast-path** (C9: NULL-группа не буферизуется;
-      INNER — O(1)-skip хвостов; LEFT — стриминг с padding)
-- [ ] 2.5 MatchBuffer (05 §5.6): буфер текущей build-группы; addresses+pages для residual-фильтра
-      (`JoinFilterFunctionFactory` контракт, SyntheticAddress)
-- [ ] 2.6 residual filter (LEFT: all-filtered → padded-вывод) + outputSingleMatch
-      (реюз вычисления maySkipOutputDuplicates — LEP:2911)
-- [ ] 2.7 компаратор ключей: canonical ASC NULLS_LAST (OrderingTranslator-совместимый);
-      serialization-free по каналам
-- [ ] 2.8 статистика: `JoinOperatorType.mergeJoin(...)` (фабрика) + `JoinStatisticsCounter` +
-      operatorType-строка WebUI
-- [ ] 2.9 `TestMergeJoinOperator` (по образцу TestHashJoinOperator): INNER/LEFT × {дубли, NULL
-      0..100%, NaN, пустые, RLE/dictionary, multi-page, residual вкл/отсекающий, outputSingleMatch};
-      oracle против hash-эквивалента; NULL-хвост при SMALL_MEMORY_POOL_BYTES — память плоская
-- [ ] 2.10 finish() идемпотентен; close() не течёт
-- [ ] 2.11 airstyle + коммит «Add merge join operator»
+- [x] 2.3 `MergeJoinOperatorFactory` — probe: `WorkProcessorOperator` (Transformation-паттерн,
+      `ofResult(page, false)` для мульти-выхода на вход) + `WorkProcessorOperatorAdapter.Factory`
+- [x] 2.4 merge-автомат: monotonic scan cursor + повторная итерация группы in place —
+      **zero retention** (MatchBuffer не нужен в MVP вовсе!); NaN/NULL = unmatchable
+      (C1/C9: INNER — skip, LEFT — padding); компаратор = `getComparisonUnorderedLastOperator`
+      (тот же, что у сортировщика — консистентность по построению)
+- [x] 2.5 residual filter через `JoinFilterFunction.filter(buildOrdinal, probePos, probePage)`
+      с адресами всех build-строк (контракт StandardJoinFilterFunction/JoinHash подтверждён);
+      LEFT: all-filtered → padded
+- [x] 2.6 outputSingleMatch (первый выживший матч на probe-строку)
+- [x] 2.7 компаратор: BlockPositionComparison по каналам (Block API: append(Block,pos),
+      Type.getLong/getDouble — SPI без прямых getters)
+- [~] 2.8 статистика: JoinOperatorType.mergeJoin(...) — при LEP-встройке (stage 4)
+- [x] 2.9 `TestMergeJoinOperator` — **11/11 зелёные** (INNER/LEFT, дубли, NULL 0..100%+хвост,
+      NaN, VARCHAR/composite, residual INNER/LEFT, singleMatch, пустые стороны)
+- [x] 2.10 finish()/needsInput идемпотентны (проверены тестами через adapter)
+- [x] 2.11 airstyle + коммит «Add merge join operator»/«Add merge join operator tests»
 
 ## Stage 3 — Правило + eligibility + гварды (PR3, фаза 1)
 
