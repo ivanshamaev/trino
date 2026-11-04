@@ -65,6 +65,7 @@ public final class SystemSessionProperties
         implements SystemSessionPropertiesProvider
 {
     public static final String JOIN_DISTRIBUTION_TYPE = "join_distribution_type";
+    public static final String PREFER_MERGE_JOIN = "prefer_merge_join";
     public static final String JOIN_MAX_BROADCAST_TABLE_SIZE = "join_max_broadcast_table_size";
     public static final String JOIN_MULTI_CLAUSE_INDEPENDENCE_FACTOR = "join_multi_clause_independence_factor";
     public static final String DETERMINE_PARTITION_COUNT_FOR_WRITE_ENABLED = "determine_partition_count_for_write_enabled";
@@ -268,6 +269,12 @@ public final class SystemSessionProperties
                         "Join distribution type",
                         JoinDistributionType.class,
                         optimizerConfig.getJoinDistributionType(),
+                        false),
+                enumProperty(
+                        PREFER_MERGE_JOIN,
+                        "Prefer merge join for eligible equi-joins (INNER/LEFT with partitioned distribution)",
+                        OptimizerConfig.MergeJoinStrategy.class,
+                        optimizerConfig.getMergeJoinStrategy(),
                         false),
                 dataSizeProperty(
                         JOIN_MAX_BROADCAST_TABLE_SIZE,
@@ -1210,6 +1217,11 @@ public final class SystemSessionProperties
     public static JoinDistributionType getJoinDistributionType(Session session)
     {
         return session.getSystemProperty(JOIN_DISTRIBUTION_TYPE, JoinDistributionType.class);
+    }
+
+    public static OptimizerConfig.MergeJoinStrategy getMergeJoinStrategy(Session session)
+    {
+        return session.getSystemProperty(PREFER_MERGE_JOIN, OptimizerConfig.MergeJoinStrategy.class);
     }
 
     public static DataSize getJoinMaxBroadcastTableSize(Session session)

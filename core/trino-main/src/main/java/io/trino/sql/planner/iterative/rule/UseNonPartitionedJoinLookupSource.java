@@ -67,6 +67,7 @@ public class UseNonPartitionedJoinLookupSource
 {
     private static final Capture<ExchangeNode> RIGHT_EXCHANGE_NODE = Capture.newCapture();
     private static final Pattern<JoinNode> JOIN_PATTERN = join()
+            .matching(joinNode -> joinNode.getAlgorithm().isEmpty()) // merge joins require their planned local exchange topology
             .with(right().matching(exchange()
                     .matching(UseNonPartitionedJoinLookupSource::canBeTranslatedToLocalGather)
                     .capturedAs(RIGHT_EXCHANGE_NODE)));

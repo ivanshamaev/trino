@@ -44,6 +44,7 @@ import io.trino.sql.planner.iterative.rule.DecorrelateInnerUnnestWithGlobalAggre
 import io.trino.sql.planner.iterative.rule.DecorrelateLeftUnnestWithGlobalAggregation;
 import io.trino.sql.planner.iterative.rule.DecorrelateUnnest;
 import io.trino.sql.planner.iterative.rule.DesugarLambdaExpression;
+import io.trino.sql.planner.iterative.rule.DetermineJoinAlgorithm;
 import io.trino.sql.planner.iterative.rule.DetermineJoinDistributionType;
 import io.trino.sql.planner.iterative.rule.DetermineSemiJoinDistributionType;
 import io.trino.sql.planner.iterative.rule.DetermineTableScanNodePartitioning;
@@ -884,6 +885,7 @@ public class PlanOptimizers
                 costCalculator,
                 ImmutableSet.of(
                         new DetermineJoinDistributionType(costComparator, taskCountEstimator), // Must run before AddExchanges
+                        new DetermineJoinAlgorithm(), // must run after DetermineJoinDistributionType and before AddExchanges
                         // Must run before AddExchanges and after ReplicateSemiJoinInDelete
                         // to avoid temporarily having an invalid plan
                         new DetermineSemiJoinDistributionType(costComparator, taskCountEstimator))));

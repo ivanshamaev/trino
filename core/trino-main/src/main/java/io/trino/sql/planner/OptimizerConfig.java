@@ -45,6 +45,7 @@ public class OptimizerConfig
 
     private DataSize joinMaxBroadcastTableSize = DataSize.of(100, MEGABYTE);
     private JoinDistributionType joinDistributionType = JoinDistributionType.AUTOMATIC;
+    private MergeJoinStrategy mergeJoinStrategy = MergeJoinStrategy.OFF;
     private double joinMultiClauseIndependenceFactor = 0.25;
 
     private JoinReorderingStrategy joinReorderingStrategy = JoinReorderingStrategy.AUTOMATIC;
@@ -127,6 +128,13 @@ public class OptimizerConfig
         }
     }
 
+    public enum MergeJoinStrategy
+    {
+        OFF,
+        PREFER,
+        FORCE,
+    }
+
     public enum MarkDistinctStrategy
     {
         NONE,
@@ -188,6 +196,18 @@ public class OptimizerConfig
     public OptimizerConfig setJoinDistributionType(JoinDistributionType joinDistributionType)
     {
         this.joinDistributionType = requireNonNull(joinDistributionType, "joinDistributionType is null");
+        return this;
+    }
+
+    public MergeJoinStrategy getMergeJoinStrategy()
+    {
+        return mergeJoinStrategy;
+    }
+
+    @Config("optimizer.prefer-merge-join")
+    public OptimizerConfig setMergeJoinStrategy(MergeJoinStrategy mergeJoinStrategy)
+    {
+        this.mergeJoinStrategy = requireNonNull(mergeJoinStrategy, "mergeJoinStrategy is null");
         return this;
     }
 
