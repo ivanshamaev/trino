@@ -106,6 +106,11 @@ public class DetermineJoinAlgorithm
         if (joinNode.getDistributionType().orElse(DistributionType.REPLICATED) != DistributionType.PARTITIONED) {
             return false;
         }
+        if (!joinNode.getDynamicFilters().isEmpty()) {
+            // merge join does not collect dynamic filters yet; a registered but never
+            // completed local dynamic filter would block the probe side scan forever
+            return false;
+        }
         if (getRetryPolicy(session) != RetryPolicy.NONE) {
             return false;
         }

@@ -33,11 +33,13 @@ import io.trino.operator.RetryPolicy;
 import io.trino.spi.connector.ColumnHandle;
 import io.trino.spi.connector.GroupingProperty;
 import io.trino.spi.connector.LocalProperty;
+import io.trino.spi.connector.SortOrder;
 import io.trino.spi.connector.WriterScalingOptions;
 import io.trino.sql.PlannerContext;
 import io.trino.sql.ir.Expression;
 import io.trino.sql.ir.Reference;
 import io.trino.sql.planner.NodePartitioningManager;
+import io.trino.sql.planner.OrderingScheme;
 import io.trino.sql.planner.Partitioning;
 import io.trino.sql.planner.PartitioningHandle;
 import io.trino.sql.planner.PartitioningScheme;
@@ -107,6 +109,7 @@ import java.util.stream.Stream;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.ImmutableList.toImmutableList;
+import static com.google.common.collect.ImmutableMap.toImmutableMap;
 import static com.google.common.collect.Iterables.getOnlyElement;
 import static io.trino.SystemSessionProperties.getMaxWriterTaskCount;
 import static io.trino.SystemSessionProperties.getMinInputRowsPerTask;
@@ -1014,6 +1017,15 @@ public class AddExchanges
 
             verify(left.getProperties().isCompatibleTablePartitioningWith(right.getProperties(), leftToRight::get, plannerContext.getMetadata(), session));
 
+            // Merge join: both sides must be sorted by the equi-criteria in the canonical order.
+            // The sort lives inside the join stage (below is the partitioned exchange, if any),
+            // so the stage count does not change. Local parallelism (partial sorts plus a LOCAL
+            // merging exchange) is added by AddLocalExchanges when it plans the SortNode.
+            if (node.getAlgorithm().isPresent()) {
+                left = withCanonicalSort(left, leftSymbols);
+                right = withCanonicalSort(right, rightSymbols);
+            }
+
             // if colocated joins are disabled, force redistribute when using a custom partitioning
             if (!isColocatedJoinEnabled(session) && hasMultipleSources(left.getNode(), right.getNode())) {
                 Partitioning rightPartitioning = left.getProperties().translate(createTranslator(leftToRight)).getNodePartitioning().get();
@@ -1023,6 +1035,18 @@ public class AddExchanges
             }
 
             return buildJoin(node, left, right, JoinNode.DistributionType.PARTITIONED);
+        }
+
+        private PlanWithProperties withCanonicalSort(PlanWithProperties side, List<Symbol> keySymbols)
+        {
+            Map<Symbol, SortOrder> orderings = keySymbols.stream()
+                    .collect(toImmutableMap(symbol -> symbol, _ -> SortOrder.ASC_NULLS_LAST));
+            OrderingScheme orderingScheme = new OrderingScheme(keySymbols, orderings);
+            PlanNode sort = new SortNode(idAllocator.getNextId(), side.getNode(), orderingScheme, false);
+            ActualProperties properties = ActualProperties.builderFrom(side.getProperties())
+                    .local(orderingScheme.toLocalProperties())
+                    .build();
+            return new PlanWithProperties(sort, properties);
         }
 
         private PlanWithProperties planReplicatedJoin(JoinNode node, PlanWithProperties left)

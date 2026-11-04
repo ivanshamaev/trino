@@ -101,6 +101,7 @@ import io.trino.operator.TopNRankingOperator;
 import io.trino.operator.ValuesOperator.ValuesOperatorFactory;
 import io.trino.operator.WindowFunctionDefinition;
 import io.trino.operator.WindowOperator.WindowOperatorFactory;
+import io.trino.operator.WorkProcessorOperatorAdapter;
 import io.trino.operator.aggregation.AccumulatorFactory;
 import io.trino.operator.aggregation.AggregatorFactory;
 import io.trino.operator.aggregation.DistinctAccumulatorFactory;
@@ -129,6 +130,9 @@ import io.trino.operator.join.NestedLoopBuildOperator.NestedLoopBuildOperatorFac
 import io.trino.operator.join.NestedLoopJoinBridge;
 import io.trino.operator.join.NestedLoopJoinOperator.NestedLoopJoinOperatorFactory;
 import io.trino.operator.join.NestedLoopJoinPagesSupplier;
+import io.trino.operator.join.merge.MergeJoinBridge;
+import io.trino.operator.join.merge.MergeJoinBufferOperatorFactory;
+import io.trino.operator.join.merge.MergeJoinOperatorFactory;
 import io.trino.operator.join.nonspilling.HashBuilderOperator;
 import io.trino.operator.join.spilling.HashBuilderOperator.HashBuilderOperatorFactory;
 import io.trino.operator.join.spilling.PartitionedLookupSourceFactory;
@@ -2554,6 +2558,11 @@ public class LocalExecutionPlanner
             List<Symbol> leftSymbols = Lists.transform(clauses, JoinNode.EquiJoinClause::getLeft);
             List<Symbol> rightSymbols = Lists.transform(clauses, JoinNode.EquiJoinClause::getRight);
 
+            if (node.getAlgorithm().isPresent()) {
+                checkState(node.getAlgorithm().get() == JoinNode.JoinAlgorithm.MERGE, "unknown join algorithm: %s", node.getAlgorithm().get());
+                return createMergeJoin(node, node.getLeft(), leftSymbols, node.getRight(), rightSymbols, context);
+            }
+
             return switch (node.getType()) {
                 case INNER, LEFT, RIGHT, FULL -> createLookupJoin(node, node.getLeft(), leftSymbols, node.getRight(), rightSymbols, localDynamicFilters, context);
             };
@@ -2874,6 +2883,89 @@ public class LocalExecutionPlanner
                     buildContext);
 
             return builderOperatorFactory.getPagesSpatialIndexFactory();
+        }
+
+        private PhysicalOperation createMergeJoin(
+                JoinNode node,
+                PlanNode probeNode,
+                List<Symbol> probeSymbols,
+                PlanNode buildNode,
+                List<Symbol> buildSymbols,
+                LocalExecutionPlanContext context)
+        {
+            // Plan probe
+            PhysicalOperation probeSource = probeNode.accept(this, context);
+
+            List<Type> probeTypes = probeSource.getTypes();
+            List<Integer> probeOutputChannels = ImmutableList.copyOf(getChannelsForSymbols(node.getLeftOutputSymbols(), probeSource.getLayout()));
+            List<Integer> probeJoinChannels = ImmutableList.copyOf(getChannelsForSymbols(probeSymbols, probeSource.getLayout()));
+
+            boolean outputSingleMatch = node.isMaySkipOutputDuplicates() &&
+                    node.getCriteria().stream()
+                            .map(JoinNode.EquiJoinClause::getRight)
+                            .collect(toImmutableSet())
+                            .containsAll(node.getRightOutputSymbols());
+
+            LocalExecutionPlanContext buildContext = context.createSubContext();
+            PhysicalOperation buildSource = buildNode.accept(this, buildContext);
+
+            List<Integer> buildOutputChannels = ImmutableList.copyOf(getChannelsForSymbols(node.getRightOutputSymbols(), buildSource.getLayout()));
+            List<Integer> buildJoinChannels = ImmutableList.copyOf(getChannelsForSymbols(buildSymbols, buildSource.getLayout()));
+            List<Type> buildTypes = buildSource.getTypes();
+            List<Type> buildOutputTypes = buildOutputChannels.stream()
+                    .map(buildSource.getTypes()::get)
+                    .collect(toImmutableList());
+
+            Optional<JoinFilterFunctionFactory> filterFunctionFactory = node.getFilter()
+                    .map(filterExpression -> compileJoinFilterFunction(
+                            filterExpression,
+                            probeSource.getLayout(),
+                            buildSource.getLayout()));
+
+            MergeJoinBridge bridge = new MergeJoinBridge(
+                    buildTypes,
+                    buildJoinChannels,
+                    buildJoinChannels.stream().map(_ -> SortOrder.ASC_NULLS_LAST).collect(toImmutableList()));
+            JoinBridgeManager<MergeJoinBridge> bridgeManager = new JoinBridgeManager<>(false, bridge, buildOutputTypes);
+
+            OperatorFactory bufferOperatorFactory = new MergeJoinBufferOperatorFactory(
+                    buildContext.getNextOperatorId(),
+                    node.getId(),
+                    bridge,
+                    buildTypes,
+                    session.toConnectorSession());
+            context.addDriverFactory(
+                    false,
+                    new PhysicalOperation(bufferOperatorFactory, ImmutableMap.of(), buildSource),
+                    buildContext);
+
+            // register the probe factory with the bridge lifecycle
+            bridgeManager.incrementProbeFactoryCount();
+
+            MergeJoinOperatorFactory mergeJoinOperatorFactory = new MergeJoinOperatorFactory(
+                    context.getNextOperatorId(),
+                    node.getId(),
+                    bridgeManager,
+                    node.getType(),
+                    outputSingleMatch,
+                    probeTypes,
+                    buildTypes,
+                    probeJoinChannels,
+                    buildJoinChannels,
+                    probeOutputChannels,
+                    buildOutputChannels,
+                    filterFunctionFactory,
+                    session.toConnectorSession(),
+                    blockTypeOperators);
+            OperatorFactory operator = WorkProcessorOperatorAdapter.createAdapterOperatorFactory(mergeJoinOperatorFactory);
+
+            ImmutableMap.Builder<Symbol, Integer> outputMappings = ImmutableMap.builder();
+            List<Symbol> outputSymbols = node.getOutputSymbols();
+            for (int i = 0; i < outputSymbols.size(); i++) {
+                outputMappings.put(outputSymbols.get(i), i);
+            }
+
+            return new PhysicalOperation(operator, outputMappings.buildOrThrow(), probeSource);
         }
 
         private PhysicalOperation createLookupJoin(
