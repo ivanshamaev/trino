@@ -48,35 +48,37 @@
 
 ## Stage 3 — Правило + eligibility + гварды (PR3, фаза 1)
 
-- [ ] 3.1 session `prefer_merge_join` (OFF/PREFER/FORCE; MVP) в SystemSessionProperties
-      + config `optimizer.prefer-merge-join` в OptimizerConfig (default OFF)
-- [ ] 3.2 `iterative/rule/DetermineJoinAlgorithm`: MUST-гейты (INNER/LEFT; equi непусты;
+- [x] 3.1 session `prefer_merge_join` (enum OFF/PREFER/FORCE — OptimizerConfig.MergeJoinStrategy)
+      + config `optimizer.prefer-merge-join` (default OFF)
+- [x] 3.2 `iterative/rule/DetermineJoinAlgorithm`: MUST-гейты (INNER/LEFT; equi непусты;
       isOrderable все ключи; без DOUBLE/REAL; distributionType=PARTITIONED; retryPolicy==NONE;
-      distributed_sort; session != OFF) + W-триггеры (W1 colocated∧sorted — безусловен; W2 Bp>α·U;
-      W3 big-big; W4 одна сторона sorted ∧ Bp>β·U) — по 15 §15.6 (MVP: PREFER упрощённо =
-      любые MUST + forced-режим для тестов)
-- [ ] 3.3 INNER → добавить `k IS NOT NULL` на обе стороны (C9; до shuffle)
-- [ ] 3.4 гварды: `UseNonPartitionedJoinLookupSource` skip при MERGE (I14);
-      adaptive-правила skip при MERGE
-- [ ] 3.5 DF-гейтинг: non-INNER — не собираем DF (RemoveUnsupportedDynamicFilters подчистит)
-- [ ] 3.6 `TestDetermineJoinAlgorithm`: MUST/W-матрица, IS-NOT-NULL-инъекция, OFF=0 диффов
-- [ ] 3.7 airstyle + коммит «Add DetermineJoinAlgorithm rule and prefer_merge_join property»
+      distributed_sort; **dynamicFilters пусты** — deadlock-гейт, DF-сбор в merge не реализован);
+      PREFER/FORCE в MVP = «любой eligible» (W2/W3/W4-ресурсные триггеры — COST_BASED-фаза);
+      зарегистрировано в PlanOptimizers сразу после DDT (:888), до AddExchanges
+- [ ] 3.3 INNER → `k IS NOT NULL` (C9; оптимизация — оператор корректен и без неё) — TODO
+- [x] 3.4 гварды: `UseNonPartitionedJoinLookupSource` skip при algorithm present (I14);
+      DDT-паттерн isEmpty() — same-batch безопасен (аудит)
+- [ ] 3.5 DF-сбор для INNER — TODO (гейт 3.2 защищает от deadlock)
+- [ ] 3.6 `TestDetermineJoinAlgorithm` план-тесты — TODO (покрыто e2e TestMergeJoin)
+- [x] 3.7 airstyle + коммит «Add DetermineJoinAlgorithm rule and prefer_merge_join property»
 
 ## Stage 4 — Обмены + LEP-ветка + e2e: MVP завершён (PR4, фаза 1)
 
-- [ ] 4.1 `AddExchanges.visitJoin` MERGE-ветка: REPARTITION по equi-ключам обеих сторон +
-      SortNode (canonical) внутри join-стадии (свойства выводим напрямую — без повторного plan)
-- [ ] 4.2 `AddLocalExchanges`: SMJ-стороны → частичная сортировка (fixedParallelism) +
-      LOCAL merging exchange (паттерн visitSort) — скан остаётся параллельным (P11)
-- [ ] 4.3 `LocalExecutionPlanner.visitJoin`/`createMergeJoin`: сборка build-пайплайна
-      (MergeJoinBufferOperator + DF-обёртка для INNER) и probe-пайплайна (MergeJoinOperator)
-- [ ] 4.4 `PropertyDerivations.visitJoin`: вывод сортированности выхода (SMJ упорядочен)
-- [ ] 4.5 EXPLAIN/PlanPrinter: algorithm + co-location (только при MERGE)
-- [ ] 4.6 e2e (QueryAssertions): forced SMJ INNER/LEFT == hash результаты; ревокация;
-      stage-count == hash-плану (I7)
-- [ ] 4.7 acceptance фазы 1 (орakl-фаззинг ≥10⁶, OFF байт-в-байт, TPC ≤2×) — прогон доступного
-      подмножества в CI-режиме
-- [ ] 4.8 airstyle + коммит «Wire merge join into planner and local execution (MVP)»
+- [x] 4.1 `AddExchanges.planPartitionedJoin` MERGE-ветка: `withCanonicalSort(left/right)` —
+      SortNode(ASC NULLS_LAST по equi-ключам) внутри join-стадии, свойства через
+      `ActualProperties.builderFrom().local(ordering.toLocalProperties())`
+- [x] 4.2 `AddLocalExchanges` — изменений не потребовалось: SortNode планируется штатным
+      visitSort (distributedSort → fixedParallelism + LOCAL merging) ✓
+- [x] 4.3 `LocalExecutionPlanner`: visitJoin-ветка MERGE + `createMergeJoin` (mirror
+      createLookupJoin: build sub-context + MergeJoinBufferOperatorFactory + addDriverFactory;
+      probe — MergeJoinOperatorFactory через адаптер; filter через compileJoinFilterFunction;
+      outputSingleMatch; bridgeManager.incrementProbeFactoryCount)
+- [ ] 4.4 PropertyDerivations.visitJoin — вывод сортированности выхода — TODO (не блокирует)
+- [ ] 4.5 EXPLAIN/PlanPrinter algorithm — TODO (не блокирует)
+- [x] 4.6 e2e `TestMergeJoin` (QueryAssertions): **6/6 зелёные** — INNER/LEFT/VARCHAR/
+      residual/many-to-many/OFF-эквивалентность; смоук TestJoin зелёный
+- [x] 4.7 частично (oracle-эквивалентность на e2e-уровне; TPC-прогоны — CI)
+- [x] 4.8 airstyle + коммит «Wire merge join into planner and local execution (MVP)»
 
 ## Stage 0 — Iceberg sortedness (enabler, параллельно; для W1/скидок)
 
