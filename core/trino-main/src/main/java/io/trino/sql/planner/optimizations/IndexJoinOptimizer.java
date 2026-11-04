@@ -191,6 +191,7 @@ public class IndexJoinOptimizer
                         node.getFilter(),
                         node.getDistributionType(),
                         node.isSpillable(),
+                        Optional.empty(),
                         node.getDynamicFilters(),
                         node.getReorderJoinStatsAndCost());
             }

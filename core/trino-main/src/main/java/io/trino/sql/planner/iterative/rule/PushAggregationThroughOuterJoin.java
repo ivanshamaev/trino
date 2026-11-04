@@ -161,6 +161,7 @@ public class PushAggregationThroughOuterJoin
                     join.getFilter(),
                     join.getDistributionType(),
                     join.isSpillable(),
+                    Optional.empty(),
                     join.getDynamicFilters(),
                     join.getReorderJoinStatsAndCost());
         }
@@ -178,6 +179,7 @@ public class PushAggregationThroughOuterJoin
                     join.getFilter(),
                     join.getDistributionType(),
                     join.isSpillable(),
+                    Optional.empty(),
                     join.getDynamicFilters(),
                     join.getReorderJoinStatsAndCost());
         }
@@ -247,6 +249,7 @@ public class PushAggregationThroughOuterJoin
                 outerJoin.getOutputSymbols(),
                 aggregationOverNull.getOutputSymbols(),
                 false,
+                Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),

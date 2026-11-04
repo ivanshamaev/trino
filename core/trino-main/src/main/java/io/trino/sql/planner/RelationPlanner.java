@@ -1054,6 +1054,7 @@ class RelationPlanner
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
+                Optional.empty(),
                 ImmutableMap.of(),
                 Optional.empty());
 
@@ -1095,6 +1096,7 @@ class RelationPlanner
                     Optional.of(IrUtils.and(complexJoinExpressions.stream()
                             .map(e -> coerceIfNecessary(plannerContext, getCharVarcharCoercion(session), analysis, e, translationMap.rewrite(e)))
                             .collect(Collectors.toList()))),
+                    Optional.empty(),
                     Optional.empty(),
                     Optional.empty(),
                     ImmutableMap.of(),
@@ -1205,6 +1207,7 @@ class RelationPlanner
                 leftCoercion.getOutputSymbols(),
                 rightCoercion.getOutputSymbols(),
                 false,
+                Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
@@ -1359,6 +1362,7 @@ class RelationPlanner
                 Optional.of(IrUtils.and(predicates.stream()
                         .map(expression -> coerceIfNecessary(plannerContext, getCharVarcharCoercion(session), analysis, expression, candidateTranslations.rewrite(expression)))
                         .collect(toImmutableList()))),
+                Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
                 ImmutableMap.of(),

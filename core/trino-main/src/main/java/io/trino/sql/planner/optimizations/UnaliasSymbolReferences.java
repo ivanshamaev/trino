@@ -1130,6 +1130,7 @@ public class UnaliasSymbolReferences
                             newFilter,
                             node.getDistributionType(),
                             node.isSpillable(),
+                            Optional.empty(),
                             newDynamicFilters,
                             node.getReorderJoinStatsAndCost()),
                     outputMapping);

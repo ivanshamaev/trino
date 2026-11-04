@@ -94,6 +94,7 @@ final class PlanUtils
                 Optional.empty(),
                 Optional.of(REPLICATED),
                 Optional.empty(),
+                Optional.empty(),
                 ImmutableMap.of(),
                 Optional.empty());
 
@@ -121,6 +122,7 @@ final class PlanUtils
                 Optional.empty(),
                 Optional.of(distributionType),
                 Optional.empty(),
+                Optional.empty(),
                 ImmutableMap.of(),
                 Optional.empty());
         return createFragment(planNode);
@@ -147,6 +149,7 @@ final class PlanUtils
                 Optional.empty(),
                 Optional.of(REPLICATED),
                 Optional.empty(),
+                Optional.empty(),
                 ImmutableMap.of(),
                 Optional.empty());
         PlanNode partitionedPlanNode = new JoinNode(
@@ -160,6 +163,7 @@ final class PlanUtils
                 false,
                 Optional.empty(),
                 Optional.of(PARTITIONED),
+                Optional.empty(),
                 Optional.empty(),
                 ImmutableMap.of(),
                 Optional.empty());

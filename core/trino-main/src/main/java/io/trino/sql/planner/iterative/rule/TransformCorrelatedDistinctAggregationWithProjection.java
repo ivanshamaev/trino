@@ -134,6 +134,7 @@ public class TransformCorrelatedDistinctAggregationWithProjection
                 decorrelatedSource.get().correlatedPredicate(),
                 Optional.empty(),
                 Optional.empty(),
+                Optional.empty(),
                 ImmutableMap.of(),
                 Optional.empty());
 

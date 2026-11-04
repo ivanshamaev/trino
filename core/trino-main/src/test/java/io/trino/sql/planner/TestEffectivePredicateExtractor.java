@@ -790,6 +790,7 @@ public class TestEffectivePredicateExtractor
                 Optional.of(lessThanOrEqual(new Reference(BIGINT, "b"), new Reference(BIGINT, "e"))),
                 Optional.empty(),
                 Optional.empty(),
+                Optional.empty(),
                 ImmutableMap.of(),
                 Optional.empty());
 
@@ -830,6 +831,7 @@ public class TestEffectivePredicateExtractor
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
+                Optional.empty(),
                 ImmutableMap.of(),
                 Optional.empty());
 
@@ -857,6 +859,7 @@ public class TestEffectivePredicateExtractor
                 rightScan.getOutputSymbols(),
                 false,
                 Optional.of(FALSE),
+                Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
                 ImmutableMap.of(),
@@ -892,6 +895,7 @@ public class TestEffectivePredicateExtractor
                 left.getOutputSymbols(),
                 right.getOutputSymbols(),
                 false,
+                Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
@@ -937,6 +941,7 @@ public class TestEffectivePredicateExtractor
                 left.getOutputSymbols(),
                 right.getOutputSymbols(),
                 false,
+                Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
@@ -989,6 +994,7 @@ public class TestEffectivePredicateExtractor
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
+                Optional.empty(),
                 ImmutableMap.of(),
                 Optional.empty());
 
@@ -1030,6 +1036,7 @@ public class TestEffectivePredicateExtractor
                 left.getOutputSymbols(),
                 right.getOutputSymbols(),
                 false,
+                Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),

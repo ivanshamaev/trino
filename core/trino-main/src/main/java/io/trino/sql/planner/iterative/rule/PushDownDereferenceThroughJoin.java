@@ -32,6 +32,7 @@ import io.trino.sql.planner.plan.ProjectNode;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import static com.google.common.collect.ImmutableMap.toImmutableMap;
@@ -170,6 +171,7 @@ public class PushDownDereferenceThroughJoin
                 joinNode.getFilter().map(expression -> replaceExpression(expression, mappings)),
                 joinNode.getDistributionType(),
                 joinNode.isSpillable(),
+                Optional.empty(),
                 joinNode.getDynamicFilters(),
                 joinNode.getReorderJoinStatsAndCost());
 

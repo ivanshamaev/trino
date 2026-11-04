@@ -203,6 +203,7 @@ public class AdaptiveReorderPartitionedJoin
                 flippedJoinNode.getFilter(),
                 flippedJoinNode.getDistributionType(),
                 flippedJoinNode.isSpillable(),
+                Optional.empty(),
                 flippedJoinNode.getDynamicFilters(),
                 flippedJoinNode.getReorderJoinStatsAndCost());
     }

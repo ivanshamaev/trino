@@ -1079,6 +1079,7 @@ public class PlanBuilder
                 filter,
                 distributionType,
                 Optional.empty(),
+                Optional.empty(),
                 dynamicFilters,
                 Optional.empty());
     }

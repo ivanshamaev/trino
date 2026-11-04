@@ -810,6 +810,7 @@ public class TestCostCalculator
                 Optional.empty(),
                 Optional.of(distributionType),
                 Optional.empty(),
+                Optional.empty(),
                 ImmutableMap.of(),
                 Optional.empty());
     }

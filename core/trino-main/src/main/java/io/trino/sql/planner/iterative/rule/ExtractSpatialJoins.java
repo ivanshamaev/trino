@@ -331,6 +331,7 @@ public class ExtractSpatialJoins
                 Optional.of(newFilter),
                 joinNode.getDistributionType(),
                 joinNode.isSpillable(),
+                Optional.empty(),
                 joinNode.getDynamicFilters(),
                 joinNode.getReorderJoinStatsAndCost());
 

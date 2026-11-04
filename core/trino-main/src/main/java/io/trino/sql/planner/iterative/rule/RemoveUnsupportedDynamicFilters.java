@@ -172,6 +172,7 @@ public class RemoveUnsupportedDynamicFilters
                         filter,
                         node.getDistributionType(),
                         node.isSpillable(),
+                        Optional.empty(),
                         // When there was no dynamic filter in join, it should remain empty
                         node.getDynamicFilters().isEmpty() ? ImmutableMap.of() : dynamicFilters,
                         node.getReorderJoinStatsAndCost()),

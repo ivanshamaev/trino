@@ -270,6 +270,7 @@ public class PushInequalityFilterExpressionBelowJoinRuleSet
                 newJoinFilter,
                 originalJoinNode.getDistributionType(),
                 originalJoinNode.isSpillable(),
+                Optional.empty(),
                 originalJoinNode.getDynamicFilters(),
                 originalJoinNode.getReorderJoinStatsAndCost());
     }

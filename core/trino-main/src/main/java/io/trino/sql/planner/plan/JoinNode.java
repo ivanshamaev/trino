@@ -55,6 +55,16 @@ public class JoinNode
         REPLICATED,
     }
 
+    /**
+     * Physical join algorithm. Empty means the engine default (lookup/hash join).
+     * MERGE marks a sorted merge join: both inputs are sorted by the equi-criteria
+     * in the canonical order (ASC, NULLS_LAST) and merged in a single pass.
+     */
+    public enum JoinAlgorithm
+    {
+        MERGE
+    }
+
     private final JoinType type;
     private final PlanNode left;
     private final PlanNode right;
@@ -65,6 +75,7 @@ public class JoinNode
     private final Optional<Expression> filter;
     private final Optional<DistributionType> distributionType;
     private final Optional<Boolean> spillable;
+    private final Optional<JoinAlgorithm> algorithm;
     private final Map<DynamicFilterId, Symbol> dynamicFilters;
 
     // stats and cost used for join reordering
@@ -87,10 +98,11 @@ public class JoinNode
             @JsonProperty("filter") Optional<Expression> filter,
             @JsonProperty("distributionType") Optional<DistributionType> distributionType,
             @JsonProperty("spillable") Optional<Boolean> spillable,
+            @JsonProperty("algorithm") Optional<JoinAlgorithm> algorithm,
             @JsonProperty("dynamicFilters") Map<DynamicFilterId, Symbol> dynamicFilters,
             @JsonProperty("reorderJoinStatsAndCost") Optional<PlanNodeStatsAndCostSummary> reorderJoinStatsAndCost)
     {
-        this(id, type, left, right, criteria, leftOutputSymbols, rightOutputSymbols, maySkipOutputDuplicates, filter, distributionType, spillable, dynamicFilters, reorderJoinStatsAndCost, true);
+        this(id, type, left, right, criteria, leftOutputSymbols, rightOutputSymbols, maySkipOutputDuplicates, filter, distributionType, spillable, algorithm, dynamicFilters, reorderJoinStatsAndCost, true);
     }
 
     /**
@@ -114,6 +126,7 @@ public class JoinNode
             Optional<Expression> filter,
             Optional<DistributionType> distributionType,
             Optional<Boolean> spillable,
+            Optional<JoinAlgorithm> algorithm,
             Map<DynamicFilterId, Symbol> dynamicFilters,
             Optional<PlanNodeStatsAndCostSummary> reorderJoinStatsAndCost,
             boolean validateSymbols)
@@ -128,6 +141,7 @@ public class JoinNode
         requireNonNull(filter, "filter is null");
         requireNonNull(distributionType, "distributionType is null");
         requireNonNull(spillable, "spillable is null");
+        requireNonNull(algorithm, "algorithm is null");
 
         this.type = type;
         this.left = left;
@@ -139,6 +153,7 @@ public class JoinNode
         this.filter = filter;
         this.distributionType = distributionType;
         this.spillable = spillable;
+        this.algorithm = algorithm;
         this.dynamicFilters = ImmutableMap.copyOf(requireNonNull(dynamicFilters, "dynamicFilters is null"));
         this.reorderJoinStatsAndCost = requireNonNull(reorderJoinStatsAndCost, "reorderJoinStatsAndCost is null");
         this.outputSymbols = ImmutableList.<Symbol>builder()
@@ -159,6 +174,14 @@ public class JoinNode
                     distributionType.get());
         }
 
+        if (algorithm.isPresent()) {
+            checkArgument(type == INNER || type == LEFT, "MERGE join algorithm requires INNER or LEFT join type, got %s", type);
+            checkArgument(!criteria.isEmpty(), "MERGE join algorithm requires non-empty equi-criteria");
+            checkArgument(
+                    distributionType.isPresent() && distributionType.get() == DistributionType.PARTITIONED,
+                    "MERGE join algorithm requires PARTITIONED distribution type");
+        }
+
         if (!this.dynamicFilters.isEmpty()) {
             Set<Symbol> rightSymbols = ImmutableSet.copyOf(right.getOutputSymbols());
             for (Symbol symbol : this.dynamicFilters.values()) {
@@ -169,6 +192,10 @@ public class JoinNode
 
     public JoinNode flipChildren()
     {
+        // MERGE eligibility is validated for the current join type and side assignment.
+        // INNER stays INNER when flipped, so the marker survives; LEFT becomes RIGHT,
+        // which the merge operator does not support, so the marker is dropped and the
+        // join falls back to the default algorithm.
         return new JoinNode(
                 getId(),
                 flipType(type),
@@ -181,6 +208,7 @@ public class JoinNode
                 filter,
                 distributionType,
                 spillable,
+                type == INNER ? algorithm : Optional.empty(),
                 ImmutableMap.of(), // dynamicFilters are invalid after flipping children
                 reorderJoinStatsAndCost,
                 false);
@@ -300,6 +328,12 @@ public class JoinNode
         return spillable;
     }
 
+    @JsonProperty("algorithm")
+    public Optional<JoinAlgorithm> getAlgorithm()
+    {
+        return algorithm;
+    }
+
     @JsonProperty("maySkipOutputDuplicates")
     public boolean isMaySkipOutputDuplicates()
     {
@@ -328,32 +362,37 @@ public class JoinNode
     public PlanNode replaceChildren(List<PlanNode> newChildren)
     {
         checkArgument(newChildren.size() == 2, "expected newChildren to contain 2 nodes");
-        return new JoinNode(getId(), type, newChildren.get(0), newChildren.get(1), criteria, leftOutputSymbols, rightOutputSymbols, maySkipOutputDuplicates, filter, distributionType, spillable, dynamicFilters, reorderJoinStatsAndCost);
+        return new JoinNode(getId(), type, newChildren.get(0), newChildren.get(1), criteria, leftOutputSymbols, rightOutputSymbols, maySkipOutputDuplicates, filter, distributionType, spillable, algorithm, dynamicFilters, reorderJoinStatsAndCost);
     }
 
     public JoinNode withDistributionType(DistributionType distributionType)
     {
-        return new JoinNode(getId(), type, left, right, criteria, leftOutputSymbols, rightOutputSymbols, maySkipOutputDuplicates, filter, Optional.of(distributionType), spillable, dynamicFilters, reorderJoinStatsAndCost, false);
+        return new JoinNode(getId(), type, left, right, criteria, leftOutputSymbols, rightOutputSymbols, maySkipOutputDuplicates, filter, Optional.of(distributionType), spillable, algorithm, dynamicFilters, reorderJoinStatsAndCost, false);
+    }
+
+    public JoinNode withAlgorithm(JoinAlgorithm algorithm)
+    {
+        return new JoinNode(getId(), type, left, right, criteria, leftOutputSymbols, rightOutputSymbols, maySkipOutputDuplicates, filter, distributionType, spillable, Optional.of(algorithm), dynamicFilters, reorderJoinStatsAndCost);
     }
 
     public JoinNode withSpillable(boolean spillable)
     {
-        return new JoinNode(getId(), type, left, right, criteria, leftOutputSymbols, rightOutputSymbols, maySkipOutputDuplicates, filter, distributionType, Optional.of(spillable), dynamicFilters, reorderJoinStatsAndCost);
+        return new JoinNode(getId(), type, left, right, criteria, leftOutputSymbols, rightOutputSymbols, maySkipOutputDuplicates, filter, distributionType, Optional.of(spillable), algorithm, dynamicFilters, reorderJoinStatsAndCost);
     }
 
     public JoinNode withMaySkipOutputDuplicates()
     {
-        return new JoinNode(getId(), type, left, right, criteria, leftOutputSymbols, rightOutputSymbols, true, filter, distributionType, spillable, dynamicFilters, reorderJoinStatsAndCost);
+        return new JoinNode(getId(), type, left, right, criteria, leftOutputSymbols, rightOutputSymbols, true, filter, distributionType, spillable, algorithm, dynamicFilters, reorderJoinStatsAndCost);
     }
 
     public JoinNode withReorderJoinStatsAndCost(PlanNodeStatsAndCostSummary statsAndCost)
     {
-        return new JoinNode(getId(), type, left, right, criteria, leftOutputSymbols, rightOutputSymbols, maySkipOutputDuplicates, filter, distributionType, spillable, dynamicFilters, Optional.of(statsAndCost), false);
+        return new JoinNode(getId(), type, left, right, criteria, leftOutputSymbols, rightOutputSymbols, maySkipOutputDuplicates, filter, distributionType, spillable, algorithm, dynamicFilters, Optional.of(statsAndCost), false);
     }
 
     public JoinNode withoutDynamicFilters()
     {
-        return new JoinNode(getId(), type, left, right, criteria, leftOutputSymbols, rightOutputSymbols, maySkipOutputDuplicates, filter, distributionType, spillable, ImmutableMap.of(), reorderJoinStatsAndCost);
+        return new JoinNode(getId(), type, left, right, criteria, leftOutputSymbols, rightOutputSymbols, maySkipOutputDuplicates, filter, distributionType, spillable, algorithm, ImmutableMap.of(), reorderJoinStatsAndCost);
     }
 
     public boolean isCrossJoin()

@@ -435,6 +435,7 @@ public class TestJoinStatsRule
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
+                Optional.empty(),
                 ImmutableMap.of(),
                 Optional.empty());
 

@@ -91,6 +91,7 @@ public class TransformCorrelatedJoinToJoin
                 filter.equals(TRUE) ? Optional.empty() : Optional.of(filter),
                 Optional.empty(),
                 Optional.empty(),
+                Optional.empty(),
                 ImmutableMap.of(),
                 Optional.empty()));
     }

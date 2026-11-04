@@ -322,6 +322,7 @@ public class TestSchedulingUtils
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
+                Optional.empty(),
                 ImmutableMap.of(),
                 Optional.empty());
     }

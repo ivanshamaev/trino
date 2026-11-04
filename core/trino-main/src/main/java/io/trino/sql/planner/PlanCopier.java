@@ -43,6 +43,7 @@ import io.trino.sql.planner.plan.ValuesNode;
 import io.trino.sql.planner.plan.WindowNode;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static java.util.Objects.requireNonNull;
@@ -172,6 +173,7 @@ public final class PlanCopier
                     node.getFilter(),
                     node.getDistributionType(),
                     node.isSpillable(),
+                    Optional.empty(),
                     node.getDynamicFilters(),
                     node.getReorderJoinStatsAndCost());
         }
