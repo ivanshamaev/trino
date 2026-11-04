@@ -14,8 +14,13 @@
 package io.trino.plugin.iceberg;
 
 import com.google.common.collect.ImmutableList;
+import io.trino.Session;
 import io.trino.filesystem.Location;
 import io.trino.filesystem.TrinoFileSystem;
+import io.trino.metadata.Metadata;
+import io.trino.metadata.QualifiedObjectName;
+import io.trino.spi.connector.ColumnHandle;
+import io.trino.spi.connector.LocalProperty;
 import io.trino.testing.AbstractTestQueryFramework;
 import io.trino.testing.QueryRunner;
 import io.trino.testing.sql.TestTable;
@@ -23,6 +28,8 @@ import io.trino.tpch.TpchTable;
 import org.apache.iceberg.FileFormat;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static io.trino.plugin.iceberg.IcebergTestUtils.checkOrcFileSorting;
 import static io.trino.plugin.iceberg.IcebergTestUtils.checkParquetFileSorting;
@@ -54,6 +61,36 @@ public class TestIcebergSortedWriting
     public void initFileSystem()
     {
         fileSystem = getFileSystemFactory(getDistributedQueryRunner()).create(SESSION);
+    }
+
+    @Test
+    public void testSortednessReportedToEngine()
+    {
+        String sortedTable = "sortedness_report_test_sorted";
+        String unsortedTable = "sortedness_report_test_unsorted";
+        assertUpdate("CREATE TABLE " + sortedTable + " (k BIGINT, v VARCHAR) WITH (sorted_by = ARRAY['k'])");
+        assertUpdate("CREATE TABLE " + unsortedTable + " (k BIGINT, v VARCHAR)");
+        String insert = "INSERT INTO %s VALUES (3, 'c'), (1, 'a'), (2, 'b'), (1, 'aa')";
+        assertUpdate(insert.formatted(sortedTable), 4);
+        assertUpdate(insert.formatted(unsortedTable), 4);
+
+        // metadata-level check: the engine sees the SortingProperty for the sorted table
+        // and no local properties for the unsorted table
+        inTransaction(session -> {
+            Metadata metadata = getQueryRunner().getPlannerContext().getMetadata();
+            assertThat(getLocalProperties(metadata, session, sortedTable)).isNotEmpty();
+            assertThat(getLocalProperties(metadata, session, unsortedTable)).isEmpty();
+        });
+    }
+
+    private static List<LocalProperty<ColumnHandle>> getLocalProperties(Metadata metadata, Session session, String tableName)
+    {
+        QualifiedObjectName qualifiedObjectName = new QualifiedObjectName(
+                session.getCatalog().orElseThrow(),
+                session.getSchema().orElseThrow(),
+                tableName);
+        return metadata.getTableProperties(session, metadata.getTableHandle(session, qualifiedObjectName).orElseThrow())
+                .getLocalProperties();
     }
 
     @Test

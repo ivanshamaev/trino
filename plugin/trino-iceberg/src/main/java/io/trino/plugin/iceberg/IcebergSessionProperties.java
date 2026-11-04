@@ -64,6 +64,7 @@ public final class IcebergSessionProperties
         implements SessionPropertiesProvider
 {
     public static final String SPLIT_SIZE = "max_split_size";
+    private static final String REPORT_SORTEDNESS = "report_sortedness";
     private static final String USE_FILE_SIZE_FROM_METADATA = "use_file_size_from_metadata";
     private static final String ORC_BLOOM_FILTERS_ENABLED = "orc_bloom_filters_enabled";
     private static final String ORC_MAX_MERGE_DISTANCE = "orc_max_merge_distance";
@@ -132,6 +133,11 @@ public final class IcebergSessionProperties
                         USE_FILE_SIZE_FROM_METADATA,
                         "Use file size stored in Iceberg metadata",
                         icebergConfig.isUseFileSizeFromMetadata(),
+                        false))
+                .add(booleanProperty(
+                        REPORT_SORTEDNESS,
+                        "Report table sortedness to the engine for sort-order-aware planning",
+                        icebergConfig.isReportSortedness(),
                         false))
                 .add(booleanProperty(
                         ORC_BLOOM_FILTERS_ENABLED,
@@ -666,5 +672,10 @@ public final class IcebergSessionProperties
     public static boolean arePlaintextFilesAllowedForEncryptedTables(ConnectorSession session)
     {
         return session.getProperty(PLAINTEXT_FILES_ALLOWED_FOR_ENCRYPTED_TABLES, Boolean.class);
+    }
+
+    public static boolean isReportSortedness(ConnectorSession session)
+    {
+        return session.getProperty(REPORT_SORTEDNESS, Boolean.class);
     }
 }

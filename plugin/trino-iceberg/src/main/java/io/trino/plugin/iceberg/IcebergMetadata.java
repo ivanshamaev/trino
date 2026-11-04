@@ -109,6 +109,7 @@ import io.trino.spi.connector.Constraint;
 import io.trino.spi.connector.ConstraintApplicationResult;
 import io.trino.spi.connector.DiscretePredicates;
 import io.trino.spi.connector.LimitApplicationResult;
+import io.trino.spi.connector.LocalProperty;
 import io.trino.spi.connector.MaterializedViewFreshness;
 import io.trino.spi.connector.ProjectionApplicationResult;
 import io.trino.spi.connector.RelationColumnsMetadata;
@@ -120,6 +121,7 @@ import io.trino.spi.connector.SaveMode;
 import io.trino.spi.connector.SchemaNotFoundException;
 import io.trino.spi.connector.SchemaTableName;
 import io.trino.spi.connector.SchemaTablePrefix;
+import io.trino.spi.connector.SortingProperty;
 import io.trino.spi.connector.SystemTable;
 import io.trino.spi.connector.TableColumnsMetadata;
 import io.trino.spi.connector.TableNotFoundException;
@@ -1083,8 +1085,7 @@ public class IcebergMetadata
                 enforcedPredicate.transformKeys(ColumnHandle.class::cast),
                 table.getTablePartitioning().flatMap(IcebergTablePartitioning::toConnectorTablePartitioning),
                 Optional.ofNullable(discretePredicates),
-                // todo support sorting properties
-                ImmutableList.of());
+                getSortingProperties(session, table, icebergTable, enforcedPredicate));
     }
 
     @Override
@@ -1735,6 +1736,81 @@ public class IcebergMetadata
                 table.location(),
                 getFileFormat(table),
                 table.properties());
+    }
+
+    /**
+     * Conservatively reports table sortedness to the engine (see ai-docs/smj-research/risks/
+     * 04-implementation-plan-with-risk-gates.md, phase 0):
+     * <ul>
+     *     <li>every data file of the (pruned) snapshot must carry the current table sort order id
+     *     (file-level {@code sortOrderId}, not the table-level one)</li>
+     *     <li>only the identity-transform prefix of the sort order is reported: sorting by a
+     *     superset implies sorting by the prefix, while non-identity transforms are not
+     *     guaranteed to be preserved by this connector</li>
+     * </ul>
+     * Any violation results in no reported sortedness (missed optimization, never an
+     * incorrect report).
+     */
+    private List<LocalProperty<ColumnHandle>> getSortingProperties(ConnectorSession session, IcebergTableHandle table, Table icebergTable, TupleDomain<IcebergColumnHandle> enforcedPredicate)
+    {
+        if (!IcebergSessionProperties.isReportSortedness(session)) {
+            return ImmutableList.of();
+        }
+
+        SortOrder tableSortOrder = icebergTable.sortOrder();
+        if (!tableSortOrder.isSorted()) {
+            return ImmutableList.of();
+        }
+
+        // compute the identity prefix of the table sort order
+        ImmutableList.Builder<Integer> prefixSourceIds = ImmutableList.builder();
+        ImmutableList.Builder<io.trino.spi.connector.SortOrder> prefixOrders = ImmutableList.builder();
+        for (SortField sortField : tableSortOrder.fields()) {
+            if (!sortField.transform().isIdentity()) {
+                break;
+            }
+            if (icebergTable.schema().accessorForField(sortField.sourceId()) == null) {
+                break;
+            }
+            TrinoSortField trinoSortField = TrinoSortField.fromIceberg(sortField);
+            prefixSourceIds.add(trinoSortField.sourceColumnId());
+            prefixOrders.add(trinoSortField.sortOrder());
+        }
+        List<Integer> sourceIds = prefixSourceIds.build();
+        if (sourceIds.isEmpty()) {
+            return ImmutableList.of();
+        }
+
+        // every data file must have been written with the current table sort order;
+        // a single legacy or externally-written unsorted file invalidates the report
+        TableScan tableScan = icebergTable.newScan()
+                .useSnapshot(table.getSnapshotId().orElseThrow())
+                .filter(toIcebergExpression(enforcedPredicate))
+                .planWith(icebergPlanningExecutor);
+        try (CloseableIterable<FileScanTask> fileScanTasks = tableScan.planFiles()) {
+            for (FileScanTask fileScanTask : fileScanTasks) {
+                if (fileScanTask.file().sortOrderId() != tableSortOrder.orderId()) {
+                    return ImmutableList.of();
+                }
+            }
+        }
+        catch (IOException | UncheckedIOException e) {
+            throw new UncheckedIOException("Failed to read Iceberg data files", e instanceof IOException ioException ? ioException : (IOException) e.getCause());
+        }
+
+        Map<Integer, IcebergColumnHandle> columnsById = getProjectedColumns(icebergTable.schema(), typeManager, ImmutableSet.copyOf(sourceIds)).stream()
+                .collect(toImmutableMap(IcebergColumnHandle::getId, identity()));
+
+        ImmutableList.Builder<LocalProperty<ColumnHandle>> sortingProperties = ImmutableList.builder();
+        List<io.trino.spi.connector.SortOrder> orders = prefixOrders.build();
+        for (int i = 0; i < sourceIds.size(); i++) {
+            IcebergColumnHandle column = columnsById.get(sourceIds.get(i));
+            if (column == null) {
+                break;
+            }
+            sortingProperties.add(new SortingProperty<>(ColumnHandle.class.cast(column), orders.get(i)));
+        }
+        return sortingProperties.build();
     }
 
     private static SortFieldInfo getSupportedSortFields(Schema schema, SortOrder sortOrder, int sortOrderId)

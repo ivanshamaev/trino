@@ -70,6 +70,7 @@ public class IcebergConfig
     private Optional<Boolean> deleteAfterCommitEnabled = Optional.empty();
     private Optional<Integer> maxPreviousVersions = Optional.empty();
     private boolean useFileSizeFromMetadata = true;
+    private boolean reportSortedness = true;
     private int maxPartitionsPerWriter = 100;
     private boolean uniqueTableLocation = true;
     private CatalogType catalogType = HIVE_METASTORE;
@@ -116,6 +117,18 @@ public class IcebergConfig
     public CatalogType getCatalogType()
     {
         return catalogType;
+    }
+
+    public boolean isReportSortedness()
+    {
+        return reportSortedness;
+    }
+
+    @Config("iceberg.report-sortedness")
+    public IcebergConfig setReportSortedness(boolean reportSortedness)
+    {
+        this.reportSortedness = reportSortedness;
+        return this;
     }
 
     @Config("iceberg.catalog.type")
