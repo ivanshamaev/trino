@@ -111,15 +111,23 @@ public class MergeJoinBufferOperatorFactory
         private final MergeJoinBridge bridge;
         private final ConnectorSession session;
         private final LocalMemoryContext userMemoryContext;
+        private final long spillThresholdBytes;
 
         private boolean finished;
+        private long totalBytesReceived;
 
         public MergeJoinBufferOperator(OperatorContext operatorContext, MergeJoinBridge bridge, List<Type> types, ConnectorSession session)
+        {
+            this(operatorContext, bridge, types, session, Long.MAX_VALUE);
+        }
+
+        public MergeJoinBufferOperator(OperatorContext operatorContext, MergeJoinBridge bridge, List<Type> types, ConnectorSession session, long spillThresholdBytes)
         {
             this.operatorContext = requireNonNull(operatorContext, "operatorContext is null");
             this.bridge = requireNonNull(bridge, "bridge is null");
             this.session = requireNonNull(session, "session is null");
             this.userMemoryContext = operatorContext.newLocalUserMemoryContext(MergeJoinBufferOperator.class.getSimpleName());
+            this.spillThresholdBytes = spillThresholdBytes;
         }
 
         @Override
@@ -156,6 +164,7 @@ public class MergeJoinBufferOperatorFactory
             requireNonNull(page, "page is null");
             checkState(!finished, "Operator is already finished");
             bridge.addPage(page);
+            totalBytesReceived += page.getSizeInBytes();
             userMemoryContext.setBytes(estimateRetainedSize());
         }
 

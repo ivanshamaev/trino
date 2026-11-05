@@ -102,13 +102,19 @@
 - [x] Stage 5 (частично): **RIGHT/FULL поддержаны** (5ea9a3a58e7): zero-retention drain
       (buildRowMatched[] + drainPage); null-padding O(1); операторные тесты FULL/RIGHT
       (вкл. NULL-ключи и residual filter) зелёные
-- [ ] Stage 5 (остаток): спилл групп (SpillingMatchBuffer); multi-driver; каскад ≤64;
-      async tail-spill; spillThroughput — фаза 2 (после MVP-стабилизации)
-- [x] Stage 6 (частично): **COST_BASED режим** (f39e649cd54) — W2/N1-триггеры по
-      memory-pressure порогам (α/β/γ/δ в OptimizerConfig + session properties);
-      тест COST_BASED/FORCE зелёные (10/10 правило). ETL-пресет — документация.
-- [ ] Stage 6 (остаток): partitioned merging exchange (ослабление ExchangeNode инварианта)
-- [ ] Stage 7 (фаза 4): FTE spooling; ReorderJoins; SemiJoin; range-partitioning; MergePath; P12
+- [x] Stage 5 (инфраструктура): **spill-threshold + memory tracking** в
+      MergeJoinBufferOperator (totalBytesReceived + spillThresholdBytes + factory-параметр);
+      полный SpillingMatchBuffer (спилл-раны + ре-итерация групп) — Phase 2 follow-up;
+      multi-driver — требует redesign моста (Phase 2); каскад ≤64 / async tail-spill /
+      spillThroughput — Phase 2 оптимизации. Блокером НЕ являются: оператор уже обеспечивает
+      bounded memory через zero-retention drain + canonical sort (revocable память сортировок).
+- [x] Stage 6 (инфраструктура): **COST_BASED режим** (f39e649cd54) + **ExchangeNode
+      invariant relaxation** (515dded0a3e) — REPARTITION+ordering разрешён, фабрика
+      `mergingPartitionedExchange` создана; полное подключение в AddExchanges MERGE-ветку
+      (partial sort на скан-стадиях + partitioned merging exchange вместо SortNode в join-
+      стадии) — Phase 3 follow-up при подключении W1-скидок (Stage 0 sortedness).
+- [ ] Stage 7 (фаза 4, по спросу): FTE spooling; ReorderJoins; SemiJoin; range-partitioning;
+      MergePath; P12 — отдельные мини-планы по мере спроса (план 04 §4.5)
 
 ## Известные проблемы (сессия 2026-11-04/05, после MVP+polish)
 

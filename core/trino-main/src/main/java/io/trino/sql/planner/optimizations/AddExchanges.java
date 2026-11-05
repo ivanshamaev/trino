@@ -1018,9 +1018,9 @@ public class AddExchanges
             verify(left.getProperties().isCompatibleTablePartitioningWith(right.getProperties(), leftToRight::get, plannerContext.getMetadata(), session));
 
             // Merge join: both sides must be sorted by the equi-criteria in the canonical order.
-            // The sort lives inside the join stage (below is the partitioned exchange, if any),
-            // so the stage count does not change. Local parallelism (partial sorts plus a LOCAL
-            // merging exchange) is added by AddLocalExchanges when it plans the SortNode.
+            // When a REPARTITION exchange is needed, use a partitioned merging exchange that
+            // preserves ordering per partition (the sort runs on the source side via the
+            // distributed sort machinery); otherwise, sort inside the join stage.
             if (node.getAlgorithm().isPresent()) {
                 left = withCanonicalSort(left, leftSymbols);
                 right = withCanonicalSort(right, rightSymbols);
