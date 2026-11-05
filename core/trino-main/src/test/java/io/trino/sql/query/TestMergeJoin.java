@@ -64,7 +64,6 @@ public class TestMergeJoin
     }
 
     @Test
-    @org.junit.jupiter.api.Disabled("known issue: livelock in the merge join stage in the local runner - see ai-docs/dev_todo_list.md KP-1")
     public void testInnerJoin()
     {
         assertThat(assertions.query(mergeJoinSession, "SELECT l.k, l.a, r.k, r.b FROM (VALUES (1, 10), (2, 20), (2, 21), (4, 40), (NULL, 50)) l(k, a) JOIN (VALUES (1, 100), (2, 200), (3, 300), (NULL, 400)) r(k, b) ON l.k = r.k"))
@@ -72,7 +71,6 @@ public class TestMergeJoin
     }
 
     @Test
-    @org.junit.jupiter.api.Disabled("known issue: livelock - see ai-docs/dev_todo_list.md KP-1")
     public void testLeftJoin()
     {
         assertThat(assertions.query(mergeJoinSession, "SELECT l.k, l.a, r.b FROM (VALUES (1, 10), (2, 20), (3, 30), (NULL, 40)) l(k, a) LEFT JOIN (VALUES (1, 100), (3, 300)) r(k, b) ON l.k = r.k"))
@@ -80,7 +78,6 @@ public class TestMergeJoin
     }
 
     @Test
-    @org.junit.jupiter.api.Disabled("known issue: livelock in the merge join stage in the local runner - see ai-docs/dev_todo_list.md KP-1")
     public void testVarcharKey()
     {
         assertThat(assertions.query(mergeJoinSession, "SELECT l.k, r.b FROM (VALUES ('a', 1), ('c', 2), (NULL, 3)) l(k, a) JOIN (VALUES ('a', 10), ('b', 20), ('c', 30)) r(k, b) ON l.k = r.k"))
@@ -88,7 +85,6 @@ public class TestMergeJoin
     }
 
     @Test
-    @org.junit.jupiter.api.Disabled("known issue: livelock in the merge join stage in the local runner - see ai-docs/dev_todo_list.md KP-1")
     public void testJoinWithResidualFilter()
     {
         assertThat(assertions.query(mergeJoinSession, "SELECT l.k, r.b FROM (VALUES (1, 1), (2, 2)) l(k, a) JOIN (VALUES (1, 10), (1, 11), (2, 20)) r(k, b) ON l.k = r.k AND r.b > 10"))
@@ -96,7 +92,6 @@ public class TestMergeJoin
     }
 
     @Test
-    @org.junit.jupiter.api.Disabled("known issue: livelock in the merge join stage in the local runner - see ai-docs/dev_todo_list.md KP-1")
     public void testJoinWithDuplicateKeys()
     {
         // many-to-many: 3 x 2 matches on key 7
@@ -108,7 +103,6 @@ public class TestMergeJoin
     }
 
     @Test
-    @org.junit.jupiter.api.Disabled("known issue: livelock in the merge join stage in the local runner - see ai-docs/dev_todo_list.md KP-1")
     public void testExplainShowsMergeJoinAlgorithm()
     {
         String explain = assertions.execute(mergeJoinSession, "EXPLAIN SELECT l.k, r.b FROM (VALUES (1, 10), (2, 20), (2, 21), (4, 40), (NULL, 50)) l(k, a) JOIN (VALUES (1, 100), (2, 200), (3, 300), (NULL, 400)) r(k, b) ON l.k = r.k")
@@ -118,7 +112,6 @@ public class TestMergeJoin
     }
 
     @Test
-    @org.junit.jupiter.api.Disabled("known issue: livelock in the merge join stage in the local runner - see ai-docs/dev_todo_list.md KP-1")
     public void testOffByDefaultProducesSameResults()
     {
         // same query with merge join disabled must return identical results

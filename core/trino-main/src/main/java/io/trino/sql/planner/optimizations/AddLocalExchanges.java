@@ -899,6 +899,17 @@ public class AddLocalExchanges
         @Override
         public PlanWithProperties visitJoin(JoinNode node, StreamPreferredProperties parentPreferences)
         {
+            if (node.getAlgorithm().isPresent()) {
+                // Merge join consumes a single sorted stream on both sides (the parallelism
+                // lives below in the partial sorts feeding the LOCAL merging exchange);
+                // a parallel join pipeline would split the sorted stream across duplicates
+                // and break the merge semantics
+                StreamPreferredProperties singleStream = singleStream();
+                PlanWithProperties probe = planAndEnforce(node.getLeft(), singleStream, singleStream);
+                PlanWithProperties build = planAndEnforce(node.getRight(), singleStream, singleStream);
+                return rebaseAndDeriveProperties(node, ImmutableList.of(probe, build));
+            }
+
             PlanWithProperties probe = planAndEnforce(
                     node.getLeft(),
                     defaultParallelism(session),
