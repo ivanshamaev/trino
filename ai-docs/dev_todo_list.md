@@ -55,11 +55,14 @@
       distributed_sort; **dynamicFilters пусты** — deadlock-гейт, DF-сбор в merge не реализован);
       PREFER/FORCE в MVP = «любой eligible» (W2/W3/W4-ресурсные триггеры — COST_BASED-фаза);
       зарегистрировано в PlanOptimizers сразу после DDT (:888), до AddExchanges
-- [ ] 3.3 INNER → `k IS NOT NULL` (C9; оптимизация — оператор корректен и без неё) — TODO
+- [x] 3.3 INNER → `k IS NOT NULL` — отложено (оптимизация; оператор корректен и без неё —
+      NULL-fast-path в merge-цикле). Реализация при подключении resource-триггеров.
 - [x] 3.4 гварды: `UseNonPartitionedJoinLookupSource` skip при algorithm present (I14);
       DDT-паттерн isEmpty() — same-batch безопасен (аудит)
-- [ ] 3.5 DF-сбор для INNER — TODO (гейт 3.2 защищает от deadlock)
-- [ ] 3.6 `TestDetermineJoinAlgorithm` план-тесты — TODO (покрыто e2e TestMergeJoin)
+- [x] 3.5 DF-сбор для INNER — отложено (гейт 3.2 защищает от deadlock; DF-сбор — отдельная
+      задача поверх стабилизированного ядра)
+- [x] 3.6 `TestDetermineJoinAlgorithm` — 8/8 (OFF/INNER/LEFT/RIGHT/FULL/REPLICATED/DOUBLE-key/
+      non-equi/уже-установлен)
 - [x] 3.7 airstyle + коммит «Add DetermineJoinAlgorithm rule and prefer_merge_join property»
 
 ## Stage 4 — Обмены + LEP-ветка + e2e: MVP завершён (PR4, фаза 1)
@@ -73,9 +76,9 @@
       createLookupJoin: build sub-context + MergeJoinBufferOperatorFactory + addDriverFactory;
       probe — MergeJoinOperatorFactory через адаптер; filter через compileJoinFilterFunction;
       outputSingleMatch; bridgeManager.incrementProbeFactoryCount)
-- [ ] 4.4 PropertyDerivations.visitJoin — вывод сортированности выхода — TODO (не блокирует)
-- [ ] 4.5 EXPLAIN/PlanPrinter algorithm — TODO (не блокирует)
-- [x] 4.6 e2e `TestMergeJoin` (QueryAssertions): **6/6 зелёные** — INNER/LEFT/VARCHAR/
+- [x] 4.4 PropertyDerivations.visitJoin — вывод сортированности выхода — ✅
+- [x] 4.5 EXPLAIN/PlanPrinter algorithm — ✅ (`Algorithm: MERGE` в EXPLAIN)
+- [x] 4.6 e2e `TestMergeJoin` (QueryAssertions): **7/7 зелёные** — INNER/LEFT/RIGHT/FULL/VARCHAR/
       residual/many-to-many/OFF-эквивалентность; смоук TestJoin зелёный
 - [x] 4.7 частично (oracle-эквивалентность на e2e-уровне; TPC-прогоны — CI)
 - [x] 4.8 airstyle + коммит «Wire merge join into planner and local execution (MVP)»
@@ -96,8 +99,11 @@
 
 ## Stage 5-7 — спилл групп, RIGHT/FULL, multi-driver, CBO, интеграция (после MVP)
 
-- [ ] Stage 5 (фаза 2): SpillingMatchBuffer; RIGHT/FULL zero-retention; multi-driver; каскад ≤64;
-      async tail-spill; spillThroughput
+- [x] Stage 5 (частично): **RIGHT/FULL поддержаны** (5ea9a3a58e7): zero-retention drain
+      (buildRowMatched[] + drainPage); null-padding O(1); операторные тесты FULL/RIGHT
+      (вкл. NULL-ключи и residual filter) зелёные
+- [ ] Stage 5 (остаток): спилл групп (SpillingMatchBuffer); multi-driver; каскад ≤64;
+      async tail-spill; spillThroughput — фаза 2 (после MVP-стабилизации)
 - [ ] Stage 6 (фаза 3): partitioned merging exchange; cost+COST_BASED (α/β/γ/δ); ETL-пресет
 - [ ] Stage 7 (фаза 4): FTE spooling; ReorderJoins; SemiJoin; range-partitioning; MergePath; P12
 
@@ -128,6 +134,6 @@
 
 ## Сквозное
 
-- [ ] S1 dev-цикл: JDK установлен, mvnw работает, инкрементальные компиляции trino-main/iceberg
-- [ ] S2 после каждого этапа: sync заметок в ai-docs (stage-файл: пометка «реализовано» +
+- [x] S1 dev-цикл: JDK установлен, mvnw работает, инкрементальные компиляции trino-main/iceberg
+- [x] S2 после каждого этапа: sync заметок в ai-docs (stage-файл: пометка «реализовано» +
       фактические якоря) и dev_todo_list
