@@ -104,7 +104,10 @@
       (вкл. NULL-ключи и residual filter) зелёные
 - [ ] Stage 5 (остаток): спилл групп (SpillingMatchBuffer); multi-driver; каскад ≤64;
       async tail-spill; spillThroughput — фаза 2 (после MVP-стабилизации)
-- [ ] Stage 6 (фаза 3): partitioned merging exchange; cost+COST_BASED (α/β/γ/δ); ETL-пресет
+- [x] Stage 6 (частично): **COST_BASED режим** (f39e649cd54) — W2/N1-триггеры по
+      memory-pressure порогам (α/β/γ/δ в OptimizerConfig + session properties);
+      тест COST_BASED/FORCE зелёные (10/10 правило). ETL-пресет — документация.
+- [ ] Stage 6 (остаток): partitioned merging exchange (ослабление ExchangeNode инварианта)
 - [ ] Stage 7 (фаза 4): FTE spooling; ReorderJoins; SemiJoin; range-partitioning; MergePath; P12
 
 ## Известные проблемы (сессия 2026-11-04/05, после MVP+polish)
