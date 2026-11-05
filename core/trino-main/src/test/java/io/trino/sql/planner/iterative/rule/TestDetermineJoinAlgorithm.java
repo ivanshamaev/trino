@@ -79,6 +79,37 @@ public class TestDetermineJoinAlgorithm
     }
 
     @Test
+    public void testCostBasedDoesNotFireForSmallBuild()
+    {
+        // COST_BASED with small stats (default test stats = 0 rows/0 bytes) should NOT
+        // fire: build side is tiny, hash join is cheaper (N1 prohibition)
+        assertRule()
+                .setSystemProperty(PREFER_MERGE_JOIN, "COST_BASED")
+                .on(p -> p.join(
+                        INNER,
+                        PARTITIONED,
+                        p.values(p.symbol("L1", BIGINT)),
+                        p.values(p.symbol("R1", BIGINT)),
+                        equi(p)))
+                .doesNotFire();
+    }
+
+    @Test
+    public void testForceFiresRegardlessOfCost()
+    {
+        // FORCE fires for any eligible join regardless of stats
+        assertRule()
+                .setSystemProperty(PREFER_MERGE_JOIN, "FORCE")
+                .on(p -> p.join(
+                        INNER,
+                        PARTITIONED,
+                        p.values(p.symbol("L1", BIGINT)),
+                        p.values(p.symbol("R1", BIGINT)),
+                        equi(p)))
+                .matches(mergeJoinWithNotNullFilters());
+    }
+
+    @Test
     public void testDoesNotFireWhenDisabled()
     {
         assertRule()

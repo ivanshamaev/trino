@@ -46,6 +46,10 @@ public class OptimizerConfig
     private DataSize joinMaxBroadcastTableSize = DataSize.of(100, MEGABYTE);
     private JoinDistributionType joinDistributionType = JoinDistributionType.AUTOMATIC;
     private MergeJoinStrategy mergeJoinStrategy = MergeJoinStrategy.OFF;
+    private double mergeJoinMemoryPressureThreshold = 0.7;
+    private double mergeJoinSmallBuildThreshold = 0.3;
+    private double mergeJoinBigSideThreshold = 1.0;
+    private double mergeJoinCostMargin = 0.1;
     private double joinMultiClauseIndependenceFactor = 0.25;
 
     private JoinReorderingStrategy joinReorderingStrategy = JoinReorderingStrategy.AUTOMATIC;
@@ -132,6 +136,7 @@ public class OptimizerConfig
     {
         OFF,
         PREFER,
+        COST_BASED,
         FORCE,
     }
 
@@ -208,6 +213,58 @@ public class OptimizerConfig
     public OptimizerConfig setMergeJoinStrategy(MergeJoinStrategy mergeJoinStrategy)
     {
         this.mergeJoinStrategy = requireNonNull(mergeJoinStrategy, "mergeJoinStrategy is null");
+        return this;
+    }
+
+    public double getMergeJoinMemoryPressureThreshold()
+    {
+        return mergeJoinMemoryPressureThreshold;
+    }
+
+    @Config("optimizer.merge-join-memory-pressure-threshold")
+    @ConfigDescription("Fraction of task memory above which the merge join is preferred over hash join (COST_BASED mode)")
+    public OptimizerConfig setMergeJoinMemoryPressureThreshold(double threshold)
+    {
+        this.mergeJoinMemoryPressureThreshold = threshold;
+        return this;
+    }
+
+    public double getMergeJoinSmallBuildThreshold()
+    {
+        return mergeJoinSmallBuildThreshold;
+    }
+
+    @Config("optimizer.merge-join-small-build-threshold")
+    @ConfigDescription("Fraction of task memory below which hash join is always preferred (COST_BASED mode)")
+    public OptimizerConfig setMergeJoinSmallBuildThreshold(double threshold)
+    {
+        this.mergeJoinSmallBuildThreshold = threshold;
+        return this;
+    }
+
+    public double getMergeJoinBigSideThreshold()
+    {
+        return mergeJoinBigSideThreshold;
+    }
+
+    @Config("optimizer.merge-join-big-side-threshold")
+    @ConfigDescription("Fraction of task memory above which both sides are considered big (COST_BASED mode)")
+    public OptimizerConfig setMergeJoinBigSideThreshold(double threshold)
+    {
+        this.mergeJoinBigSideThreshold = threshold;
+        return this;
+    }
+
+    public double getMergeJoinCostMargin()
+    {
+        return mergeJoinCostMargin;
+    }
+
+    @Config("optimizer.merge-join-cost-margin")
+    @ConfigDescription("Minimum cost advantage fraction required to select merge join (COST_BASED mode)")
+    public OptimizerConfig setMergeJoinCostMargin(double margin)
+    {
+        this.mergeJoinCostMargin = margin;
         return this;
     }
 
