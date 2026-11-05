@@ -36,6 +36,7 @@ import io.trino.sql.planner.assertions.PlanMatchPattern;
 import io.trino.sql.planner.iterative.rule.test.PlanBuilder;
 import io.trino.sql.planner.iterative.rule.test.RuleBuilder;
 import io.trino.sql.planner.iterative.rule.test.RuleTester;
+import io.trino.sql.planner.plan.FilterNode;
 import io.trino.sql.planner.plan.JoinNode;
 import io.trino.sql.planner.plan.JoinNode.EquiJoinClause;
 import io.trino.sql.planner.plan.JoinNode.JoinAlgorithm;
@@ -102,7 +103,7 @@ public class TestDetermineJoinAlgorithm
                         p.values(p.symbol("L1", BIGINT)),
                         p.values(p.symbol("R1", BIGINT)),
                         equi(p)))
-                .matches(mergeJoinAlgorithm());
+                .matches(mergeJoinWithNotNullFilters());
     }
 
     @Test
@@ -193,7 +194,7 @@ public class TestDetermineJoinAlgorithm
 
     private RuleBuilder assertRule()
     {
-        return tester.assertThat(new DetermineJoinAlgorithm());
+        return tester.assertThat(new DetermineJoinAlgorithm(tester.getPlannerContext()));
     }
 
     private static EquiJoinClause equi(PlanBuilder p)
@@ -206,6 +207,27 @@ public class TestDetermineJoinAlgorithm
         return node(JoinNode.class,
                 values(aliasToIndex(ImmutableList.of("L1"))),
                 values(aliasToIndex(ImmutableList.of("R1"))))
+                .with(new Matcher()
+                {
+                    @Override
+                    public boolean shapeMatches(PlanNode planNode)
+                    {
+                        return planNode instanceof JoinNode joinNode && joinNode.getAlgorithm().orElse(null) == JoinAlgorithm.MERGE;
+                    }
+
+                    @Override
+                    public MatchResult detailMatches(PlanNode planNode, MatchContext context)
+                    {
+                        return MatchResult.match();
+                    }
+                });
+    }
+
+    private static PlanMatchPattern mergeJoinWithNotNullFilters()
+    {
+        return node(JoinNode.class,
+                node(FilterNode.class, values(aliasToIndex(ImmutableList.of("L1")))),
+                node(FilterNode.class, values(aliasToIndex(ImmutableList.of("R1")))))
                 .with(new Matcher()
                 {
                     @Override

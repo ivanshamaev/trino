@@ -26,6 +26,7 @@
  */
 package io.trino.sql.planner.iterative.rule;
 
+import com.google.common.collect.ImmutableList;
 import io.trino.Session;
 import io.trino.SystemSessionProperties;
 import io.trino.matching.Captures;
@@ -34,17 +35,29 @@ import io.trino.operator.RetryPolicy;
 import io.trino.spi.type.DoubleType;
 import io.trino.spi.type.RealType;
 import io.trino.spi.type.Type;
+import io.trino.sql.PlannerContext;
+import io.trino.sql.ir.Expression;
+import io.trino.sql.ir.IrExpressions;
+import io.trino.sql.ir.IsNull;
 import io.trino.sql.planner.OptimizerConfig;
 import io.trino.sql.planner.Symbol;
 import io.trino.sql.planner.iterative.Rule;
+import io.trino.sql.planner.plan.FilterNode;
 import io.trino.sql.planner.plan.JoinNode;
 import io.trino.sql.planner.plan.JoinNode.DistributionType;
 import io.trino.sql.planner.plan.JoinNode.EquiJoinClause;
 import io.trino.sql.planner.plan.JoinNode.JoinAlgorithm;
 import io.trino.sql.planner.plan.JoinType;
+import io.trino.sql.planner.plan.PlanNode;
 
+import java.util.List;
+
+import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.trino.SystemSessionProperties.getCharVarcharCoercion;
 import static io.trino.SystemSessionProperties.getRetryPolicy;
+import static io.trino.sql.ir.IrUtils.combineConjuncts;
 import static io.trino.sql.planner.plan.Patterns.join;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Marks eligible equi-joins with {@link JoinAlgorithm#MERGE} when the session enables
@@ -74,6 +87,13 @@ public class DetermineJoinAlgorithm
             .matching(joinNode -> joinNode.getDistributionType().isPresent())
             .matching(joinNode -> joinNode.getAlgorithm().isEmpty());
 
+    private final PlannerContext plannerContext;
+
+    public DetermineJoinAlgorithm(PlannerContext plannerContext)
+    {
+        this.plannerContext = requireNonNull(plannerContext, "plannerContext is null");
+    }
+
     @Override
     public Pattern<JoinNode> getPattern()
     {
@@ -91,7 +111,50 @@ public class DetermineJoinAlgorithm
         if (!isEligible(joinNode, session)) {
             return Result.empty();
         }
+
+        // For INNER joins, equi-join keys can never be NULL (NULL = NULL is false), so
+        // adding IS NOT NULL filters prunes the NULL tail before the shuffle (C9 risk)
+        if (joinNode.getType() == JoinType.INNER) {
+            joinNode = addNotNullFilters(joinNode, session, context);
+        }
+
         return Result.ofPlanNode(joinNode.withAlgorithm(JoinAlgorithm.MERGE));
+    }
+
+    private JoinNode addNotNullFilters(JoinNode joinNode, Session session, Context context)
+    {
+        PlanNode left = joinNode.getLeft();
+        PlanNode right = joinNode.getRight();
+
+        List<Expression> leftPredicates = joinNode.getCriteria().stream()
+                .map(JoinNode.EquiJoinClause::getLeft)
+                .distinct()
+                .map(symbol -> isNotNull(symbol, session))
+                .collect(toImmutableList());
+        List<Expression> rightPredicates = joinNode.getCriteria().stream()
+                .map(JoinNode.EquiJoinClause::getRight)
+                .distinct()
+                .map(symbol -> isNotNull(symbol, session))
+                .collect(toImmutableList());
+
+        left = new FilterNode(
+                context.getIdAllocator().getNextId(),
+                left,
+                combineConjuncts(leftPredicates));
+        right = new FilterNode(
+                context.getIdAllocator().getNextId(),
+                right,
+                combineConjuncts(rightPredicates));
+
+        return (JoinNode) joinNode.replaceChildren(ImmutableList.of(left, right));
+    }
+
+    private Expression isNotNull(Symbol symbol, Session session)
+    {
+        return IrExpressions.not(
+                plannerContext.getMetadata(),
+                getCharVarcharCoercion(session),
+                new IsNull(symbol.toSymbolReference()));
     }
 
     private static boolean isEligible(JoinNode joinNode, Session session)
