@@ -40,7 +40,11 @@
 - [x] 2.6 outputSingleMatch (первый выживший матч на probe-строку)
 - [x] 2.7 компаратор: BlockPositionComparison по каналам (Block API: append(Block,pos),
       Type.getLong/getDouble — SPI без прямых getters)
-- [~] 2.8 статистика: JoinOperatorType.mergeJoin(...) — при LEP-встройке (stage 4)
+- [x] 2.8 статистика: `JoinOperatorType.mergeJoin(...)` — ✅ реализовано (fd5886e7b51):
+      фабрика `mergeJoin(JoinType, outputSingleMatch)` в JoinOperatorType (waitForBuild=true);
+      `getOperatorType()` → `INNERMergeJoinOperator` / `PROBE_OUTERMergeJoinOperator` (WebUI);
+      `MergeJoinStatistics` — probeRows/outputRows/buildRows/keyGroups (AtomicLong);
+      `getOperatorInfo()` overridden в MergeJoinOperator
 - [x] 2.9 `TestMergeJoinOperator` — **11/11 зелёные** (INNER/LEFT, дубли, NULL 0..100%+хвост,
       NaN, VARCHAR/composite, residual INNER/LEFT, singleMatch, пустые стороны)
 - [x] 2.10 finish()/needsInput идемпотентны (проверены тестами через adapter)
