@@ -41,6 +41,7 @@ import io.trino.sql.ir.Reference;
 import io.trino.sql.planner.NodePartitioningManager;
 import io.trino.sql.planner.OrderingScheme;
 import io.trino.sql.planner.Partitioning;
+import io.trino.sql.planner.Partitioning.ArgumentBinding;
 import io.trino.sql.planner.PartitioningHandle;
 import io.trino.sql.planner.PartitioningScheme;
 import io.trino.sql.planner.PlanNodeIdAllocator;
@@ -139,6 +140,7 @@ import static io.trino.sql.planner.plan.ExchangeNode.Type.GATHER;
 import static io.trino.sql.planner.plan.ExchangeNode.Type.REPARTITION;
 import static io.trino.sql.planner.plan.ExchangeNode.gatheringExchange;
 import static io.trino.sql.planner.plan.ExchangeNode.mergingExchange;
+import static io.trino.sql.planner.plan.ExchangeNode.mergingPartitionedExchange;
 import static io.trino.sql.planner.plan.ExchangeNode.partitionedExchange;
 import static io.trino.sql.planner.plan.ExchangeNode.replicatedExchange;
 import static io.trino.sql.planner.plan.ExchangeNode.roundRobinExchange;
@@ -1042,7 +1044,36 @@ public class AddExchanges
             Map<Symbol, SortOrder> orderings = keySymbols.stream()
                     .collect(toImmutableMap(symbol -> symbol, _ -> SortOrder.ASC_NULLS_LAST));
             OrderingScheme orderingScheme = new OrderingScheme(keySymbols, orderings);
-            PlanNode sort = new SortNode(idAllocator.getNextId(), side.getNode(), orderingScheme, false);
+
+            PlanNode node = side.getNode();
+
+            // When the side has a REMOTE REPARTITION exchange, replace it with a merging
+            // partitioned exchange: the sort runs as a partial sort on the source side,
+            // and the exchange preserves per-partition ordering, eliminating the need
+            // for a separate SortNode in the join stage
+            if (node instanceof ExchangeNode exchange
+                    && exchange.getScope() == REMOTE
+                    && exchange.getType() == ExchangeNode.Type.REPARTITION
+                    && exchange.getOrderingScheme().isEmpty()) {
+                PlanNode source = exchange.getSources().get(0);
+                // partial sort on the source side (distributed sort handles parallelism)
+                SortNode partialSort = new SortNode(idAllocator.getNextId(), source, orderingScheme, true);
+                List<Symbol> partitioningSymbols = exchange.getPartitioningScheme().getPartitioning().getArguments().stream()
+                        .map(ArgumentBinding::getColumn)
+                        .collect(toImmutableList());
+                ExchangeNode mergingExchange = ExchangeNode.mergingPartitionedExchange(
+                        exchange.getId(),
+                        partialSort,
+                        partitioningSymbols,
+                        orderingScheme);
+                ActualProperties properties = ActualProperties.builderFrom(side.getProperties())
+                        .local(orderingScheme.toLocalProperties())
+                        .build();
+                return new PlanWithProperties(mergingExchange, properties);
+            }
+
+            // Fallback: SortNode after the exchange (inside the join stage)
+            PlanNode sort = new SortNode(idAllocator.getNextId(), node, orderingScheme, false);
             ActualProperties properties = ActualProperties.builderFrom(side.getProperties())
                     .local(orderingScheme.toLocalProperties())
                     .build();

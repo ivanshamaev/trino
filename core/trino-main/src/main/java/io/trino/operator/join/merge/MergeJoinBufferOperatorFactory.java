@@ -34,9 +34,11 @@ import io.trino.operator.OperatorFactory;
 import io.trino.spi.Page;
 import io.trino.spi.connector.ConnectorSession;
 import io.trino.spi.type.Type;
+import io.trino.spiller.SpillerFactory;
 import io.trino.sql.planner.plan.PlanNodeId;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
@@ -54,6 +56,7 @@ public class MergeJoinBufferOperatorFactory
     private final MergeJoinBridge bridge;
     private final List<Type> types;
     private final ConnectorSession session;
+    private final Optional<SpillerFactory> spillerFactory;
 
     private boolean closed;
 
@@ -64,11 +67,23 @@ public class MergeJoinBufferOperatorFactory
             List<Type> types,
             ConnectorSession session)
     {
+        this(operatorId, planNodeId, bridge, types, session, Optional.empty());
+    }
+
+    public MergeJoinBufferOperatorFactory(
+            int operatorId,
+            PlanNodeId planNodeId,
+            MergeJoinBridge bridge,
+            List<Type> types,
+            ConnectorSession session,
+            Optional<SpillerFactory> spillerFactory)
+    {
         this.operatorId = operatorId;
         this.planNodeId = requireNonNull(planNodeId, "planNodeId is null");
         this.bridge = requireNonNull(bridge, "bridge is null");
         this.types = requireNonNull(types, "types is null");
         this.session = requireNonNull(session, "session is null");
+        this.spillerFactory = requireNonNull(spillerFactory, "spillerFactory is null");
     }
 
     @Override

@@ -2943,12 +2943,15 @@ public class LocalExecutionPlanner
                         buildSource);
             }
 
+            // spill support: wire the spiller factory for bounded-memory operation on giant groups
+            boolean buildSpillEnabled = isSpillEnabled(session) && node.isSpillable().orElse(true);
             OperatorFactory bufferOperatorFactory = new MergeJoinBufferOperatorFactory(
                     buildContext.getNextOperatorId(),
                     node.getId(),
                     bridge,
                     buildTypes,
-                    session.toConnectorSession());
+                    session.toConnectorSession(),
+                    buildSpillEnabled ? Optional.of(spillerFactory) : Optional.empty());
             context.addDriverFactory(
                     false,
                     new PhysicalOperation(bufferOperatorFactory, ImmutableMap.of(), buildSource),
