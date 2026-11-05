@@ -27,6 +27,7 @@
 package io.trino.operator.join.merge;
 
 import com.google.common.collect.ImmutableList;
+import io.trino.operator.JoinOperatorType;
 import io.trino.operator.OperatorContext;
 import io.trino.operator.WorkProcessor;
 import io.trino.operator.WorkProcessorOperator;
@@ -76,6 +77,7 @@ public class MergeJoinOperatorFactory
     private final JoinBridgeManager<MergeJoinBridge> bridgeManager;
     private final JoinType joinType;
     private final boolean outputSingleMatch;
+    private final JoinOperatorType joinOperatorType;
     private final List<Type> probeTypes;
     private final List<Type> buildTypes;
     private final List<Integer> probeKeyChannels;
@@ -112,6 +114,7 @@ public class MergeJoinOperatorFactory
                 "merge join supports INNER, LEFT, RIGHT and FULL joins only, got %s",
                 joinType);
         this.outputSingleMatch = outputSingleMatch;
+        this.joinOperatorType = JoinOperatorType.mergeJoin(joinType, outputSingleMatch);
         this.probeTypes = ImmutableList.copyOf(requireNonNull(probeTypes, "probeTypes is null"));
         this.buildTypes = ImmutableList.copyOf(requireNonNull(buildTypes, "buildTypes is null"));
         this.probeKeyChannels = ImmutableList.copyOf(requireNonNull(probeKeyChannels, "probeKeyChannels is null"));
@@ -147,7 +150,7 @@ public class MergeJoinOperatorFactory
     @Override
     public String getOperatorType()
     {
-        return "MergeJoinOperator";
+        return joinOperatorType.getType() + "MergeJoinOperator";
     }
 
     @Override
@@ -182,10 +185,12 @@ public class MergeJoinOperatorFactory
     {
         private final WorkProcessor<Page> pages;
         private final Runnable closeCallback;
+        private final MergeJoinStatistics statistics;
 
         private MergeJoinOperator(OperatorContext operatorContext, WorkProcessor<Page> sourcePages, MergeJoinOperatorFactory factory, Runnable closeCallback)
         {
-            this.pages = sourcePages.transform(new MergeJoinTransformation(operatorContext, factory));
+            this.statistics = new MergeJoinStatistics(factory.joinOperatorType);
+            this.pages = sourcePages.transform(new MergeJoinTransformation(operatorContext, factory, statistics));
             this.closeCallback = requireNonNull(closeCallback, "closeCallback is null");
         }
 
@@ -196,9 +201,84 @@ public class MergeJoinOperatorFactory
         }
 
         @Override
+        public java.util.Optional<io.trino.operator.OperatorInfo> getOperatorInfo()
+        {
+            return java.util.Optional.of(statistics);
+        }
+
+        @Override
         public void close()
         {
             closeCallback.run();
+        }
+    }
+
+    /**
+     * Basic merge join statistics for the WebUI. Tracks probe rows, output rows,
+     * build rows, and the number of distinct key groups encountered.
+     */
+    public static class MergeJoinStatistics
+            implements io.trino.operator.OperatorInfo
+    {
+        private final JoinOperatorType joinOperatorType;
+        private final java.util.concurrent.atomic.AtomicLong probeRows = new java.util.concurrent.atomic.AtomicLong();
+        private final java.util.concurrent.atomic.AtomicLong outputRows = new java.util.concurrent.atomic.AtomicLong();
+        private final java.util.concurrent.atomic.AtomicLong buildRows = new java.util.concurrent.atomic.AtomicLong();
+        private final java.util.concurrent.atomic.AtomicLong keyGroups = new java.util.concurrent.atomic.AtomicLong();
+
+        private MergeJoinStatistics(JoinOperatorType joinOperatorType)
+        {
+            this.joinOperatorType = requireNonNull(joinOperatorType, "joinOperatorType is null");
+        }
+
+        void recordProbeRow()
+        {
+            probeRows.incrementAndGet();
+        }
+
+        void recordOutputRow()
+        {
+            outputRows.incrementAndGet();
+        }
+
+        void recordBuildRows(long count)
+        {
+            buildRows.addAndGet(count);
+        }
+
+        void recordKeyGroup()
+        {
+            keyGroups.incrementAndGet();
+        }
+
+        public long getProbeRows()
+        {
+            return probeRows.get();
+        }
+
+        public long getOutputRows()
+        {
+            return outputRows.get();
+        }
+
+        public long getBuildRows()
+        {
+            return buildRows.get();
+        }
+
+        public long getKeyGroups()
+        {
+            return keyGroups.get();
+        }
+
+        @Override
+        public String toString()
+        {
+            return "MergeJoinStatistics{joinType=" + joinOperatorType.getType()
+                    + ", probeRows=" + probeRows
+                    + ", outputRows=" + outputRows
+                    + ", buildRows=" + buildRows
+                    + ", keyGroups=" + keyGroups + "}";
         }
     }
 
@@ -206,6 +286,7 @@ public class MergeJoinOperatorFactory
             implements WorkProcessor.Transformation<Page, Page>
     {
         private final MergeJoinOperatorFactory factory;
+        private final MergeJoinStatistics statistics;
         private final PageBuilder pageBuilder;
         private final int outputChannelCount;
 
@@ -234,9 +315,10 @@ public class MergeJoinOperatorFactory
         // group discovery state: false when the current probe row's group must be (re)loaded
         private boolean groupLoaded;
 
-        private MergeJoinTransformation(OperatorContext operatorContext, MergeJoinOperatorFactory factory)
+        private MergeJoinTransformation(OperatorContext operatorContext, MergeJoinOperatorFactory factory, MergeJoinStatistics statistics)
         {
             this.factory = requireNonNull(factory, "factory is null");
+            this.statistics = requireNonNull(statistics, "statistics is null");
             requireNonNull(operatorContext, "operatorContext is null");
 
             ImmutableList.Builder<Type> outputTypes = ImmutableList.builder();
@@ -332,6 +414,7 @@ public class MergeJoinOperatorFactory
                 offset += buildPages.get(i).getPositionCount();
             }
             this.totalBuildRows = offset;
+            statistics.recordBuildRows(offset);
             this.drainPage = 0;
             if (factory.joinType == JoinType.RIGHT || factory.joinType == JoinType.FULL) {
                 this.buildRowMatched = new boolean[offset];
@@ -350,6 +433,7 @@ public class MergeJoinOperatorFactory
 
         private void processProbeRow()
         {
+            statistics.recordProbeRow();
             if (probeKeys.isUnmatchable(probePage, probePos)) {
                 // NULL or NaN keys never match: skip for INNER, null-pad for LEFT
                 if (factory.joinType == JoinType.LEFT || factory.joinType == JoinType.FULL) {

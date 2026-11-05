@@ -57,6 +57,15 @@ public class JoinOperatorType
         return new JoinOperatorType(FULL_OUTER, false, false);
     }
 
+    /**
+     * Factory for merge join operators: the merge join always waits for the build side
+     * to publish its sorted stream through the bridge before processing probe rows.
+     */
+    public static JoinOperatorType mergeJoin(io.trino.sql.planner.plan.JoinType joinNodeType, boolean outputSingleMatch)
+    {
+        return ofJoinNodeType(joinNodeType, outputSingleMatch, true);
+    }
+
     private JoinOperatorType(io.trino.operator.join.JoinType type, boolean outputSingleMatch, boolean waitForBuild)
     {
         this.type = requireNonNull(type, "type is null");
