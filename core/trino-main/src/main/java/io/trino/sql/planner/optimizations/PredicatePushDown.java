@@ -1115,7 +1115,7 @@ public class PredicatePushDown
                         node.getFilter(),
                         node.getDistributionType(),
                         node.isSpillable(),
-                        Optional.empty(),
+                        node.getAlgorithm(), // INNER -> LEFT/RIGHT keeps the marker (both supported)
                         node.getDynamicFilters(),
                         node.getReorderJoinStatsAndCost());
             }
