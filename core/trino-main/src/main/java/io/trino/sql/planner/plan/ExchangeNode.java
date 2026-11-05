@@ -103,11 +103,16 @@ public class ExchangeNode
 
         orderingScheme.ifPresent(ordering -> {
             PartitioningHandle partitioningHandle = partitioningScheme.getPartitioning().getHandle();
-            checkArgument(scope != REMOTE || partitioningHandle.equals(SINGLE_DISTRIBUTION), "remote merging exchange requires single distribution");
-            checkArgument(scope != LOCAL || partitioningHandle.equals(FIXED_PASSTHROUGH_DISTRIBUTION), "local merging exchange requires passthrough distribution");
+            if (type == Type.GATHER) {
+                // GATHER merging exchange: single consumer receives a globally sorted stream
+                checkArgument(scope != REMOTE || partitioningHandle.equals(SINGLE_DISTRIBUTION), "remote GATHER merging exchange requires single distribution");
+                checkArgument(scope != LOCAL || partitioningHandle.equals(FIXED_PASSTHROUGH_DISTRIBUTION), "local merging exchange requires passthrough distribution");
+                checkArgument(inputs.size() == 1, "Merging exchange must have single input");
+            }
+            // REPARTITION exchange with ordering: data is hash-partitioned and each partition
+            // receives a sorted stream (used by merge join). The ordering is per-partition.
             checkArgument(partitioningScheme.getOutputLayout().containsAll(ordering.orderBy()), "Partitioning scheme does not supply all required ordering symbols");
-            checkArgument(type == Type.GATHER, "Merging exchange must be of GATHER type");
-            checkArgument(inputs.size() == 1, "Merging exchange must have single input");
+            checkArgument(type == Type.GATHER || type == Type.REPARTITION, "Ordered exchange must be of GATHER or REPARTITION type");
         });
         this.type = type;
         this.sources = sources;
@@ -225,6 +230,27 @@ public class ExchangeNode
                 Type.GATHER,
                 scope,
                 new PartitioningScheme(Partitioning.create(partitioningHandle, ImmutableList.of()), child.getOutputSymbols()),
+                ImmutableList.of(child),
+                ImmutableList.of(child.getOutputSymbols()),
+                Optional.of(orderingScheme));
+    }
+
+    /**
+     * Creates a REMOTE REPARTITION exchange that preserves ordering within each partition.
+     * Used by merge join: the source stage sorts data by the join key, and this exchange
+     * hash-partitions it while maintaining the per-partition ordering.
+     */
+    public static ExchangeNode mergingPartitionedExchange(
+            PlanNodeId id,
+            PlanNode child,
+            List<Symbol> partitioningSymbols,
+            OrderingScheme orderingScheme)
+    {
+        return new ExchangeNode(
+                id,
+                Type.REPARTITION,
+                REMOTE,
+                new PartitioningScheme(Partitioning.create(FIXED_HASH_DISTRIBUTION, partitioningSymbols), child.getOutputSymbols()),
                 ImmutableList.of(child),
                 ImmutableList.of(child.getOutputSymbols()),
                 Optional.of(orderingScheme));
