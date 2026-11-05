@@ -171,11 +171,8 @@ public class DetermineJoinAlgorithm
         if (joinNode.getDistributionType().orElse(DistributionType.REPLICATED) != DistributionType.PARTITIONED) {
             return false;
         }
-        if (!joinNode.getDynamicFilters().isEmpty()) {
-            // merge join does not collect dynamic filters yet; a registered but never
-            // completed local dynamic filter would block the probe side scan forever
-            return false;
-        }
+        // Dynamic filters are supported: the merge join build side collects them via the
+        // DynamicFilterSourceOperator wrapper in LocalExecutionPlanner.createMergeJoin (INNER only)
         if (getRetryPolicy(session) != RetryPolicy.NONE) {
             return false;
         }

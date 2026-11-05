@@ -2560,7 +2560,7 @@ public class LocalExecutionPlanner
 
             if (node.getAlgorithm().isPresent()) {
                 checkState(node.getAlgorithm().get() == JoinNode.JoinAlgorithm.MERGE, "unknown join algorithm: %s", node.getAlgorithm().get());
-                return createMergeJoin(node, node.getLeft(), leftSymbols, node.getRight(), rightSymbols, context);
+                return createMergeJoin(node, node.getLeft(), leftSymbols, node.getRight(), rightSymbols, localDynamicFilters, context);
             }
 
             return switch (node.getType()) {
@@ -2891,6 +2891,7 @@ public class LocalExecutionPlanner
                 List<Symbol> probeSymbols,
                 PlanNode buildNode,
                 List<Symbol> buildSymbols,
+                Set<DynamicFilterId> localDynamicFilters,
                 LocalExecutionPlanContext context)
         {
             // Plan probe
@@ -2915,18 +2916,32 @@ public class LocalExecutionPlanner
             List<Type> buildOutputTypes = buildOutputChannels.stream()
                     .map(buildSource.getTypes()::get)
                     .collect(toImmutableList());
+            Map<Symbol, Integer> buildLayout = buildSource.getLayout();
 
             Optional<JoinFilterFunctionFactory> filterFunctionFactory = node.getFilter()
                     .map(filterExpression -> compileJoinFilterFunction(
                             filterExpression,
                             probeSource.getLayout(),
-                            buildSource.getLayout()));
+                            buildLayout));
 
             MergeJoinBridge bridge = new MergeJoinBridge(
                     buildTypes,
                     buildJoinChannels,
                     buildJoinChannels.stream().map(_ -> SortOrder.ASC_NULLS_LAST).collect(toImmutableList()));
             JoinBridgeManager<MergeJoinBridge> bridgeManager = new JoinBridgeManager<>(node.getType() == RIGHT || node.getType() == FULL, bridge, buildOutputTypes);
+
+            // dynamic filtering: collect domains on the build side (INNER only, same as hash join)
+            boolean partitioned = !isBuildSideReplicated(node);
+            Optional<LocalDynamicFilterConsumer> localDynamicFilter = createDynamicFilter(buildSource, node, context, localDynamicFilters, partitioned);
+            if (localDynamicFilter.isPresent() && node.getType() == INNER) {
+                buildSource = createDynamicFilterSourceOperatorFactory(
+                        buildContext.getNextOperatorId(),
+                        localDynamicFilter.get(),
+                        node,
+                        partitioned,
+                        buildContext.getDriverInstanceCount().orElse(1) == 1,
+                        buildSource);
+            }
 
             OperatorFactory bufferOperatorFactory = new MergeJoinBufferOperatorFactory(
                     buildContext.getNextOperatorId(),
