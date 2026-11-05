@@ -2926,7 +2926,7 @@ public class LocalExecutionPlanner
                     buildTypes,
                     buildJoinChannels,
                     buildJoinChannels.stream().map(_ -> SortOrder.ASC_NULLS_LAST).collect(toImmutableList()));
-            JoinBridgeManager<MergeJoinBridge> bridgeManager = new JoinBridgeManager<>(false, bridge, buildOutputTypes);
+            JoinBridgeManager<MergeJoinBridge> bridgeManager = new JoinBridgeManager<>(node.getType() == RIGHT || node.getType() == FULL, bridge, buildOutputTypes);
 
             OperatorFactory bufferOperatorFactory = new MergeJoinBufferOperatorFactory(
                     buildContext.getNextOperatorId(),

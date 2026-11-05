@@ -379,6 +379,108 @@ public class TestMergeJoinOperator
         assertMergeJoin(JoinType.LEFT, false, build, probe, ImmutableList.of(DOUBLE, BIGINT), expectedLeft);
     }
 
+    @Test
+    public void testFullOuterJoin()
+    {
+        List<Page> build = rowPagesBuilder(BIGINT, BIGINT)
+                .row(2L, 20L)
+                .row(4L, 40L)
+                .pageBreak()
+                .row(4L, 41L)
+                .row(6L, 60L)
+                .build();
+
+        List<Page> probe = rowPagesBuilder(BIGINT, BIGINT)
+                .row(1L, 100L)   // no build match -> padded probe row
+                .row(2L, 200L)   // single match
+                .row(3L, 300L)   // no build match -> padded probe row
+                .row(4L, 400L)   // two matches
+                .build();
+
+        MaterializedResult expected = MaterializedResult.resultBuilder(BIGINT, BIGINT, BIGINT, BIGINT)
+                .row(1L, 100L, null, null)
+                .row(2L, 200L, 2L, 20L)
+                .row(3L, 300L, null, null)
+                .row(4L, 400L, 4L, 40L)
+                .row(4L, 400L, 4L, 41L)
+                .row(null, null, 6L, 60L)   // unmatched build row
+                .build();
+
+        assertMergeJoin(JoinType.FULL, false, build, probe, ImmutableList.of(BIGINT, BIGINT), expected);
+    }
+
+    @Test
+    public void testFullOuterJoinWithNullKeys()
+    {
+        List<Page> build = rowPagesBuilder(BIGINT, BIGINT)
+                .row(2L, 20L)
+                .row(null, 21L)   // unmatchable build row -> drained for FULL
+                .build();
+
+        List<Page> probe = rowPagesBuilder(BIGINT, BIGINT)
+                .row(1L, 100L)     // no match -> padded probe
+                .row(2L, 200L)     // match
+                .row(null, 201L)   // unmatchable probe -> padded probe
+                .build();
+
+        MaterializedResult expected = MaterializedResult.resultBuilder(BIGINT, BIGINT, BIGINT, BIGINT)
+                .row(1L, 100L, null, null)
+                .row(2L, 200L, 2L, 20L)
+                .row(null, 201L, null, null)
+                .row(null, null, null, 21L)   // unmatchable build row drained
+                .build();
+
+        assertMergeJoin(JoinType.FULL, false, build, probe, ImmutableList.of(BIGINT, BIGINT), expected);
+    }
+
+    @Test
+    public void testRightOuterJoin()
+    {
+        List<Page> build = rowPagesBuilder(BIGINT, BIGINT)
+                .row(2L, 20L)
+                .row(4L, 40L)
+                .row(6L, 60L)
+                .build();
+
+        List<Page> probe = rowPagesBuilder(BIGINT, BIGINT)
+                .row(2L, 200L)     // match
+                .row(3L, 300L)     // no build match (not emitted for RIGHT)
+                .row(4L, 400L)     // match
+                .build();
+
+        MaterializedResult expected = MaterializedResult.resultBuilder(BIGINT, BIGINT, BIGINT, BIGINT)
+                .row(2L, 200L, 2L, 20L)
+                .row(4L, 400L, 4L, 40L)
+                .row(null, null, 6L, 60L)   // unmatched build row
+                .build();
+
+        assertMergeJoin(JoinType.RIGHT, false, build, probe, ImmutableList.of(BIGINT, BIGINT), expected);
+    }
+
+    @Test
+    public void testFullOuterJoinWithResidualFilter()
+    {
+        List<Page> build = rowPagesBuilder(BIGINT, BIGINT)
+                .row(1L, 10L)   // survives filter (even)
+                .row(1L, 11L)   // filtered out -> unmatched for FULL
+                .row(2L, 21L)   // filtered out -> unmatched for FULL
+                .build();
+
+        List<Page> probe = rowPagesBuilder(BIGINT, BIGINT)
+                .row(1L, 100L)
+                .build();
+
+        JoinFilterFunctionFactory filterFactory = stubFilter((buildPage, buildPos, _, _) -> BIGINT.getLong(buildPage.getBlock(1), buildPos) % 2 == 0);
+
+        MaterializedResult expected = MaterializedResult.resultBuilder(BIGINT, BIGINT, BIGINT, BIGINT)
+                .row(1L, 100L, 1L, 10L)
+                .row(null, null, 1L, 11L)   // filtered out build row
+                .row(null, null, 2L, 21L)   // filtered out build row
+                .build();
+
+        assertMergeJoin(JoinType.FULL, false, build, probe, ImmutableList.of(BIGINT, BIGINT), expected, Optional.of(filterFactory));
+    }
+
     private void assertMergeJoin(
             JoinType joinType,
             boolean outputSingleMatch,

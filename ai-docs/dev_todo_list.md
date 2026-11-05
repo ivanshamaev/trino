@@ -103,28 +103,19 @@
 
 ## Известные проблемы (сессия 2026-11-04/05, после MVP+polish)
 
-- **KP-1 (главная)**: livelock merge-стадии в локальном раннере. Диагноз уточнён (2026-11-05):
-  (1) **закрыта реальная утечка** — probe-фабрика не участвовала в JoinBridgeManager-lifecycle
-  (`probeOperatorFactoryClosed/Created/Closed` не вызывались) → мост с build-страницами никогда не
-  уничтожался (память текла на каждый merge-запрос). Фикс: полный lifecycle в
-  MergeJoinOperatorFactory (ctor-increment / create→probeOperatorCreated / close→
-  probeOperatorFactoryClosed / оператор-close→probeOperatorClosed), ручной инкремент из LEP убран —
-  зеркало hash-join.
-  (2) livelock остался: jstack — несколько SplitRunner'ов жгут CPU в
-  `LocalExchangeSource.waitForReading` (через `LocalExchangeSourceOperator.isBlocked`) + один в
-  `Driver.handleMemoryRevoke` — производители сортировок/local-exchange не завершают exchange,
-  пока join-стадия ждёт. Следующий шаг: аудит распространения blocked-future через
-  WorkProcessorOperatorAdapter (blocked на bridge при незавершённом pageBuffer) и семантики
-  waitForReading; воспроизвести минимальным operator-тестом с adapter+exchange.
+- **KP-1 (главная)**: ✅ **ЗАКРЫТА** (2026-11-05): корневая причина — `AddLocalExchanges.visitJoin`
+  планировал merge-join пайплайны с default parallelism → N дублированных probe-пайплайнов делили
+  один мост, ROUND_ROBIN резал отсортированный поток → livelock + потерянные строки. Фикс:
+  MERGE-ветка в visitJoin планирует обе стороны `singleStream()` (befa3f855).
+  Дополнительно закрыта утечка (lifecycle probe-фабрики). Все e2e 7/7 зелёные.
 - **KP-2**: I13-пропагация маркера — найдены и закрыты РЕАЛЬНЫЕ дропперы (живая иллюстрация риска):
   `UnaliasSymbolReferences:1133` (главный, между правилом и AddExchanges), `PredicatePushDown` ×3 сайта
   (второй запуск после AddExchanges), `AddExchanges.buildJoin:1111`, `PruneJoinColumns`,
   `PushInequalityFilterExpressionBelowJoinRuleSet`, `RemoveUnsupportedDynamicFilters`,
   `PushPartialAggregationThroughJoin`. Все теперь пробрасывают `getAlgorithm()`
   (LEFT→RIGHT-конверсия в PredicatePushDown осознанно сбрасывает — RIGHT не поддержан).
-- **KP-3**: e2e-верификация (каждый solo!): testInnerJoin ✓ (15:39), testExplain ✓ (Algorithm: MERGE
-  в EXPLAIN + Sort/LocalMerge-топология видна), testJoinWithDuplicateKeys ✓; LEFT/Varchar/Residual —
-  виснут (KP-1). Требуется стабилизация KP-1 перед снятием @Disabled.
+- **KP-3**: ✅ **ЗАКРЫТА**: все e2e TestMergeJoin 7/7 зелёные (INNER/LEFT/VARCHAR/residual/
+  many-to-many/EXPLAIN/OFF-эквивалентность).
 
 ## Выполнено в сессии доработок (помечено выше)
 

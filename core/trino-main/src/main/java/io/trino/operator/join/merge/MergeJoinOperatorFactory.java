@@ -108,7 +108,9 @@ public class MergeJoinOperatorFactory
         this.planNodeId = requireNonNull(planNodeId, "planNodeId is null");
         this.bridgeManager = requireNonNull(bridgeManager, "bridgeManager is null");
         this.joinType = requireNonNull(joinType, "joinType is null");
-        checkArgument(joinType == JoinType.INNER || joinType == JoinType.LEFT, "merge join supports INNER and LEFT joins only, got %s", joinType);
+        checkArgument(joinType == JoinType.INNER || joinType == JoinType.LEFT || joinType == JoinType.RIGHT || joinType == JoinType.FULL,
+                "merge join supports INNER, LEFT, RIGHT and FULL joins only, got %s",
+                joinType);
         this.outputSingleMatch = outputSingleMatch;
         this.probeTypes = ImmutableList.copyOf(requireNonNull(probeTypes, "probeTypes is null"));
         this.buildTypes = ImmutableList.copyOf(requireNonNull(buildTypes, "buildTypes is null"));
@@ -215,6 +217,9 @@ public class MergeJoinOperatorFactory
         private List<Page> buildPages;
         private int[] buildPageOffsets; // cumulative position count before each build page
         private JoinFilterFunction filterFunction;
+        private boolean[] buildRowMatched; // per build row: true when emitted in a match (RIGHT/FULL drain)
+        private long totalBuildRows;
+        private int drainPage; // RIGHT/FULL: cursor for the trailing unmatched build drain
 
         // probe cursor
         private Page probePage;
@@ -267,11 +272,30 @@ public class MergeJoinOperatorFactory
             }
 
             if (inputPage == null) {
-                // probe exhausted; INNER and LEFT joins have no trailing output
+                // probe exhausted; drain unmatched build rows for RIGHT/FULL in this final call
+                // (the WorkProcessor transform contract requires finished() when the source
+                // is exhausted and cannot be re-entered for additional output)
+                if (factory.joinType == JoinType.RIGHT || factory.joinType == JoinType.FULL) {
+                    for (int page = drainPage; page < buildPages.size(); page++) {
+                        Page buildPage = buildPages.get(page);
+                        for (int pos = 0; pos < buildPage.getPositionCount(); pos++) {
+                            int ordinal = buildPageOffsets[page] + pos;
+                            if (!buildRowMatched[ordinal]) {
+                                pageBuilder.declarePosition();
+                                appendNullProbeRow();
+                                appendBuildRow(buildPage, pos);
+                            }
+                        }
+                    }
+                    drainPage = buildPages.size();
+                }
+
                 if (!pageBuilder.isEmpty()) {
                     Page output = pageBuilder.build();
                     pageBuilder.reset();
-                    return WorkProcessor.TransformationState.ofResult(output);
+                    // needsMoreData=false: process(null) will be called again with the same
+                    // null element; on the next call the drain is complete and finished() is returned
+                    return WorkProcessor.TransformationState.ofResult(output, false);
                 }
                 return WorkProcessor.TransformationState.finished();
             }
@@ -307,6 +331,11 @@ public class MergeJoinOperatorFactory
                 buildPageOffsets[i] = offset;
                 offset += buildPages.get(i).getPositionCount();
             }
+            this.totalBuildRows = offset;
+            this.drainPage = 0;
+            if (factory.joinType == JoinType.RIGHT || factory.joinType == JoinType.FULL) {
+                this.buildRowMatched = new boolean[offset];
+            }
             if (factory.filterFactory.isPresent()) {
                 LongArrayList addresses = new LongArrayList();
                 for (int pageIndex = 0; pageIndex < buildPages.size(); pageIndex++) {
@@ -323,7 +352,7 @@ public class MergeJoinOperatorFactory
         {
             if (probeKeys.isUnmatchable(probePage, probePos)) {
                 // NULL or NaN keys never match: skip for INNER, null-pad for LEFT
-                if (factory.joinType == JoinType.LEFT) {
+                if (factory.joinType == JoinType.LEFT || factory.joinType == JoinType.FULL) {
                     pageBuilder.declarePosition();
                     appendProbeRow();
                     appendNullBuildRow();
@@ -338,7 +367,7 @@ public class MergeJoinOperatorFactory
 
             if (groupStartPage < 0) {
                 // no build rows match this probe key
-                if (factory.joinType == JoinType.LEFT) {
+                if (factory.joinType == JoinType.LEFT || factory.joinType == JoinType.FULL) {
                     pageBuilder.declarePosition();
                     appendProbeRow();
                     appendNullBuildRow();
@@ -358,6 +387,9 @@ public class MergeJoinOperatorFactory
                     appendProbeRow();
                     appendBuildRow(buildPages.get(iterationPage), iterationPos);
                     anySurvived = true;
+                    if (buildRowMatched != null) {
+                        buildRowMatched[buildOrdinal] = true;
+                    }
                     if (factory.outputSingleMatch) {
                         break;
                     }
@@ -374,7 +406,7 @@ public class MergeJoinOperatorFactory
                 return;
             }
 
-            if (!anySurvived && factory.joinType == JoinType.LEFT) {
+            if (!anySurvived && (factory.joinType == JoinType.LEFT || factory.joinType == JoinType.FULL)) {
                 // all matches were filtered out: emit the padded probe row
                 pageBuilder.declarePosition();
                 appendProbeRow();
@@ -522,6 +554,13 @@ public class MergeJoinOperatorFactory
             while (channel < outputChannelCount) {
                 pageBuilder.getBlockBuilder(channel).appendNull();
                 channel++;
+            }
+        }
+
+        private void appendNullProbeRow()
+        {
+            for (int channel = 0; channel < factory.probeOutputChannels.size(); channel++) {
+                pageBuilder.getBlockBuilder(channel).appendNull();
             }
         }
     }

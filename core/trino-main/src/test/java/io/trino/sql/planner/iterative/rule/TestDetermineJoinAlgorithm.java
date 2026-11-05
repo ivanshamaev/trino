@@ -120,7 +120,7 @@ public class TestDetermineJoinAlgorithm
     }
 
     @Test
-    public void testDoesNotFireForRightOrFullJoin()
+    public void testSelectsMergeForEligibleRightOrFullJoin()
     {
         for (JoinType type : ImmutableList.of(RIGHT, FULL)) {
             assertRule()
@@ -131,7 +131,7 @@ public class TestDetermineJoinAlgorithm
                             p.values(p.symbol("L1", BIGINT)),
                             p.values(p.symbol("R1", BIGINT)),
                             equi(p)))
-                    .doesNotFire();
+                    .matches(mergeJoinAlgorithm());
         }
     }
 

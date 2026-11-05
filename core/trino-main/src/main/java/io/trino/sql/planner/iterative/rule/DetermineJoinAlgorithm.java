@@ -97,7 +97,9 @@ public class DetermineJoinAlgorithm
     private static boolean isEligible(JoinNode joinNode, Session session)
     {
         if (joinNode.getType() != JoinType.INNER
-                && joinNode.getType() != JoinType.LEFT) {
+                && joinNode.getType() != JoinType.LEFT
+                && joinNode.getType() != JoinType.RIGHT
+                && joinNode.getType() != JoinType.FULL) {
             return false;
         }
         if (joinNode.getCriteria().isEmpty()) {

@@ -175,7 +175,7 @@ public class JoinNode
         }
 
         if (algorithm.isPresent()) {
-            checkArgument(type == INNER || type == LEFT, "MERGE join algorithm requires INNER or LEFT join type, got %s", type);
+            checkArgument(type == INNER || type == LEFT || type == RIGHT || type == FULL, "MERGE join algorithm requires INNER, LEFT, RIGHT or FULL join type, got %s", type);
             checkArgument(!criteria.isEmpty(), "MERGE join algorithm requires non-empty equi-criteria");
             checkArgument(
                     distributionType.isPresent() && distributionType.get() == DistributionType.PARTITIONED,
@@ -193,9 +193,8 @@ public class JoinNode
     public JoinNode flipChildren()
     {
         // MERGE eligibility is validated for the current join type and side assignment.
-        // INNER stays INNER when flipped, so the marker survives; LEFT becomes RIGHT,
-        // which the merge operator does not support, so the marker is dropped and the
-        // join falls back to the default algorithm.
+        // INNER and FULL stay the same type when flipped, so the marker survives; LEFT becomes
+        // RIGHT and RIGHT becomes LEFT, both of which are supported, so the marker is kept.
         return new JoinNode(
                 getId(),
                 flipType(type),
@@ -208,7 +207,7 @@ public class JoinNode
                 filter,
                 distributionType,
                 spillable,
-                type == INNER ? algorithm : Optional.empty(),
+                algorithm,
                 ImmutableMap.of(), // dynamicFilters are invalid after flipping children
                 reorderJoinStatsAndCost,
                 false);

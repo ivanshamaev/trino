@@ -113,13 +113,13 @@ public class TestJoinNodeAlgorithm
     @Test
     public void testMergeRequiresInnerOrLeftJoin()
     {
+        // RIGHT and FULL are now supported for merge join
         for (JoinType type : ImmutableList.of(JoinType.RIGHT, JoinType.FULL)) {
-            assertThatThrownBy(() -> join(
+            JoinNode node = join(
                     type,
                     Optional.of(JoinNode.DistributionType.PARTITIONED),
-                    Optional.of(JoinNode.JoinAlgorithm.MERGE)))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessageContaining("INNER or LEFT");
+                    Optional.of(JoinNode.JoinAlgorithm.MERGE));
+            assertThat(node.getAlgorithm()).contains(JoinNode.JoinAlgorithm.MERGE);
         }
     }
 
@@ -158,7 +158,7 @@ public class TestJoinNodeAlgorithm
     }
 
     @Test
-    public void testFlipChildrenDropsMergeForLeft()
+    public void testFlipChildrenPreservesMergeForLeft()
     {
         JoinNode node = join(
                 JoinType.LEFT,
@@ -166,8 +166,8 @@ public class TestJoinNodeAlgorithm
                 Optional.of(JoinNode.JoinAlgorithm.MERGE));
         JoinNode flipped = node.flipChildren();
         assertThat(flipped.getType()).isEqualTo(JoinType.RIGHT);
-        // merge join does not support RIGHT; the marker is dropped rather than kept invalid
-        assertThat(flipped.getAlgorithm()).isEmpty();
+        // RIGHT is now supported for merge join; the marker is kept
+        assertThat(flipped.getAlgorithm()).contains(JoinNode.JoinAlgorithm.MERGE);
     }
 
     @Test
