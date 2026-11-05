@@ -55,12 +55,12 @@
       distributed_sort; **dynamicFilters пусты** — deadlock-гейт, DF-сбор в merge не реализован);
       PREFER/FORCE в MVP = «любой eligible» (W2/W3/W4-ресурсные триггеры — COST_BASED-фаза);
       зарегистрировано в PlanOptimizers сразу после DDT (:888), до AddExchanges
-- [x] 3.3 INNER → `k IS NOT NULL` — отложено (оптимизация; оператор корректен и без неё —
-      NULL-fast-path в merge-цикле). Реализация при подключении resource-триггеров.
+- [x] 3.3 INNER → `k IS NOT NULL` — ✅ реализовано (38691c6a14a): FilterNode(IS NOT NULL)
+      на обеих сторонах в DetermineJoinAlgorithm (C9: NULL-хвост отрезается до shuffle)
 - [x] 3.4 гварды: `UseNonPartitionedJoinLookupSource` skip при algorithm present (I14);
       DDT-паттерн isEmpty() — same-batch безопасен (аудит)
-- [x] 3.5 DF-сбор для INNER — отложено (гейт 3.2 защищает от deadlock; DF-сбор — отдельная
-      задача поверх стабилизированного ядра)
+- [x] 3.5 DF-сбор для INNER — ✅ реализовано (99353263188): DynamicFilterSourceOperator
+      над build-sink в createMergeJoin (INNER-only, как hash join); DF-гейт из правила убран
 - [x] 3.6 `TestDetermineJoinAlgorithm` — 8/8 (OFF/INNER/LEFT/RIGHT/FULL/REPLICATED/DOUBLE-key/
       non-equi/уже-установлен)
 - [x] 3.7 airstyle + коммит «Add DetermineJoinAlgorithm rule and prefer_merge_join property»
