@@ -119,13 +119,15 @@ public class MergeJoinOperatorFactory
         this.filterFactory = requireNonNull(filterFactory, "filterFactory is null");
         this.session = requireNonNull(session, "session is null");
         this.blockTypeOperators = requireNonNull(blockTypeOperators, "blockTypeOperators is null");
+        bridgeManager.incrementProbeFactoryCount();
     }
 
     @Override
     public WorkProcessorOperator create(OperatorContext operatorContext, WorkProcessor<Page> sourcePages)
     {
         checkState(!closed, "Factory is already closed");
-        return new MergeJoinOperator(operatorContext, sourcePages, this);
+        bridgeManager.probeOperatorCreated();
+        return new MergeJoinOperator(operatorContext, sourcePages, this, bridgeManager::probeOperatorClosed);
     }
 
     @Override
@@ -169,6 +171,7 @@ public class MergeJoinOperatorFactory
     @Override
     public void close()
     {
+        bridgeManager.probeOperatorFactoryClosed();
         closed = true;
     }
 
@@ -176,16 +179,24 @@ public class MergeJoinOperatorFactory
             implements WorkProcessorOperator
     {
         private final WorkProcessor<Page> pages;
+        private final Runnable closeCallback;
 
-        private MergeJoinOperator(OperatorContext operatorContext, WorkProcessor<Page> sourcePages, MergeJoinOperatorFactory factory)
+        private MergeJoinOperator(OperatorContext operatorContext, WorkProcessor<Page> sourcePages, MergeJoinOperatorFactory factory, Runnable closeCallback)
         {
             this.pages = sourcePages.transform(new MergeJoinTransformation(operatorContext, factory));
+            this.closeCallback = requireNonNull(closeCallback, "closeCallback is null");
         }
 
         @Override
         public WorkProcessor<Page> getOutputPages()
         {
             return pages;
+        }
+
+        @Override
+        public void close()
+        {
+            closeCallback.run();
         }
     }
 

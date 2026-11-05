@@ -103,14 +103,19 @@
 
 ## Известные проблемы (сессия 2026-11-04/05, после MVP+polish)
 
-- **KP-1 (главная)**: flaky livelock merge-пайплайна в локальном query-раннере
-  (`Driver.handleMemoryRevoke` ↔ `LocalExchangeSource.waitForReading` busy-wait; jstack: SplitRunner
-  RUNNABLE 100% CPU). Пойман на e2e LEFT/INNER при повторных merge-запросах в одном JVM.
-  Операторные/правило/план-модель наборы зелёные и семантику покрывают; все merge-исполняющие e2e
-  помечены @Disabled с диагнозом. Гипотезы: (а) незавершённый revoke-протокол у
-  WorkProcessorOperatorAdapter/MergeJoinBufferOperator (docs 05 §5.1 memory-контракты);
-  (б) утечка состояния моста/драйверов между запросами; (в) окружение (host SIGSEGV-флейки весь день).
-  Далее: локализовать на адаптере с SMALL_MEMORY_POOL + revoke-стрессом в operator-тесте.
+- **KP-1 (главная)**: livelock merge-стадии в локальном раннере. Диагноз уточнён (2026-11-05):
+  (1) **закрыта реальная утечка** — probe-фабрика не участвовала в JoinBridgeManager-lifecycle
+  (`probeOperatorFactoryClosed/Created/Closed` не вызывались) → мост с build-страницами никогда не
+  уничтожался (память текла на каждый merge-запрос). Фикс: полный lifecycle в
+  MergeJoinOperatorFactory (ctor-increment / create→probeOperatorCreated / close→
+  probeOperatorFactoryClosed / оператор-close→probeOperatorClosed), ручной инкремент из LEP убран —
+  зеркало hash-join.
+  (2) livelock остался: jstack — несколько SplitRunner'ов жгут CPU в
+  `LocalExchangeSource.waitForReading` (через `LocalExchangeSourceOperator.isBlocked`) + один в
+  `Driver.handleMemoryRevoke` — производители сортировок/local-exchange не завершают exchange,
+  пока join-стадия ждёт. Следующий шаг: аудит распространения blocked-future через
+  WorkProcessorOperatorAdapter (blocked на bridge при незавершённом pageBuffer) и семантики
+  waitForReading; воспроизвести минимальным operator-тестом с adapter+exchange.
 - **KP-2**: I13-пропагация маркера — найдены и закрыты РЕАЛЬНЫЕ дропперы (живая иллюстрация риска):
   `UnaliasSymbolReferences:1133` (главный, между правилом и AddExchanges), `PredicatePushDown` ×3 сайта
   (второй запуск после AddExchanges), `AddExchanges.buildJoin:1111`, `PruneJoinColumns`,

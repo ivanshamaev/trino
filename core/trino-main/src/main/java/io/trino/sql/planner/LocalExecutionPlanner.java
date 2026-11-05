@@ -2939,9 +2939,6 @@ public class LocalExecutionPlanner
                     new PhysicalOperation(bufferOperatorFactory, ImmutableMap.of(), buildSource),
                     buildContext);
 
-            // register the probe factory with the bridge lifecycle
-            bridgeManager.incrementProbeFactoryCount();
-
             MergeJoinOperatorFactory mergeJoinOperatorFactory = new MergeJoinOperatorFactory(
                     context.getNextOperatorId(),
                     node.getId(),
