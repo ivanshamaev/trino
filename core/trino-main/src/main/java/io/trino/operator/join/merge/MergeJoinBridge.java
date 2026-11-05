@@ -117,6 +117,13 @@ public class MergeJoinBridge
         return pages.get(index);
     }
 
+    public List<Page> getAndClearPages()
+    {
+        List<Page> result = ImmutableList.copyOf(pages);
+        pages.clear();
+        return result;
+    }
+
     public List<Type> getBuildTypes()
     {
         return buildTypes;
