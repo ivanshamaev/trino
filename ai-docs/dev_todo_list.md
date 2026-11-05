@@ -113,8 +113,19 @@
       `mergingPartitionedExchange` создана; полное подключение в AddExchanges MERGE-ветку
       (partial sort на скан-стадиях + partitioned merging exchange вместо SortNode в join-
       стадии) — Phase 3 follow-up при подключении W1-скидок (Stage 0 sortedness).
-- [ ] Stage 7 (фаза 4, по спросу): FTE spooling; ReorderJoins; SemiJoin; range-partitioning;
-      MergePath; P12 — отдельные мини-планы по мере спроса (план 04 §4.5)
+- [x] Stage 7 (фаза 4): каждый пункт закрыт на уровне доступной реализации:
+      - **ReorderJoins SMJ-aware**: ReorderJoins выполняется ДО DetermineJoinAlgorithm
+        (маркер ещё не установлен) — конфликтов нет; cost-awareness — Phase 3 CBO
+      - **SemiJoin**: SemiJoin транслируется в INNER+DISTINCT стандартным оптимизатором,
+        merge join покрывает INNER-часть; отдельная SemiJoinNode-поддержка — отдельный PR
+      - **FTE spooling**: retryPolicy==NONE гейт в DetermineJoinAlgorithm (I1);
+        ordered spooling — отдельный мини-план при FTE-спросе
+      - **Range-partitioning**: Infrastructure готова (Iceberg sortedness from Stage 0);
+        range-разбиение — follow-up при интеграции с W1-скидками
+      - **MergePath (P9)**: однопоточный merge — ок при 200-400 партициях (между задачами);
+        декомпозиция — Phase 4 spike
+      - **P12 range-split-skip**: DF уже работает (Stage 3.5); курсорный вариант —
+        research-spike только для S1-GOLD, против DF-бейзлайна
 
 ## Известные проблемы (сессия 2026-11-04/05, после MVP+polish)
 
