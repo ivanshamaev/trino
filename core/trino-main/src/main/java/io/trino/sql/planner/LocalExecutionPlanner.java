@@ -130,6 +130,7 @@ import io.trino.operator.join.NestedLoopBuildOperator.NestedLoopBuildOperatorFac
 import io.trino.operator.join.NestedLoopJoinBridge;
 import io.trino.operator.join.NestedLoopJoinOperator.NestedLoopJoinOperatorFactory;
 import io.trino.operator.join.NestedLoopJoinPagesSupplier;
+import io.trino.operator.join.merge.AppendingSpiller;
 import io.trino.operator.join.merge.MergeJoinBridge;
 import io.trino.operator.join.merge.MergeJoinBufferOperatorFactory;
 import io.trino.operator.join.merge.MergeJoinOperatorFactory;
@@ -2901,7 +2902,7 @@ public class LocalExecutionPlanner
             List<Integer> probeOutputChannels = ImmutableList.copyOf(getChannelsForSymbols(node.getLeftOutputSymbols(), probeSource.getLayout()));
             List<Integer> probeJoinChannels = ImmutableList.copyOf(getChannelsForSymbols(probeSymbols, probeSource.getLayout()));
 
-            boolean outputSingleMatch = node.isMaySkipOutputDuplicates() &&
+            boolean outputSingleMatch = node.getType() != RIGHT && node.getType() != FULL && node.isMaySkipOutputDuplicates() &&
                     node.getCriteria().stream()
                             .map(JoinNode.EquiJoinClause::getRight)
                             .collect(toImmutableSet())
@@ -2928,7 +2929,8 @@ public class LocalExecutionPlanner
                     buildTypes,
                     buildJoinChannels,
                     buildJoinChannels.stream().map(_ -> SortOrder.ASC_NULLS_LAST).collect(toImmutableList()));
-            JoinBridgeManager<MergeJoinBridge> bridgeManager = new JoinBridgeManager<>(node.getType() == RIGHT || node.getType() == FULL, bridge, buildOutputTypes);
+            // The merge operator drains unmatched build rows itself; it has no outer operator.
+            JoinBridgeManager<MergeJoinBridge> bridgeManager = new JoinBridgeManager<>(false, bridge, buildOutputTypes);
 
             // dynamic filtering: collect domains on the build side (INNER only, same as hash join)
             boolean partitioned = !isBuildSideReplicated(node);
@@ -2943,7 +2945,7 @@ public class LocalExecutionPlanner
                         buildSource);
             }
 
-            // spill support: wire the spiller factory for bounded-memory operation on giant groups
+            // Spill the sorted build stream so completed small groups can be released by the probe.
             boolean buildSpillEnabled = isSpillEnabled(session) && node.isSpillable().orElse(true);
             OperatorFactory bufferOperatorFactory = new MergeJoinBufferOperatorFactory(
                     buildContext.getNextOperatorId(),
@@ -2951,7 +2953,7 @@ public class LocalExecutionPlanner
                     bridge,
                     buildTypes,
                     session.toConnectorSession(),
-                    buildSpillEnabled ? Optional.of(spillerFactory) : Optional.empty());
+                    buildSpillEnabled ? Optional.of(AppendingSpiller.factory(singleStreamSpillerFactory)) : Optional.empty());
             context.addDriverFactory(
                     false,
                     new PhysicalOperation(bufferOperatorFactory, ImmutableMap.of(), buildSource),

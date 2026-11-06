@@ -31,10 +31,15 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static io.trino.SystemSessionProperties.JOIN_DISTRIBUTION_TYPE;
+import static io.trino.SystemSessionProperties.JOIN_REORDERING_STRATEGY;
+import static io.trino.SystemSessionProperties.PREFER_MERGE_JOIN;
+import static io.trino.SystemSessionProperties.TABLE_SCAN_NODE_PARTITIONING_MIN_BUCKET_TO_TASK_RATIO;
 import static io.trino.plugin.iceberg.IcebergTestUtils.checkOrcFileSorting;
 import static io.trino.plugin.iceberg.IcebergTestUtils.checkParquetFileSorting;
 import static io.trino.plugin.iceberg.IcebergTestUtils.getFileSystemFactory;
 import static io.trino.testing.TestingConnectorSession.SESSION;
+import static io.trino.testing.assertions.Assert.assertEqualsIgnoreOrder;
 import static org.apache.iceberg.FileFormat.PARQUET;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -81,6 +86,35 @@ public class TestIcebergSortedWriting
             assertThat(getLocalProperties(metadata, session, sortedTable)).isNotEmpty();
             assertThat(getLocalProperties(metadata, session, unsortedTable)).isEmpty();
         });
+    }
+
+    @Test
+    public void testSortedMergeJoinAcrossMultipleFiles()
+    {
+        try (TestTable table = new TestTable(
+                getQueryRunner()::execute,
+                "sorted_merge_join_multifile",
+                "(k BIGINT, v VARCHAR) WITH (partitioning = ARRAY['bucket(k, 2)'], sorted_by = ARRAY['k ASC NULLS LAST'])")) {
+            assertUpdate("INSERT INTO %s VALUES (1, 'a'), (2, 'b'), (1, 'c'), (3, 'd')".formatted(table.getName()), 4);
+            assertUpdate("INSERT INTO %s VALUES (1, 'e'), (2, 'f'), (1, 'g'), (3, 'h')".formatted(table.getName()), 4);
+            assertThat((long) computeActual("SELECT count(*) FROM \"%s$files\"".formatted(table.getName())).getOnlyValue()).isGreaterThanOrEqualTo(2);
+
+            Session mergeSession = Session.builder(getSession())
+                    .setSystemProperty(JOIN_DISTRIBUTION_TYPE, "PARTITIONED")
+                    .setSystemProperty(JOIN_REORDERING_STRATEGY, "NONE")
+                    .setSystemProperty(PREFER_MERGE_JOIN, "FORCE")
+                    .setSystemProperty(TABLE_SCAN_NODE_PARTITIONING_MIN_BUCKET_TO_TASK_RATIO, "0.01")
+                    .build();
+            Session hashSession = Session.builder(mergeSession)
+                    .setSystemProperty(PREFER_MERGE_JOIN, "OFF")
+                    .build();
+            String query = "SELECT l.k, l.v, r.v FROM %1$s l JOIN %1$s r ON l.k = r.k".formatted(table.getName());
+
+            assertEqualsIgnoreOrder(
+                    computeActual(mergeSession, query).getMaterializedRows(),
+                    computeActual(hashSession, query).getMaterializedRows());
+            assertThat((String) computeActual(mergeSession, "EXPLAIN " + query).getOnlyValue()).contains("Algorithm: MERGE");
+        }
     }
 
     private static List<LocalProperty<ColumnHandle>> getLocalProperties(Metadata metadata, Session session, String tableName)

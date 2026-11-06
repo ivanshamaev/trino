@@ -241,18 +241,18 @@ public class ExchangeNode
      * hash-partitions it while maintaining the per-partition ordering.
      */
     public static ExchangeNode mergingPartitionedExchange(
-            PlanNodeId id,
+            ExchangeNode exchange,
             PlanNode child,
-            List<Symbol> partitioningSymbols,
             OrderingScheme orderingScheme)
     {
+        checkArgument(exchange.getScope() == REMOTE && exchange.getType() == Type.REPARTITION, "Expected remote repartition exchange");
         return new ExchangeNode(
-                id,
+                exchange.getId(),
                 Type.REPARTITION,
                 REMOTE,
-                new PartitioningScheme(Partitioning.create(FIXED_HASH_DISTRIBUTION, partitioningSymbols), child.getOutputSymbols()),
+                exchange.getPartitioningScheme(),
                 ImmutableList.of(child),
-                ImmutableList.of(child.getOutputSymbols()),
+                exchange.getInputs(),
                 Optional.of(orderingScheme));
     }
 

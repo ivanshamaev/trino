@@ -48,6 +48,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.Iterators.limit;
 import static com.google.common.collect.Iterators.transform;
 import static com.google.common.util.concurrent.Futures.immediateFuture;
 import static io.trino.spi.StandardErrorCode.GENERIC_INTERNAL_ERROR;
@@ -59,8 +60,16 @@ import static java.util.Objects.requireNonNull;
 public class FileSingleStreamSpiller
         implements SingleStreamSpiller
 {
+    private static final int MAX_REPLAY_CHECKPOINTS = 128;
+
     private final List<SpillFile> spillFiles;
+    private final Path spillDirectory;
+    private final List<ReplayCheckpoint> replayCheckpoints = new ArrayList<>();
     private volatile int currentFileIndex;
+    private int replayCheckpointInterval = 1;
+    private int spilledPageCount;
+    private volatile int completedSpilledPageCount;
+    private long spillFileOffset;
 
     private final Closer closer = Closer.create();
     private final PagesSerdeFactory serdeFactory;
@@ -75,6 +84,7 @@ public class FileSingleStreamSpiller
     private final AtomicBoolean writable = new AtomicBoolean(true);
     private final AtomicLong spilledPagesInMemorySize = new AtomicLong();
     private ListenableFuture<DataSize> spillInProgress = immediateFuture(DataSize.ofBytes(0L));
+    private InputStream replayInput;
 
     private final Runnable fileSystemErrorHandler;
 
@@ -90,6 +100,7 @@ public class FileSingleStreamSpiller
     {
         requireNonNull(spillPaths, "spillPaths is null");
         checkArgument(!spillPaths.isEmpty(), "spillPaths is empty");
+        this.spillDirectory = spillPaths.get(0);
 
         this.serdeFactory = requireNonNull(serdeFactory, "serdeFactory is null");
         this.encryptionKey = requireNonNull(encryptionKey, "encryptionKey is null");
@@ -183,6 +194,46 @@ public class FileSingleStreamSpiller
     }
 
     @Override
+    public Iterator<Page> getSpilledPagesFrom(int pageIndex)
+    {
+        checkNoSpillInProgress();
+        return getSpilledPagesFrom(pageIndex, completedSpilledPageCount);
+    }
+
+    public Iterator<Page> getSpilledPagesFrom(int pageIndex, int pageCount)
+    {
+        checkArgument(pageIndex >= 0, "pageIndex is negative");
+        checkState(spillFiles.size() == 1, "Replay requires a single spill file");
+        checkArgument(pageIndex <= pageCount && pageCount <= completedSpilledPageCount, "page range exceeds completed spill");
+        checkState(encrypted == encryptionKey.isPresent(), "encryptionKey has been discarded");
+
+        try {
+            if (replayInput != null) {
+                replayInput.close();
+            }
+            InputStream input = spillFiles.get(0).newInputStream();
+            replayInput = input;
+            ReplayCheckpoint checkpoint = replayCheckpointFor(pageIndex);
+            input.skipNBytes(checkpoint.byteOffset());
+            Iterator<Slice> serializedPages = PagesSerdeUtil.readSerializedPages(input);
+            for (int i = checkpoint.pageIndex(); i < pageIndex; i++) {
+                checkState(serializedPages.hasNext(), "Spill ended before requested page %s", pageIndex);
+                spillerStats.addToTotalSpillReadBytes(serializedPages.next().length());
+            }
+            PageDeserializer deserializer = serdeFactory.createDeserializer(encryptionKey);
+            // Appending later batches must not change the contents of this reader.
+            return transform(closeWhenExhausted(limit(serializedPages, pageCount - pageIndex), input), serializedPage -> {
+                spillerStats.addToTotalSpillReadBytes(serializedPage.length());
+                return deserializer.deserialize(serializedPage);
+            });
+        }
+        catch (IOException e) {
+            fileSystemErrorHandler.run();
+            throw new TrinoException(GENERIC_INTERNAL_ERROR, "Failed to replay spilled pages", e);
+        }
+    }
+
+    @Override
     public ListenableFuture<List<Page>> getAllSpilledPages()
     {
         checkNoSpillInProgress();
@@ -250,6 +301,9 @@ public class FileSingleStreamSpiller
                 long serializedPageSize = serialized.length();
 
                 spillFiles.get(fileIndex).writeBytes(serialized);
+                if (fileCount == 1) {
+                    recordReplayCheckpoint(serializedPageSize);
+                }
 
                 spilledPagesBytes += pageSizeInBytes;
 
@@ -265,6 +319,7 @@ public class FileSingleStreamSpiller
             for (SpillFile file : spillFiles) {
                 file.closeOutput();
             }
+            completedSpilledPageCount = spilledPageCount;
         }
         catch (UncheckedIOException | IOException e) {
             fileSystemErrorHandler.run();
@@ -274,10 +329,65 @@ public class FileSingleStreamSpiller
         return DataSize.ofBytes(spilledPagesBytes);
     }
 
+    private synchronized void recordReplayCheckpoint(long serializedPageSize)
+    {
+        if (spilledPageCount % replayCheckpointInterval == 0) {
+            if (replayCheckpoints.size() == MAX_REPLAY_CHECKPOINTS) {
+                for (int i = replayCheckpoints.size() - 1; i > 0; i -= 2) {
+                    replayCheckpoints.remove(i);
+                }
+                replayCheckpointInterval *= 2;
+            }
+            if (spilledPageCount % replayCheckpointInterval == 0) {
+                replayCheckpoints.add(new ReplayCheckpoint(spilledPageCount, spillFileOffset));
+            }
+        }
+        spillFileOffset += serializedPageSize;
+        spilledPageCount = Math.addExact(spilledPageCount, 1);
+    }
+
+    private synchronized ReplayCheckpoint replayCheckpointFor(int pageIndex)
+    {
+        ReplayCheckpoint checkpoint = new ReplayCheckpoint(0, 0);
+        for (ReplayCheckpoint candidate : replayCheckpoints) {
+            if (candidate.pageIndex() > pageIndex) {
+                break;
+            }
+            checkpoint = candidate;
+        }
+        return checkpoint;
+    }
+
+    private record ReplayCheckpoint(int pageIndex, long byteOffset) {}
+
+    public Path createTemporaryFile()
+    {
+        try {
+            return Files.createTempFile(spillDirectory, "merge-join-matches", ".bin");
+        }
+        catch (IOException e) {
+            fileSystemErrorHandler.run();
+            throw new TrinoException(GENERIC_INTERNAL_ERROR, "Failed to create merge join match file", e);
+        }
+    }
+
+    public void updateAuxiliarySpillBytes(long bytes)
+    {
+        localSpillContext.updateBytes(bytes);
+        if (bytes > 0) {
+            spillerStats.addToTotalSpilledBytes(bytes);
+        }
+    }
+
     @Override
     public void close()
     {
         encryptionKey = Optional.empty();
+
+        if (replayInput != null) {
+            closer.register(replayInput);
+            replayInput = null;
+        }
 
         closer.register(localSpillContext);
         closer.register(() -> memoryContext.setBytes(0));
@@ -303,7 +413,10 @@ public class FileSingleStreamSpiller
             throws IOException
     {
         InputStream input = closer.register(file.newInputStream());
-        return transform(closeWhenExhausted(PagesSerdeUtil.readSerializedPages(input), input), deserializer::deserialize);
+        return transform(closeWhenExhausted(PagesSerdeUtil.readSerializedPages(input), input), serializedPage -> {
+            spillerStats.addToTotalSpillReadBytes(serializedPage.length());
+            return deserializer.deserialize(serializedPage);
+        });
     }
 
     private static <T> Iterator<T> closeWhenExhausted(Iterator<T> iterator, Closeable resource)

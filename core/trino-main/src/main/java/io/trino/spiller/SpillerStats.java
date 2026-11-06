@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class SpillerStats
 {
     protected final AtomicLong totalSpilledBytes = new AtomicLong();
+    private final AtomicLong totalSpillReadBytes = new AtomicLong();
 
     @Managed
     public long getTotalSpilledBytes()
@@ -30,5 +31,16 @@ public class SpillerStats
     public void addToTotalSpilledBytes(long delta)
     {
         totalSpilledBytes.addAndGet(delta);
+    }
+
+    @Managed
+    public long getTotalSpillReadBytes()
+    {
+        return totalSpillReadBytes.get();
+    }
+
+    public void addToTotalSpillReadBytes(long delta)
+    {
+        totalSpillReadBytes.addAndGet(delta);
     }
 }

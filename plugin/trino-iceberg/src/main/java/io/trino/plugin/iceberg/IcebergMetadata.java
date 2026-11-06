@@ -554,6 +554,7 @@ public class IcebergMetadata
     private final int materializedViewRefreshMaxSnapshotsToExpire;
     private final Duration materializedViewRefreshSnapshotRetentionPeriod;
     private final Map<IcebergTableHandle, AtomicReference<TableStatistics>> tableStatisticsCache = new ConcurrentHashMap<>();
+    private final Map<SortingCacheKey, Boolean> sortedFilesCache = new ConcurrentHashMap<>();
     private final IcebergTableCredentialsProvider tableCredentialsProvider;
     private final DeletionVectorWriter deletionVectorWriter;
     private final ConnectorExpressionEvaluator evaluator;
@@ -1781,21 +1782,9 @@ public class IcebergMetadata
             return ImmutableList.of();
         }
 
-        // every data file must have been written with the current table sort order;
-        // a single legacy or externally-written unsorted file invalidates the report
-        TableScan tableScan = icebergTable.newScan()
-                .useSnapshot(table.getSnapshotId().orElseThrow())
-                .filter(toIcebergExpression(enforcedPredicate))
-                .planWith(icebergPlanningExecutor);
-        try (CloseableIterable<FileScanTask> fileScanTasks = tableScan.planFiles()) {
-            for (FileScanTask fileScanTask : fileScanTasks) {
-                if (fileScanTask.file().sortOrderId() != tableSortOrder.orderId()) {
-                    return ImmutableList.of();
-                }
-            }
-        }
-        catch (IOException | UncheckedIOException e) {
-            throw new UncheckedIOException("Failed to read Iceberg data files", e instanceof IOException ioException ? ioException : (IOException) e.getCause());
+        SortingCacheKey cacheKey = new SortingCacheKey(table, enforcedPredicate, tableSortOrder.orderId());
+        if (!sortedFilesCache.computeIfAbsent(cacheKey, _ -> filesHaveSortOrder(table, icebergTable, enforcedPredicate, tableSortOrder.orderId()))) {
+            return ImmutableList.of();
         }
 
         Map<Integer, IcebergColumnHandle> columnsById = getProjectedColumns(icebergTable.schema(), typeManager, ImmutableSet.copyOf(sourceIds)).stream()
@@ -1812,6 +1801,29 @@ public class IcebergMetadata
         }
         return sortingProperties.build();
     }
+
+    private boolean filesHaveSortOrder(IcebergTableHandle table, Table icebergTable, TupleDomain<IcebergColumnHandle> enforcedPredicate, int sortOrderId)
+    {
+        // A single legacy or externally written file invalidates the report. Cache
+        // only this snapshot-level file check; projected columns are resolved afresh.
+        TableScan tableScan = icebergTable.newScan()
+                .useSnapshot(table.getSnapshotId().orElseThrow())
+                .filter(toIcebergExpression(enforcedPredicate))
+                .planWith(icebergPlanningExecutor);
+        try (CloseableIterable<FileScanTask> fileScanTasks = tableScan.planFiles()) {
+            for (FileScanTask fileScanTask : fileScanTasks) {
+                if (fileScanTask.file().sortOrderId() != sortOrderId) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        catch (IOException | UncheckedIOException e) {
+            throw new UncheckedIOException("Failed to read Iceberg data files", e instanceof IOException ioException ? ioException : (IOException) e.getCause());
+        }
+    }
+
+    private record SortingCacheKey(IcebergTableHandle table, TupleDomain<IcebergColumnHandle> predicate, int sortOrderId) {}
 
     private static SortFieldInfo getSupportedSortFields(Schema schema, SortOrder sortOrder, int sortOrderId)
     {

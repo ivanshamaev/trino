@@ -11,19 +11,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License");
- * you may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.trino.sql.query;
 
 import io.trino.Session;
@@ -36,6 +23,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import static io.trino.SessionTestUtils.TEST_SESSION;
 import static io.trino.SystemSessionProperties.JOIN_DISTRIBUTION_TYPE;
 import static io.trino.SystemSessionProperties.PREFER_MERGE_JOIN;
+import static io.trino.testing.assertions.Assert.assertEqualsIgnoreOrder;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -120,5 +108,47 @@ public class TestMergeJoin
                 .matches("VALUES (1, 100), (2, 200)");
         assertThat(assertions.query(mergeJoinSession, query))
                 .matches("VALUES (1, 100), (2, 200)");
+    }
+
+    @Test
+    public void testRowKeyWithNestedNullUsesSqlEquality()
+    {
+        String query = "SELECT count(*) FROM (SELECT ROW(1, CAST(NULL AS integer)) AS k) l "
+                + "JOIN (SELECT ROW(1, CAST(NULL AS integer)) AS k) r ON l.k = r.k";
+        assertThat(assertions.query(mergeJoinSession, query))
+                .matches("VALUES BIGINT '0'");
+        assertThat(assertions.query(query))
+                .matches("VALUES BIGINT '0'");
+    }
+
+    @Test
+    public void testArrayKeyWithNestedNullUsesSqlEquality()
+    {
+        String query = "SELECT count(*) FROM (SELECT ARRAY[CAST(NULL AS integer)] AS k) l "
+                + "JOIN (SELECT ARRAY[CAST(NULL AS integer)] AS k) r ON l.k = r.k";
+        assertThat(assertions.query(mergeJoinSession, query))
+                .matches("VALUES BIGINT '0'");
+        assertThat(assertions.query(query))
+                .matches("VALUES BIGINT '0'");
+    }
+
+    @Test
+    public void testLargeFullJoinMatchesHashJoin()
+    {
+        String query =
+                """
+                WITH
+                  l AS (SELECT IF(n % 19 = 0, CAST(NULL AS bigint), n % 211) k, n v FROM UNNEST(sequence(1, 5000)) t(n)),
+                  r AS (SELECT IF(n % 23 = 0, CAST(NULL AS bigint), n % 211) k, n v FROM UNNEST(sequence(1, 4000)) t(n))
+                SELECT l.k, l.v, r.v
+                FROM l FULL JOIN r ON l.k = r.k AND r.v % 7 = 0
+                """;
+        Session hashJoinSession = Session.builder(mergeJoinSession)
+                .setSystemProperty(PREFER_MERGE_JOIN, "OFF")
+                .build();
+
+        assertEqualsIgnoreOrder(
+                assertions.execute(mergeJoinSession, query).getMaterializedRows(),
+                assertions.execute(hashJoinSession, query).getMaterializedRows());
     }
 }

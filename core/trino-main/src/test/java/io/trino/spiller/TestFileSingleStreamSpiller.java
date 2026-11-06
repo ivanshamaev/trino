@@ -15,6 +15,7 @@ package io.trino.spiller;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import io.airlift.slice.Slice;
 import io.airlift.slice.Slices;
@@ -31,15 +32,19 @@ import io.trino.spi.type.Type;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.parallel.Execution;
 
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import static com.google.common.io.MoreFiles.deleteRecursively;
@@ -105,6 +110,69 @@ public class TestFileSingleStreamSpiller
             throws Exception
     {
         assertSpill(LZ4, true);
+    }
+
+    @Test
+    public void testReplayCompletedPrefixWhileAppending(@TempDir Path spillPath)
+            throws Exception
+    {
+        FileSingleStreamSpillerFactory factory = new FileSingleStreamSpillerFactory(
+                executor,
+                TESTING_BLOCK_ENCODING_SERDE,
+                new SpillerStats(),
+                ImmutableList.of(spillPath),
+                1,
+                1.0,
+                NONE,
+                true);
+        LocalMemoryContext memoryContext = newSimpleAggregatedMemoryContext().newLocalMemoryContext("test");
+        FileSingleStreamSpiller spiller = (FileSingleStreamSpiller) factory.create(TYPES, _ -> {}, memoryContext);
+        CountDownLatch writingNextPage = new CountDownLatch(1);
+        CountDownLatch allowFinish = new CountDownLatch(1);
+        Page page = buildPage();
+        try {
+            spiller.spill(page).get();
+            Iterator<Page> pending = new Iterator<>()
+            {
+                private boolean returned;
+
+                @Override
+                public boolean hasNext()
+                {
+                    if (!returned) {
+                        return true;
+                    }
+                    writingNextPage.countDown();
+                    try {
+                        if (!allowFinish.await(10, TimeUnit.SECONDS)) {
+                            throw new IllegalStateException("Timed out waiting to complete spill");
+                        }
+                        return false;
+                    }
+                    catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                @Override
+                public Page next()
+                {
+                    returned = true;
+                    return page;
+                }
+            };
+            ListenableFuture<DataSize> append = spiller.spill(pending);
+            assertThat(writingNextPage.await(10, TimeUnit.SECONDS)).isTrue();
+            assertPagesEqual(TYPES, ImmutableList.copyOf(spiller.getSpilledPagesFrom(0, 1)), ImmutableList.of(page));
+            allowFinish.countDown();
+            append.get();
+            assertPagesEqual(TYPES, ImmutableList.copyOf(spiller.getSpilledPagesFrom(0, 2)), ImmutableList.of(page, page));
+        }
+        finally {
+            allowFinish.countDown();
+            spiller.close();
+        }
     }
 
     @Test
@@ -252,6 +320,7 @@ public class TestFileSingleStreamSpiller
             for (int i = 0; i < pages.size(); i++) {
                 assertThat(BIGINT.getLong(pages.get(i).getBlock(0), 0)).isEqualTo(i);
             }
+            assertThat(stats.getTotalSpillReadBytes()).isEqualTo(expectedSerializedBytes);
 
             // Validate that two non-empty spill files were created
             assertThat(listFiles(spillPath1.toPath()).size() + listFiles(spillPath2.toPath()).size()).isEqualTo(2);

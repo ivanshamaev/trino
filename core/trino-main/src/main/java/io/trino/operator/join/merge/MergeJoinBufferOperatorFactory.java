@@ -11,22 +11,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License");
- * you may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.trino.operator.join.merge;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.util.concurrent.ListenableFuture;
 import io.airlift.units.DataSize;
 import io.trino.memory.context.LocalMemoryContext;
 import io.trino.operator.DriverContext;
@@ -39,18 +27,19 @@ import io.trino.spi.type.Type;
 import io.trino.spiller.SpillerFactory;
 import io.trino.sql.planner.plan.PlanNodeId;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.util.concurrent.Futures.immediateFuture;
+import static io.airlift.concurrent.MoreFutures.asVoid;
+import static io.airlift.concurrent.MoreFutures.checkSuccess;
 import static java.util.Objects.requireNonNull;
 
 /**
  * Build side of the merge join. Consumes the already-sorted build stream
  * (the planner inserts the canonical sort below this operator) and publishes
- * the accumulated pages through the {@link MergeJoinBridge} on finish.
+ * in-memory pages and optional spill runs through the {@link MergeJoinBridge}.
  */
 public class MergeJoinBufferOperatorFactory
         implements OperatorFactory
@@ -132,19 +121,38 @@ public class MergeJoinBufferOperatorFactory
         private final LocalMemoryContext userMemoryContext;
         private final Optional<SpillerFactory> spillerFactory;
         private final List<Type> types;
+        private final long spillThresholdBytes;
 
         private boolean finished;
-        private long totalBytesReceived;
+        private long retainedBytes;
         private io.trino.spiller.Spiller spiller;
+        private ListenableFuture<DataSize> spillInProgress = immediateFuture(DataSize.ofBytes(0));
+        private ListenableFuture<Void> memoryAvailable = immediateFuture(null);
+        private boolean spilledPagesRetained;
+        private boolean spillerTransferred;
+        private int pendingSpillPageCount;
 
         public MergeJoinBufferOperator(OperatorContext operatorContext, MergeJoinBridge bridge, List<Type> types, ConnectorSession session, Optional<SpillerFactory> spillerFactory)
+        {
+            this(operatorContext, bridge, types, session, spillerFactory, DataSize.of(32, DataSize.Unit.MEGABYTE).toBytes());
+        }
+
+        MergeJoinBufferOperator(OperatorContext operatorContext, MergeJoinBridge bridge, List<Type> types, ConnectorSession session, Optional<SpillerFactory> spillerFactory, long spillThresholdBytes)
         {
             this.operatorContext = requireNonNull(operatorContext, "operatorContext is null");
             this.bridge = requireNonNull(bridge, "bridge is null");
             this.session = requireNonNull(session, "session is null");
             this.types = ImmutableList.copyOf(types);
             this.spillerFactory = requireNonNull(spillerFactory, "spillerFactory is null");
-            this.userMemoryContext = operatorContext.newLocalUserMemoryContext(MergeJoinBufferOperator.class.getSimpleName());
+            // Build pages outlive this operator. Keep their reservation in the task
+            // until the probe factories and operators release the bridge.
+            this.userMemoryContext = operatorContext.getDriverContext().getPipelineContext().getTaskContext()
+                    .aggregateUserMemoryContext().newLocalMemoryContext(MergeJoinBufferOperator.class.getSimpleName());
+            bridge.setBuildMemoryContext(userMemoryContext);
+            bridge.setReplayMemoryContext(operatorContext.getDriverContext().getPipelineContext().getTaskContext()
+                    .aggregateUserMemoryContext().newLocalMemoryContext("MergeJoinReplay"));
+            long queryMemoryLimit = operatorContext.getDriverContext().getPipelineContext().getTaskContext().getQueryContext().getMaxUserMemory();
+            this.spillThresholdBytes = Math.min(spillThresholdBytes, Math.max(1, queryMemoryLimit / 4));
         }
 
         @Override
@@ -159,24 +167,22 @@ public class MergeJoinBufferOperatorFactory
             if (finished) {
                 return;
             }
-            finished = true;
-
-            // If pages were spilled, read them back and combine with in-memory remainder
-            // to provide the full sorted stream to the bridge (deferred read-back; peak
-            // memory during accumulation is bounded by the spill check in addInput)
-            if (spiller != null) {
-                List<Page> allPages = new ArrayList<>();
-                for (Iterator<Page> spillIterator : spiller.getSpills()) {
-                    spillIterator.forEachRemaining(allPages::add);
-                }
-                allPages.addAll(bridge.getAndClearPages());
-                for (Page page : allPages) {
-                    bridge.addPage(page);
-                }
-                spiller.close();
-                spiller = null;
+            if (!spillInProgress.isDone()) {
+                return;
+            }
+            checkSuccess(spillInProgress, "merge join spilling failed");
+            releaseSpilledPages();
+            if (!memoryAvailable.isDone()) {
+                return;
+            }
+            // The bridge reads spill runs lazily while the probe advances. The spiller
+            // remains open until the bridge is destroyed after all probe operators close.
+            if (spiller != null && !spillerTransferred) {
+                bridge.setSpiller(spiller);
+                spillerTransferred = true;
             }
 
+            finished = true;
             bridge.finish();
         }
 
@@ -187,9 +193,25 @@ public class MergeJoinBufferOperatorFactory
         }
 
         @Override
+        public ListenableFuture<Void> isBlocked()
+        {
+            if (!spillInProgress.isDone()) {
+                return asVoid(spillInProgress);
+            }
+            checkSuccess(spillInProgress, "merge join spilling failed");
+            releaseSpilledPages();
+            return memoryAvailable;
+        }
+
+        @Override
         public boolean needsInput()
         {
-            return !finished && !bridge.isFinished();
+            if (!spillInProgress.isDone()) {
+                return false;
+            }
+            checkSuccess(spillInProgress, "merge join spilling failed");
+            releaseSpilledPages();
+            return memoryAvailable.isDone() && !finished && !bridge.isFinished();
         }
 
         @Override
@@ -197,27 +219,24 @@ public class MergeJoinBufferOperatorFactory
         {
             requireNonNull(page, "page is null");
             checkState(!finished, "Operator is already finished");
+            checkState(spillInProgress.isDone(), "Previous spill still in progress");
+            checkSuccess(spillInProgress, "merge join spilling failed");
+            releaseSpilledPages();
+            checkState(memoryAvailable.isDone(), "Memory reservation is still blocked");
             bridge.addPage(page);
-            totalBytesReceived += page.getSizeInBytes();
-            userMemoryContext.setBytes(estimateRetainedSize());
+            retainedBytes += page.getRetainedSizeInBytes();
+            memoryAvailable = userMemoryContext.setBytes(retainedBytes);
 
-            // Spill when the accumulated pages exceed the threshold: write to disk and
-            // free memory (the SpillingMatchBuffer in Phase 2 will avoid the read-back)
-            if (spillerFactory.isPresent() && totalBytesReceived > getSpillThresholdBytes()) {
+            // Spill when the accumulated pages exceed the threshold. The bridge reads
+            // completed batches lazily and releases pages as the probe advances.
+            if (spillerFactory.isPresent() && (retainedBytes > spillThresholdBytes || !memoryAvailable.isDone())) {
                 if (spiller == null) {
                     spiller = spillerFactory.get().create(
                             types,
-                            operatorContext.getSpillContext().newLocalSpillContext(),
-                            operatorContext.newAggregateUserMemoryContext());
+                            operatorContext.getSpillContext(),
+                            operatorContext.getDriverContext().getPipelineContext().getTaskContext().aggregateUserMemoryContext());
                 }
-                try {
-                    spiller.spill(bridge.getAndClearPages().iterator());
-                    totalBytesReceived = 0;
-                    userMemoryContext.setBytes(0);
-                }
-                catch (RuntimeException e) {
-                    throw e;
-                }
+                spillPendingPages();
             }
         }
 
@@ -230,33 +249,49 @@ public class MergeJoinBufferOperatorFactory
         @Override
         public void close()
         {
-            userMemoryContext.setBytes(0);
-            if (spiller != null) {
-                spiller.close();
-                spiller = null;
+            try {
+                if (spiller != null && !spillerTransferred) {
+                    spiller.close();
+                    spiller = null;
+                }
             }
-            if (!bridge.isFinished()) {
-                bridge.finish();
+            finally {
+                if (!finished) {
+                    bridge.fail(new IllegalStateException("Merge join build operator closed before finishing"));
+                    bridge.destroy();
+                }
             }
-        }
-
-        private long getSpillThresholdBytes()
-        {
-            return DataSize.of(32, DataSize.Unit.MEGABYTE).toBytes();
-        }
-
-        private long estimateRetainedSize()
-        {
-            long bytes = 0;
-            for (int i = 0; i < bridge.getPendingPageCount(); i++) {
-                bytes += bridge.getPendingPage(i).getSizeInBytes();
-            }
-            return bytes;
         }
 
         public ConnectorSession getSession()
         {
             return session;
+        }
+
+        private void releaseSpilledPages()
+        {
+            if (spilledPagesRetained) {
+                userMemoryContext.setBytes(0);
+                memoryAvailable = immediateFuture(null);
+                retainedBytes = 0;
+                spilledPagesRetained = false;
+                if (spiller instanceof AppendingSpiller) {
+                    if (!spillerTransferred) {
+                        bridge.setSpiller(spiller);
+                        spillerTransferred = true;
+                    }
+                    bridge.publishSpilledPages(pendingSpillPageCount);
+                }
+                pendingSpillPageCount = 0;
+            }
+        }
+
+        private void spillPendingPages()
+        {
+            List<Page> batch = bridge.getAndClearPages();
+            pendingSpillPageCount = batch.size();
+            spillInProgress = spiller.spill(batch.iterator());
+            spilledPagesRetained = true;
         }
     }
 }

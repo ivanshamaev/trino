@@ -11,22 +11,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License");
- * you may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.trino.operator.join.merge;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.util.concurrent.ListenableFuture;
+import io.trino.memory.QueryContext;
+import io.trino.memory.context.LocalMemoryContext;
 import io.trino.operator.JoinOperatorType;
 import io.trino.operator.OperatorContext;
 import io.trino.operator.WorkProcessor;
@@ -36,6 +26,7 @@ import io.trino.operator.join.JoinBridgeManager;
 import io.trino.operator.join.JoinFilterFunction;
 import io.trino.spi.Page;
 import io.trino.spi.PageBuilder;
+import io.trino.spi.TrinoException;
 import io.trino.spi.block.Block;
 import io.trino.spi.connector.ConnectorSession;
 import io.trino.spi.type.DoubleType;
@@ -47,11 +38,14 @@ import io.trino.sql.planner.plan.PlanNodeId;
 import io.trino.type.BlockTypeOperators;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.util.concurrent.Futures.getUnchecked;
+import static io.trino.spi.StandardErrorCode.EXCEEDED_LOCAL_MEMORY_LIMIT;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -60,18 +54,23 @@ import static java.util.Objects.requireNonNull;
  * published through the {@link MergeJoinBridge}.
  *
  * <p>The algorithm keeps a monotonic cursor over the build stream and, for each distinct
- * probe key, re-iterates the matching build group in place. No build rows are buffered
- * ("zero retention"), so operator memory does not grow with duplicate key group sizes.</p>
+ * probe key, re-iterates the matching build group. Spilled pages from completed groups
+ * are released as the cursor advances. A large individual group still requires
+ * spill-backed replay to bound memory.</p>
  *
  * <p>Unmatchable keys (NULL or NaN in any key channel) never match: probe rows with
  * unmatchable keys are skipped for INNER joins and emitted with null padding for LEFT
- * joins; build rows with unmatchable keys are skipped entirely. The channel comparison
+ * joins; build rows with unmatchable keys remain unmatched and are emitted for
+ * RIGHT/FULL joins. The channel comparison
  * uses the same {@code BlockPositionComparison} operator as the sorter, so the merge
  * order is consistent with the canonical sort order by construction.</p>
  */
 public class MergeJoinOperatorFactory
         implements WorkProcessorOperatorFactory
 {
+    private static final long MAX_PROBE_CHUNK_BYTES = 8L * 1024 * 1024;
+    private static final int MIN_MIXED_PAGE_CHUNK_ROWS = 32;
+
     private final int operatorId;
     private final PlanNodeId planNodeId;
     private final JoinBridgeManager<MergeJoinBridge> bridgeManager;
@@ -113,6 +112,8 @@ public class MergeJoinOperatorFactory
         checkArgument(joinType == JoinType.INNER || joinType == JoinType.LEFT || joinType == JoinType.RIGHT || joinType == JoinType.FULL,
                 "merge join supports INNER, LEFT, RIGHT and FULL joins only, got %s",
                 joinType);
+        checkArgument(!outputSingleMatch || (joinType != JoinType.RIGHT && joinType != JoinType.FULL),
+                "merge join cannot skip build matches for RIGHT/FULL joins");
         this.outputSingleMatch = outputSingleMatch;
         this.joinOperatorType = JoinOperatorType.mergeJoin(joinType, outputSingleMatch);
         this.probeTypes = ImmutableList.copyOf(requireNonNull(probeTypes, "probeTypes is null"));
@@ -156,21 +157,9 @@ public class MergeJoinOperatorFactory
     @Override
     public WorkProcessorOperatorFactory duplicate()
     {
-        return new MergeJoinOperatorFactory(
-                operatorId,
-                planNodeId,
-                bridgeManager,
-                joinType,
-                outputSingleMatch,
-                probeTypes,
-                buildTypes,
-                probeKeyChannels,
-                buildKeyChannels,
-                probeOutputChannels,
-                buildOutputChannels,
-                filterFactory,
-                session,
-                blockTypeOperators);
+        // The bridge exposes one forward-only build stream. AddLocalExchanges
+        // enforces a single probe driver for this join.
+        throw new UnsupportedOperationException("Merge join probe factory cannot be duplicated");
     }
 
     @Override
@@ -186,11 +175,20 @@ public class MergeJoinOperatorFactory
         private final WorkProcessor<Page> pages;
         private final Runnable closeCallback;
         private final MergeJoinStatistics statistics;
+        private final LocalMemoryContext userMemoryContext;
+        private final LocalMemoryContext probeChunkMemoryContext;
+        private final MergeJoinTransformation transformation;
 
         private MergeJoinOperator(OperatorContext operatorContext, WorkProcessor<Page> sourcePages, MergeJoinOperatorFactory factory, Runnable closeCallback)
         {
             this.statistics = new MergeJoinStatistics(factory.joinOperatorType);
-            this.pages = sourcePages.transform(new MergeJoinTransformation(operatorContext, factory, statistics));
+            this.userMemoryContext = operatorContext.newLocalUserMemoryContext(MergeJoinOperator.class.getSimpleName());
+            this.probeChunkMemoryContext = operatorContext.newLocalUserMemoryContext("MergeJoinProbeChunk");
+            QueryContext queryContext = operatorContext.getDriverContext().getPipelineContext().getTaskContext().getQueryContext();
+            long queryMemoryLimit = queryContext.getMaxUserMemory();
+            long maxProbeChunkBytes = Math.min(MAX_PROBE_CHUNK_BYTES, Math.max(1, queryMemoryLimit / 4));
+            this.transformation = new MergeJoinTransformation(factory, statistics, userMemoryContext, probeChunkMemoryContext, queryContext, queryMemoryLimit, maxProbeChunkBytes);
+            this.pages = sourcePages.transform(transformation);
             this.closeCallback = requireNonNull(closeCallback, "closeCallback is null");
         }
 
@@ -209,7 +207,22 @@ public class MergeJoinOperatorFactory
         @Override
         public void close()
         {
-            closeCallback.run();
+            try {
+                transformation.close();
+            }
+            finally {
+                try {
+                    userMemoryContext.close();
+                }
+                finally {
+                    try {
+                        probeChunkMemoryContext.close();
+                    }
+                    finally {
+                        closeCallback.run();
+                    }
+                }
+            }
         }
     }
 
@@ -287,6 +300,11 @@ public class MergeJoinOperatorFactory
     {
         private final MergeJoinOperatorFactory factory;
         private final MergeJoinStatistics statistics;
+        private final LocalMemoryContext userMemoryContext;
+        private final LocalMemoryContext probeChunkMemoryContext;
+        private final QueryContext queryContext;
+        private final long queryMemoryLimit;
+        private final long maxProbeChunkBytes;
         private final PageBuilder pageBuilder;
         private final int outputChannelCount;
 
@@ -296,30 +314,62 @@ public class MergeJoinOperatorFactory
 
         private MergeJoinBridge bridge;
         private List<Page> buildPages;
-        private int[] buildPageOffsets; // cumulative position count before each build page
         private JoinFilterFunction filterFunction;
-        private boolean[] buildRowMatched; // per build row: true when emitted in a match (RIGHT/FULL drain)
-        private long totalBuildRows;
-        private int drainPage; // RIGHT/FULL: cursor for the trailing unmatched build drain
+        private CurrentBuildAddress filterAddress;
+        private boolean[] buildRowMatched; // current key group only
+        private DiskBackedMatchBitmap diskRowMatched;
+        private int drainPage; // RIGHT/FULL: first build row not yet drained
+        private long drainGroupOrdinal;
 
         // probe cursor
         private Page probePage;
         private int probePos;
+        private Page inputSourcePage;
+        private Page inputRegion;
+        private int inputRegionEnd;
+        private int nextInputRegionStart;
 
         // build scan cursor: first row not yet consumed by group discovery (monotonic)
         private int scanPage;
         private int scanPos;
+        private int groupScanPage;
+        private int groupScanPos;
+        private long groupScanRows;
+        private boolean groupScanActive;
+        private ListenableFuture<Void> waitingForBuild;
+        private boolean buildRowsRecorded;
         // current group bounds; groupStartPage < 0 means "no group for the current key"
         private int groupStartPage = -1;
         private int groupStartPos;
         // group discovery state: false when the current probe row's group must be (re)loaded
         private boolean groupLoaded;
+        private boolean probeRowInProgress;
+        private boolean currentProbeMatched;
+        private int iterationPage;
+        private int iterationPos;
+        private long iterationOrdinal;
+        private int drainPos;
 
-        private MergeJoinTransformation(OperatorContext operatorContext, MergeJoinOperatorFactory factory, MergeJoinStatistics statistics)
+        // A bounded probe chunk lets a spilled group be replayed once per chunk.
+        private final List<Page> probeChunk = new ArrayList<>();
+        private final List<boolean[]> probeChunkMatched = new ArrayList<>();
+        private boolean probeChunkActive;
+        private boolean chunkDrainingUnmatched;
+        private int chunkBuildPage;
+        private int chunkBuildPos;
+        private long chunkBuildOrdinal;
+        private int chunkProbePage;
+        private int chunkProbePos;
+
+        private MergeJoinTransformation(MergeJoinOperatorFactory factory, MergeJoinStatistics statistics, LocalMemoryContext userMemoryContext, LocalMemoryContext probeChunkMemoryContext, QueryContext queryContext, long queryMemoryLimit, long maxProbeChunkBytes)
         {
             this.factory = requireNonNull(factory, "factory is null");
             this.statistics = requireNonNull(statistics, "statistics is null");
-            requireNonNull(operatorContext, "operatorContext is null");
+            this.userMemoryContext = requireNonNull(userMemoryContext, "userMemoryContext is null");
+            this.probeChunkMemoryContext = requireNonNull(probeChunkMemoryContext, "probeChunkMemoryContext is null");
+            this.queryContext = requireNonNull(queryContext, "queryContext is null");
+            this.queryMemoryLimit = queryMemoryLimit;
+            this.maxProbeChunkBytes = maxProbeChunkBytes;
 
             ImmutableList.Builder<Type> outputTypes = ImmutableList.builder();
             for (int channel : factory.probeOutputChannels) {
@@ -344,109 +394,402 @@ public class MergeJoinOperatorFactory
         @Override
         public WorkProcessor.TransformationState<Page> process(Page inputPage)
         {
-            // wait for the build side to publish the sorted stream
+            // A completed spill batch is enough to begin the merge.
             if (bridge == null) {
                 MergeJoinBridge joinBridge = factory.bridgeManager.getJoinBridge();
-                if (!joinBridge.whenBuildFinishes().isDone()) {
-                    return WorkProcessor.TransformationState.blocked(joinBridge.whenBuildFinishes());
+                if (!joinBridge.whenBuildReady().isDone()) {
+                    return WorkProcessor.TransformationState.blocked(joinBridge.whenBuildReady());
                 }
+                getUnchecked(joinBridge.whenBuildReady());
                 prepareBridge(joinBridge);
+            }
+            if (waitingForBuild != null) {
+                if (!waitingForBuild.isDone()) {
+                    return WorkProcessor.TransformationState.blocked(waitingForBuild);
+                }
+                getUnchecked(waitingForBuild);
+                waitingForBuild = null;
+            }
+            if (!buildRowsRecorded && bridge.isFinished()) {
+                statistics.recordBuildRows(bridge.getRowCount());
+                buildRowsRecorded = true;
+            }
+            Page currentInput = inputPage == null ? null : currentInputRegion(inputPage);
+
+            if (!probeChunk.isEmpty() && (probeChunkActive || currentInput == null || !canAddToProbeChunk(currentInput)
+                    || probeChunkMemoryContext.getBytes() + currentInput.getRetainedSizeInBytes() > maxProbeChunkBytes)) {
+                processProbeChunk();
+                if (pageBuilder.isFull()) {
+                    return outputPage(false);
+                }
+                if (waitingForBuild != null) {
+                    return waitForBuild();
+                }
+                if (probeChunkActive) {
+                    return yieldProbeChunk();
+                }
+            }
+
+            if (currentInput != null && canAddToProbeChunk(currentInput)) {
+                if (addToProbeChunk(currentInput)) {
+                    boolean inputConsumed = consumeInputRegion();
+                    if (!pageBuilder.isEmpty()) {
+                        return outputPage(inputConsumed);
+                    }
+                    return inputConsumed ? WorkProcessor.TransformationState.needsMoreData() : WorkProcessor.TransformationState.yielded();
+                }
+                if (!probeChunk.isEmpty()) {
+                    processProbeChunk();
+                    if (pageBuilder.isFull()) {
+                        return outputPage(false);
+                    }
+                    if (waitingForBuild != null) {
+                        return waitForBuild();
+                    }
+                    if (probeChunkActive) {
+                        return yieldProbeChunk();
+                    }
+                    if (addToProbeChunk(currentInput)) {
+                        boolean inputConsumed = consumeInputRegion();
+                        if (!pageBuilder.isEmpty()) {
+                            return outputPage(inputConsumed);
+                        }
+                        return inputConsumed ? WorkProcessor.TransformationState.needsMoreData() : WorkProcessor.TransformationState.yielded();
+                    }
+                }
             }
 
             if (inputPage == null) {
-                // probe exhausted; drain unmatched build rows for RIGHT/FULL in this final call
-                // (the WorkProcessor transform contract requires finished() when the source
-                // is exhausted and cannot be re-entered for additional output)
+                if (!bridge.isFinished()) {
+                    waitingForBuild = bridge.whenBuildFinishes();
+                    return waitForBuild();
+                }
                 if (factory.joinType == JoinType.RIGHT || factory.joinType == JoinType.FULL) {
-                    for (int page = drainPage; page < buildPages.size(); page++) {
-                        Page buildPage = buildPages.get(page);
-                        for (int pos = 0; pos < buildPage.getPositionCount(); pos++) {
-                            int ordinal = buildPageOffsets[page] + pos;
-                            if (!buildRowMatched[ordinal]) {
-                                pageBuilder.declarePosition();
-                                appendNullProbeRow();
-                                appendBuildRow(buildPage, pos);
-                            }
-                        }
+                    if (drainMatchedGroup()) {
+                        drainRemainingBuildRows();
                     }
-                    drainPage = buildPages.size();
                 }
 
                 if (!pageBuilder.isEmpty()) {
-                    Page output = pageBuilder.build();
-                    pageBuilder.reset();
                     // needsMoreData=false: process(null) will be called again with the same
                     // null element; on the next call the drain is complete and finished() is returned
-                    return WorkProcessor.TransformationState.ofResult(output, false);
+                    return outputPage(false);
                 }
                 return WorkProcessor.TransformationState.finished();
             }
 
-            if (probePage != inputPage) {
-                probePage = inputPage;
+            if (probePage != currentInput) {
+                probePage = currentInput;
                 probePos = 0;
             }
 
             while (!pageBuilder.isFull() && probePos < probePage.getPositionCount()) {
                 processProbeRow();
+                if (waitingForBuild != null) {
+                    return waitForBuild();
+                }
             }
             boolean probePageExhausted = probePos >= probePage.getPositionCount();
+            boolean inputConsumed = probePageExhausted && consumeInputRegion();
+            if (probePageExhausted) {
+                probePage = null;
+            }
 
             if (!pageBuilder.isEmpty()) {
                 // needsMoreData=false keeps the current probe page until it is fully consumed
-                Page output = pageBuilder.build();
-                pageBuilder.reset();
-                return probePageExhausted
-                        ? WorkProcessor.TransformationState.ofResult(output)
-                        : WorkProcessor.TransformationState.ofResult(output, false);
+                return outputPage(inputConsumed);
             }
-            return WorkProcessor.TransformationState.needsMoreData();
+            return inputConsumed ? WorkProcessor.TransformationState.needsMoreData() : WorkProcessor.TransformationState.yielded();
+        }
+
+        private Page currentInputRegion(Page source)
+        {
+            if (inputSourcePage != source) {
+                inputSourcePage = source;
+                inputRegion = null;
+                nextInputRegionStart = 0;
+            }
+            if (inputRegion != null) {
+                return inputRegion;
+            }
+            int end = source.getPositionCount();
+            if (bridge.canCreateMatchFile() && !factory.outputSingleMatch) {
+                int position = nextInputRegionStart;
+                while (position < end) {
+                    if (probeKeys.isUnmatchable(source, position)) {
+                        position++;
+                        continue;
+                    }
+                    int runEnd = position + 1;
+                    while (runEnd < end && !probeKeys.isUnmatchable(source, runEnd)
+                            && compareProbeKeys(source, position, source, runEnd) == 0) {
+                        runEnd++;
+                    }
+                    if (runEnd - position >= MIN_MIXED_PAGE_CHUNK_ROWS
+                            && (position > nextInputRegionStart || runEnd < source.getPositionCount())) {
+                        end = position == nextInputRegionStart ? runEnd : position;
+                        break;
+                    }
+                    position = runEnd;
+                }
+            }
+            inputRegionEnd = end;
+            if (nextInputRegionStart == 0 && end == source.getPositionCount()) {
+                inputRegion = source;
+            }
+            else {
+                inputRegion = source.getRegion(nextInputRegionStart, end - nextInputRegionStart);
+            }
+            return inputRegion;
+        }
+
+        private boolean consumeInputRegion()
+        {
+            nextInputRegionStart = inputRegionEnd;
+            inputRegion = null;
+            if (nextInputRegionStart == inputSourcePage.getPositionCount()) {
+                inputSourcePage = null;
+                nextInputRegionStart = 0;
+                return true;
+            }
+            return false;
+        }
+
+        private WorkProcessor.TransformationState<Page> waitForBuild()
+        {
+            if (!pageBuilder.isEmpty()) {
+                return outputPage(false);
+            }
+            return WorkProcessor.TransformationState.blocked(waitingForBuild);
+        }
+
+        private WorkProcessor.TransformationState<Page> outputPage(boolean needsMoreData)
+        {
+            Page output = pageBuilder.build();
+            pageBuilder.reset();
+            return WorkProcessor.TransformationState.ofResult(output, needsMoreData);
+        }
+
+        private WorkProcessor.TransformationState<Page> yieldProbeChunk()
+        {
+            if (!pageBuilder.isEmpty()) {
+                return outputPage(false);
+            }
+            return WorkProcessor.TransformationState.yielded();
+        }
+
+        private boolean canAddToProbeChunk(Page page)
+        {
+            if (factory.outputSingleMatch || !bridge.canCreateMatchFile()
+                    || page == probePage && (probePos != 0 || probeRowInProgress)
+                    || page.getPositionCount() == 0 || page.getRetainedSizeInBytes() > maxProbeChunkBytes) {
+                return false;
+            }
+            if (probeKeys.isUnmatchable(page, 0)) {
+                return false;
+            }
+            for (int position = 1; position < page.getPositionCount(); position++) {
+                if (probeKeys.isUnmatchable(page, position) || compareProbeKeys(page, position, page, 0) != 0) {
+                    return false;
+                }
+            }
+            return probeChunk.isEmpty() || compareProbeKeys(probeChunk.get(0), 0, page, 0) == 0;
+        }
+
+        private boolean addToProbeChunk(Page page)
+        {
+            long retainedBytes = probeChunkMemoryContext.getBytes() + page.getRetainedSizeInBytes() + Long.BYTES;
+            if (isProbeOuter()) {
+                retainedBytes += page.getPositionCount() + 16L;
+            }
+            long availableForChunk = queryMemoryLimit - queryContext.getUserMemoryReservation()
+                    + probeChunkMemoryContext.getBytes() - bridge.getMaxPageRetainedBytes();
+            if (retainedBytes > maxProbeChunkBytes || retainedBytes > availableForChunk || !probeChunkMemoryContext.trySetBytes(retainedBytes)) {
+                return false;
+            }
+            probeChunk.add(page);
+            if (isProbeOuter()) {
+                probeChunkMatched.add(new boolean[page.getPositionCount()]);
+            }
+            for (int position = 0; position < page.getPositionCount(); position++) {
+                statistics.recordProbeRow();
+            }
+            return true;
+        }
+
+        private void processProbeChunk()
+        {
+            if (chunkDrainingUnmatched) {
+                drainUnmatchedProbeChunk();
+                return;
+            }
+            if (!probeChunkActive) {
+                probePage = probeChunk.get(0);
+                probePos = 0;
+                if (groupLoaded && groupStartPage >= 0
+                        && compareKeys(buildPages.get(groupStartPage), groupStartPos, probePage, probePos) != 0) {
+                    groupLoaded = false;
+                }
+                if (!groupLoaded) {
+                    if (!loadGroup()) {
+                        return;
+                    }
+                }
+                if (groupStartPage < 0) {
+                    if (isProbeOuter()) {
+                        startDrainingUnmatchedProbeChunk();
+                        drainUnmatchedProbeChunk();
+                    }
+                    else {
+                        clearProbeChunk();
+                    }
+                    return;
+                }
+                chunkBuildPage = groupStartPage;
+                chunkBuildPos = groupStartPos;
+                chunkBuildOrdinal = 0;
+                chunkProbePage = 0;
+                chunkProbePos = 0;
+                probeChunkActive = true;
+            }
+
+            int processedRows = 0;
+            while (isInGroup(chunkBuildPage, chunkBuildPos) && !pageBuilder.isFull() && processedRows < 65_536) {
+                Page buildPage = buildPages.get(chunkBuildPage);
+                if (filterAddress != null) {
+                    filterAddress.set(chunkBuildPage, chunkBuildPos);
+                }
+                while (chunkProbePage < probeChunk.size() && !pageBuilder.isFull() && processedRows < 65_536) {
+                    probePage = probeChunk.get(chunkProbePage);
+                    probePos = chunkProbePos;
+                    if (filterFunction == null || filterFunction.filter(0, probePos, probePage)) {
+                        pageBuilder.declarePosition();
+                        appendProbeRow();
+                        appendBuildRow(buildPage, chunkBuildPos);
+                        statistics.recordOutputRow();
+                        if (isProbeOuter()) {
+                            probeChunkMatched.get(chunkProbePage)[chunkProbePos] = true;
+                        }
+                        if (buildRowMatched != null) {
+                            buildRowMatched[(int) chunkBuildOrdinal] = true;
+                        }
+                        if (diskRowMatched != null) {
+                            diskRowMatched.mark(chunkBuildOrdinal);
+                        }
+                    }
+                    processedRows++;
+                    chunkProbePos++;
+                    if (chunkProbePos == probePage.getPositionCount()) {
+                        chunkProbePage++;
+                        chunkProbePos = 0;
+                    }
+                }
+                if (chunkProbePage < probeChunk.size()) {
+                    break;
+                }
+                chunkProbePage = 0;
+                chunkProbePos = 0;
+                chunkBuildPos++;
+                chunkBuildOrdinal++;
+                if (chunkBuildPos == buildPage.getPositionCount()) {
+                    chunkBuildPage++;
+                    chunkBuildPos = 0;
+                }
+            }
+            if (!isInGroup(chunkBuildPage, chunkBuildPos)) {
+                if (isProbeOuter()) {
+                    startDrainingUnmatchedProbeChunk();
+                    drainUnmatchedProbeChunk();
+                }
+                else {
+                    clearProbeChunk();
+                }
+            }
+        }
+
+        private void startDrainingUnmatchedProbeChunk()
+        {
+            chunkDrainingUnmatched = true;
+            chunkProbePage = 0;
+            chunkProbePos = 0;
+            probeChunkActive = true;
+        }
+
+        private void drainUnmatchedProbeChunk()
+        {
+            int scannedRows = 0;
+            while (chunkProbePage < probeChunk.size() && !pageBuilder.isFull() && scannedRows < 65_536) {
+                probePage = probeChunk.get(chunkProbePage);
+                probePos = chunkProbePos;
+                if (!probeChunkMatched.get(chunkProbePage)[chunkProbePos]) {
+                    pageBuilder.declarePosition();
+                    appendProbeRow();
+                    appendNullBuildRow();
+                    statistics.recordOutputRow();
+                }
+                scannedRows++;
+                chunkProbePos++;
+                if (chunkProbePos == probePage.getPositionCount()) {
+                    chunkProbePage++;
+                    chunkProbePos = 0;
+                }
+            }
+            if (chunkProbePage == probeChunk.size()) {
+                clearProbeChunk();
+            }
+        }
+
+        private void clearProbeChunk()
+        {
+            probeChunk.clear();
+            probeChunkMatched.clear();
+            probeChunkMemoryContext.setBytes(0);
+            probeChunkActive = false;
+            chunkDrainingUnmatched = false;
+            probePage = null;
+            if (groupStartPage < 0) {
+                groupLoaded = false;
+            }
         }
 
         private void prepareBridge(MergeJoinBridge joinBridge)
         {
             this.bridge = joinBridge;
             this.buildPages = joinBridge.getPages();
-            this.buildPageOffsets = new int[buildPages.size()];
-            int offset = 0;
-            for (int i = 0; i < buildPages.size(); i++) {
-                buildPageOffsets[i] = offset;
-                offset += buildPages.get(i).getPositionCount();
-            }
-            this.totalBuildRows = offset;
-            statistics.recordBuildRows(offset);
             this.drainPage = 0;
-            if (factory.joinType == JoinType.RIGHT || factory.joinType == JoinType.FULL) {
-                this.buildRowMatched = new boolean[offset];
-            }
             if (factory.filterFactory.isPresent()) {
-                LongArrayList addresses = new LongArrayList();
-                for (int pageIndex = 0; pageIndex < buildPages.size(); pageIndex++) {
-                    for (int position = 0; position < buildPages.get(pageIndex).getPositionCount(); position++) {
-                        // synthetic address: page index in high bits, position in low bits
-                        addresses.add((((long) pageIndex) << 32) | position);
-                    }
-                }
-                this.filterFunction = factory.filterFactory.get().create(factory.session, addresses, buildPages);
+                filterAddress = new CurrentBuildAddress();
+                filterFunction = factory.filterFactory.get().create(factory.session, filterAddress, buildPages);
             }
         }
 
         private void processProbeRow()
         {
-            statistics.recordProbeRow();
             if (probeKeys.isUnmatchable(probePage, probePos)) {
+                statistics.recordProbeRow();
                 // NULL or NaN keys never match: skip for INNER, null-pad for LEFT
                 if (factory.joinType == JoinType.LEFT || factory.joinType == JoinType.FULL) {
                     pageBuilder.declarePosition();
                     appendProbeRow();
                     appendNullBuildRow();
+                    statistics.recordOutputRow();
                 }
                 advanceProbe();
                 return;
             }
 
+            if (groupLoaded && groupStartPage >= 0
+                    && compareKeys(buildPages.get(groupStartPage), groupStartPos, probePage, probePos) != 0) {
+                groupLoaded = false;
+            }
             if (!groupLoaded) {
-                loadGroup();
+                if (!loadGroup()) {
+                    return;
+                }
+            }
+
+            if (!probeRowInProgress) {
+                statistics.recordProbeRow();
             }
 
             if (groupStartPage < 0) {
@@ -455,58 +798,78 @@ public class MergeJoinOperatorFactory
                     pageBuilder.declarePosition();
                     appendProbeRow();
                     appendNullBuildRow();
+                    statistics.recordOutputRow();
                 }
                 advanceProbe();
                 return;
             }
 
             // iterate the build group in place for this probe row
-            boolean anySurvived = false;
-            int iterationPage = groupStartPage;
-            int iterationPos = groupStartPos;
+            if (!probeRowInProgress) {
+                iterationPage = groupStartPage;
+                iterationPos = groupStartPos;
+                iterationOrdinal = 0;
+                currentProbeMatched = false;
+                probeRowInProgress = true;
+            }
             while (isInGroup(iterationPage, iterationPos) && !pageBuilder.isFull()) {
-                int buildOrdinal = buildPageOffsets[iterationPage] + iterationPos;
-                if (filterFunction == null || filterFunction.filter(buildOrdinal, probePos, probePage)) {
+                if (filterAddress != null) {
+                    filterAddress.set(iterationPage, iterationPos);
+                }
+                if (filterFunction == null || filterFunction.filter(0, probePos, probePage)) {
                     pageBuilder.declarePosition();
                     appendProbeRow();
                     appendBuildRow(buildPages.get(iterationPage), iterationPos);
-                    anySurvived = true;
+                    currentProbeMatched = true;
+                    statistics.recordOutputRow();
                     if (buildRowMatched != null) {
-                        buildRowMatched[buildOrdinal] = true;
+                        buildRowMatched[(int) iterationOrdinal] = true;
+                    }
+                    if (diskRowMatched != null) {
+                        diskRowMatched.mark(iterationOrdinal);
                     }
                     if (factory.outputSingleMatch) {
                         break;
                     }
                 }
                 iterationPos++;
+                iterationOrdinal++;
                 if (iterationPos >= buildPages.get(iterationPage).getPositionCount()) {
                     iterationPage++;
                     iterationPos = 0;
                 }
             }
-            if (pageBuilder.isFull() && isInGroup(iterationPage, iterationPos)) {
-                // page full mid-iteration: leave the probe row in place; the remaining group
-                // rows are emitted on the next process() call (the row has already survived)
+            if (pageBuilder.isFull() && !factory.outputSingleMatch && isInGroup(iterationPage, iterationPos)) {
+                // Keep the current probe row and its position within the build group.
                 return;
             }
 
-            if (!anySurvived && (factory.joinType == JoinType.LEFT || factory.joinType == JoinType.FULL)) {
+            if (!currentProbeMatched && (factory.joinType == JoinType.LEFT || factory.joinType == JoinType.FULL)) {
                 // all matches were filtered out: emit the padded probe row
                 pageBuilder.declarePosition();
                 appendProbeRow();
                 appendNullBuildRow();
+                statistics.recordOutputRow();
             }
             advanceProbe();
         }
 
         /**
          * Advances the monotonic build scan cursor to the first build row with a key
-         * greater than or equal to the current probe key (skipping unmatchable build
-         * rows) and marks the bounds of the matching group, if any. The scan cursor
+         * greater than or equal to the current probe key (emitting skipped build rows
+         * for RIGHT/FULL) and marks the bounds of the matching group, if any. The scan cursor
          * ends up just past the group, so groups are never re-scanned by discovery.
          */
-        private void loadGroup()
+        private boolean loadGroup()
         {
+            if (isBuildOuter()) {
+                if (!drainMatchedGroup() || pageBuilder.isFull()) {
+                    return false;
+                }
+            }
+            if (groupScanActive) {
+                return finishGroupScan();
+            }
             int page = scanPage;
             int pos = scanPos;
             while (page < buildPages.size()) {
@@ -514,14 +877,27 @@ public class MergeJoinOperatorFactory
                 if (pos >= buildPage.getPositionCount()) {
                     page++;
                     pos = 0;
+                    if (isBuildOuter()) {
+                        drainPage = page;
+                        drainPos = 0;
+                    }
+                    releaseCompletedBuildPages(page);
                     continue;
                 }
-                if (buildKeys.isUnmatchable(buildPage, pos)) {
+                if (buildKeys.isUnmatchable(buildPage, pos) || compareKeys(buildPage, pos, probePage, probePos) < 0) {
+                    if (isBuildOuter()) {
+                        appendUnmatchedBuildRow(buildPage, pos);
+                    }
                     pos++;
-                    continue;
-                }
-                if (compareKeys(buildPage, pos, probePage, probePos) < 0) {
-                    pos++;
+                    if (isBuildOuter()) {
+                        drainPage = page;
+                        drainPos = pos;
+                        if (pageBuilder.isFull()) {
+                            scanPage = page;
+                            scanPos = pos;
+                            return false;
+                        }
+                    }
                     continue;
                 }
                 break;
@@ -530,41 +906,165 @@ public class MergeJoinOperatorFactory
             scanPos = pos;
 
             if (page >= buildPages.size()) {
+                if (!bridge.isFinished()) {
+                    waitingForBuild = bridge.whenPagesAvailable(page);
+                    return false;
+                }
                 groupStartPage = -1;
                 groupLoaded = true;
-                return;
+                releaseCompletedBuildPages(buildPages.size());
+                return true;
             }
 
             if (compareKeys(buildPages.get(page), pos, probePage, probePos) == 0) {
                 groupStartPage = page;
                 groupStartPos = pos;
-                // advance the scan cursor past the group
-                int endPage = page;
-                int endPos = pos;
-                while (endPage < buildPages.size()) {
-                    Page buildPage = buildPages.get(endPage);
-                    if (endPos >= buildPage.getPositionCount()) {
-                        endPage++;
-                        endPos = 0;
-                        continue;
-                    }
-                    if (buildKeys.isUnmatchable(buildPage, endPos)) {
-                        endPos++;
-                        continue;
-                    }
-                    if (compareKeys(buildPage, endPos, probePage, probePos) == 0) {
-                        endPos++;
-                        continue;
-                    }
-                    break;
-                }
-                scanPage = endPage;
-                scanPos = endPos;
+                statistics.recordKeyGroup();
+                groupScanPage = page;
+                groupScanPos = pos;
+                groupScanRows = 0;
+                groupScanActive = true;
+                return finishGroupScan();
             }
             else {
                 groupStartPage = -1;
+                releaseCompletedBuildPages(scanPage);
             }
             groupLoaded = true;
+            return true;
+        }
+
+        private boolean finishGroupScan()
+        {
+            while (groupScanPage < buildPages.size()) {
+                Page buildPage = buildPages.get(groupScanPage);
+                if (groupScanPos >= buildPage.getPositionCount()) {
+                    groupScanPage++;
+                    groupScanPos = 0;
+                    continue;
+                }
+                if (buildKeys.isUnmatchable(buildPage, groupScanPos)
+                        || compareKeys(buildPage, groupScanPos, probePage, probePos) != 0) {
+                    break;
+                }
+                groupScanRows++;
+                groupScanPos++;
+            }
+            if (groupScanPage >= buildPages.size() && !bridge.isFinished()) {
+                waitingForBuild = bridge.whenPagesAvailable(groupScanPage);
+                return false;
+            }
+            scanPage = groupScanPage;
+            scanPos = groupScanPos;
+            if (isBuildOuter()) {
+                if (groupScanRows < Integer.MAX_VALUE - 8 && userMemoryContext.trySetBytes(groupScanRows)) {
+                    buildRowMatched = new boolean[(int) groupScanRows];
+                }
+                else {
+                    if (!bridge.canCreateMatchFile()
+                            || !userMemoryContext.trySetBytes(DiskBackedMatchBitmap.BUFFER_SIZE)) {
+                        throw new TrinoException(EXCEEDED_LOCAL_MEMORY_LIMIT, "Merge join key group does not fit in memory");
+                    }
+                    diskRowMatched = new DiskBackedMatchBitmap(bridge.createMatchFile(), groupScanRows, bridge::updateMatchFileBytes);
+                }
+                drainPage = groupStartPage;
+                drainPos = groupStartPos;
+                drainGroupOrdinal = 0;
+            }
+            releaseCompletedBuildPages(groupStartPage);
+            groupScanActive = false;
+            groupLoaded = true;
+            return true;
+        }
+
+        private void releaseCompletedBuildPages(int firstNeededPage)
+        {
+            bridge.releaseBefore(firstNeededPage);
+        }
+
+        private boolean drainMatchedGroup()
+        {
+            if (buildRowMatched == null && diskRowMatched == null) {
+                return true;
+            }
+            while ((drainPage < scanPage || (drainPage == scanPage && drainPos < scanPos)) && !pageBuilder.isFull()) {
+                Page buildPage = buildPages.get(drainPage);
+                if (drainPos == buildPage.getPositionCount()) {
+                    drainPage++;
+                    drainPos = 0;
+                    releaseCompletedBuildPages(drainPage);
+                    continue;
+                }
+                if (!isBuildRowMatched(drainGroupOrdinal)) {
+                    appendUnmatchedBuildRow(buildPage, drainPos);
+                }
+                drainPos++;
+                drainGroupOrdinal++;
+            }
+            if (drainPage != scanPage || drainPos != scanPos) {
+                return false;
+            }
+            buildRowMatched = null;
+            if (diskRowMatched != null) {
+                diskRowMatched.close();
+                diskRowMatched = null;
+            }
+            groupStartPage = -1;
+            userMemoryContext.setBytes(0);
+            releaseCompletedBuildPages(drainPage);
+            return true;
+        }
+
+        private boolean isBuildRowMatched(long position)
+        {
+            if (buildRowMatched != null) {
+                return buildRowMatched[(int) position];
+            }
+            return diskRowMatched.isMarked(position);
+        }
+
+        public void close()
+        {
+            if (!probeChunk.isEmpty()) {
+                clearProbeChunk();
+            }
+            if (diskRowMatched != null) {
+                diskRowMatched.close();
+                diskRowMatched = null;
+            }
+        }
+
+        private void drainRemainingBuildRows()
+        {
+            while (drainPage < buildPages.size() && !pageBuilder.isFull()) {
+                Page buildPage = buildPages.get(drainPage);
+                if (drainPos == buildPage.getPositionCount()) {
+                    drainPage++;
+                    drainPos = 0;
+                    releaseCompletedBuildPages(drainPage);
+                    continue;
+                }
+                appendUnmatchedBuildRow(buildPage, drainPos);
+                drainPos++;
+            }
+        }
+
+        private void appendUnmatchedBuildRow(Page buildPage, int position)
+        {
+            pageBuilder.declarePosition();
+            appendNullProbeRow();
+            appendBuildRow(buildPage, position);
+            statistics.recordOutputRow();
+        }
+
+        private boolean isBuildOuter()
+        {
+            return factory.joinType == JoinType.RIGHT || factory.joinType == JoinType.FULL;
+        }
+
+        private boolean isProbeOuter()
+        {
+            return factory.joinType == JoinType.LEFT || factory.joinType == JoinType.FULL;
         }
 
         private boolean isInGroup(int page, int pos)
@@ -581,14 +1081,9 @@ public class MergeJoinOperatorFactory
         private void advanceProbe()
         {
             probePos++;
-            // the current group can be reused by the next probe row only when its key
-            // equals the group key; otherwise the group is re-discovered on demand
-            // (the scan cursor already rests just past the previous group)
-            groupLoaded = groupStartPage >= 0
-                    && probePage != null
-                    && probePos < probePage.getPositionCount()
-                    && !probeKeys.isUnmatchable(probePage, probePos)
-                    && compareKeys(buildPages.get(groupStartPage), groupStartPos, probePage, probePos) == 0;
+            probeRowInProgress = false;
+            // Keep the group across page boundaries; the next row checks its key before reuse.
+            groupLoaded = groupStartPage >= 0;
         }
 
         /**
@@ -605,6 +1100,21 @@ public class MergeJoinOperatorFactory
                         buildPos,
                         probePage.getBlock(probeKeys.channels.get(i)),
                         probePos);
+                if (cmp != 0) {
+                    return cmp;
+                }
+            }
+            return 0;
+        }
+
+        private int compareProbeKeys(Page leftPage, int leftPos, Page rightPage, int rightPos)
+        {
+            for (int i = 0; i < keyComparators.length; i++) {
+                int cmp = (int) keyComparators[i].compare(
+                        leftPage.getBlock(probeKeys.channels.get(i)),
+                        leftPos,
+                        rightPage.getBlock(probeKeys.channels.get(i)),
+                        rightPos);
                 if (cmp != 0) {
                     return cmp;
                 }
@@ -646,6 +1156,39 @@ public class MergeJoinOperatorFactory
             for (int channel = 0; channel < factory.probeOutputChannels.size(); channel++) {
                 pageBuilder.getBlockBuilder(channel).appendNull();
             }
+        }
+    }
+
+    /**
+     * A filter only needs the build row being tested. Reusing one address also avoids
+     * indexing a large group by an int-sized ordinal.
+     */
+    private static final class CurrentBuildAddress
+            extends LongArrayList
+    {
+        private long address;
+
+        private CurrentBuildAddress()
+        {
+            super(0);
+        }
+
+        public void set(int page, int position)
+        {
+            address = (((long) page) << 32) | position;
+        }
+
+        @Override
+        public int size()
+        {
+            return 1;
+        }
+
+        @Override
+        public long getLong(int index)
+        {
+            checkArgument(index == 0, "filter address index is out of bounds: %s", index);
+            return address;
         }
     }
 

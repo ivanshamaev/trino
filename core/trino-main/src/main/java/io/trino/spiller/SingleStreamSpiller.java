@@ -49,6 +49,15 @@ public interface SingleStreamSpiller
     Iterator<Page> getSpilledPages();
 
     /**
+     * Opens a new sequential reader starting at the specified page. Implementations
+     * supporting replay close the previous replay reader before opening a new one.
+     */
+    default Iterator<Page> getSpilledPagesFrom(int pageIndex)
+    {
+        throw new UnsupportedOperationException("Replay of spilled pages is not supported");
+    }
+
+    /**
      * Returns estimate size of pages that would be returned by {@link #getAllSpilledPages()}.
      */
     long getSpilledPagesInMemorySize();

@@ -41,7 +41,6 @@ import io.trino.sql.ir.Reference;
 import io.trino.sql.planner.NodePartitioningManager;
 import io.trino.sql.planner.OrderingScheme;
 import io.trino.sql.planner.Partitioning;
-import io.trino.sql.planner.Partitioning.ArgumentBinding;
 import io.trino.sql.planner.PartitioningHandle;
 import io.trino.sql.planner.PartitioningScheme;
 import io.trino.sql.planner.PlanNodeIdAllocator;
@@ -105,6 +104,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -140,7 +140,6 @@ import static io.trino.sql.planner.plan.ExchangeNode.Type.GATHER;
 import static io.trino.sql.planner.plan.ExchangeNode.Type.REPARTITION;
 import static io.trino.sql.planner.plan.ExchangeNode.gatheringExchange;
 import static io.trino.sql.planner.plan.ExchangeNode.mergingExchange;
-import static io.trino.sql.planner.plan.ExchangeNode.mergingPartitionedExchange;
 import static io.trino.sql.planner.plan.ExchangeNode.partitionedExchange;
 import static io.trino.sql.planner.plan.ExchangeNode.replicatedExchange;
 import static io.trino.sql.planner.plan.ExchangeNode.roundRobinExchange;
@@ -1019,21 +1018,18 @@ public class AddExchanges
 
             verify(left.getProperties().isCompatibleTablePartitioningWith(right.getProperties(), leftToRight::get, plannerContext.getMetadata(), session));
 
-            // Merge join: both sides must be sorted by the equi-criteria in the canonical order.
-            // When a REPARTITION exchange is needed, use a partitioned merging exchange that
-            // preserves ordering per partition (the sort runs on the source side via the
-            // distributed sort machinery); otherwise, sort inside the join stage.
-            if (node.getAlgorithm().isPresent()) {
-                left = withCanonicalSort(left, leftSymbols);
-                right = withCanonicalSort(right, rightSymbols);
-            }
-
             // if colocated joins are disabled, force redistribute when using a custom partitioning
             if (!isColocatedJoinEnabled(session) && hasMultipleSources(left.getNode(), right.getNode())) {
                 Partitioning rightPartitioning = left.getProperties().translate(createTranslator(leftToRight)).getNodePartitioning().get();
                 right = withDerivedProperties(
                         partitionedExchange(idAllocator.getNextId(), REMOTE, right.getNode(), new PartitioningScheme(rightPartitioning, right.getNode().getOutputSymbols())),
                         right.getProperties());
+            }
+
+            // Sort after the last repartition so neither side loses its ordering.
+            if (node.getAlgorithm().isPresent()) {
+                left = withCanonicalSort(left, leftSymbols);
+                right = withCanonicalSort(right, rightSymbols);
             }
 
             return buildJoin(node, left, right, JoinNode.DistributionType.PARTITIONED);
@@ -1054,17 +1050,25 @@ public class AddExchanges
             if (node instanceof ExchangeNode exchange
                     && exchange.getScope() == REMOTE
                     && exchange.getType() == ExchangeNode.Type.REPARTITION
+                    && exchange.getSources().size() == 1
                     && exchange.getOrderingScheme().isEmpty()) {
                 PlanNode source = exchange.getSources().get(0);
-                // partial sort on the source side (distributed sort handles parallelism)
-                SortNode partialSort = new SortNode(idAllocator.getNextId(), source, orderingScheme, true);
-                List<Symbol> partitioningSymbols = exchange.getPartitioningScheme().getPartitioning().getArguments().stream()
-                        .map(ArgumentBinding::getColumn)
+                List<Symbol> outputLayout = exchange.getPartitioningScheme().getOutputLayout();
+                List<Symbol> inputLayout = exchange.getInputs().get(0);
+                Map<Symbol, Symbol> outputToInput = IntStream.range(0, outputLayout.size())
+                        .boxed()
+                        .collect(toImmutableMap(outputLayout::get, inputLayout::get));
+                List<Symbol> sourceKeys = keySymbols.stream()
+                        .map(outputToInput::get)
                         .collect(toImmutableList());
+                OrderingScheme sourceOrdering = new OrderingScheme(
+                        sourceKeys,
+                        sourceKeys.stream().collect(toImmutableMap(symbol -> symbol, _ -> SortOrder.ASC_NULLS_LAST)));
+                // partial sort on the source side (distributed sort handles parallelism)
+                SortNode partialSort = new SortNode(idAllocator.getNextId(), source, sourceOrdering, true);
                 ExchangeNode mergingExchange = ExchangeNode.mergingPartitionedExchange(
-                        exchange.getId(),
+                        exchange,
                         partialSort,
-                        partitioningSymbols,
                         orderingScheme);
                 ActualProperties properties = ActualProperties.builderFrom(side.getProperties())
                         .local(orderingScheme.toLocalProperties())

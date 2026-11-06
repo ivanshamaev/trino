@@ -31,7 +31,10 @@ import io.trino.spi.connector.ConnectorTableProperties;
 import io.trino.spi.connector.ConnectorTransactionHandle;
 import io.trino.spi.predicate.TupleDomain;
 import io.trino.spi.type.Type;
+import io.trino.sql.planner.Plan;
 import io.trino.sql.planner.assertions.BasePlanTest;
+import io.trino.sql.planner.plan.ExchangeNode;
+import io.trino.sql.planner.plan.JoinNode;
 import io.trino.testing.PlanTester;
 import org.junit.jupiter.api.Test;
 
@@ -43,19 +46,26 @@ import java.util.function.ToIntFunction;
 import static io.trino.SystemSessionProperties.COLOCATED_JOIN;
 import static io.trino.SystemSessionProperties.JOIN_DISTRIBUTION_TYPE;
 import static io.trino.SystemSessionProperties.JOIN_REORDERING_STRATEGY;
+import static io.trino.SystemSessionProperties.PREFER_MERGE_JOIN;
 import static io.trino.SystemSessionProperties.TABLE_SCAN_NODE_PARTITIONING_MIN_BUCKET_TO_TASK_RATIO;
 import static io.trino.SystemSessionProperties.TASK_CONCURRENCY;
+import static io.trino.execution.querystats.PlanOptimizersStatsCollector.createPlanOptimizersStatsCollector;
+import static io.trino.execution.warnings.WarningCollector.NOOP;
 import static io.trino.spi.connector.ConnectorBucketNodeMap.createBucketNodeMap;
 import static io.trino.spi.type.BigintType.BIGINT;
 import static io.trino.spi.type.VarcharType.VARCHAR;
+import static io.trino.sql.planner.LogicalPlanner.Stage.OPTIMIZED_AND_VALIDATED;
 import static io.trino.sql.planner.OptimizerConfig.JoinDistributionType.BROADCAST;
+import static io.trino.sql.planner.OptimizerConfig.JoinDistributionType.PARTITIONED;
 import static io.trino.sql.planner.OptimizerConfig.JoinReorderingStrategy.NONE;
+import static io.trino.sql.planner.SystemPartitioningHandle.FIXED_HASH_DISTRIBUTION;
 import static io.trino.sql.planner.assertions.PlanMatchPattern.anyTree;
 import static io.trino.sql.planner.assertions.PlanMatchPattern.exchange;
 import static io.trino.sql.planner.assertions.PlanMatchPattern.tableScan;
 import static io.trino.sql.planner.plan.ExchangeNode.Scope.LOCAL;
 import static io.trino.sql.planner.plan.ExchangeNode.Scope.REMOTE;
 import static io.trino.testing.TestingSession.testSessionBuilder;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TestColocatedJoin
         extends BasePlanTest
@@ -165,6 +175,37 @@ public class TestColocatedJoin
                         exchange(
                                 LOCAL,
                                 tableScan("orders"))));
+    }
+
+    @Test
+    public void testMergeJoinPreservesOrderedConnectorPartitioning()
+    {
+        Session session = Session.builder(getPlanTester().getDefaultSession())
+                .setSystemProperty(JOIN_REORDERING_STRATEGY, NONE.name())
+                .setSystemProperty(JOIN_DISTRIBUTION_TYPE, PARTITIONED.name())
+                .setSystemProperty(PREFER_MERGE_JOIN, "FORCE")
+                .setSystemProperty(TABLE_SCAN_NODE_PARTITIONING_MIN_BUCKET_TO_TASK_RATIO, "0.01")
+                .setSystemProperty(COLOCATED_JOIN, "false")
+                .build();
+
+        Plan plan = getPlanTester().inTransaction(session, transactionSession ->
+                getPlanTester().createPlan(
+                        transactionSession,
+                        "SELECT l.column_a, r.column_b FROM orders l JOIN orders r ON l.column_a = r.column_a",
+                        getPlanTester().getPlanOptimizers(false),
+                        OPTIMIZED_AND_VALIDATED,
+                        NOOP,
+                        createPlanOptimizersStatsCollector()));
+        JoinNode mergeJoin = (JoinNode) PlanNodeSearcher.searchFrom(plan.getRoot())
+                .where(node -> node instanceof JoinNode join && join.getAlgorithm().isPresent())
+                .findOnlyElement();
+        ExchangeNode rightExchange = (ExchangeNode) PlanNodeSearcher.searchFrom(mergeJoin.getRight())
+                .where(node -> node instanceof ExchangeNode exchange && exchange.getScope() == REMOTE)
+                .findFirst()
+                .orElseThrow();
+
+        assertThat(rightExchange.getOrderingScheme()).isPresent();
+        assertThat(rightExchange.getPartitioningScheme().getPartitioning().getHandle()).isNotEqualTo(FIXED_HASH_DISTRIBUTION);
     }
 
     private Session prepareSession(double tableScanNodePartitioningMinBucketToTaskRatio, boolean colocatedJoinEnabled)

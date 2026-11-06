@@ -36,7 +36,8 @@ public class StandardJoinFilterFunction
     {
         this.filterFunction = requireNonNull(filterFunction, "filterFunction cannot be null");
         this.addresses = requireNonNull(addresses, "addresses is null");
-        this.pages = ImmutableList.copyOf(requireNonNull(pages, "pages is null"));
+        requireNonNull(pages, "pages is null");
+        this.pages = pages instanceof NonCopyingPageList ? pages : ImmutableList.copyOf(pages);
     }
 
     @Override
