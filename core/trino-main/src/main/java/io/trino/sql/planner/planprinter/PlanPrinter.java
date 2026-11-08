@@ -1468,7 +1468,7 @@ public class PlanPrinter
         public Void visitSort(SortNode node, Context context)
         {
             addNode(node,
-                    format("%sSort", node.isPartial() ? "Partial" : ""),
+                    format("%s%s", node.isPartial() ? "Partial" : "", node.isInputPagesPreSorted() ? "MergeSortedPages" : "Sort"),
                     ImmutableMap.of("orderBy", formatOrderingScheme(node.getOrderingScheme())),
                     context);
 

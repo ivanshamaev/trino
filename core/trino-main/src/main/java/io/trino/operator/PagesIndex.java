@@ -51,6 +51,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
+import java.util.PriorityQueue;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -60,6 +61,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.airlift.slice.SizeOf.instanceSize;
 import static io.airlift.slice.SizeOf.sizeOf;
+import static io.airlift.slice.SizeOf.sizeOfObjectArray;
 import static io.trino.operator.HashArraySizeSupplier.defaultHashArraySizeSupplier;
 import static io.trino.operator.SyntheticAddress.decodePosition;
 import static io.trino.operator.SyntheticAddress.decodeSliceIndex;
@@ -419,6 +421,53 @@ public class PagesIndex
     public void sort(PagesIndexOrdering pagesIndexOrdering)
     {
         sort(pagesIndexOrdering, 0, getPositionCount());
+    }
+
+    public long getEstimatedMergeMemorySize()
+    {
+        return 128 + instanceSize(PriorityQueue.class) + sizeOfObjectArray(Math.max(pageCount, 1))
+                + (long) pageCount * (instanceSize(SortedPageCursor.class) + instanceSize(Page.class) + 2 * sizeOfObjectArray(types.size()));
+    }
+
+    /**
+     * Merges physically sorted input pages directly into the existing address array.
+     * Cursors address blocks independently of that array, so overwriting it needs
+     * no second array proportional to the number of rows.
+     */
+    public void mergeSortedPages(PageWithPositionComparator comparator)
+    {
+        modificationCount++;
+        PriorityQueue<SortedPageCursor> cursors = new PriorityQueue<>(
+                Math.max(pageCount, 1),
+                (left, right) -> comparator.compareTo(left.page, left.position, right.page, right.position));
+        for (int pageIndex = 0; pageIndex < pageCount; pageIndex++) {
+            Block[] blocks = new Block[channels.length];
+            for (int channel = 0; channel < channels.length; channel++) {
+                blocks[channel] = channels[channel].get(pageIndex);
+            }
+            cursors.add(new SortedPageCursor(pageIndex, new Page(positionCounts.getInt(pageIndex), blocks)));
+        }
+        int outputPosition = 0;
+        while (!cursors.isEmpty()) {
+            SortedPageCursor cursor = cursors.remove();
+            valueAddresses.set(outputPosition++, encodeSyntheticAddress(cursor.pageIndex, cursor.position++));
+            if (cursor.position < cursor.page.getPositionCount()) {
+                cursors.add(cursor);
+            }
+        }
+    }
+
+    private static final class SortedPageCursor
+    {
+        private final int pageIndex;
+        private final Page page;
+        private int position;
+
+        private SortedPageCursor(int pageIndex, Page page)
+        {
+            this.pageIndex = pageIndex;
+            this.page = page;
+        }
     }
 
     public void sort(PagesIndexOrdering pagesIndexOrdering, int startPosition, int endPosition)

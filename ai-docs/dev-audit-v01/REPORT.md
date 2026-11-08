@@ -1,5 +1,7 @@
 # Аудит реализации Sorted Merge Join
 
+> Исторический аудит исходного HEAD от 2026-11-05. Доработки и финальные проверки от 2026-11-08 описаны в [COMPLETION_REPORT.md](COMPLETION_REPORT.md); все пункты [IMPLEMENTATION_CHECKLIST.md](IMPLEMENTATION_CHECKLIST.md) закрыты.
+
 Дата: 2026-11-05. Ветка: `smj-plan`, HEAD `1d7ab12541e`, база сравнения `master` (`e112ffdf730`). Это аудит исходников, а не повторение отметок checklist. Рассмотрены план `ai-docs/smj-plan-dev/`, `ai-docs/dev_todo_list.md`, связанный корпус `ai-docs/smj-research*`, Java-код оператора, планировщика, обменов, Iceberg и их тесты. `hs_err_pid*.log` не читались.
 
 Основные исходники: [merge-оператор](../../core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java), [build-оператор](../../core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinBufferOperatorFactory.java), [мост](../../core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinBridge.java), [правило выбора](../../core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/DetermineJoinAlgorithm.java), [обмены](../../core/trino-main/src/main/java/io/trino/sql/planner/optimizations/AddExchanges.java), [локальное планирование](../../core/trino-main/src/main/java/io/trino/sql/planner/LocalExecutionPlanner.java), [Iceberg sortedness](../../plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergMetadata.java). Номера строк ниже относятся к указанному HEAD.

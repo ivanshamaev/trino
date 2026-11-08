@@ -1896,7 +1896,8 @@ public class LocalExecutionPlanner
                     pagesIndexFactory,
                     spillEnabled,
                     Optional.of(spillerFactory),
-                    orderingCompiler);
+                    orderingCompiler,
+                    node.isInputPagesPreSorted());
 
             return new PhysicalOperation(operator, source.getLayout(), source);
         }

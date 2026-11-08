@@ -1065,7 +1065,10 @@ public class AddExchanges
                         sourceKeys,
                         sourceKeys.stream().collect(toImmutableMap(symbol -> symbol, _ -> SortOrder.ASC_NULLS_LAST)));
                 // partial sort on the source side (distributed sort handles parallelism)
-                SortNode partialSort = new SortNode(idAllocator.getNextId(), source, sourceOrdering, true);
+                boolean inputPagesPreSorted = LocalProperties.match(
+                                derivePropertiesRecursively(source).getLocalProperties(), sourceOrdering.toLocalProperties()).stream()
+                        .allMatch(Optional::isEmpty);
+                SortNode partialSort = new SortNode(idAllocator.getNextId(), source, sourceOrdering, true, inputPagesPreSorted);
                 ExchangeNode mergingExchange = ExchangeNode.mergingPartitionedExchange(
                         exchange,
                         partialSort,
@@ -1077,7 +1080,9 @@ public class AddExchanges
             }
 
             // Fallback: SortNode after the exchange (inside the join stage)
-            PlanNode sort = new SortNode(idAllocator.getNextId(), node, orderingScheme, false);
+            boolean inputPagesPreSorted = LocalProperties.match(side.getProperties().getLocalProperties(), orderingScheme.toLocalProperties()).stream()
+                    .allMatch(Optional::isEmpty);
+            PlanNode sort = new SortNode(idAllocator.getNextId(), node, orderingScheme, false, inputPagesPreSorted);
             ActualProperties properties = ActualProperties.builderFrom(side.getProperties())
                     .local(orderingScheme.toLocalProperties())
                     .build();

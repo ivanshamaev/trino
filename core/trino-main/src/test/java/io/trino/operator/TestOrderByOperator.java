@@ -14,11 +14,16 @@
 package io.trino.operator;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 import io.airlift.units.DataSize;
 import io.trino.ExceededMemoryLimitException;
 import io.trino.operator.OrderByOperator.OrderByOperatorFactory;
+import io.trino.plugin.base.metrics.LongCount;
 import io.trino.spi.Page;
 import io.trino.spi.type.TypeOperators;
+import io.trino.spiller.Spiller;
+import io.trino.spiller.SpillerFactory;
 import io.trino.sql.gen.OrderingCompiler;
 import io.trino.sql.planner.plan.PlanNodeId;
 import io.trino.testing.MaterializedResult;
@@ -28,6 +33,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.parallel.Execution;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
@@ -68,6 +74,133 @@ public class TestOrderByOperator
     {
         executor.shutdownNow();
         scheduledExecutor.shutdownNow();
+    }
+
+    @Test
+    public void testFinishWaitsForAsynchronousSpill()
+            throws Exception
+    {
+        SettableFuture<DataSize> pending = SettableFuture.create();
+        DummySpillerFactory delegateFactory = new DummySpillerFactory();
+        SpillerFactory spillerFactory = (types, spill, memory) -> {
+            Spiller delegate = delegateFactory.create(types, spill, memory);
+            return new Spiller()
+            {
+                @Override
+                public ListenableFuture<DataSize> spill(Iterator<Page> pages)
+                {
+                    delegate.spill(pages);
+                    return pending;
+                }
+
+                @Override
+                public List<Iterator<Page>> getSpills()
+                {
+                    return delegate.getSpills();
+                }
+
+                @Override
+                public void close()
+                {
+                    delegate.close();
+                }
+            };
+        };
+        OrderByOperatorFactory factory = new OrderByOperatorFactory(
+                0,
+                new PlanNodeId("asyncSort"),
+                ImmutableList.of(BIGINT),
+                ImmutableList.of(0),
+                10,
+                ImmutableList.of(0),
+                ImmutableList.of(ASC_NULLS_LAST),
+                new PagesIndex.TestingFactory(false),
+                true,
+                Optional.of(spillerFactory),
+                new OrderingCompiler(typeOperators));
+        Operator operator = factory.createOperator(createDriverContext(0));
+        try {
+            operator.addInput(rowPagesBuilder(BIGINT).row(2L).row(1L).build().getFirst());
+            operator.finish();
+            assertThat(operator.needsInput()).isFalse();
+            assertThat(operator.isBlocked().isDone()).isFalse();
+            assertThat(operator.getOutput()).isNull();
+            pending.set(DataSize.ofBytes(0));
+            operator.finish();
+            assertThat(toMaterializedResult(ImmutableList.of(BIGINT), OperatorAssertion.finishOperator(operator)))
+                    .containsExactlyElementsOf(resultBuilder(BIGINT).row(1L).row(2L).build());
+        }
+        finally {
+            operator.close();
+            factory.noMoreOperators();
+        }
+    }
+
+    @Test
+    public void testMergePreSortedPagesWithSpillAndFallback()
+    {
+        for (boolean spill : ImmutableList.of(false, true)) {
+            for (boolean invalidPage : ImmutableList.of(false, true)) {
+                List<Page> input = rowPagesBuilder(BIGINT, VARCHAR)
+                        .row(2L, "b").row(4L, "d").row(null, "z")
+                        .pageBreak()
+                        .row(1L, "a").row(2L, "c")
+                        .pageBreak()
+                        .row(invalidPage ? 6L : 3L, "e").row(invalidPage ? 3L : 6L, "f")
+                        .build();
+                DummySpillerFactory spillerFactory = new DummySpillerFactory();
+                OrderByOperatorFactory factory = new OrderByOperatorFactory(
+                        0,
+                        new PlanNodeId("mergeSortedPages"),
+                        ImmutableList.of(BIGINT, VARCHAR),
+                        ImmutableList.of(0, 1),
+                        10,
+                        ImmutableList.of(0, 1),
+                        ImmutableList.of(ASC_NULLS_LAST, ASC_NULLS_LAST),
+                        new PagesIndex.TestingFactory(false),
+                        spill,
+                        Optional.of(spillerFactory),
+                        new OrderingCompiler(typeOperators),
+                        true);
+                MaterializedResult expected = resultBuilder(BIGINT, VARCHAR)
+                        .row(1L, "a").row(2L, "b").row(2L, "c")
+                        .row(3L, invalidPage ? "f" : "e").row(4L, "d")
+                        .row(6L, invalidPage ? "e" : "f").row(null, "z").build();
+                DriverContext driverContext = createDriverContext(1_000_000);
+                assertOperatorEquals(factory, driverContext, input, expected, spill);
+                assertThat(spillerFactory.getSpillsCount() > 0).isEqualTo(spill);
+                var metrics = driverContext.getOperatorContexts().get(0).getOperatorStats().getMetrics().getMetrics();
+                long fallbackRows = ((LongCount) metrics.get("Fallback sorted input rows")).getTotal();
+                assertThat(fallbackRows > 0).isEqualTo(invalidPage);
+                if (!invalidPage) {
+                    assertThat(((LongCount) metrics.get("Merged pre-sorted input rows")).getTotal()).isEqualTo(7);
+                }
+            }
+        }
+    }
+
+    @Test
+    public void testPreSortedPagesFallBackWithoutCursorMemory()
+    {
+        List<Page> input = rowPagesBuilder(BIGINT).row(2L).row(4L).pageBreak().row(1L).row(3L).build();
+        OrderByOperatorFactory factory = new OrderByOperatorFactory(
+                0,
+                new PlanNodeId("mergeSortedPages"),
+                ImmutableList.of(BIGINT),
+                ImmutableList.of(0),
+                10,
+                ImmutableList.of(0),
+                ImmutableList.of(ASC_NULLS_LAST),
+                new PagesIndex.TestingFactory(false),
+                false,
+                Optional.empty(),
+                new OrderingCompiler(typeOperators),
+                true);
+        DriverContext driverContext = createDriverContext(0);
+        assertOperatorEquals(factory, driverContext, input, resultBuilder(BIGINT).row(1L).row(2L).row(3L).row(4L).build());
+        var metrics = driverContext.getOperatorContexts().get(0).getOperatorStats().getMetrics().getMetrics();
+        assertThat(((LongCount) metrics.get("Fallback sorted input rows")).getTotal()).isEqualTo(4);
+        assertThat(((LongCount) metrics.get("Merged pre-sorted input rows")).getTotal()).isZero();
     }
 
     @Test

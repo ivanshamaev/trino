@@ -14,8 +14,14 @@
 package io.trino.sql.planner.iterative.rule;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableListMultimap;
+import io.trino.cost.CostComparator;
+import io.trino.cost.PlanNodeStatsEstimate;
+import io.trino.cost.SymbolStatsEstimate;
+import io.trino.cost.TaskCountEstimator;
 import io.trino.spi.type.DoubleType;
 import io.trino.sql.ir.ComparisonOperator;
+import io.trino.sql.planner.Symbol;
 import io.trino.sql.planner.assertions.MatchContext;
 import io.trino.sql.planner.assertions.MatchResult;
 import io.trino.sql.planner.assertions.Matcher;
@@ -29,6 +35,8 @@ import io.trino.sql.planner.plan.JoinNode.EquiJoinClause;
 import io.trino.sql.planner.plan.JoinNode.JoinAlgorithm;
 import io.trino.sql.planner.plan.JoinType;
 import io.trino.sql.planner.plan.PlanNode;
+import io.trino.sql.planner.plan.PlanNodeId;
+import io.trino.sql.planner.plan.UnionNode;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -46,6 +54,7 @@ import static io.trino.sql.planner.plan.JoinType.FULL;
 import static io.trino.sql.planner.plan.JoinType.INNER;
 import static io.trino.sql.planner.plan.JoinType.LEFT;
 import static io.trino.sql.planner.plan.JoinType.RIGHT;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestDetermineJoinAlgorithm
@@ -66,12 +75,11 @@ public class TestDetermineJoinAlgorithm
     }
 
     @Test
-    public void testCostBasedIsDisabledUntilCostModelIsCalibrated()
+    public void testCostBasedKeepsHashForUnknownStatistics()
     {
-        // Bounded replay is available, but automatic selection still requires a
-        // calibrated cost model for sorting, network, and spill.
         assertRule()
                 .setSystemProperty(PREFER_MERGE_JOIN, "COST_BASED")
+                .setSystemProperty("spill_enabled", "true")
                 .on(p -> p.join(
                         INNER,
                         PARTITIONED,
@@ -79,6 +87,135 @@ public class TestDetermineJoinAlgorithm
                         p.values(p.symbol("R1", BIGINT)),
                         equi(p)))
                 .doesNotFire();
+    }
+
+    @Test
+    public void testCostBasedSelectsBoundedFullJoinUnderMemoryPressure()
+    {
+        costBasedRule(1)
+                .setSystemProperty("spill_enabled", "true")
+                .setSystemProperty("query_max_memory_per_node", "1MB")
+                .on(p -> p.join(
+                        FULL,
+                        PARTITIONED,
+                        p.values(new PlanNodeId("probe"), p.symbol("L1", BIGINT)),
+                        p.values(new PlanNodeId("build"), p.symbol("R1", BIGINT)),
+                        equi(p)))
+                .matches(mergeJoinAlgorithm());
+    }
+
+    @Test
+    public void testCostBasedAccountsForWorkerCount()
+    {
+        costBasedRule(100)
+                .setSystemProperty("spill_enabled", "true")
+                .setSystemProperty("query_max_memory_per_node", "10MB")
+                .on(p -> p.join(
+                        FULL,
+                        PARTITIONED,
+                        p.values(new PlanNodeId("probe"), p.symbol("L1", BIGINT)),
+                        p.values(new PlanNodeId("build"), p.symbol("R1", BIGINT)),
+                        equi(p)))
+                .doesNotFire();
+    }
+
+    @Test
+    public void testCostBasedRequiresSpillForBoundedMemory()
+    {
+        costBasedRule(1)
+                .setSystemProperty("spill_enabled", "false")
+                .setSystemProperty("query_max_memory_per_node", "1MB")
+                .on(p -> p.join(
+                        FULL,
+                        PARTITIONED,
+                        p.values(new PlanNodeId("probe"), p.symbol("L1", BIGINT)),
+                        p.values(new PlanNodeId("build"), p.symbol("R1", BIGINT)),
+                        equi(p)))
+                .doesNotFire();
+    }
+
+    @Test
+    public void testCostBasedKeepsHashWhenUnsortedBuildFits()
+    {
+        costBasedRule(1)
+                .setSystemProperty("spill_enabled", "true")
+                .setSystemProperty("query_max_memory_per_node", "1GB")
+                .on(p -> p.join(
+                        INNER,
+                        PARTITIONED,
+                        p.values(new PlanNodeId("probe"), p.symbol("L1", BIGINT)),
+                        p.values(new PlanNodeId("build"), p.symbol("R1", BIGINT)),
+                        equi(p)))
+                .doesNotFire();
+    }
+
+    @Test
+    public void testCostBasedKeepsHashWithoutKeyCardinality()
+    {
+        costBasedRule(1)
+                .setSystemProperty("spill_enabled", "true")
+                .setSystemProperty("query_max_memory_per_node", "1MB")
+                .overrideStats("build", PlanNodeStatsEstimate.builder().setOutputRowCount(1_000_000).build())
+                .on(p -> p.join(
+                        FULL,
+                        PARTITIONED,
+                        p.values(new PlanNodeId("probe"), p.symbol("L1", BIGINT)),
+                        p.values(new PlanNodeId("build"), p.symbol("R1", BIGINT)),
+                        equi(p)))
+                .doesNotFire();
+    }
+
+    @Test
+    public void testCostBasedHandlesUnionBeforeExchanges()
+    {
+        costBasedRule(1)
+                .setSystemProperty("spill_enabled", "true")
+                .setSystemProperty("query_max_memory_per_node", "1GB")
+                .on(p -> p.join(
+                        INNER,
+                        PARTITIONED,
+                        new UnionNode(
+                                new PlanNodeId("probe"),
+                                ImmutableList.of(p.values(p.symbol("branch_a", BIGINT)), p.values(p.symbol("branch_b", BIGINT))),
+                                ImmutableListMultimap.of(p.symbol("L1", BIGINT), p.symbol("branch_a", BIGINT), p.symbol("L1", BIGINT), p.symbol("branch_b", BIGINT)),
+                                ImmutableList.of(p.symbol("L1", BIGINT))),
+                        p.values(new PlanNodeId("build"), p.symbol("R1", BIGINT)),
+                        equi(p)))
+                .doesNotFire();
+    }
+
+    @Test
+    public void testInvalidCostMargin()
+    {
+        for (String margin : ImmutableList.of("-0.1", "1", "NaN", "Infinity")) {
+            assertThatThrownBy(() -> costBasedRule(1)
+                    .setSystemProperty("spill_enabled", "true")
+                    .setSystemProperty("query_max_memory_per_node", "1MB")
+                    .setSystemProperty("merge_join_cost_margin", margin)
+                    .on(p -> p.join(
+                            FULL,
+                            PARTITIONED,
+                            p.values(new PlanNodeId("probe"), p.symbol("L1", BIGINT)),
+                            p.values(new PlanNodeId("build"), p.symbol("R1", BIGINT)),
+                            equi(p)))
+                    .matches(mergeJoinAlgorithm()))
+                    .hasMessageContaining("merge_join_cost_margin");
+        }
+    }
+
+    private RuleBuilder costBasedRule(int workers)
+    {
+        return tester.assertThat(new DetermineJoinAlgorithm(tester.getPlannerContext(), new CostComparator(75, 10, 15), new TaskCountEstimator(() -> workers)))
+                .setSystemProperty(PREFER_MERGE_JOIN, "COST_BASED")
+                .overrideStats("probe", statistics("L1"))
+                .overrideStats("build", statistics("R1"));
+    }
+
+    private static PlanNodeStatsEstimate statistics(String name)
+    {
+        return PlanNodeStatsEstimate.builder().setOutputRowCount(1_000_000)
+                .addSymbolStatistics(new Symbol(BIGINT, name), SymbolStatsEstimate.builder().setDistinctValuesCount(1_000_000).setNullsFraction(0).build())
+                .build();
     }
 
     @Test

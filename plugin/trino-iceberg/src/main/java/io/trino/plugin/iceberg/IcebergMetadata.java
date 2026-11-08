@@ -1782,7 +1782,15 @@ public class IcebergMetadata
             return ImmutableList.of();
         }
 
-        SortingCacheKey cacheKey = new SortingCacheKey(table, enforcedPredicate, tableSortOrder.orderId());
+        // The file check depends on the snapshot and enforced predicate, not on
+        // the projected columns or other scan settings in the table handle.
+        SortingCacheKey cacheKey = new SortingCacheKey(
+                table.getSchemaName(),
+                table.getTableName(),
+                table.getTableLocation(),
+                table.getSnapshotId().orElseThrow(),
+                enforcedPredicate,
+                tableSortOrder.orderId());
         if (!sortedFilesCache.computeIfAbsent(cacheKey, _ -> filesHaveSortOrder(table, icebergTable, enforcedPredicate, tableSortOrder.orderId()))) {
             return ImmutableList.of();
         }
@@ -1823,7 +1831,7 @@ public class IcebergMetadata
         }
     }
 
-    private record SortingCacheKey(IcebergTableHandle table, TupleDomain<IcebergColumnHandle> predicate, int sortOrderId) {}
+    private record SortingCacheKey(String schemaName, String tableName, String tableLocation, long snapshotId, TupleDomain<IcebergColumnHandle> predicate, int sortOrderId) {}
 
     private static SortFieldInfo getSupportedSortFields(Schema schema, SortOrder sortOrder, int sortOrderId)
     {

@@ -69,6 +69,7 @@ public final class SystemSessionProperties
     private static final String MERGE_JOIN_MEMORY_PRESSURE_THRESHOLD = "merge_join_memory_pressure_threshold";
     private static final String MERGE_JOIN_SMALL_BUILD_THRESHOLD = "merge_join_small_build_threshold";
     private static final String MERGE_JOIN_BIG_SIDE_THRESHOLD = "merge_join_big_side_threshold";
+    public static final String MERGE_JOIN_COST_MARGIN = "merge_join_cost_margin";
     public static final String JOIN_MAX_BROADCAST_TABLE_SIZE = "join_max_broadcast_table_size";
     public static final String JOIN_MULTI_CLAUSE_INDEPENDENCE_FACTOR = "join_multi_clause_independence_factor";
     public static final String DETERMINE_PARTITION_COUNT_FOR_WRITE_ENABLED = "determine_partition_count_for_write_enabled";
@@ -275,7 +276,7 @@ public final class SystemSessionProperties
                         false),
                 enumProperty(
                         PREFER_MERGE_JOIN,
-                        "Prefer merge join for eligible equi-joins (INNER/LEFT with partitioned distribution)",
+                        "Merge join selection strategy for eligible partitioned equi-joins",
                         OptimizerConfig.MergeJoinStrategy.class,
                         optimizerConfig.getMergeJoinStrategy(),
                         false),
@@ -283,16 +284,29 @@ public final class SystemSessionProperties
                         MERGE_JOIN_MEMORY_PRESSURE_THRESHOLD,
                         "Merge join memory pressure threshold (COST_BASED: fraction of per-node memory above which merge is preferred)",
                         optimizerConfig.getMergeJoinMemoryPressureThreshold(),
+                        value -> validateMergeJoinFraction(value, MERGE_JOIN_MEMORY_PRESSURE_THRESHOLD, false),
                         false),
                 doubleProperty(
                         MERGE_JOIN_SMALL_BUILD_THRESHOLD,
                         "Merge join small build threshold (COST_BASED: fraction below which hash is always preferred)",
                         optimizerConfig.getMergeJoinSmallBuildThreshold(),
+                        value -> validateMergeJoinFraction(value, MERGE_JOIN_SMALL_BUILD_THRESHOLD, false),
                         false),
                 doubleProperty(
                         MERGE_JOIN_BIG_SIDE_THRESHOLD,
                         "Merge join big side threshold (COST_BASED: fraction above which a side is considered big)",
                         optimizerConfig.getMergeJoinBigSideThreshold(),
+                        value -> {
+                            if (!Double.isFinite(value) || value < 0) {
+                                throw new TrinoException(INVALID_SESSION_PROPERTY, MERGE_JOIN_BIG_SIDE_THRESHOLD + " must be finite and non-negative");
+                            }
+                        },
+                        false),
+                doubleProperty(
+                        MERGE_JOIN_COST_MARGIN,
+                        "Minimum estimated cost advantage required to select merge join",
+                        optimizerConfig.getMergeJoinCostMargin(),
+                        value -> validateMergeJoinFraction(value, MERGE_JOIN_COST_MARGIN, true),
                         false),
                 dataSizeProperty(
                         JOIN_MAX_BROADCAST_TABLE_SIZE,
@@ -1255,6 +1269,18 @@ public final class SystemSessionProperties
     public static double getMergeJoinBigSideThreshold(Session session)
     {
         return session.getSystemProperty(MERGE_JOIN_BIG_SIDE_THRESHOLD, Double.class);
+    }
+
+    public static double getMergeJoinCostMargin(Session session)
+    {
+        return session.getSystemProperty(MERGE_JOIN_COST_MARGIN, Double.class);
+    }
+
+    private static void validateMergeJoinFraction(double value, String property, boolean excludeOne)
+    {
+        if (!Double.isFinite(value) || value < 0 || value > 1 || (excludeOne && value == 1)) {
+            throw new TrinoException(INVALID_SESSION_PROPERTY, property + " must be finite and in " + (excludeOne ? "[0, 1)" : "[0, 1]"));
+        }
     }
 
     public static DataSize getJoinMaxBroadcastTableSize(Session session)

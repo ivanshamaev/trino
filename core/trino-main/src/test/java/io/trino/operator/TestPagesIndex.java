@@ -19,7 +19,9 @@ import io.trino.operator.join.LookupSource;
 import io.trino.spi.Page;
 import io.trino.spi.block.Block;
 import io.trino.spi.type.Type;
+import io.trino.spi.type.TypeOperators;
 import io.trino.sql.gen.JoinFilterFunctionCompiler;
+import io.trino.sql.gen.OrderingCompiler;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -30,9 +32,11 @@ import java.util.OptionalInt;
 
 import static io.airlift.slice.SizeOf.sizeOf;
 import static io.airlift.slice.SizeOf.sizeOfIntArray;
+import static io.trino.RowPagesBuilder.rowPagesBuilder;
 import static io.trino.SequencePageBuilder.createSequencePage;
 import static io.trino.SessionTestUtils.TEST_SESSION;
 import static io.trino.operator.HashArraySizeSupplier.defaultHashArraySizeSupplier;
+import static io.trino.spi.connector.SortOrder.ASC_NULLS_LAST;
 import static io.trino.spi.type.BigintType.BIGINT;
 import static io.trino.spi.type.VarcharType.VARCHAR;
 import static java.lang.String.format;
@@ -41,6 +45,25 @@ import static org.assertj.core.data.Percentage.withPercentage;
 
 public class TestPagesIndex
 {
+    @Test
+    public void testMergeSortedPhysicalPages()
+    {
+        PagesIndex index = newPagesIndex(ImmutableList.of(BIGINT), 10, false);
+        rowPagesBuilder(BIGINT)
+                .row(2L).row(5L).row((Object) null).pageBreak()
+                .row(1L).row(3L).row(5L).pageBreak()
+                .row(0L).row(7L).build().forEach(index::addPage);
+        long beforeMerge = index.getEstimatedSize().toBytes();
+        index.mergeSortedPages(new OrderingCompiler(new TypeOperators()).compilePageWithPositionComparator(
+                ImmutableList.of(BIGINT), ImmutableList.of(0), ImmutableList.of(ASC_NULLS_LAST)));
+        assertThat(index.getEstimatedSize().toBytes()).isEqualTo(beforeMerge);
+        assertThat(index.getPositionCount()).isEqualTo(8);
+        for (int position = 0; position < 7; position++) {
+            assertThat(index.getLong(0, position)).isEqualTo(new long[] {0, 1, 2, 3, 5, 5, 7}[position]);
+        }
+        assertThat(index.isNull(0, 7)).isTrue();
+    }
+
     @Test
     public void testEstimatedSize()
     {

@@ -49,6 +49,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -185,7 +186,7 @@ public abstract class BaseCostBasedPlanTest
         assertThat(queryPlan).isEqualTo(explainAnalyzeQueryPlan);
     }
 
-    private String getQueryPlanResourcePath(String queryResourcePath)
+    protected String getQueryPlanResourcePath(String queryResourcePath)
     {
         Path queryPath = Path.of(queryResourcePath);
         String connectorName = getPlanTester().getCatalogManager().getCatalog(new CatalogName(CATALOG_NAME)).orElseThrow().getConnectorName().toString();
@@ -226,7 +227,7 @@ public abstract class BaseCostBasedPlanTest
         }
     }
 
-    private static String readQuery(String resource)
+    protected static String readQuery(String resource)
     {
         return read(resource).replaceAll("\\s+;\\s+$", "")
                 .replace("${database}.${schema}.", "")
@@ -234,7 +235,7 @@ public abstract class BaseCostBasedPlanTest
                 .replace("${scale}", "1");
     }
 
-    private static String read(String resource)
+    protected static String read(String resource)
     {
         try {
             return Resources.toString(getResource(BaseCostBasedPlanTest.class, resource), UTF_8);
@@ -246,10 +247,21 @@ public abstract class BaseCostBasedPlanTest
 
     private String generateQueryPlan(String query)
     {
+        return generateQueryPlan(query, getPlanTester().getDefaultSession());
+    }
+
+    protected String generateQueryPlan(String query, Session session)
+    {
+        return generateQueryPlan(query, session, _ -> {});
+    }
+
+    protected String generateQueryPlan(String query, Session session, Consumer<Plan> planCheck)
+    {
         try {
-            return getPlanTester().inTransaction(transactionSession -> {
+            return getPlanTester().inTransaction(session, transactionSession -> {
                 PlanTester planTester = getPlanTester();
                 Plan plan = planTester.createPlan(transactionSession, query, planTester.getPlanOptimizers(false), OPTIMIZED_AND_VALIDATED, NOOP, createPlanOptimizersStatsCollector());
+                planCheck.accept(plan);
                 JoinOrderPrinter joinOrderPrinter = new JoinOrderPrinter(transactionSession);
                 plan.getRoot().accept(joinOrderPrinter, 0);
                 return joinOrderPrinter.result();
@@ -293,6 +305,7 @@ public abstract class BaseCostBasedPlanTest
         @Override
         public Void visitJoin(JoinNode node, Integer indent)
         {
+            node.getAlgorithm().ifPresent(algorithm -> output(indent, "algorithm: %s", algorithm));
             JoinNode.DistributionType distributionType = node.getDistributionType()
                     .orElseThrow(() -> new VerifyException("Expected distribution type to be set"));
             if (node.isCrossJoin()) {

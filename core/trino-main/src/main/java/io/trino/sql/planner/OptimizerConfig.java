@@ -21,6 +21,8 @@ import io.airlift.configuration.LegacyConfig;
 import io.airlift.units.DataSize;
 import io.airlift.units.Duration;
 import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -210,12 +212,15 @@ public class OptimizerConfig
     }
 
     @Config("optimizer.prefer-merge-join")
+    @ConfigDescription("Merge join selection strategy for eligible partitioned equi-joins")
     public OptimizerConfig setMergeJoinStrategy(MergeJoinStrategy mergeJoinStrategy)
     {
         this.mergeJoinStrategy = requireNonNull(mergeJoinStrategy, "mergeJoinStrategy is null");
         return this;
     }
 
+    @DecimalMin("0")
+    @DecimalMax("1")
     public double getMergeJoinMemoryPressureThreshold()
     {
         return mergeJoinMemoryPressureThreshold;
@@ -229,6 +234,8 @@ public class OptimizerConfig
         return this;
     }
 
+    @DecimalMin("0")
+    @DecimalMax("1")
     public double getMergeJoinSmallBuildThreshold()
     {
         return mergeJoinSmallBuildThreshold;
@@ -242,6 +249,7 @@ public class OptimizerConfig
         return this;
     }
 
+    @DecimalMin("0")
     public double getMergeJoinBigSideThreshold()
     {
         return mergeJoinBigSideThreshold;
@@ -255,6 +263,8 @@ public class OptimizerConfig
         return this;
     }
 
+    @DecimalMin("0")
+    @DecimalMax(value = "1", inclusive = false)
     public double getMergeJoinCostMargin()
     {
         return mergeJoinCostMargin;

@@ -52,6 +52,14 @@ public class TestMergeJoin
     }
 
     @Test
+    public void testInnerJoinWithSpillEnabled()
+    {
+        Session spilling = Session.builder(mergeJoinSession).setSystemProperty("spill_enabled", "true").build();
+        assertThat(assertions.query(spilling, "SELECT l.k, r.v FROM (VALUES 1, 2, 2) l(k) JOIN (VALUES (1, 10), (2, 20)) r(k, v) ON l.k = r.k"))
+                .matches("VALUES (1, 10), (2, 20), (2, 20)");
+    }
+
+    @Test
     public void testInnerJoin()
     {
         assertThat(assertions.query(mergeJoinSession, "SELECT l.k, l.a, r.k, r.b FROM (VALUES (1, 10), (2, 20), (2, 21), (4, 40), (NULL, 50)) l(k, a) JOIN (VALUES (1, 100), (2, 200), (3, 300), (NULL, 400)) r(k, b) ON l.k = r.k"))

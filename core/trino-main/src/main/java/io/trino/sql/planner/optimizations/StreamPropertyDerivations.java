@@ -238,6 +238,11 @@ public final class StreamPropertyDerivations
         @Override
         public StreamProperties visitJoin(JoinNode node, List<StreamProperties> inputProperties)
         {
+            if (node.getAlgorithm().isPresent()) {
+                // AddLocalExchanges enforces one sorted stream on each merge input.
+                // Hash join's spillability flag is not assigned on this path.
+                return StreamProperties.singleStream();
+            }
             StreamProperties leftProperties = inputProperties.get(0);
             boolean unordered = spillPossible(session, node);
 

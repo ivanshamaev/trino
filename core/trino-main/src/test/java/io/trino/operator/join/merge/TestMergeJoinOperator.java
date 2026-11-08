@@ -33,6 +33,7 @@ import io.trino.operator.join.StandardJoinFilterFunction;
 import io.trino.spi.Page;
 import io.trino.spi.TrinoException;
 import io.trino.spi.block.LongArrayBlock;
+import io.trino.spi.block.RunLengthEncodedBlock;
 import io.trino.spi.connector.ConnectorSession;
 import io.trino.spi.type.Type;
 import io.trino.spiller.FileSingleStreamSpillerFactory;
@@ -55,6 +56,7 @@ import org.junit.jupiter.api.io.TempDir;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -695,7 +697,116 @@ public class TestMergeJoinOperator
         assertTenMillionRowJoinWithBoundedMemory(spillPath, JoinType.RIGHT);
     }
 
+    @Test
+    public void testTenMillionRowSingleBuildGroupWithBoundedMemory(@TempDir Path spillPath)
+            throws Exception
+    {
+        assumeTrue(Boolean.getBoolean("smj.large"), "Enable with -Dsmj.large=true");
+        assertTenMillionRowJoinWithBoundedMemory(spillPath, JoinType.FULL, true);
+    }
+
+    @Test
+    public void testBuildGroupRowCountExceedsIntegerRange()
+    {
+        int rowsPerPage = 1 << 30;
+        MergeJoinBridge bridge = new MergeJoinBridge(ImmutableList.of(BIGINT), ImmutableList.of(0), ImmutableList.of());
+        bridge.addPage(new Page(RunLengthEncodedBlock.create(BIGINT, 7L, rowsPerPage)));
+        bridge.addPage(new Page(RunLengthEncodedBlock.create(BIGINT, 7L, rowsPerPage)));
+        bridge.finish();
+
+        JoinBridgeManager<MergeJoinBridge> bridgeManager = new JoinBridgeManager<>(false, bridge, ImmutableList.of(BIGINT));
+        MergeJoinOperatorFactory probeFactory = new MergeJoinOperatorFactory(
+                0,
+                NODE_ID,
+                bridgeManager,
+                JoinType.INNER,
+                true,
+                ImmutableList.of(BIGINT),
+                ImmutableList.of(BIGINT),
+                ImmutableList.of(0),
+                ImmutableList.of(0),
+                ImmutableList.of(0),
+                ImmutableList.of(0),
+                Optional.empty(),
+                SessionTestUtils.TEST_SESSION.toConnectorSession(),
+                blockTypeOperators);
+        DriverContext driverContext = createTaskContext(executor, scheduledExecutor, SessionTestUtils.TEST_SESSION)
+                .addPipelineContext(0, true, true, false)
+                .addDriverContext();
+        assertOperatorEquals(
+                WorkProcessorOperatorAdapter.createAdapterOperatorFactory(probeFactory),
+                driverContext,
+                rowPagesBuilder(BIGINT).row(7L).build(),
+                MaterializedResult.resultBuilder(BIGINT, BIGINT).row(7L, 7L).build());
+        MergeJoinOperatorFactory.MergeJoinStatistics statistics = (MergeJoinOperatorFactory.MergeJoinStatistics) driverContext.getOperatorContexts().get(0).getOperatorStats().getInfo();
+        assertThat(statistics.getMaxBuildGroupRows()).isEqualTo(2L * rowsPerPage);
+    }
+
+    @Test
+    public void testFullJoinGroupAboveIntegerRangeWithBoundedMemory()
+            throws Exception
+    {
+        assumeTrue(Boolean.getBoolean("smj.extreme"), "Enable with -Dsmj.extreme=true; emits more than two billion rows");
+        long memoryLimit = DataSize.of(16, DataSize.Unit.MEGABYTE).toBytes();
+        TaskContext taskContext = TestingTaskContext.builder(executor, scheduledExecutor, SessionTestUtils.TEST_SESSION)
+                .setQueryMaxMemory(DataSize.ofBytes(memoryLimit)).build();
+        DriverContext buildDriver = taskContext.addPipelineContext(0, true, true, false).addDriverContext();
+        MergeJoinBridge bridge = new MergeJoinBridge(ImmutableList.of(BIGINT), ImmutableList.of(0), ImmutableList.of());
+        MergeJoinBufferOperatorFactory.MergeJoinBufferOperator build = new MergeJoinBufferOperatorFactory.MergeJoinBufferOperator(
+                buildDriver.addOperatorContext(0, NODE_ID, "MergeJoinBufferOperator"),
+                bridge,
+                ImmutableList.of(BIGINT),
+                SessionTestUtils.TEST_SESSION.toConnectorSession(),
+                Optional.empty());
+        int rowsPerPage = 1 << 30;
+        build.addInput(new Page(RunLengthEncodedBlock.create(BIGINT, 7L, rowsPerPage)));
+        build.addInput(new Page(RunLengthEncodedBlock.create(BIGINT, 7L, rowsPerPage)));
+        build.finish();
+        JoinBridgeManager<MergeJoinBridge> bridgeManager = new JoinBridgeManager<>(false, bridge, ImmutableList.of(BIGINT));
+        MergeJoinOperatorFactory factory = new MergeJoinOperatorFactory(
+                0,
+                NODE_ID,
+                bridgeManager,
+                JoinType.FULL,
+                false,
+                ImmutableList.of(BIGINT),
+                ImmutableList.of(BIGINT),
+                ImmutableList.of(0),
+                ImmutableList.of(0),
+                ImmutableList.of(0),
+                ImmutableList.of(0),
+                Optional.empty(),
+                SessionTestUtils.TEST_SESSION.toConnectorSession(),
+                blockTypeOperators);
+        DriverContext probeDriver = taskContext.addPipelineContext(1, true, true, false).addDriverContext();
+        Operator probe = WorkProcessorOperatorAdapter.createAdapterOperatorFactory(factory).createOperator(probeDriver);
+        try {
+            probe.addInput(repeatedPage(7, 1));
+            probe.finish();
+            long outputRows = 0;
+            while (!probe.isFinished()) {
+                outputRows += consumeRepeatedOutput(probe);
+            }
+            assertThat(outputRows).isEqualTo(2L * rowsPerPage);
+            assertThat(taskContext.getPeakMemoryReservation().toBytes()).isLessThanOrEqualTo(memoryLimit);
+            MergeJoinOperatorFactory.MergeJoinStatistics statistics = (MergeJoinOperatorFactory.MergeJoinStatistics) probeDriver.getOperatorContexts().get(0).getOperatorStats().getInfo();
+            assertThat(statistics.getMaxBuildGroupRows()).isEqualTo(outputRows);
+        }
+        finally {
+            probe.close();
+            build.close();
+            factory.close();
+            bridge.destroy();
+        }
+    }
+
     private void assertTenMillionRowJoinWithBoundedMemory(Path spillPath, JoinType joinType)
+            throws Exception
+    {
+        assertTenMillionRowJoinWithBoundedMemory(spillPath, joinType, false);
+    }
+
+    private void assertTenMillionRowJoinWithBoundedMemory(Path spillPath, JoinType joinType, boolean repeatedBuildKey)
             throws Exception
     {
         long memoryLimit = DataSize.of(16, DataSize.Unit.MEGABYTE).toBytes();
@@ -723,7 +834,8 @@ public class TestMergeJoinOperator
                     SessionTestUtils.TEST_SESSION.toConnectorSession(),
                     Optional.of(AppendingSpiller.factory(spillerFactory)));
             for (long start = 0; start < LARGE_JOIN_ROWS; start += 8192) {
-                build.addInput(sequentialPage(start, (int) Math.min(8192, LARGE_JOIN_ROWS - start)));
+                int count = (int) Math.min(8192, LARGE_JOIN_ROWS - start);
+                build.addInput(repeatedBuildKey ? repeatedPage(7, count) : sequentialPage(start, count));
                 build.isBlocked().get();
             }
             build.finish();
@@ -748,22 +860,38 @@ public class TestMergeJoinOperator
             DriverContext probeDriver = taskContext.addPipelineContext(1, true, true, false).addDriverContext();
             Operator probe = WorkProcessorOperatorAdapter.createAdapterOperatorFactory(probeFactory).createOperator(probeDriver);
             try {
-                long nextExpectedKey = joinType == JoinType.LEFT ? 1 : 0;
-                long probeOffset = joinType == JoinType.INNER ? 0 : 1;
-                for (long start = probeOffset; start < LARGE_JOIN_ROWS + probeOffset; start += 8192) {
-                    while (!probe.needsInput()) {
+                if (repeatedBuildKey) {
+                    probe.addInput(repeatedPage(7, 1));
+                    probe.finish();
+                    long outputRows = 0;
+                    while (!probe.isFinished()) {
+                        outputRows += consumeRepeatedOutput(probe);
+                    }
+                    assertThat(outputRows).isEqualTo(LARGE_JOIN_ROWS);
+                }
+                else {
+                    long nextExpectedKey = joinType == JoinType.LEFT ? 1 : 0;
+                    long probeOffset = joinType == JoinType.INNER ? 0 : 1;
+                    for (long start = probeOffset; start < LARGE_JOIN_ROWS + probeOffset; start += 8192) {
+                        while (!probe.needsInput()) {
+                            nextExpectedKey = consumeSequentialOutput(probe, nextExpectedKey, joinType);
+                        }
+                        probe.addInput(sequentialPage(start, (int) Math.min(8192, LARGE_JOIN_ROWS + probeOffset - start)));
+                    }
+                    probe.finish();
+                    while (!probe.isFinished()) {
                         nextExpectedKey = consumeSequentialOutput(probe, nextExpectedKey, joinType);
                     }
-                    probe.addInput(sequentialPage(start, (int) Math.min(8192, LARGE_JOIN_ROWS + probeOffset - start)));
+                    assertThat(nextExpectedKey).isEqualTo(LARGE_JOIN_ROWS + ((joinType == JoinType.LEFT || joinType == JoinType.FULL) ? 1 : 0));
                 }
-                probe.finish();
-                while (!probe.isFinished()) {
-                    nextExpectedKey = consumeSequentialOutput(probe, nextExpectedKey, joinType);
-                }
-                assertThat(nextExpectedKey).isEqualTo(LARGE_JOIN_ROWS + ((joinType == JoinType.LEFT || joinType == JoinType.FULL) ? 1 : 0));
                 assertThat(spillerStats.getTotalSpilledBytes()).isGreaterThan(0);
                 assertThat(spillerStats.getTotalSpillReadBytes()).isGreaterThan(0);
-                assertThat(spillerStats.getTotalSpillReadBytes()).isLessThan(2 * spillerStats.getTotalSpilledBytes());
+                if (repeatedBuildKey) {
+                    assertThat(spillerStats.getTotalSpillReadBytes()).isLessThanOrEqualTo(2 * spillerStats.getTotalSpilledBytes());
+                }
+                else {
+                    assertThat(spillerStats.getTotalSpillReadBytes()).isLessThan(2 * spillerStats.getTotalSpilledBytes());
+                }
                 assertThat(taskContext.getPeakMemoryReservation().toBytes()).isLessThanOrEqualTo(memoryLimit);
             }
             finally {
@@ -785,6 +913,34 @@ public class TestMergeJoinOperator
             values[position] = start + position;
         }
         return new Page(new LongArrayBlock(count, Optional.empty(), values));
+    }
+
+    private static Page repeatedPage(long value, int count)
+    {
+        long[] values = new long[count];
+        Arrays.fill(values, value);
+        return new Page(new LongArrayBlock(count, Optional.empty(), values));
+    }
+
+    private static long consumeRepeatedOutput(Operator probe)
+            throws Exception
+    {
+        Page output = probe.getOutput();
+        if (output == null) {
+            if (!probe.isBlocked().isDone()) {
+                probe.isBlocked().get();
+            }
+            return 0;
+        }
+        for (int position = 0; position < output.getPositionCount(); position++) {
+            if (output.getBlock(0).isNull(position)
+                    || output.getBlock(1).isNull(position)
+                    || BIGINT.getLong(output.getBlock(0), position) != 7
+                    || BIGINT.getLong(output.getBlock(1), position) != 7) {
+                throw new AssertionError("Incorrect join output for repeated key at position " + position);
+            }
+        }
+        return output.getPositionCount();
     }
 
     private static long consumeSequentialOutput(Operator probe, long nextExpectedKey, JoinType joinType)
@@ -1197,6 +1353,10 @@ public class TestMergeJoinOperator
                 DataSize.ofBytes(1))
                 .addPipelineContext(0, true, true, false)
                 .addDriverContext();
+        JoinFilterFunctionFactory acceptAll = (_, addresses, pages) -> new StandardJoinFilterFunction(
+                (_, _, _, _) -> true,
+                addresses,
+                pages);
         MergeJoinOperatorFactory probeFactory = new MergeJoinOperatorFactory(
                 0,
                 NODE_ID,
@@ -1209,7 +1369,7 @@ public class TestMergeJoinOperator
                 ImmutableList.of(0),
                 ImmutableList.of(0),
                 ImmutableList.of(0),
-                Optional.empty(),
+                Optional.of(acceptAll),
                 SessionTestUtils.TEST_SESSION.toConnectorSession(),
                 blockTypeOperators);
 

@@ -238,6 +238,7 @@ public class MergeJoinOperatorFactory
         private final java.util.concurrent.atomic.AtomicLong outputRows = new java.util.concurrent.atomic.AtomicLong();
         private final java.util.concurrent.atomic.AtomicLong buildRows = new java.util.concurrent.atomic.AtomicLong();
         private final java.util.concurrent.atomic.AtomicLong keyGroups = new java.util.concurrent.atomic.AtomicLong();
+        private final java.util.concurrent.atomic.AtomicLong maxBuildGroupRows = new java.util.concurrent.atomic.AtomicLong();
 
         private MergeJoinStatistics(JoinOperatorType joinOperatorType)
         {
@@ -264,6 +265,11 @@ public class MergeJoinOperatorFactory
             keyGroups.incrementAndGet();
         }
 
+        void recordBuildGroupRows(long rows)
+        {
+            maxBuildGroupRows.accumulateAndGet(rows, Math::max);
+        }
+
         public long getProbeRows()
         {
             return probeRows.get();
@@ -284,6 +290,11 @@ public class MergeJoinOperatorFactory
             return keyGroups.get();
         }
 
+        public long getMaxBuildGroupRows()
+        {
+            return maxBuildGroupRows.get();
+        }
+
         @Override
         public String toString()
         {
@@ -291,7 +302,8 @@ public class MergeJoinOperatorFactory
                     + ", probeRows=" + probeRows
                     + ", outputRows=" + outputRows
                     + ", buildRows=" + buildRows
-                    + ", keyGroups=" + keyGroups + "}";
+                    + ", keyGroups=" + keyGroups
+                    + ", maxBuildGroupRows=" + maxBuildGroupRows + "}";
         }
     }
 
@@ -318,6 +330,7 @@ public class MergeJoinOperatorFactory
         private CurrentBuildAddress filterAddress;
         private boolean[] buildRowMatched; // current key group only
         private DiskBackedMatchBitmap diskRowMatched;
+        private boolean unfilteredBuildGroupMatched;
         private int drainPage; // RIGHT/FULL: first build row not yet drained
         private long drainGroupOrdinal;
 
@@ -947,6 +960,16 @@ public class MergeJoinOperatorFactory
                         || compareKeys(buildPage, groupScanPos, probePage, probePos) != 0) {
                     break;
                 }
+                // The build stream is sorted. If its last row has the same key as
+                // the current row, every intervening row belongs to this group.
+                // Count the page without iterating over potentially billions of rows.
+                if ((groupScanPos == 0 || (groupScanPage == groupStartPage && groupScanPos == groupStartPos))
+                        && !buildKeys.isUnmatchable(buildPage, buildPage.getPositionCount() - 1)
+                        && compareKeys(buildPage, buildPage.getPositionCount() - 1, probePage, probePos) == 0) {
+                    groupScanRows += buildPage.getPositionCount() - groupScanPos;
+                    groupScanPos = buildPage.getPositionCount();
+                    continue;
+                }
                 groupScanRows++;
                 groupScanPos++;
             }
@@ -956,8 +979,14 @@ public class MergeJoinOperatorFactory
             }
             scanPage = groupScanPage;
             scanPos = groupScanPos;
+            statistics.recordBuildGroupRows(groupScanRows);
             if (isBuildOuter()) {
-                if (groupScanRows < Integer.MAX_VALUE - 8 && userMemoryContext.trySetBytes(groupScanRows)) {
+                // Without a residual filter, every build row in this matching group
+                // joins the probe row. No bitmap or later unmatched scan is needed.
+                if (factory.filterFactory.isEmpty() && !factory.outputSingleMatch) {
+                    unfilteredBuildGroupMatched = true;
+                }
+                else if (groupScanRows < Integer.MAX_VALUE - 8 && userMemoryContext.trySetBytes(groupScanRows)) {
                     buildRowMatched = new boolean[(int) groupScanRows];
                 }
                 else {
@@ -984,6 +1013,14 @@ public class MergeJoinOperatorFactory
 
         private boolean drainMatchedGroup()
         {
+            if (unfilteredBuildGroupMatched) {
+                unfilteredBuildGroupMatched = false;
+                drainPage = scanPage;
+                drainPos = scanPos;
+                groupStartPage = -1;
+                releaseCompletedBuildPages(drainPage);
+                return true;
+            }
             if (buildRowMatched == null && diskRowMatched == null) {
                 return true;
             }

@@ -187,7 +187,7 @@ public final class PlanCopier
         @Override
         public PlanNode visitSort(SortNode node, RewriteContext<Void> context)
         {
-            return new SortNode(idAllocator.getNextId(), context.rewrite(node.getSource()), node.getOrderingScheme(), node.isPartial());
+            return new SortNode(idAllocator.getNextId(), context.rewrite(node.getSource()), node.getOrderingScheme(), node.isPartial(), node.isInputPagesPreSorted());
         }
 
         @Override

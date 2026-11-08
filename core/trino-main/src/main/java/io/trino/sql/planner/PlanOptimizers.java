@@ -885,7 +885,7 @@ public class PlanOptimizers
                 costCalculator,
                 ImmutableSet.of(
                         new DetermineJoinDistributionType(costComparator, taskCountEstimator), // Must run before AddExchanges
-                        new DetermineJoinAlgorithm(plannerContext), // must run after DetermineJoinDistributionType and before AddExchanges
+                        new DetermineJoinAlgorithm(plannerContext, costComparator, taskCountEstimator), // must run after DetermineJoinDistributionType and before AddExchanges
                         // Must run before AddExchanges and after ReplicateSemiJoinInDelete
                         // to avoid temporarily having an invalid plan
                         new DetermineSemiJoinDistributionType(costComparator, taskCountEstimator))));

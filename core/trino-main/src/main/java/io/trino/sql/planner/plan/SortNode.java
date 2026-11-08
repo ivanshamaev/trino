@@ -30,13 +30,24 @@ public class SortNode
     private final PlanNode source;
     private final OrderingScheme orderingScheme;
     private final boolean partial;
+    private final boolean inputPagesPreSorted;
+
+    public SortNode(
+            PlanNodeId id,
+            PlanNode source,
+            OrderingScheme orderingScheme,
+            boolean partial)
+    {
+        this(id, source, orderingScheme, partial, false);
+    }
 
     @JsonCreator
     public SortNode(
             @JsonProperty("id") PlanNodeId id,
             @JsonProperty("source") PlanNode source,
             @JsonProperty("orderingScheme") OrderingScheme orderingScheme,
-            @JsonProperty("partial") boolean partial)
+            @JsonProperty("partial") boolean partial,
+            @JsonProperty("inputPagesPreSorted") boolean inputPagesPreSorted)
     {
         super(id);
 
@@ -46,6 +57,7 @@ public class SortNode
         this.source = source;
         this.orderingScheme = orderingScheme;
         this.partial = partial;
+        this.inputPagesPreSorted = inputPagesPreSorted;
     }
 
     @Override
@@ -72,6 +84,12 @@ public class SortNode
         return partial;
     }
 
+    @JsonProperty
+    public boolean isInputPagesPreSorted()
+    {
+        return inputPagesPreSorted;
+    }
+
     @JsonProperty("orderingScheme")
     public OrderingScheme getOrderingScheme()
     {
@@ -87,6 +105,6 @@ public class SortNode
     @Override
     public PlanNode replaceChildren(List<PlanNode> newChildren)
     {
-        return new SortNode(getId(), Iterables.getOnlyElement(newChildren), orderingScheme, partial);
+        return new SortNode(getId(), Iterables.getOnlyElement(newChildren), orderingScheme, partial, inputPagesPreSorted);
     }
 }

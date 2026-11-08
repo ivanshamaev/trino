@@ -1,0 +1,377 @@
+{
+  "date": "2026-11-08",
+  "rows_per_input": 1000000,
+  "nodes": 3,
+  "task_concurrency": 4,
+  "query_max_memory_per_node_bytes": {
+    "sorted": 67108864,
+    "unsorted": 67108864,
+    "skew": 67108864,
+    "full": 134217728
+  },
+  "payload": {
+    "sorted_unsorted_skew": "VARCHAR of 128 ASCII bytes",
+    "full": "VARCHAR of 512 ASCII bytes from four salted SHA-512 hex digests"
+  },
+  "sink_and_local_exchange_buffer_bytes": 4194304,
+  "memory_revoking_threshold": 0.02,
+  "memory_revoking_target": 0,
+  "jvm": "Oracle JDK 25.0.5.0.3+1; SerialGC; TieredStopAtLevel=1; compressed oops disabled",
+  "comparison": "count and checksums against hash reference with 1 GiB allowance; 1 warmup + 3 measured iterations; no concurrent test suites",
+  "source_log": "/tmp/smj-calibration-varchar.log",
+  "results": {
+    "sorted": {
+      "OFF": {
+        "status": "passed",
+        "iterations": [
+          {
+            "iteration": 0,
+            "elapsed_ms": 1734.17,
+            "query_peak_user_bytes_all_nodes": 43205472,
+            "spilled_bytes_all_nodes": 280040176
+          },
+          {
+            "iteration": 1,
+            "elapsed_ms": 1789.4,
+            "query_peak_user_bytes_all_nodes": 16462512,
+            "spilled_bytes_all_nodes": 280040176
+          },
+          {
+            "iteration": 2,
+            "elapsed_ms": 1675.79,
+            "query_peak_user_bytes_all_nodes": 29895232,
+            "spilled_bytes_all_nodes": 280039928
+          },
+          {
+            "iteration": 3,
+            "elapsed_ms": 1813.93,
+            "query_peak_user_bytes_all_nodes": 23094192,
+            "spilled_bytes_all_nodes": 280040176
+          }
+        ],
+        "median_elapsed_ms_excluding_warmup": 1789.4,
+        "algorithm": "HASH"
+      },
+      "FORCE": {
+        "status": "passed",
+        "iterations": [
+          {
+            "iteration": 0,
+            "elapsed_ms": 6324.63,
+            "query_peak_user_bytes_all_nodes": 66412616,
+            "spilled_bytes_all_nodes": 1194956264
+          },
+          {
+            "iteration": 1,
+            "elapsed_ms": 5914.53,
+            "query_peak_user_bytes_all_nodes": 56459440,
+            "spilled_bytes_all_nodes": 1280373624
+          },
+          {
+            "iteration": 2,
+            "elapsed_ms": 5508.21,
+            "query_peak_user_bytes_all_nodes": 70514120,
+            "spilled_bytes_all_nodes": 1059780216
+          },
+          {
+            "iteration": 3,
+            "elapsed_ms": 5615.2,
+            "query_peak_user_bytes_all_nodes": 72542416,
+            "spilled_bytes_all_nodes": 1139796564
+          }
+        ],
+        "median_elapsed_ms_excluding_warmup": 5615.2,
+        "algorithm": "MERGE"
+      },
+      "COST_BASED": {
+        "status": "passed",
+        "iterations": [
+          {
+            "iteration": 0,
+            "elapsed_ms": 1723.3,
+            "query_peak_user_bytes_all_nodes": 15833208,
+            "spilled_bytes_all_nodes": 280039928
+          },
+          {
+            "iteration": 1,
+            "elapsed_ms": 1736.18,
+            "query_peak_user_bytes_all_nodes": 16680000,
+            "spilled_bytes_all_nodes": 280040176
+          },
+          {
+            "iteration": 2,
+            "elapsed_ms": 1780.52,
+            "query_peak_user_bytes_all_nodes": 16318504,
+            "spilled_bytes_all_nodes": 280039928
+          },
+          {
+            "iteration": 3,
+            "elapsed_ms": 1664.58,
+            "query_peak_user_bytes_all_nodes": 19108176,
+            "spilled_bytes_all_nodes": 280040176
+          }
+        ],
+        "median_elapsed_ms_excluding_warmup": 1736.18,
+        "algorithm": "HASH"
+      }
+    },
+    "unsorted": {
+      "OFF": {
+        "status": "passed",
+        "iterations": [
+          {
+            "iteration": 0,
+            "elapsed_ms": 1684.12,
+            "query_peak_user_bytes_all_nodes": 16701440,
+            "spilled_bytes_all_nodes": 280039432
+          },
+          {
+            "iteration": 1,
+            "elapsed_ms": 1833.8,
+            "query_peak_user_bytes_all_nodes": 16427504,
+            "spilled_bytes_all_nodes": 280039432
+          },
+          {
+            "iteration": 2,
+            "elapsed_ms": 1670.03,
+            "query_peak_user_bytes_all_nodes": 19597688,
+            "spilled_bytes_all_nodes": 280039432
+          },
+          {
+            "iteration": 3,
+            "elapsed_ms": 1733.62,
+            "query_peak_user_bytes_all_nodes": 21359128,
+            "spilled_bytes_all_nodes": 280039432
+          }
+        ],
+        "median_elapsed_ms_excluding_warmup": 1733.62,
+        "algorithm": "HASH"
+      },
+      "FORCE": {
+        "status": "passed",
+        "iterations": [
+          {
+            "iteration": 0,
+            "elapsed_ms": 5509.27,
+            "query_peak_user_bytes_all_nodes": 62647128,
+            "spilled_bytes_all_nodes": 1026866470
+          },
+          {
+            "iteration": 1,
+            "elapsed_ms": 5611.24,
+            "query_peak_user_bytes_all_nodes": 70197176,
+            "spilled_bytes_all_nodes": 1075992734
+          },
+          {
+            "iteration": 2,
+            "elapsed_ms": 6323.42,
+            "query_peak_user_bytes_all_nodes": 80722976,
+            "spilled_bytes_all_nodes": 1237470386
+          },
+          {
+            "iteration": 3,
+            "elapsed_ms": 5993.17,
+            "query_peak_user_bytes_all_nodes": 74959016,
+            "spilled_bytes_all_nodes": 1101731912
+          }
+        ],
+        "median_elapsed_ms_excluding_warmup": 5993.17,
+        "algorithm": "MERGE"
+      },
+      "COST_BASED": {
+        "status": "passed",
+        "iterations": [
+          {
+            "iteration": 0,
+            "elapsed_ms": 1800.23,
+            "query_peak_user_bytes_all_nodes": 28338272,
+            "spilled_bytes_all_nodes": 280039432
+          },
+          {
+            "iteration": 1,
+            "elapsed_ms": 1649.01,
+            "query_peak_user_bytes_all_nodes": 17067416,
+            "spilled_bytes_all_nodes": 280039432
+          },
+          {
+            "iteration": 2,
+            "elapsed_ms": 1805.46,
+            "query_peak_user_bytes_all_nodes": 28869472,
+            "spilled_bytes_all_nodes": 280039432
+          },
+          {
+            "iteration": 3,
+            "elapsed_ms": 1724.53,
+            "query_peak_user_bytes_all_nodes": 17342072,
+            "spilled_bytes_all_nodes": 280039432
+          }
+        ],
+        "median_elapsed_ms_excluding_warmup": 1724.53,
+        "algorithm": "HASH"
+      }
+    },
+    "skew": {
+      "OFF": {
+        "status": "passed",
+        "iterations": [
+          {
+            "iteration": 0,
+            "elapsed_ms": 1114.54,
+            "query_peak_user_bytes_all_nodes": 10248488,
+            "spilled_bytes_all_nodes": 140031188
+          },
+          {
+            "iteration": 1,
+            "elapsed_ms": 1086.41,
+            "query_peak_user_bytes_all_nodes": 13867200,
+            "spilled_bytes_all_nodes": 140031188
+          },
+          {
+            "iteration": 2,
+            "elapsed_ms": 1089.63,
+            "query_peak_user_bytes_all_nodes": 4876936,
+            "spilled_bytes_all_nodes": 140031188
+          },
+          {
+            "iteration": 3,
+            "elapsed_ms": 1052.59,
+            "query_peak_user_bytes_all_nodes": 15556688,
+            "spilled_bytes_all_nodes": 140031188
+          }
+        ],
+        "median_elapsed_ms_excluding_warmup": 1086.41,
+        "algorithm": "HASH"
+      },
+      "FORCE": {
+        "status": "passed",
+        "iterations": [
+          {
+            "iteration": 0,
+            "elapsed_ms": 5435.93,
+            "query_peak_user_bytes_all_nodes": 70833064,
+            "spilled_bytes_all_nodes": 1129812032
+          },
+          {
+            "iteration": 1,
+            "elapsed_ms": 4980.18,
+            "query_peak_user_bytes_all_nodes": 64478976,
+            "spilled_bytes_all_nodes": 1012380828
+          },
+          {
+            "iteration": 2,
+            "elapsed_ms": 5326.04,
+            "query_peak_user_bytes_all_nodes": 67051768,
+            "spilled_bytes_all_nodes": 1102849806
+          },
+          {
+            "iteration": 3,
+            "elapsed_ms": 5109.14,
+            "query_peak_user_bytes_all_nodes": 70777448,
+            "spilled_bytes_all_nodes": 1086495902
+          }
+        ],
+        "median_elapsed_ms_excluding_warmup": 5109.14,
+        "algorithm": "MERGE"
+      },
+      "COST_BASED": {
+        "status": "passed",
+        "iterations": [
+          {
+            "iteration": 0,
+            "elapsed_ms": 1057.06,
+            "query_peak_user_bytes_all_nodes": 5305456,
+            "spilled_bytes_all_nodes": 140031188
+          },
+          {
+            "iteration": 1,
+            "elapsed_ms": 1055.78,
+            "query_peak_user_bytes_all_nodes": 13956328,
+            "spilled_bytes_all_nodes": 140031188
+          },
+          {
+            "iteration": 2,
+            "elapsed_ms": 1069.24,
+            "query_peak_user_bytes_all_nodes": 8428848,
+            "spilled_bytes_all_nodes": 140031188
+          },
+          {
+            "iteration": 3,
+            "elapsed_ms": 1168.15,
+            "query_peak_user_bytes_all_nodes": 7117888,
+            "spilled_bytes_all_nodes": 140031188
+          }
+        ],
+        "median_elapsed_ms_excluding_warmup": 1069.24,
+        "algorithm": "HASH"
+      }
+    },
+    "full": {
+      "FORCE": {
+        "status": "passed",
+        "iterations": [
+          {
+            "iteration": 0,
+            "elapsed_ms": 14138.53,
+            "query_peak_user_bytes_all_nodes": 199971888,
+            "spilled_bytes_all_nodes": 5592922388
+          },
+          {
+            "iteration": 1,
+            "elapsed_ms": 14233.03,
+            "query_peak_user_bytes_all_nodes": 219462384,
+            "spilled_bytes_all_nodes": 5488934210
+          },
+          {
+            "iteration": 2,
+            "elapsed_ms": 13356.34,
+            "query_peak_user_bytes_all_nodes": 200856944,
+            "spilled_bytes_all_nodes": 5496291364
+          },
+          {
+            "iteration": 3,
+            "elapsed_ms": 13588.54,
+            "query_peak_user_bytes_all_nodes": 194911416,
+            "spilled_bytes_all_nodes": 5544582910
+          }
+        ],
+        "median_elapsed_ms_excluding_warmup": 13588.54,
+        "algorithm": "MERGE"
+      },
+      "COST_BASED": {
+        "status": "passed",
+        "iterations": [
+          {
+            "iteration": 0,
+            "elapsed_ms": 14395.29,
+            "query_peak_user_bytes_all_nodes": 181946632,
+            "spilled_bytes_all_nodes": 5544622576
+          },
+          {
+            "iteration": 1,
+            "elapsed_ms": 13464.58,
+            "query_peak_user_bytes_all_nodes": 215377192,
+            "spilled_bytes_all_nodes": 5501260508
+          },
+          {
+            "iteration": 2,
+            "elapsed_ms": 13523.12,
+            "query_peak_user_bytes_all_nodes": 200777624,
+            "spilled_bytes_all_nodes": 5578223400
+          },
+          {
+            "iteration": 3,
+            "elapsed_ms": 13710.78,
+            "query_peak_user_bytes_all_nodes": 238027872,
+            "spilled_bytes_all_nodes": 5488481136
+          }
+        ],
+        "median_elapsed_ms_excluding_warmup": 13523.12,
+        "algorithm": "MERGE"
+      },
+      "OFF": {
+        "status": "memory_limit_exceeded",
+        "algorithm": "HASH"
+      }
+    }
+  }
+}

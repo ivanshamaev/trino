@@ -14,12 +14,16 @@
 package io.trino.operator;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Ints;
 import com.google.common.util.concurrent.ListenableFuture;
 import io.trino.memory.context.LocalMemoryContext;
+import io.trino.plugin.base.metrics.LongCount;
 import io.trino.spi.Page;
 import io.trino.spi.connector.SortOrder;
+import io.trino.spi.metrics.Metrics;
 import io.trino.spi.type.Type;
+import io.trino.spiller.SortingSpiller;
 import io.trino.spiller.Spiller;
 import io.trino.spiller.SpillerFactory;
 import io.trino.sql.gen.OrderingCompiler;
@@ -38,8 +42,6 @@ import static com.google.common.collect.Iterators.transform;
 import static com.google.common.util.concurrent.Futures.immediateVoidFuture;
 import static io.airlift.concurrent.MoreFutures.asVoid;
 import static io.airlift.concurrent.MoreFutures.checkSuccess;
-import static io.airlift.concurrent.MoreFutures.getFutureValue;
-import static io.trino.util.MergeSortedPages.mergeSortedPages;
 import static java.util.Objects.requireNonNull;
 
 public class OrderByOperator
@@ -59,6 +61,7 @@ public class OrderByOperator
         private final boolean spillEnabled;
         private final Optional<SpillerFactory> spillerFactory;
         private final OrderingCompiler orderingCompiler;
+        private final boolean inputPagesPreSorted;
 
         private boolean closed;
 
@@ -75,6 +78,23 @@ public class OrderByOperator
                 Optional<SpillerFactory> spillerFactory,
                 OrderingCompiler orderingCompiler)
         {
+            this(operatorId, planNodeId, sourceTypes, outputChannels, expectedPositions, sortChannels, sortOrder, pagesIndexFactory, spillEnabled, spillerFactory, orderingCompiler, false);
+        }
+
+        public OrderByOperatorFactory(
+                int operatorId,
+                PlanNodeId planNodeId,
+                List<? extends Type> sourceTypes,
+                List<Integer> outputChannels,
+                int expectedPositions,
+                List<Integer> sortChannels,
+                List<SortOrder> sortOrder,
+                PagesIndex.Factory pagesIndexFactory,
+                boolean spillEnabled,
+                Optional<SpillerFactory> spillerFactory,
+                OrderingCompiler orderingCompiler,
+                boolean inputPagesPreSorted)
+        {
             this.operatorId = operatorId;
             this.planNodeId = requireNonNull(planNodeId, "planNodeId is null");
             this.sourceTypes = ImmutableList.copyOf(requireNonNull(sourceTypes, "sourceTypes is null"));
@@ -87,6 +107,7 @@ public class OrderByOperator
             this.spillEnabled = spillEnabled;
             this.spillerFactory = requireNonNull(spillerFactory, "spillerFactory is null");
             this.orderingCompiler = requireNonNull(orderingCompiler, "orderingCompiler is null");
+            this.inputPagesPreSorted = inputPagesPreSorted;
             checkArgument(!spillEnabled || spillerFactory.isPresent(), "Spiller Factory is not present when spill is enabled");
         }
 
@@ -106,7 +127,8 @@ public class OrderByOperator
                     pagesIndexFactory,
                     spillEnabled,
                     spillerFactory,
-                    orderingCompiler);
+                    orderingCompiler,
+                    inputPagesPreSorted);
         }
 
         @Override
@@ -129,7 +151,8 @@ public class OrderByOperator
                     pagesIndexFactory,
                     spillEnabled,
                     spillerFactory,
-                    orderingCompiler);
+                    orderingCompiler,
+                    inputPagesPreSorted);
         }
     }
 
@@ -155,6 +178,17 @@ public class OrderByOperator
     private final boolean spillEnabled;
     private final Optional<SpillerFactory> spillerFactory;
     private final OrderingCompiler orderingCompiler;
+    private final boolean inputPagesPreSorted;
+    private final Optional<PageWithPositionComparator> pageComparator;
+    private final LocalMemoryContext mergeMemoryContext;
+    private final LocalMemoryContext spillOutputMemoryContext;
+    private boolean finishingSpill;
+    private boolean finalMergeStarted;
+    private boolean finalMergeReady;
+    private boolean finishing;
+    private boolean inputPagesSorted;
+    private long mergedInputRows;
+    private long fallbackSortedInputRows;
 
     private Optional<Spiller> spiller = Optional.empty();
     private ListenableFuture<Void> spillInProgress = immediateVoidFuture();
@@ -176,6 +210,22 @@ public class OrderByOperator
             Optional<SpillerFactory> spillerFactory,
             OrderingCompiler orderingCompiler)
     {
+        this(operatorContext, sourceTypes, outputChannels, expectedPositions, sortChannels, sortOrder, pagesIndexFactory, spillEnabled, spillerFactory, orderingCompiler, false);
+    }
+
+    public OrderByOperator(
+            OperatorContext operatorContext,
+            List<Type> sourceTypes,
+            List<Integer> outputChannels,
+            int expectedPositions,
+            List<Integer> sortChannels,
+            List<SortOrder> sortOrder,
+            PagesIndex.Factory pagesIndexFactory,
+            boolean spillEnabled,
+            Optional<SpillerFactory> spillerFactory,
+            OrderingCompiler orderingCompiler,
+            boolean inputPagesPreSorted)
+    {
         requireNonNull(pagesIndexFactory, "pagesIndexFactory is null");
 
         this.operatorContext = requireNonNull(operatorContext, "operatorContext is null");
@@ -191,6 +241,17 @@ public class OrderByOperator
         this.spillEnabled = spillEnabled;
         this.spillerFactory = requireNonNull(spillerFactory, "spillerFactory is null");
         this.orderingCompiler = requireNonNull(orderingCompiler, "orderingCompiler is null");
+        this.inputPagesPreSorted = inputPagesPreSorted;
+        this.inputPagesSorted = inputPagesPreSorted;
+        if (inputPagesPreSorted) {
+            this.pageComparator = Optional.of(orderingCompiler.compilePageWithPositionComparator(
+                    sortChannels.stream().map(sourceTypes::get).collect(toImmutableList()), sortChannels, sortOrder));
+        }
+        else {
+            this.pageComparator = Optional.empty();
+        }
+        this.mergeMemoryContext = operatorContext.newLocalUserMemoryContext(OrderByOperator.class.getSimpleName());
+        this.spillOutputMemoryContext = operatorContext.newLocalUserMemoryContext("OrderBy spill output");
         checkArgument(!spillEnabled || spillerFactory.isPresent(), "Spiller Factory is not present when spill is enabled");
     }
 
@@ -201,45 +262,73 @@ public class OrderByOperator
     }
 
     @Override
+    public ListenableFuture<Void> isBlocked()
+    {
+        return spillInProgress;
+    }
+
+    @Override
     public void finish()
     {
+        finishing = true;
         if (!spillInProgress.isDone()) {
             return;
         }
         checkSuccess(spillInProgress, "spilling failed");
         if (finishMemoryRevoke.isPresent()) {
+            if (!finishingSpill) {
+                return;
+            }
+            finishMemoryRevoke();
+            finishingSpill = false;
+        }
+        if (state != State.NEEDS_INPUT) {
             return;
         }
 
-        if (state == State.NEEDS_INPUT) {
-            state = State.HAS_OUTPUT;
-
-            // Convert revocable memory to user memory as sortedPages holds on to memory so we no longer can revoke.
-            if (revocableMemoryContext.getBytes() > 0) {
-                long currentRevocableBytes = revocableMemoryContext.getBytes();
-                revocableMemoryContext.setBytes(0);
-                if (!localUserMemoryContext.trySetBytes(localUserMemoryContext.getBytes() + currentRevocableBytes)) {
-                    // TODO: this might fail (even though we have just released memory), but we don't
-                    // have a proper way to atomically convert memory reservations
-                    revocableMemoryContext.setBytes(currentRevocableBytes);
-                    // spill since revocable memory could not be converted to user memory immediately
-                    // TODO: this should be asynchronous
-                    getFutureValue(spillToDisk());
-                    finishMemoryRevoke.orElseThrow().run();
-                    finishMemoryRevoke = Optional.empty();
-                }
+        if (spiller.isPresent() && !finalMergeReady) {
+            if (pageIndex.getPositionCount() > 0) {
+                spillToDisk();
+                finishingSpill = true;
+                return;
             }
-
-            pageIndex.sort(pagesIndexOrdering);
-            Iterator<Page> sortedPagesIndex = pageIndex.getSortedPages();
-
-            List<WorkProcessor<Page>> spilledPages = getSpilledPages();
-            if (spilledPages.isEmpty()) {
-                sortedPages = transform(sortedPagesIndex, Optional::of);
+            if (!finalMergeStarted) {
+                finalMergeStarted = true;
+                spillInProgress = asVoid(((SortingSpiller) spiller.orElseThrow()).finish());
             }
-            else {
-                sortedPages = mergeSpilledAndMemoryPages(spilledPages, sortedPagesIndex).yieldingIterator();
+            if (!spillInProgress.isDone()) {
+                return;
             }
+            checkSuccess(spillInProgress, "sort run merging failed");
+            finalMergeReady = true;
+        }
+
+        // An in-memory result can no longer be revoked once output starts.
+        if (revocableMemoryContext.getBytes() > 0) {
+            long bytes = revocableMemoryContext.getBytes();
+            revocableMemoryContext.setBytes(0);
+            if (!localUserMemoryContext.trySetBytes(localUserMemoryContext.getBytes() + bytes)) {
+                revocableMemoryContext.setBytes(bytes);
+                spillToDisk();
+                finishingSpill = true;
+                return;
+            }
+        }
+        state = State.HAS_OUTPUT;
+        sortPages();
+        Iterator<Page> sortedPagesIndex = pageIndex.getSortedPages();
+        List<WorkProcessor<Page>> spilledPages = getSpilledPages();
+        if (spilledPages.isEmpty()) {
+            sortedPages = transform(sortedPagesIndex, Optional::of);
+        }
+        else {
+            // SortingSpiller produces one final run. Reading it directly avoids
+            // allocating another merge page and retaining one head per old run.
+            verify(spilledPages.size() == 1 && pageIndex.getPositionCount() == 0, "Unexpected sort spill state");
+            sortedPages = spilledPages.getFirst().map(page -> {
+                spillOutputMemoryContext.setBytes(page.getRetainedSizeInBytes());
+                return page;
+            }).yieldingIterator();
         }
     }
 
@@ -252,7 +341,7 @@ public class OrderByOperator
     @Override
     public boolean needsInput()
     {
-        return state == State.NEEDS_INPUT;
+        return state == State.NEEDS_INPUT && !finishing;
     }
 
     @Override
@@ -265,6 +354,15 @@ public class OrderByOperator
         // TODO: remove when retained memory accounting for pages does not
         // count shared data structures multiple times
         page.compact();
+        if (inputPagesSorted) {
+            PageWithPositionComparator comparator = pageComparator.orElseThrow();
+            for (int position = 1; position < page.getPositionCount(); position++) {
+                if (comparator.compareTo(page, position - 1, page, position) > 0) {
+                    inputPagesSorted = false;
+                    break;
+                }
+            }
+        }
         pageIndex.addPage(page);
         updateMemoryUsage();
     }
@@ -272,6 +370,9 @@ public class OrderByOperator
     @Override
     public Page getOutput()
     {
+        if (!spillInProgress.isDone()) {
+            return null;
+        }
         checkSuccess(spillInProgress, "spilling failed");
         if (state != State.HAS_OUTPUT) {
             return null;
@@ -280,6 +381,7 @@ public class OrderByOperator
         verifyNotNull(sortedPages, "sortedPages is null");
         if (!sortedPages.hasNext()) {
             state = State.FINISHED;
+            spillOutputMemoryContext.setBytes(0);
             return null;
         }
 
@@ -294,6 +396,9 @@ public class OrderByOperator
     @Override
     public ListenableFuture<Void> startMemoryRevoke()
     {
+        if (finishingSpill) {
+            return spillInProgress;
+        }
         verify(state == State.NEEDS_INPUT || revocableMemoryContext.getBytes() == 0, "Cannot spill in state: %s", state);
         return spillToDisk();
     }
@@ -311,16 +416,20 @@ public class OrderByOperator
         // TODO try pageIndex.compact(); before spilling, as in HashBuilderOperator.startMemoryRevoke()
 
         if (spiller.isEmpty()) {
-            spiller = Optional.of(spillerFactory.get().create(
+            List<Type> sortTypes = sortChannels.stream().map(sourceTypes::get).collect(toImmutableList());
+            spiller = Optional.of(new SortingSpiller(
                     sourceTypes,
+                    orderingCompiler.compilePageWithPositionComparator(sortTypes, sortChannels, sortOrder),
+                    spillerFactory.orElseThrow(),
                     operatorContext.getSpillContext(),
                     operatorContext.newAggregateUserMemoryContext()));
         }
 
-        pageIndex.sort(pagesIndexOrdering);
+        sortPages();
         spillInProgress = asVoid(spiller.get().spill(pageIndex.getSortedPages()));
         finishMemoryRevoke = Optional.of(() -> {
             pageIndex.clear();
+            inputPagesSorted = inputPagesPreSorted;
             updateMemoryUsage();
         });
 
@@ -332,6 +441,7 @@ public class OrderByOperator
     {
         finishMemoryRevoke.orElseThrow().run();
         finishMemoryRevoke = Optional.empty();
+        finishingSpill = false;
     }
 
     private List<WorkProcessor<Page>> getSpilledPages()
@@ -345,23 +455,31 @@ public class OrderByOperator
                 .collect(toImmutableList());
     }
 
-    private WorkProcessor<Page> mergeSpilledAndMemoryPages(List<WorkProcessor<Page>> spilledPages, Iterator<Page> sortedPagesIndex)
+    private void sortPages()
     {
-        List<WorkProcessor<Page>> sortedStreams = ImmutableList.<WorkProcessor<Page>>builder()
-                .addAll(spilledPages)
-                .add(WorkProcessor.fromIterator(sortedPagesIndex))
-                .build();
+        if (inputPagesSorted && mergeMemoryContext.trySetBytes(pageIndex.getEstimatedMergeMemorySize())) {
+            try {
+                pageIndex.mergeSortedPages(pageComparator.orElseThrow());
+                mergedInputRows += pageIndex.getPositionCount();
+                updateMergeMetrics();
+            }
+            finally {
+                mergeMemoryContext.setBytes(0);
+            }
+            return;
+        }
+        pageIndex.sort(pagesIndexOrdering);
+        if (inputPagesPreSorted) {
+            fallbackSortedInputRows += pageIndex.getPositionCount();
+            updateMergeMetrics();
+        }
+    }
 
-        List<Type> sortTypes = sortChannels.stream()
-                .map(sourceTypes::get)
-                .collect(toImmutableList());
-
-        return mergeSortedPages(
-                sortedStreams,
-                orderingCompiler.compilePageWithPositionComparator(sortTypes, sortChannels, sortOrder),
-                sourceTypes,
-                operatorContext.aggregateUserMemoryContext(),
-                operatorContext.getDriverContext().getYieldSignal());
+    private void updateMergeMetrics()
+    {
+        operatorContext.setLatestMetrics(new Metrics(ImmutableMap.of(
+                "Merged pre-sorted input rows", new LongCount(mergedInputRows),
+                "Fallback sorted input rows", new LongCount(fallbackSortedInputRows))));
     }
 
     private void updateMemoryUsage()
@@ -390,6 +508,12 @@ public class OrderByOperator
     {
         pageIndex.clear();
         sortedPages = null;
-        spiller.ifPresent(Spiller::close);
+        try {
+            spiller.ifPresent(Spiller::close);
+        }
+        finally {
+            mergeMemoryContext.close();
+            spillOutputMemoryContext.close();
+        }
     }
 }
