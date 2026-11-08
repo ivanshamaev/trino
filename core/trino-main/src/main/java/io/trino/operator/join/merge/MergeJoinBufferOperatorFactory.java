@@ -24,6 +24,7 @@ import io.trino.operator.OperatorFactory;
 import io.trino.spi.Page;
 import io.trino.spi.connector.ConnectorSession;
 import io.trino.spi.type.Type;
+import io.trino.spiller.Spiller;
 import io.trino.spiller.SpillerFactory;
 import io.trino.sql.planner.plan.PlanNodeId;
 
@@ -125,7 +126,7 @@ public class MergeJoinBufferOperatorFactory
 
         private boolean finished;
         private long retainedBytes;
-        private io.trino.spiller.Spiller spiller;
+        private Spiller spiller;
         private ListenableFuture<DataSize> spillInProgress = immediateFuture(DataSize.ofBytes(0));
         private ListenableFuture<Void> memoryAvailable = immediateFuture(null);
         private boolean spilledPagesRetained;

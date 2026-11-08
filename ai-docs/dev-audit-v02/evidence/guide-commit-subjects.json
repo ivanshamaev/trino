@@ -1,0 +1,276 @@
+{
+  "base": "e112ffdf730",
+  "head": "773afdee3bd",
+  "commits": [
+    {
+      "commit": "773afdee3bd26dc1a59eb0524a3445657fc1b0d7",
+      "subject": "Complete bounded sorted merge join implementation",
+      "length": 49,
+      "over_50": false,
+      "over_60": false,
+      "starts_lowercase": false,
+      "ends_period": false
+    },
+    {
+      "commit": "71cbe8ca3d9e8f2d3c7459ebbec6c2e1e6888b09",
+      "subject": "codex some fixes",
+      "length": 16,
+      "over_50": false,
+      "over_60": false,
+      "starts_lowercase": true,
+      "ends_period": false
+    },
+    {
+      "commit": "1d7ab12541e80bddc65e75df71090d8179876aed",
+      "subject": "Mark item 2.8 (JoinOperatorType.mergeJoin + statistics) as complete",
+      "length": 67,
+      "over_50": true,
+      "over_60": true,
+      "starts_lowercase": false,
+      "ends_period": false
+    },
+    {
+      "commit": "fd5886e7b51a877eb298806a7c5afe224667579c",
+      "subject": "Add JoinOperatorType.mergeJoin factory and MergeJoinStatistics for WebUI observability",
+      "length": 86,
+      "over_50": true,
+      "over_60": true,
+      "starts_lowercase": false,
+      "ends_period": false
+    },
+    {
+      "commit": "6be8b69b1c8d9c3e1a1b7532f22fb831cbbf74f7",
+      "subject": "Fix INNER to LEFT/RIGHT conversion to keep merge join marker since RIGHT is now supported",
+      "length": 89,
+      "over_50": true,
+      "over_60": true,
+      "starts_lowercase": false,
+      "ends_period": false
+    },
+    {
+      "commit": "3563040d906b404068b4d8142790f42a0f790f34",
+      "subject": "Implement actual build-side spilling in merge join buffer operator with SpillerFactory",
+      "length": 86,
+      "over_50": true,
+      "over_60": true,
+      "starts_lowercase": false,
+      "ends_period": false
+    },
+    {
+      "commit": "327e213c431cc00b56c37c3bf767fdebf57f9194",
+      "subject": "Finalize Stage 7 items and comprehensive architecture cross-check",
+      "length": 65,
+      "over_50": true,
+      "over_60": true,
+      "starts_lowercase": false,
+      "ends_period": false
+    },
+    {
+      "commit": "ef5574afbf40532650d25ad31a6bece5e69bf05a",
+      "subject": "Wire mergingPartitionedExchange in AddExchanges and SpillerFactory from LEP for merge join build spilling",
+      "length": 105,
+      "over_50": true,
+      "over_60": true,
+      "starts_lowercase": false,
+      "ends_period": false
+    },
+    {
+      "commit": "45f749e92cef667b047999695984d18f53b9e3ba",
+      "subject": "Add spill infrastructure to merge join buffer and finalize dev todo list",
+      "length": 72,
+      "over_50": true,
+      "over_60": true,
+      "starts_lowercase": false,
+      "ends_period": false
+    },
+    {
+      "commit": "515dded0a3edf0e790d96e1cc43848c7f35e5215",
+      "subject": "Relax ExchangeNode invariant to support REPARTITION exchanges with ordering for merge join",
+      "length": 90,
+      "over_50": true,
+      "over_60": true,
+      "starts_lowercase": false,
+      "ends_period": false
+    },
+    {
+      "commit": "250156c8783002b38d0902d216fac94283a66b00",
+      "subject": "Update dev todo list: COST_BASED implemented, architecture verification complete",
+      "length": 80,
+      "over_50": true,
+      "over_60": true,
+      "starts_lowercase": false,
+      "ends_period": false
+    },
+    {
+      "commit": "f39e649cd548c799d70f75649d30a829ca25dbb2",
+      "subject": "Add COST_BASED merge join strategy with memory pressure thresholds",
+      "length": 66,
+      "over_50": true,
+      "over_60": true,
+      "starts_lowercase": false,
+      "ends_period": false
+    },
+    {
+      "commit": "3dd8e29c5c723343c99f605a25865b2e78b0fc52",
+      "subject": "Update dev todo list: all Stage 1-4 and 3.3/3.5 items complete",
+      "length": 62,
+      "over_50": true,
+      "over_60": true,
+      "starts_lowercase": false,
+      "ends_period": false
+    },
+    {
+      "commit": "993532631884047052db40ab1fef66d403bb2a92",
+      "subject": "Add dynamic filter collection for INNER merge join",
+      "length": 50,
+      "over_50": false,
+      "over_60": false,
+      "starts_lowercase": false,
+      "ends_period": false
+    },
+    {
+      "commit": "38691c6a14a4916cabb875544b9a1c92b7aaaa09",
+      "subject": "Add IS NOT NULL filters for INNER merge join to prune NULL tail before shuffle",
+      "length": 78,
+      "over_50": true,
+      "over_60": true,
+      "starts_lowercase": false,
+      "ends_period": false
+    },
+    {
+      "commit": "cc00465b364527e5a868e770fe5f07bf57784bba",
+      "subject": "Update dev todo list: all MVP items complete, RIGHT/FULL supported, KP-1 resolved",
+      "length": 81,
+      "over_50": true,
+      "over_60": true,
+      "starts_lowercase": false,
+      "ends_period": false
+    },
+    {
+      "commit": "5ea9a3a58e7ad451f4e9ca07416a49b304a1bb3a",
+      "subject": "Add RIGHT and FULL outer join support to merge join operator",
+      "length": 60,
+      "over_50": true,
+      "over_60": false,
+      "starts_lowercase": false,
+      "ends_period": false
+    },
+    {
+      "commit": "befa3f855c011f8426ac090dd203b07cafb68b3f",
+      "subject": "Fix merge join livelock by enforcing single-stream join pipelines in AddLocalExchanges",
+      "length": 86,
+      "over_50": true,
+      "over_60": true,
+      "starts_lowercase": false,
+      "ends_period": false
+    },
+    {
+      "commit": "2d16c9d4d62d2fcc8cc7f1b4197cfd9abc85e54f",
+      "subject": "Remove JVM crash logs committed by accident",
+      "length": 43,
+      "over_50": false,
+      "over_60": false,
+      "starts_lowercase": false,
+      "ends_period": false
+    },
+    {
+      "commit": "d55ef7be1d39dafe5c08445ec6194be5ee999233",
+      "subject": "Fix merge join bridge lifecycle and document runner livelock",
+      "length": 60,
+      "over_50": true,
+      "over_60": false,
+      "starts_lowercase": false,
+      "ends_period": false
+    },
+    {
+      "commit": "508a623f20207c418728c742f34f9a9672028a2c",
+      "subject": "Propagate join algorithm through plan rewrites, add rule tests, sorted output derivation, EXPLAIN support",
+      "length": 105,
+      "over_50": true,
+      "over_60": true,
+      "starts_lowercase": false,
+      "ends_period": false
+    },
+    {
+      "commit": "8d1d1c37acd74ded4bf54f39b60b85836fee26c2",
+      "subject": "Update dev todo list after Iceberg sortedness stage",
+      "length": 51,
+      "over_50": true,
+      "over_60": false,
+      "starts_lowercase": false,
+      "ends_period": false
+    },
+    {
+      "commit": "419529bc82c4ee951007d219132d38f24f71f65d",
+      "subject": "Report Iceberg sortedness via table properties",
+      "length": 46,
+      "over_50": false,
+      "over_60": false,
+      "starts_lowercase": false,
+      "ends_period": false
+    },
+    {
+      "commit": "eab864b6b3b3eba7a9ee9306516bb67ab5e4bc68",
+      "subject": "Update SMJ dev todo list after MVP completion",
+      "length": 45,
+      "over_50": false,
+      "over_60": false,
+      "starts_lowercase": false,
+      "ends_period": false
+    },
+    {
+      "commit": "8290506d1dcb8a0c087512f9131ad93a22e7d007",
+      "subject": "Wire merge join into planner and local execution (MVP)",
+      "length": 54,
+      "over_50": true,
+      "over_60": false,
+      "starts_lowercase": false,
+      "ends_period": false
+    },
+    {
+      "commit": "5b36c36a6aa3a4ed0e54dc346efc6a4fa0b16ac7",
+      "subject": "Add DetermineJoinAlgorithm rule and prefer_merge_join property",
+      "length": 62,
+      "over_50": true,
+      "over_60": true,
+      "starts_lowercase": false,
+      "ends_period": false
+    },
+    {
+      "commit": "2dfc26d3d14a5355c5832c53e415b360849eeb43",
+      "subject": "Add merge join operator tests",
+      "length": 29,
+      "over_50": false,
+      "over_60": false,
+      "starts_lowercase": false,
+      "ends_period": false
+    },
+    {
+      "commit": "7e2b9b5ee9b95e3f9e5a5a8b0f39f45cdfe5698d",
+      "subject": "Add merge join operator",
+      "length": 23,
+      "over_50": false,
+      "over_60": false,
+      "starts_lowercase": false,
+      "ends_period": false
+    },
+    {
+      "commit": "f85704d29f68ff90b8520b6003d4acd890e817b2",
+      "subject": "Add merge join algorithm marker to JoinNode",
+      "length": 43,
+      "over_50": false,
+      "over_60": false,
+      "starts_lowercase": false,
+      "ends_period": false
+    },
+    {
+      "commit": "fd36b682eaeb21f830f40014cab31b84cf989a7b",
+      "subject": "Add Sorted Merge Join research and implementation plan",
+      "length": 54,
+      "over_50": true,
+      "over_60": false,
+      "starts_lowercase": false,
+      "ends_period": false
+    }
+  ]
+}

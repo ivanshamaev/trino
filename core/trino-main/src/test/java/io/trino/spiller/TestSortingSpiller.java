@@ -21,6 +21,7 @@ import io.trino.RowPagesBuilder;
 import io.trino.memory.context.AggregatedMemoryContext;
 import io.trino.memory.context.MemoryReservationHandler;
 import io.trino.operator.DummySpillerFactory;
+import io.trino.operator.PageWithPositionComparator;
 import io.trino.spi.Page;
 import io.trino.spi.type.TypeOperators;
 import io.trino.sql.gen.OrderingCompiler;
@@ -243,7 +244,7 @@ public class TestSortingSpiller
         assertThat(memory.getBytes()).isZero();
     }
 
-    private static io.trino.operator.PageWithPositionComparator comparator()
+    private static PageWithPositionComparator comparator()
     {
         return new OrderingCompiler(new TypeOperators()).compilePageWithPositionComparator(ImmutableList.of(BIGINT), ImmutableList.of(0), ImmutableList.of(ASC_NULLS_LAST));
     }

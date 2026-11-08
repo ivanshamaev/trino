@@ -1,0 +1,29 @@
+Unable to find image 'ghcr.io/trinodb/build/sphinx:114' locally
+114: Pulling from trinodb/build/sphinx
+61ffccc6e275: Pulling fs layer
+a3d5ed709dd6: Pulling fs layer
+2ad5b257345f: Pulling fs layer
+1118f9ddc73f: Pulling fs layer
+e3599f65d533: Pulling fs layer
+0c2a5709b400: Pulling fs layer
+3d97007bfc7f: Pulling fs layer
+1183df4a0fb2: Pulling fs layer
+2ad5b257345f: Download complete
+3d97007bfc7f: Download complete
+e3599f65d533: Download complete
+a3d5ed709dd6: Download complete
+0c2a5709b400: Download complete
+61ffccc6e275: Download complete
+61ffccc6e275: Pull complete
+0c2a5709b400: Pull complete
+a3d5ed709dd6: Pull complete
+3d97007bfc7f: Pull complete
+1118f9ddc73f: Download complete
+1183df4a0fb2: Download complete
+2ad5b257345f: Pull complete
+1118f9ddc73f: Pull complete
+e3599f65d533: Pull complete
+1183df4a0fb2: Pull complete
+Digest: sha256:452857044d972e5ee9654e40c1cd180955e6201a4f59f24236aad831301e0a3b
+Status: Downloaded newer image for ghcr.io/trinodb/build/sphinx:114
+Generating sitemap for 653 pages in /docs/target/html/sitemap.xml

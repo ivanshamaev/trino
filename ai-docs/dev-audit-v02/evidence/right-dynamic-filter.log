@@ -1,0 +1,228 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] 
+[INFO] -----------------------< io.trino:trino-iceberg >-----------------------
+[INFO] Building trino-iceberg 485-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] ----------------------------[ trino-plugin ]----------------------------
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-iceberg ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-iceberg ---
+[INFO] 
+[INFO] --- antlr4:4.13.2:antlr4 (default) @ trino-iceberg ---
+[INFO] No ANTLR 4 grammars to compile in /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/antlr4
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ trino-iceberg ---
+[INFO] skip non existing resourceDirectory /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.16.0:compile (default-compile) @ trino-iceberg ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- trino:26:generate-service-descriptor (default-generate-service-descriptor) @ trino-iceberg ---
+[INFO] Wrote io.trino.plugin.iceberg.IcebergPlugin to /home/ivan/opencode/trino/plugin/trino-iceberg/target/trino-iceberg-485-SNAPSHOT-services.jar
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ trino-iceberg ---
+[INFO] Copying 98 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ trino-iceberg ---
+[INFO] Compiling 1 source file with javac [debug deprecation parameters release 25] to target/test-classes
+[INFO] 
+[INFO] --- duplicate-finder:2.0.1:check (default) @ trino-iceberg ---
+[INFO] Skipping duplicate-finder execution!
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer) @ trino-iceberg ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer-production-code) @ trino-iceberg ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-only (default) @ trino-iceberg ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-duplicate (default) @ trino-iceberg ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-exclusions (default) @ trino-iceberg ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-test) @ trino-iceberg ---
+[INFO] Tests will run in random order. To reproduce ordering use flag -Dsurefire.runOrder.random.seed=15288308191276
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[WARNING] System property [junit.jupiter.execution.parallel.enabled] overwritten by user properties from Maven session
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+WARNING: Using incubator modules: jdk.incubator.vector
+[INFO] Running io.trino.plugin.iceberg.TestMergeJoinDynamicFilterAuditV02
+2026-11-08T04:24:18.373-0600	INFO	main	io.trino.simd.BlockEncodingSimdSupport	Detected SIMD Support for architecture=amd64, vectorBitWidth=128: SimdSupport[capabilities=[]]
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::loadLibrary has been called by com.aayushatharva.brotli4j.Brotli4jLoader in an unnamed module (file:/home/ivan/.m2/repository/com/aayushatharva/brotli4j/brotli4j/1.23.0/brotli4j-1.23.0.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+2026-11-08T04:24:19.565-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 98.00ms: 517.92MB -> 134.80MB
+2026-11-08T04:24:24.986-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 5.17s, stopped 253.00ms: 658.78MB -> 207.18MB
+2026-11-08T04:24:24.993-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 253.00ms: 658.78MB -> 207.18MB
+2026-11-08T04:24:24.994-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 253.00ms: 658.78MB -> 207.18MB
+2026-11-08T04:24:25.090-0600	INFO	main	io.trino.testing.DistributedQueryRunner	Created DistributedQueryRunner in 8.51s (unclosed instances = 1)
+2026-11-08T04:24:25.184-0600	INFO	main	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T04:24:25.204-0600	INFO	main	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T04:24:25.209-0600	INFO	main	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T04:24:25.228-0600	INFO	main	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T04:24:25.228-0600	INFO	main	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T04:24:25.238-0600	INFO	main	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T04:24:25.368-0600	INFO	main	io.trino.cache.CacheManagerRegistry	Usage filesystem.metadata of catalog iceberg requires [LOW_LATENCY], selected blob cache manager memory
+2026-11-08T04:24:31.618-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.40s, stopped 224.00ms: 615.60MB -> 568.30MB
+2026-11-08T04:24:31.619-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.40s, stopped 224.00ms: 615.60MB -> 568.30MB
+2026-11-08T04:24:31.619-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.40s, stopped 224.00ms: 615.60MB -> 568.30MB
+2026-11-08T04:24:35.776-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.86s, stopped 305.00ms: 789.74MB -> 628.15MB
+2026-11-08T04:24:35.776-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.86s, stopped 305.00ms: 789.74MB -> 628.15MB
+2026-11-08T04:24:35.777-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.86s, stopped 305.00ms: 789.74MB -> 628.15MB
+2026-11-08T04:24:38.896-0600	INFO	main	stdout	AUDIT_V02 dynamicFilterPlan=Trino version: testversion
+Fragment 0 [HASH]
+    Output layout: [k, k]
+    Output partitioning: SINGLE []
+    Output[columnNames = [k, k]]
+    │   Layout: [k:bigint, k:bigint]
+    │   Estimates: {rows: 3 (54B), cpu: 0, memory: 0B, network: 0B}
+    └─ InnerJoin[criteria = (k = k_0), distribution = PARTITIONED]
+       │   Layout: [k:bigint]
+       │   Estimates: {rows: 3 (27B), cpu: 81, memory: 27B, network: 0B}
+       │   Distribution: PARTITIONED
+       │   Algorithm: MERGE
+       │   dynamicFilterAssignments = {k_0 -> #df_218}
+       ├─ RemoteMerge[sourceFragmentIds = [1]]
+       │      Layout: [k:bigint]
+       └─ RemoteMerge[sourceFragmentIds = [2]]
+              Layout: [k_0:bigint]
+
+Fragment 1 [SOURCE]
+    Output layout: [k]
+    Output partitioning: HASH [k]
+    LocalMerge[orderBy = [k ASC NULLS LAST]]
+    │   Layout: [k:bigint]
+    │   Estimates: {rows: 3 (27B), cpu: 0, memory: 0B, network: 0B}
+    └─ PartialSort[orderBy = [k ASC NULLS LAST]]
+       │   Layout: [k:bigint]
+       │   Estimates: {rows: 3 (27B), cpu: ?, memory: ?, network: ?}
+       └─ LocalExchange[partitioning = ROUND_ROBIN]
+          │   Layout: [k:bigint]
+          │   Estimates: {rows: 3 (27B), cpu: 27, memory: 0B, network: 0B}
+          └─ ScanFilter[table = iceberg:tpch.audit_v02_right_dfd26c3mwraq$data@3110996325632409848, filterPredicate = $not((k IS NULL)), dynamicFilters = {k = #df_218}]
+                 Layout: [k:bigint]
+                 Estimates: {rows: 3 (27B), cpu: 27, memory: 0B, network: 0B}/{rows: 3 (27B), cpu: 27, memory: 0B, network: 0B}
+                 k := 1:k:bigint
+
+Fragment 2 [SOURCE]
+    Output layout: [k_0]
+    Output partitioning: HASH [k_0]
+    LocalMerge[orderBy = [k_0 ASC NULLS LAST]]
+    │   Layout: [k_0:bigint]
+    │   Estimates: {rows: 3 (27B), cpu: 0, memory: 0B, network: 0B}
+    └─ PartialSort[orderBy = [k_0 ASC NULLS LAST]]
+       │   Layout: [k_0:bigint]
+       │   Estimates: {rows: 3 (27B), cpu: ?, memory: ?, network: ?}
+       └─ LocalExchange[partitioning = ROUND_ROBIN]
+          │   Layout: [k_0:bigint]
+          │   Estimates: {rows: 3 (27B), cpu: 27, memory: 0B, network: 0B}
+          └─ ScanFilter[table = iceberg:tpch.audit_v02_right_dfd26c3mwraq$data@3110996325632409848, filterPredicate = $not((k_0 IS NULL))]
+                 Layout: [k_0:bigint]
+                 Estimates: {rows: 3 (27B), cpu: 27, memory: 0B, network: 0B}/{rows: 3 (27B), cpu: 27, memory: 0B, network: 0B}
+                 k_0 := 1:k:bigint
+2026-11-08T04:24:39.364-0600	INFO	main	stdout	AUDIT_V02 join=JOIN dynamicFiltersTotal=1 dynamicFiltersCompleted=1
+2026-11-08T04:24:39.460-0600	INFO	main	stdout	AUDIT_V02 dynamicFilterPlan=Trino version: testversion
+Fragment 0 [HASH]
+    Output layout: [k, k_0]
+    Output partitioning: SINGLE []
+    Output[columnNames = [k, k]]
+    │   Layout: [k:bigint, k_0:bigint]
+    │   Estimates: {rows: 5 (81B), cpu: 0, memory: 0B, network: 0B}
+    │   k := k_0
+    └─ RightJoin[criteria = (k = k_0), distribution = PARTITIONED]
+       │   Layout: [k:bigint, k_0:bigint]
+       │   Estimates: {rows: 5 (81B), cpu: 135, memory: 27B, network: 0B}
+       │   Distribution: PARTITIONED
+       │   Algorithm: MERGE
+       │   dynamicFilterAssignments = {k_0 -> #df_198}
+       ├─ RemoteMerge[sourceFragmentIds = [1]]
+       │      Layout: [k:bigint]
+       └─ RemoteMerge[sourceFragmentIds = [2]]
+              Layout: [k_0:bigint]
+
+Fragment 1 [SOURCE]
+    Output layout: [k]
+    Output partitioning: HASH [k]
+    LocalMerge[orderBy = [k ASC NULLS LAST]]
+    │   Layout: [k:bigint]
+    │   Estimates: {rows: 3 (27B), cpu: 0, memory: 0B, network: 0B}
+    └─ PartialSort[orderBy = [k ASC NULLS LAST]]
+       │   Layout: [k:bigint]
+       │   Estimates: {rows: 3 (27B), cpu: ?, memory: ?, network: ?}
+       └─ LocalExchange[partitioning = ROUND_ROBIN]
+          │   Layout: [k:bigint]
+          │   Estimates: {rows: 3 (27B), cpu: 27, memory: 0B, network: 0B}
+          └─ ScanFilter[table = iceberg:tpch.audit_v02_right_dfd26c3mwraq$data@3110996325632409848, dynamicFilters = {k = #df_198}]
+                 Layout: [k:bigint]
+                 Estimates: {rows: 3 (27B), cpu: 27, memory: 0B, network: 0B}/{rows: 3 (27B), cpu: 27, memory: 0B, network: 0B}
+                 k := 1:k:bigint
+
+Fragment 2 [SOURCE]
+    Output layout: [k_0]
+    Output partitioning: HASH [k_0]
+    LocalMerge[orderBy = [k_0 ASC NULLS LAST]]
+    │   Layout: [k_0:bigint]
+    │   Estimates: {rows: 3 (27B), cpu: 0, memory: 0B, network: 0B}
+    └─ PartialSort[orderBy = [k_0 ASC NULLS LAST]]
+       │   Layout: [k_0:bigint]
+       │   Estimates: {rows: 3 (27B), cpu: ?, memory: ?, network: ?}
+       └─ LocalExchange[partitioning = ROUND_ROBIN]
+          │   Layout: [k_0:bigint]
+          │   Estimates: {rows: 3 (27B), cpu: 27, memory: 0B, network: 0B}
+          └─ TableScan[table = iceberg:tpch.audit_v02_right_dfd26c3mwraq$data@3110996325632409848]
+                 Layout: [k_0:bigint]
+                 Estimates: {rows: 3 (27B), cpu: 27, memory: 0B, network: 0B}
+                 k_0 := 1:k:bigint
+2026-11-08T04:24:40.614-0600	INFO	main	stdout	AUDIT_V02 join=RIGHT JOIN dynamicFiltersTotal=1 dynamicFiltersCompleted=0
+2026-11-08T04:24:41.053-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 4.86s, stopped 418.00ms: 1.10GB -> 693.88MB
+2026-11-08T04:24:41.054-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 4.86s, stopped 418.00ms: 1.10GB -> 693.88MB
+2026-11-08T04:24:41.054-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 4.86s, stopped 418.00ms: 1.10GB -> 693.88MB
+[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 26.79 s <<< FAILURE! -- in io.trino.plugin.iceberg.TestMergeJoinDynamicFilterAuditV02
+[ERROR] io.trino.plugin.iceberg.TestMergeJoinDynamicFilterAuditV02.testRightMergeJoinCompletesDynamicFilter -- Time elapsed: 3.020 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 1
+ but was: 0
+	at io.trino.plugin.iceberg.TestMergeJoinDynamicFilterAuditV02.testRightMergeJoinCompletesDynamicFilter(TestMergeJoinDynamicFilterAuditV02.java:48)
+
+2026-11-08T04:24:42.217-0600	INFO	main	io.trino.testing.containers.junit.ReportLeakedContainers	DockerClientFactory not initialized, so there should be no leaked containers, skipping the check
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Failures: 
+[ERROR]   TestMergeJoinDynamicFilterAuditV02.testRightMergeJoinCompletesDynamicFilter:48 
+expected: 1
+ but was: 0
+[INFO] 
+[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  36.157 s
+[INFO] Finished at: 2026-11-08T13:24:42+03:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Njord session closed
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.6.1:test (default-test) on project trino-iceberg: There are test failures.
+[ERROR] 
+[ERROR] See /home/ivan/opencode/trino/plugin/trino-iceberg/target/surefire-reports for the individual test results.
+[ERROR] See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

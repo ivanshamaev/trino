@@ -282,19 +282,19 @@ public final class SystemSessionProperties
                         false),
                 doubleProperty(
                         MERGE_JOIN_MEMORY_PRESSURE_THRESHOLD,
-                        "Merge join memory pressure threshold (COST_BASED: fraction of per-node memory above which merge is preferred)",
+                        "Fraction of model memory allowance that triggers cost-based consideration of merge join",
                         optimizerConfig.getMergeJoinMemoryPressureThreshold(),
                         value -> validateMergeJoinFraction(value, MERGE_JOIN_MEMORY_PRESSURE_THRESHOLD, false),
                         false),
                 doubleProperty(
                         MERGE_JOIN_SMALL_BUILD_THRESHOLD,
-                        "Merge join small build threshold (COST_BASED: fraction below which hash is always preferred)",
+                        "Small-build fraction of model memory allowance, unless both inputs are compatibly partitioned and sorted",
                         optimizerConfig.getMergeJoinSmallBuildThreshold(),
                         value -> validateMergeJoinFraction(value, MERGE_JOIN_SMALL_BUILD_THRESHOLD, false),
                         false),
                 doubleProperty(
                         MERGE_JOIN_BIG_SIDE_THRESHOLD,
-                        "Merge join big side threshold (COST_BASED: fraction above which a side is considered big)",
+                        "Fraction of model memory allowance above which both inputs are considered large",
                         optimizerConfig.getMergeJoinBigSideThreshold(),
                         value -> {
                             if (!Double.isFinite(value) || value < 0) {

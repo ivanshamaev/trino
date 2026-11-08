@@ -72,7 +72,8 @@ public class FileSingleStreamSpillerFactory
     static final String SPILL_FILE_PREFIX = "spill";
     @VisibleForTesting
     static final String SPILL_FILE_SUFFIX = ".bin";
-    private static final String SPILL_FILE_GLOB = "spill*.bin";
+    // Include bitmap files from before they adopted the common spill prefix.
+    private static final String SPILL_FILE_GLOB = "{spill*,merge-join-matches[0-9]*}.bin";
     private static final Duration SPILL_PATH_HEALTH_EXPIRY_INTERVAL = Duration.ofMinutes(5);
 
     private final ListeningExecutorService executor;

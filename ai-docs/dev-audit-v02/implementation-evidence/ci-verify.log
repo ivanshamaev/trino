@@ -1,0 +1,89 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] trino-main                                                         [jar]
+[INFO] trino-iceberg                                             [trino-plugin]
+[INFO] trino-tests                                                        [jar]
+[INFO] 
+[INFO] ------------------------< io.trino:trino-main >-------------------------
+[INFO] Building trino-main 485-SNAPSHOT                                   [1/3]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.7.0:enforce (default) @ trino-main ---
+[INFO] Rule 0: org.apache.maven.enforcer.rules.dependency.BannedDependencies passed
+[INFO] Rule 1: org.apache.maven.enforcer.rules.RequireProfileIdsExist passed
+[INFO] Rule 2: org.codehaus.mojo.extraenforcer.model.RequirePropertyDiverges passed
+[INFO] Rule 3: org.apache.maven.enforcer.rules.property.RequireProperty passed
+[INFO] Rule 4: org.apache.maven.enforcer.rules.RequireJavaVendor passed
+[INFO] Rule 5: org.apache.maven.enforcer.rules.BanDuplicatePomDependencyVersions passed
+[INFO] Rule 6: org.apache.maven.enforcer.rules.dependency.RequireUpperBoundDeps passed
+[INFO] Rule 7: org.apache.maven.enforcer.rules.version.RequireMavenVersion passed
+[INFO] Rule 8: org.apache.maven.enforcer.rules.version.RequireJavaVersion passed
+[INFO] Rule 9: org.codehaus.mojo.extraenforcer.dependencies.EnforceBytecodeVersion passed
+[INFO] Rule 10: org.apache.maven.enforcer.rules.RequirePluginVersions passed
+[INFO] Rule 11: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 12: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 13: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 14: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 15: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 16: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 17: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] 
+[INFO] --- enforcer:3.7.0:enforce (junit-extensions) @ trino-main ---
+[INFO] Rule 0: io.airlift.airbase.RequireJunitExtensions passed
+[INFO] 
+[INFO] --- enforcer:3.7.0:enforce (trino-restrict-imports) @ trino-main ---
+[INFO] Rule 0: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 1: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 2: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 3: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] 
+[INFO] --- sortpom:4.0.0:verify (default) @ trino-main ---
+[INFO] Verifying file /home/ivan/opencode/trino/core/trino-main/pom.xml
+[INFO] 
+[INFO] --- license:5.1.2:check (default) @ trino-main ---
+[INFO] Checking licenses...
+[WARNING] Unknown file extension: /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/execution/executor/scheduler/group-state-diagram.dot
+[INFO] License check: 4258 file(s) checked (OK: 4257, Missing: 0, Unknown: 1)
+[WARNING] Unable to find a comment style definition for some files. You may want to add a custom mapping for the relevant file extensions.
+[INFO] 
+[INFO] --- airstyle:10:check (airstyle) @ trino-main ---
+[INFO] All 4288 files are already formatted
+[INFO] 
+[INFO] --- checkstyle:3.6.0:check (checkstyle) @ trino-main ---
+[INFO] There is 1 error reported by Checkstyle 14.4.0 with checkstyle/airbase-checks.xml ruleset.
+[ERROR] src/test/java/io/trino/operator/join/merge/TestMergeJoinOperator.java:[1307,58] (blocks) EmptyBlock: Empty while block.
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Skipping trino-iceberg
+[INFO] This project has been banned from the build due to previous failures.
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Skipping trino-tests
+[INFO] This project has been banned from the build due to previous failures.
+[INFO] ------------------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for trino-main 485-SNAPSHOT:
+[INFO] 
+[INFO] trino-main ......................................... FAILURE [03:54 min]
+[INFO] trino-iceberg ...................................... SKIPPED
+[INFO] trino-tests ........................................ SKIPPED
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  03:56 min
+[INFO] Finished at: 2026-11-08T14:41:40+03:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Njord session closed
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-checkstyle-plugin:3.6.0:check (checkstyle) on project trino-main: You have 1 Checkstyle violation. -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

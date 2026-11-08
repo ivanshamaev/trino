@@ -1,0 +1,81 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] 
+[INFO] -----------------------< io.trino:trino-iceberg >-----------------------
+[INFO] Building trino-iceberg 485-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] ----------------------------[ trino-plugin ]----------------------------
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-iceberg ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-iceberg ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-cli) @ trino-iceberg ---
+[INFO] Tests will run in random order. To reproduce ordering use flag -Dsurefire.runOrder.random.seed=22139170158920
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+WARNING: Using incubator modules: jdk.incubator.vector
+[INFO] Running io.trino.plugin.iceberg.TestIcebergSortedWriting
+[INFO] Running io.trino.plugin.iceberg.TestIcebergConfig
+2026-11-08T06:18:26.878-0600	INFO	ForkJoinPool-1-worker-2	org.hibernate.validator.internal.util.Version	HV000001: Hibernate Validator 9.1.5.Final
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.785 s -- in io.trino.plugin.iceberg.TestIcebergConfig
+2026-11-08T06:18:28.587-0600	INFO	ForkJoinPool-1-worker-1	io.trino.simd.BlockEncodingSimdSupport	Detected SIMD Support for architecture=amd64, vectorBitWidth=128: SimdSupport[capabilities=[]]
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::loadLibrary has been called by com.aayushatharva.brotli4j.Brotli4jLoader in an unnamed module (file:/home/ivan/.m2/repository/com/aayushatharva/brotli4j/brotli4j/1.23.0/brotli4j-1.23.0.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+2026-11-08T06:18:34.223-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 226.00ms: 538.60MB -> 208.77MB
+2026-11-08T06:18:34.240-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 226.00ms: 538.60MB -> 208.77MB
+2026-11-08T06:18:34.242-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 226.00ms: 538.60MB -> 208.77MB
+2026-11-08T06:18:34.522-0600	INFO	ForkJoinPool-1-worker-1	io.trino.testing.DistributedQueryRunner	Created DistributedQueryRunner in 7.17s (unclosed instances = 1)
+2026-11-08T06:18:34.603-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T06:18:34.621-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T06:18:34.622-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T06:18:34.632-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T06:18:34.632-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T06:18:34.642-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T06:18:34.750-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	Usage filesystem.metadata of catalog iceberg requires [LOW_LATENCY], selected blob cache manager memory
+2026-11-08T06:18:40.595-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 5.99s, stopped 367.00ms: 709.06MB -> 565.65MB
+2026-11-08T06:18:40.595-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 5.99s, stopped 367.00ms: 709.06MB -> 565.65MB
+2026-11-08T06:18:40.596-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 5.99s, stopped 367.00ms: 709.06MB -> 565.65MB
+2026-11-08T06:18:44.093-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.14s, stopped 370.00ms: 1.34GB -> 617.54MB
+2026-11-08T06:18:44.094-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.14s, stopped 370.00ms: 1.34GB -> 617.54MB
+2026-11-08T06:18:44.095-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.14s, stopped 370.00ms: 1.34GB -> 617.54MB
+2026-11-08T06:18:48.278-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.74s, stopped 450.00ms: 1.32GB -> 694.04MB
+2026-11-08T06:18:48.299-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.74s, stopped 450.00ms: 1.32GB -> 694.04MB
+2026-11-08T06:18:48.300-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.74s, stopped 450.00ms: 1.32GB -> 694.04MB
+2026-11-08T06:18:49.780-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 1.04s, stopped 458.00ms: 1.09GB -> 701.35MB
+2026-11-08T06:18:49.792-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 1.04s, stopped 458.00ms: 1.09GB -> 701.35MB
+2026-11-08T06:18:49.793-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 1.04s, stopped 458.00ms: 1.09GB -> 701.35MB
+2026-11-08T06:18:51.613-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 1.37s, stopped 443.00ms: 1.39GB -> 726.01MB
+2026-11-08T06:18:51.649-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 1.37s, stopped 443.00ms: 1.39GB -> 726.01MB
+2026-11-08T06:18:51.692-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 1.37s, stopped 443.00ms: 1.39GB -> 726.01MB
+2026-11-08T06:18:54.553-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.59s, stopped 372.00ms: 940.50MB -> 750.00MB
+2026-11-08T06:18:54.558-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.59s, stopped 372.00ms: 940.50MB -> 750.00MB
+2026-11-08T06:18:54.558-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.59s, stopped 372.00ms: 940.50MB -> 750.00MB
+2026-11-08T06:18:58.560-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.54s, stopped 463.00ms: 1.43GB -> 782.75MB
+2026-11-08T06:18:58.570-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.54s, stopped 463.00ms: 1.43GB -> 782.75MB
+2026-11-08T06:18:58.570-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.54s, stopped 463.00ms: 1.43GB -> 782.75MB
+2026-11-08T06:19:07.612-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 8.39s, stopped 665.00ms: 1.42GB -> 844.54MB
+2026-11-08T06:19:07.613-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 8.39s, stopped 665.00ms: 1.42GB -> 844.54MB
+2026-11-08T06:19:07.613-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 8.39s, stopped 665.00ms: 1.42GB -> 844.54MB
+[WARNING] Tests run: 14, Failures: 0, Errors: 0, Skipped: 2, Time elapsed: 49.30 s -- in io.trino.plugin.iceberg.TestIcebergSortedWriting
+2026-11-08T06:19:15.649-0600	INFO	main	io.trino.testing.containers.junit.ReportLeakedContainers	DockerClientFactory not initialized, so there should be no leaked containers, skipping the check
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 17, Failures: 0, Errors: 0, Skipped: 2
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  56.049 s
+[INFO] Finished at: 2026-11-08T15:19:15+03:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Njord session closed

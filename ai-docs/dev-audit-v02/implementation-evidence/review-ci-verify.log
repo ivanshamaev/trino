@@ -1,0 +1,462 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] trino-main                                                         [jar]
+[INFO] trino-iceberg                                             [trino-plugin]
+[INFO] trino-tests                                                        [jar]
+[INFO] 
+[INFO] ------------------------< io.trino:trino-main >-------------------------
+[INFO] Building trino-main 485-SNAPSHOT                                   [1/3]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.7.0:enforce (default) @ trino-main ---
+[INFO] Rule 0: org.apache.maven.enforcer.rules.dependency.BannedDependencies passed
+[INFO] Rule 1: org.apache.maven.enforcer.rules.RequireProfileIdsExist passed
+[INFO] Rule 2: org.codehaus.mojo.extraenforcer.model.RequirePropertyDiverges passed
+[INFO] Rule 3: org.apache.maven.enforcer.rules.property.RequireProperty passed
+[INFO] Rule 4: org.apache.maven.enforcer.rules.RequireJavaVendor passed
+[INFO] Rule 5: org.apache.maven.enforcer.rules.BanDuplicatePomDependencyVersions passed
+[INFO] Rule 6: org.apache.maven.enforcer.rules.dependency.RequireUpperBoundDeps passed
+[INFO] Rule 7: org.apache.maven.enforcer.rules.version.RequireMavenVersion passed
+[INFO] Rule 8: org.apache.maven.enforcer.rules.version.RequireJavaVersion passed
+[INFO] Rule 9: org.codehaus.mojo.extraenforcer.dependencies.EnforceBytecodeVersion passed
+[INFO] Rule 10: org.apache.maven.enforcer.rules.RequirePluginVersions passed
+[INFO] Rule 11: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 12: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 13: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 14: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 15: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 16: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 17: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] 
+[INFO] --- enforcer:3.7.0:enforce (junit-extensions) @ trino-main ---
+[INFO] Rule 0: io.airlift.airbase.RequireJunitExtensions passed
+[INFO] 
+[INFO] --- enforcer:3.7.0:enforce (trino-restrict-imports) @ trino-main ---
+[INFO] Rule 0: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 1: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 2: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 3: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] 
+[INFO] --- sortpom:4.0.0:verify (default) @ trino-main ---
+[INFO] Verifying file /tmp/trino-smj-upstream-v02-check/core/trino-main/pom.xml
+[INFO] 
+[INFO] --- license:5.1.2:check (default) @ trino-main ---
+[INFO] Checking licenses...
+[WARNING] Unknown file extension: /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/execution/executor/scheduler/group-state-diagram.dot
+[INFO] License check: 4261 file(s) checked (OK: 4260, Missing: 0, Unknown: 1)
+[WARNING] Unable to find a comment style definition for some files. You may want to add a custom mapping for the relevant file extensions.
+[INFO] 
+[INFO] --- airstyle:10:check (airstyle) @ trino-main ---
+[INFO] All 4291 files are already formatted
+[INFO] 
+[INFO] --- checkstyle:3.6.0:check (checkstyle) @ trino-main ---
+[INFO] You have 0 Checkstyle violations.
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-main ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-main ---
+[INFO] 
+[INFO] --- jacoco:0.8.16:prepare-agent (default) @ trino-main ---
+[INFO] Skipping JaCoCo execution because property jacoco.skip is set.
+[INFO] 
+[INFO] --- antlr4:4.13.2:antlr4 (default) @ trino-main ---
+[INFO] No grammars to process
+[INFO] ANTLR 4: Processing source directory /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/antlr4
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ trino-main ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 0 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.16.0:compile (default-compile) @ trino-main ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ trino-main ---
+[INFO] Copying 32 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ trino-main ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-only (default) @ trino-main ---
+[INFO] No dependency problems found
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-duplicate (default) @ trino-main ---
+[INFO] No duplicate dependencies found in <dependencies/> or in <dependencyManagement/>
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-exclusions (default) @ trino-main ---
+[INFO] No problems with dependencies exclusions
+[INFO] 
+[INFO] --- duplicate-finder:2.0.1:check (default) @ trino-main ---
+[INFO] Checking compile classpath
+[INFO] Checking runtime classpath
+[INFO] Checking test classpath
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer) @ trino-main ---
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer-production-code) @ trino-main ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-test) @ trino-main ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jacoco:0.8.16:report (report) @ trino-main ---
+[INFO] Skipping JaCoCo execution because property jacoco.skip is set.
+[INFO] 
+[INFO] --- jar:3.5.1:jar (default-jar) @ trino-main ---
+[INFO] 
+[INFO] --- jar:3.5.1:test-jar (attach-tests) @ trino-main ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/core/trino-main/target/trino-main-485-SNAPSHOT-tests.jar
+[INFO] 
+[INFO] --- source:3.4.0:jar-no-fork (attach-sources) @ trino-main ---
+[INFO] 
+[INFO] --- source:3.4.0:test-jar-no-fork (attach-sources) @ trino-main ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/core/trino-main/target/trino-main-485-SNAPSHOT-test-sources.jar
+[INFO] 
+[INFO] >>> spotbugs:4.10.5.0:check (default) > :spotbugs @ trino-main >>>
+[INFO] 
+[INFO] --- spotbugs:4.10.5.0:spotbugs (spotbugs) @ trino-main ---
+[INFO] Spotbugs plugin skipped
+[INFO] Skipping com.github.spotbugs:spotbugs-maven-plugin:4.10.5.0:spotbugs report goal
+[INFO] 
+[INFO] <<< spotbugs:4.10.5.0:check (default) < :spotbugs @ trino-main <<<
+[INFO] 
+[INFO] 
+[INFO] --- spotbugs:4.10.5.0:check (default) @ trino-main ---
+[INFO] Spotbugs plugin skipped
+[INFO] 
+[INFO] >>> pmd:3.28.0:check (default) > :pmd @ trino-main >>>
+[INFO] 
+[INFO] --- pmd:3.28.0:pmd (pmd) @ trino-main ---
+[INFO] Skipping org.apache.maven.plugins:maven-pmd-plugin:3.28.0:pmd report goal
+[INFO] 
+[INFO] <<< pmd:3.28.0:check (default) < :pmd @ trino-main <<<
+[INFO] 
+[INFO] 
+[INFO] --- pmd:3.28.0:check (default) @ trino-main ---
+[INFO] Skipping PMD execution
+[INFO] 
+[INFO] --- javadoc:3.12.0:jar (attach-javadocs) @ trino-main ---
+[WARNING] Javadoc Warnings
+[WARNING] warning: [incubating] using incubating module(s): jdk.incubator.vector
+[WARNING] warning: [incubating] using incubating module(s): jdk.incubator.vector
+[WARNING] 2 warnings
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/core/trino-main/target/trino-main-485-SNAPSHOT-javadoc.jar
+[INFO] 
+[INFO] -----------------------< io.trino:trino-iceberg >-----------------------
+[INFO] Building trino-iceberg 485-SNAPSHOT                                [2/3]
+[INFO]   from /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/pom.xml
+[INFO] ----------------------------[ trino-plugin ]----------------------------
+[INFO] 
+[INFO] --- enforcer:3.7.0:enforce (default) @ trino-iceberg ---
+[INFO] Rule 0: org.apache.maven.enforcer.rules.dependency.BannedDependencies passed
+[INFO] Rule 1: org.apache.maven.enforcer.rules.dependency.BannedDependencies passed
+[INFO] Rule 2: org.apache.maven.enforcer.rules.RequireProfileIdsExist passed
+[INFO] Rule 3: org.codehaus.mojo.extraenforcer.model.RequirePropertyDiverges passed
+[INFO] Rule 4: org.apache.maven.enforcer.rules.property.RequireProperty passed
+[INFO] Rule 6: org.apache.maven.enforcer.rules.BanDuplicatePomDependencyVersions passed
+[INFO] Rule 7: org.apache.maven.enforcer.rules.dependency.RequireUpperBoundDeps passed
+[INFO] Rule 10: org.codehaus.mojo.extraenforcer.dependencies.EnforceBytecodeVersion passed
+[INFO] Rule 11: org.apache.maven.enforcer.rules.RequirePluginVersions passed
+[INFO] Rule 12: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 13: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 14: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 15: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 16: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 17: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 18: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] 
+[INFO] --- enforcer:3.7.0:enforce (junit-extensions) @ trino-iceberg ---
+[INFO] Rule 0: io.airlift.airbase.RequireJunitExtensions passed
+[INFO] 
+[INFO] --- enforcer:3.7.0:enforce (trino-restrict-imports) @ trino-iceberg ---
+[INFO] Rule 0: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 1: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 2: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 3: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] 
+[INFO] --- sortpom:4.0.0:verify (default) @ trino-iceberg ---
+[INFO] Verifying file /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/pom.xml
+[INFO] 
+[INFO] --- license:5.1.2:check (default) @ trino-iceberg ---
+[INFO] Checking licenses...
+[INFO] License check: 495 file(s) checked (OK: 495, Missing: 0, Unknown: 0)
+[INFO] 
+[INFO] --- airstyle:10:check (airstyle) @ trino-iceberg ---
+[INFO] All 495 files are already formatted
+[INFO] 
+[INFO] --- checkstyle:3.6.0:check (checkstyle) @ trino-iceberg ---
+[INFO] You have 0 Checkstyle violations.
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-iceberg ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-iceberg ---
+[INFO] 
+[INFO] --- jacoco:0.8.16:prepare-agent (default) @ trino-iceberg ---
+[INFO] Skipping JaCoCo execution because property jacoco.skip is set.
+[INFO] 
+[INFO] --- antlr4:4.13.2:antlr4 (default) @ trino-iceberg ---
+[INFO] No ANTLR 4 grammars to compile in /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/antlr4
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ trino-iceberg ---
+[INFO] skip non existing resourceDirectory /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.16.0:compile (default-compile) @ trino-iceberg ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- trino:26:generate-service-descriptor (default-generate-service-descriptor) @ trino-iceberg ---
+[INFO] Wrote io.trino.plugin.iceberg.IcebergPlugin to /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/target/trino-iceberg-485-SNAPSHOT-services.jar
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ trino-iceberg ---
+[INFO] Copying 98 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ trino-iceberg ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 218 source files with javac [debug deprecation parameters release 25] to target/test-classes
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/BaseIcebergConnectorTest.java:[1956,21] nonTrinoExceptionFailure() in io.trino.sql.query.QueryAssertions.QueryAssert has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/IcebergTestUtils.java:[349,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/BaseIcebergSystemTables.java:[835,48] non-varargs call of varargs method with inexact argument type for last parameter;
+  cast to java.lang.Object for a varargs call
+  cast to java.lang.Object[] for a non-varargs call and to suppress this warning
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[56,17] setUseFileSizeFromMetadata(boolean) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[74,17] setHideMaterializedViewStorageTable(boolean) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[75,17] setMaterializedViewsStorageSchema(java.lang.String) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[158,17] setUseFileSizeFromMetadata(boolean) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[176,17] setHideMaterializedViewStorageTable(boolean) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[177,17] setMaterializedViewsStorageSchema(java.lang.String) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[209,25] setHideMaterializedViewStorageTable(boolean) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[210,25] setMaterializedViewsStorageSchema(java.lang.String) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergMaterializedViewSummary.java:[239,35] removedDataFiles(org.apache.iceberg.io.FileIO) in org.apache.iceberg.Snapshot has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergMaterializedViewSummary.java:[233,35] addedDataFiles(org.apache.iceberg.io.FileIO) in org.apache.iceberg.Snapshot has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergMergeAppend.java:[68,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergOrcMetricsCollection.java:[108,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergPageSourceProvider.java:[280,34] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergRegisterTableProcedure.java:[103,35] TestingIcebergPlugin(java.nio.file.Path,java.util.function.Supplier<java.util.Optional<com.google.inject.Module>>) in io.trino.plugin.iceberg.TestingIcebergPlugin has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSplitSource.java:[173,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSplitSource.java:[397,31] rewriteFiles(java.util.Set<org.apache.iceberg.DataFile>,java.util.Set<org.apache.iceberg.DataFile>) in org.apache.iceberg.RewriteFiles has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergStatistics.java:[686,17] nonTrinoExceptionFailure() in io.trino.sql.query.QueryAssertions.QueryAssert has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergStatistics.java:[689,17] nonTrinoExceptionFailure() in io.trino.sql.query.QueryAssertions.QueryAssert has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/file/TestIcebergFileMetastoreCreateTableFailure.java:[156,35] TestingIcebergPlugin(java.nio.file.Path,java.util.function.Supplier<java.util.Optional<com.google.inject.Module>>) in io.trino.plugin.iceberg.TestingIcebergPlugin has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/file/TestTrinoHiveCatalogWithFileMetastore.java:[122,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestIcebergGlueAccessDeniedException.java:[68,35] TestingIcebergPlugin(java.nio.file.Path,java.util.function.Supplier<java.util.Optional<com.google.inject.Module>>) in io.trino.plugin.iceberg.TestingIcebergPlugin has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestIcebergGlueTableOperationsCreateTableFailure.java:[128,35] TestingIcebergPlugin(java.nio.file.Path,java.util.function.Supplier<java.util.Optional<com.google.inject.Module>>) in io.trino.plugin.iceberg.TestingIcebergPlugin has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestIcebergGlueTableOperationsInsertFailure.java:[99,35] TestingIcebergPlugin(java.nio.file.Path,java.util.function.Supplier<java.util.Optional<com.google.inject.Module>>) in io.trino.plugin.iceberg.TestingIcebergPlugin has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestTrinoGlueCatalog.java:[131,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestTrinoGlueCatalog.java:[279,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-only (default) @ trino-iceberg ---
+[INFO] No dependency problems found
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-duplicate (default) @ trino-iceberg ---
+[INFO] No duplicate dependencies found in <dependencies/> or in <dependencyManagement/>
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-exclusions (default) @ trino-iceberg ---
+[INFO] No problems with dependencies exclusions
+[INFO] 
+[INFO] --- duplicate-finder:2.0.1:check (default) @ trino-iceberg ---
+[INFO] Checking compile classpath
+[INFO] Checking runtime classpath
+[INFO] Checking test classpath
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer) @ trino-iceberg ---
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer-production-code) @ trino-iceberg ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-test) @ trino-iceberg ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jacoco:0.8.16:report (report) @ trino-iceberg ---
+[INFO] Skipping JaCoCo execution because property jacoco.skip is set.
+[INFO] 
+[INFO] --- trino:26:check-spi-dependencies (default-check-spi-dependencies) @ trino-iceberg ---
+[INFO] 
+[INFO] --- jar:3.5.1:jar (default-jar) @ trino-iceberg ---
+[INFO] 
+[INFO] --- trino:26:package-trino-plugin (default-package-trino-plugin) @ trino-iceberg ---
+[INFO] Created Trino plugin package: trino-iceberg-485-SNAPSHOT.zip
+[INFO] 
+[INFO] --- jar:3.5.1:test-jar (attach-tests) @ trino-iceberg ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/target/trino-iceberg-485-SNAPSHOT-tests.jar
+[INFO] 
+[INFO] --- jar:3.5.1:test-jar (default) @ trino-iceberg ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/target/trino-iceberg-485-SNAPSHOT-tests.jar
+[WARNING] artifact io.trino:trino-iceberg:test-jar:tests:485-SNAPSHOT already attached, replace previous instance
+[INFO] 
+[INFO] --- source:3.4.0:jar-no-fork (attach-sources) @ trino-iceberg ---
+[INFO] 
+[INFO] --- source:3.4.0:test-jar-no-fork (attach-sources) @ trino-iceberg ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/target/trino-iceberg-485-SNAPSHOT-test-sources.jar
+[INFO] 
+[INFO] >>> spotbugs:4.10.5.0:check (default) > :spotbugs @ trino-iceberg >>>
+[INFO] 
+[INFO] --- spotbugs:4.10.5.0:spotbugs (spotbugs) @ trino-iceberg ---
+[INFO] Spotbugs plugin skipped
+[INFO] Skipping com.github.spotbugs:spotbugs-maven-plugin:4.10.5.0:spotbugs report goal
+[INFO] 
+[INFO] <<< spotbugs:4.10.5.0:check (default) < :spotbugs @ trino-iceberg <<<
+[INFO] 
+[INFO] 
+[INFO] --- spotbugs:4.10.5.0:check (default) @ trino-iceberg ---
+[INFO] Spotbugs plugin skipped
+[INFO] 
+[INFO] >>> pmd:3.28.0:check (default) > :pmd @ trino-iceberg >>>
+[INFO] 
+[INFO] --- pmd:3.28.0:pmd (pmd) @ trino-iceberg ---
+[INFO] Skipping org.apache.maven.plugins:maven-pmd-plugin:3.28.0:pmd report goal
+[INFO] 
+[INFO] <<< pmd:3.28.0:check (default) < :pmd @ trino-iceberg <<<
+[INFO] 
+[INFO] 
+[INFO] --- pmd:3.28.0:check (default) @ trino-iceberg ---
+[INFO] Skipping PMD execution
+[INFO] 
+[INFO] --- javadoc:3.12.0:jar (attach-javadocs) @ trino-iceberg ---
+[WARNING] Javadoc Warnings
+[WARNING] warning: unknown enum constant SchemaType.OBJECT
+[WARNING] reason: class file for org.eclipse.microprofile.openapi.annotations.enums.SchemaType not found
+[WARNING] 1 warning
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/target/trino-iceberg-485-SNAPSHOT-javadoc.jar
+[INFO] 
+[INFO] ------------------------< io.trino:trino-tests >------------------------
+[INFO] Building trino-tests 485-SNAPSHOT                                  [3/3]
+[INFO]   from /tmp/trino-smj-upstream-v02-check/testing/trino-tests/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.7.0:enforce (default) @ trino-tests ---
+[INFO] Rule 0: org.apache.maven.enforcer.rules.dependency.BannedDependencies passed
+[INFO] Rule 1: org.apache.maven.enforcer.rules.RequireProfileIdsExist passed
+[INFO] Rule 2: org.codehaus.mojo.extraenforcer.model.RequirePropertyDiverges passed
+[INFO] Rule 3: org.apache.maven.enforcer.rules.property.RequireProperty passed
+[INFO] Rule 5: org.apache.maven.enforcer.rules.BanDuplicatePomDependencyVersions passed
+[INFO] Rule 6: org.apache.maven.enforcer.rules.dependency.RequireUpperBoundDeps passed
+[INFO] Rule 9: org.codehaus.mojo.extraenforcer.dependencies.EnforceBytecodeVersion passed
+[INFO] Rule 10: org.apache.maven.enforcer.rules.RequirePluginVersions passed
+[INFO] Rule 11: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 12: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 13: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 14: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 15: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 16: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 17: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] 
+[INFO] --- enforcer:3.7.0:enforce (junit-extensions) @ trino-tests ---
+[INFO] Rule 0: io.airlift.airbase.RequireJunitExtensions passed
+[INFO] 
+[INFO] --- enforcer:3.7.0:enforce (trino-restrict-imports) @ trino-tests ---
+[INFO] Rule 0: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 1: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 2: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 3: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] 
+[INFO] --- sortpom:4.0.0:verify (default) @ trino-tests ---
+[INFO] Verifying file /tmp/trino-smj-upstream-v02-check/testing/trino-tests/pom.xml
+[INFO] 
+[INFO] --- license:5.1.2:check (default) @ trino-tests ---
+[INFO] Checking licenses...
+[INFO] License check: 137 file(s) checked (OK: 137, Missing: 0, Unknown: 0)
+[INFO] 
+[INFO] --- airstyle:10:check (airstyle) @ trino-tests ---
+[INFO] All 137 files are already formatted
+[INFO] 
+[INFO] --- checkstyle:3.6.0:check (checkstyle) @ trino-tests ---
+[INFO] You have 0 Checkstyle violations.
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-tests ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-tests ---
+[INFO] 
+[INFO] --- jacoco:0.8.16:prepare-agent (default) @ trino-tests ---
+[INFO] Skipping JaCoCo execution because property jacoco.skip is set.
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ trino-tests ---
+[INFO] skip non existing resourceDirectory /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.16.0:compile (default-compile) @ trino-tests ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ trino-tests ---
+[INFO] Copying 269 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ trino-tests ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 136 source files with javac [debug deprecation parameters release 25] to target/test-classes
+[WARNING] /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/test/java/io/trino/execution/AbstractTestCoordinatorDynamicFiltering.java:[592,44] createPageSource(io.trino.spi.connector.ConnectorTransactionHandle,io.trino.spi.connector.ConnectorSession,io.trino.spi.connector.ConnectorSplit,io.trino.spi.connector.ConnectorTableHandle,java.util.Optional<io.trino.spi.connector.ConnectorTableCredentials>,java.util.List<io.trino.spi.connector.ColumnHandle>,io.trino.spi.connector.DynamicFilter) in io.trino.spi.connector.ConnectorPageSourceProvider has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/test/java/io/trino/execution/TestBeginQuery.java:[201,44] createPageSource(io.trino.spi.connector.ConnectorTransactionHandle,io.trino.spi.connector.ConnectorSession,io.trino.spi.connector.ConnectorSplit,io.trino.spi.connector.ConnectorTableHandle,java.util.Optional<io.trino.spi.connector.ConnectorTableCredentials>,java.util.List<io.trino.spi.connector.ColumnHandle>,io.trino.spi.connector.DynamicFilter) in io.trino.spi.connector.ConnectorPageSourceProvider has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/test/java/io/trino/execution/TestErrorThrowableInQuery.java:[118,17] nonTrinoExceptionFailure() in io.trino.sql.query.QueryAssertions.QueryAssert has been deprecated
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-only (default) @ trino-tests ---
+[INFO] No dependency problems found
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-duplicate (default) @ trino-tests ---
+[INFO] No duplicate dependencies found in <dependencies/> or in <dependencyManagement/>
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-exclusions (default) @ trino-tests ---
+[INFO] 
+[INFO] --- duplicate-finder:2.0.1:check (default) @ trino-tests ---
+[INFO] Checking compile classpath
+[INFO] Checking runtime classpath
+[INFO] Checking test classpath
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer) @ trino-tests ---
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer-production-code) @ trino-tests ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-test) @ trino-tests ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jacoco:0.8.16:report (report) @ trino-tests ---
+[INFO] Skipping JaCoCo execution because property jacoco.skip is set.
+[INFO] 
+[INFO] --- jar:3.5.1:jar (default-jar) @ trino-tests ---
+[INFO] 
+[INFO] --- jar:3.5.1:test-jar (attach-tests) @ trino-tests ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/testing/trino-tests/target/trino-tests-485-SNAPSHOT-tests.jar
+[INFO] 
+[INFO] --- source:3.4.0:jar-no-fork (attach-sources) @ trino-tests ---
+[INFO] 
+[INFO] --- source:3.4.0:test-jar-no-fork (attach-sources) @ trino-tests ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/testing/trino-tests/target/trino-tests-485-SNAPSHOT-test-sources.jar
+[INFO] 
+[INFO] >>> spotbugs:4.10.5.0:check (default) > :spotbugs @ trino-tests >>>
+[INFO] 
+[INFO] --- spotbugs:4.10.5.0:spotbugs (spotbugs) @ trino-tests ---
+[INFO] Spotbugs plugin skipped
+[INFO] Skipping com.github.spotbugs:spotbugs-maven-plugin:4.10.5.0:spotbugs report goal
+[INFO] 
+[INFO] <<< spotbugs:4.10.5.0:check (default) < :spotbugs @ trino-tests <<<
+[INFO] 
+[INFO] 
+[INFO] --- spotbugs:4.10.5.0:check (default) @ trino-tests ---
+[INFO] Spotbugs plugin skipped
+[INFO] 
+[INFO] >>> pmd:3.28.0:check (default) > :pmd @ trino-tests >>>
+[INFO] 
+[INFO] --- pmd:3.28.0:pmd (pmd) @ trino-tests ---
+[INFO] Skipping org.apache.maven.plugins:maven-pmd-plugin:3.28.0:pmd report goal
+[INFO] 
+[INFO] <<< pmd:3.28.0:check (default) < :pmd @ trino-tests <<<
+[INFO] 
+[INFO] 
+[INFO] --- pmd:3.28.0:check (default) @ trino-tests ---
+[INFO] Skipping PMD execution
+[INFO] 
+[INFO] --- javadoc:3.12.0:jar (attach-javadocs) @ trino-tests ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/testing/trino-tests/target/trino-tests-485-SNAPSHOT-javadoc.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] Average project wall time: 135.00s
+[INFO] Total concurrency: 100%
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for trino-main 485-SNAPSHOT:
+[INFO] 
+[INFO] trino-main ......................................... SUCCESS [04:52 min]
+[INFO] trino-iceberg ...................................... SUCCESS [01:36 min]
+[INFO] trino-tests ........................................ SUCCESS [ 16.430 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  06:48 min
+[INFO] Finished at: 2026-11-08T16:17:57+03:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Njord session closed

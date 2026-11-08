@@ -614,7 +614,9 @@ public class AddExchanges
                                         idAllocator.getNextId(),
                                         source,
                                         node.getOrderingScheme(),
-                                        true),
+                                        true,
+                                        node.isInputPagesPreSorted(),
+                                        node.isBoundedSpill()),
                                 node.getOrderingScheme()),
                         child.getProperties());
             }
@@ -1037,6 +1039,9 @@ public class AddExchanges
 
         private PlanWithProperties withCanonicalSort(PlanWithProperties side, List<Symbol> keySymbols)
         {
+            // Equi-criteria may repeat a symbol (especially for FULL joins).
+            // Remove repetitions only from the physical ordering, preserving all join constraints.
+            keySymbols = keySymbols.stream().distinct().collect(toImmutableList());
             Map<Symbol, SortOrder> orderings = keySymbols.stream()
                     .collect(toImmutableMap(symbol -> symbol, _ -> SortOrder.ASC_NULLS_LAST));
             OrderingScheme orderingScheme = new OrderingScheme(keySymbols, orderings);
@@ -1060,6 +1065,7 @@ public class AddExchanges
                         .collect(toImmutableMap(outputLayout::get, inputLayout::get));
                 List<Symbol> sourceKeys = keySymbols.stream()
                         .map(outputToInput::get)
+                        .distinct()
                         .collect(toImmutableList());
                 OrderingScheme sourceOrdering = new OrderingScheme(
                         sourceKeys,
@@ -1068,7 +1074,7 @@ public class AddExchanges
                 boolean inputPagesPreSorted = LocalProperties.match(
                                 derivePropertiesRecursively(source).getLocalProperties(), sourceOrdering.toLocalProperties()).stream()
                         .allMatch(Optional::isEmpty);
-                SortNode partialSort = new SortNode(idAllocator.getNextId(), source, sourceOrdering, true, inputPagesPreSorted);
+                SortNode partialSort = new SortNode(idAllocator.getNextId(), source, sourceOrdering, true, inputPagesPreSorted, true);
                 ExchangeNode mergingExchange = ExchangeNode.mergingPartitionedExchange(
                         exchange,
                         partialSort,
@@ -1082,7 +1088,7 @@ public class AddExchanges
             // Fallback: SortNode after the exchange (inside the join stage)
             boolean inputPagesPreSorted = LocalProperties.match(side.getProperties().getLocalProperties(), orderingScheme.toLocalProperties()).stream()
                     .allMatch(Optional::isEmpty);
-            PlanNode sort = new SortNode(idAllocator.getNextId(), node, orderingScheme, false, inputPagesPreSorted);
+            PlanNode sort = new SortNode(idAllocator.getNextId(), node, orderingScheme, false, inputPagesPreSorted, true);
             ActualProperties properties = ActualProperties.builderFrom(side.getProperties())
                     .local(orderingScheme.toLocalProperties())
                     .build();

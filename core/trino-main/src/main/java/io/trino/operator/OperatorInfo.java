@@ -19,6 +19,7 @@ import io.trino.operator.OutputSpoolingOperatorFactory.OutputSpoolingInfo;
 import io.trino.operator.TableWriterOperator.TableWriterInfo;
 import io.trino.operator.exchange.LocalExchangeBufferInfo;
 import io.trino.operator.join.JoinOperatorInfo;
+import io.trino.operator.join.merge.MergeJoinOperatorInfo;
 import io.trino.operator.output.PartitionedOutputOperator.PartitionedOutputInfo;
 
 @JsonTypeInfo(
@@ -28,6 +29,7 @@ import io.trino.operator.output.PartitionedOutputOperator.PartitionedOutputInfo;
         @JsonSubTypes.Type(value = DirectExchangeClientStatus.class, name = "directExchangeClientStatus"),
         @JsonSubTypes.Type(value = JoinOperatorInfo.class, name = "joinOperatorInfo"),
         @JsonSubTypes.Type(value = LocalExchangeBufferInfo.class, name = "localExchangeBuffer"),
+        @JsonSubTypes.Type(value = MergeJoinOperatorInfo.class, name = "mergeJoinOperatorInfo"),
         @JsonSubTypes.Type(value = OutputSpoolingInfo.class, name = "outputSpooling"),
         @JsonSubTypes.Type(value = PartitionedOutputInfo.class, name = "partitionedOutput"),
         @JsonSubTypes.Type(value = TableFinishInfo.class, name = "tableFinish"),

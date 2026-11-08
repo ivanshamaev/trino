@@ -1,0 +1,994 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] trino-spi                                                          [jar]
+[INFO] trino-plugin-toolkit                                               [jar]
+[INFO] trino-web-ui                                                       [jar]
+[INFO] trino-testing-containers                                           [jar]
+[INFO] trino-main                                                         [jar]
+[INFO] trino-hive-formats                                                 [jar]
+[INFO] trino-parquet                                                      [jar]
+[INFO] 
+[INFO] -------------------------< io.trino:trino-spi >-------------------------
+[INFO] Building trino-spi 485-SNAPSHOT                                    [1/7]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-spi ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-spi ---
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ trino-spi ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.16.0:compile (default-compile) @ trino-spi ---
+[WARNING] **************************************************************************************************************************************
+[WARNING] * Required filename-based automodules detected: [slice-2.10.jar]. Please don't publish this project to a public artifact repository! *
+[WARNING] **************************************************************************************************************************************
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 579 source files with javac [debug deprecation parameters release 25 module-path] to target/classes
+[INFO] JDK-8318913 workaround: patched module-info.class requires version from [25] to [25] on 2 JDK modules [java.base, jdk.incubator.vector]
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-spi/src/main/java/module-info.java:[17,41] requires transitive directive for an automatic module
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-spi/src/main/java/module-info.java:[19,25] requires transitive directive for an automatic module
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-spi/src/main/java/io/trino/spi/type/AbstractType.java:[56,23] getTypeParameters() in io.trino.spi.type.Type has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-spi/src/main/java/io/trino/spi/connector/FixedPageSource.java:[107,17] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-spi/src/main/java/io/trino/spi/connector/MemoryUsageReportingPageSource.java:[77,17] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-spi/src/main/java/io/trino/spi/connector/MemoryUsageReportingPageSource.java:[39,42] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-spi/src/main/java/io/trino/spi/connector/MemoryUsageReportingPageSource.java:[64,42] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-spi/src/main/java/io/trino/spi/connector/MemoryUsageReportingPageSource.java:[72,42] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-spi/src/main/java/io/trino/spi/connector/MemoryUsageReportingPageSource.java:[79,26] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-spi/src/main/java/io/trino/spi/connector/MemoryUsageReportingPageSource.java:[99,42] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-spi/src/main/java/io/trino/spi/connector/MemoryUsageReportingPageSource.java:[146,46] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-spi/src/main/java/io/trino/spi/connector/MemoryUsageReportingPageSource.java:[154,46] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-spi/src/main/java/io/trino/spi/connector/MemoryUsageReportingPageSource.java:[162,46] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-spi/src/main/java/io/trino/spi/connector/MemoryUsageReportingPageSource.java:[170,46] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-spi/src/main/java/io/trino/spi/connector/MemoryUsageReportingPageSource.java:[178,46] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-spi/src/main/java/io/trino/spi/type/FunctionType.java:[70,23] getTypeParameters() in io.trino.spi.type.Type has been deprecated
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ trino-spi ---
+[INFO] skip non existing resourceDirectory /tmp/trino-smj-upstream-v02-check/core/trino-spi/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ trino-spi ---
+[WARNING] Can't extract module name from trino-testing-services-485-SNAPSHOT.jar: trino.testing.services.485.SNAPSHOT: Invalid module name: '485' is not a Java identifier
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 108 source files with javac [debug deprecation parameters release 25 module-path] to target/test-classes
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-spi/src/test/java/io/trino/spi/connector/TestRecordPageSource.java:[66,30] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-spi/src/test/java/io/trino/spi/connector/TestRecordPageSource.java:[79,30] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-spi/src/test/java/io/trino/spi/connector/TestRecordPageSource.java:[105,34] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[INFO] /tmp/trino-smj-upstream-v02-check/core/trino-spi/src/test/java/io/trino/spi/block/BaseBlockEncodingTest.java: /tmp/trino-smj-upstream-v02-check/core/trino-spi/src/test/java/io/trino/spi/block/BaseBlockEncodingTest.java uses unchecked or unsafe operations.
+[INFO] /tmp/trino-smj-upstream-v02-check/core/trino-spi/src/test/java/io/trino/spi/block/BaseBlockEncodingTest.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer) @ trino-spi ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer-production-code) @ trino-spi ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-only (default) @ trino-spi ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-duplicate (default) @ trino-spi ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-exclusions (default) @ trino-spi ---
+[INFO] 
+[INFO] --- duplicate-finder:2.0.1:check (default) @ trino-spi ---
+[INFO] Skipping duplicate-finder execution!
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-test) @ trino-spi ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.5.1:jar (default-jar) @ trino-spi ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/core/trino-spi/target/trino-spi-485-SNAPSHOT.jar
+[INFO] 
+[INFO] --- jar:3.5.1:test-jar (attach-tests) @ trino-spi ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/core/trino-spi/target/trino-spi-485-SNAPSHOT-tests.jar
+[INFO] 
+[INFO] --- source:3.4.0:jar-no-fork (attach-sources) @ trino-spi ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/core/trino-spi/target/trino-spi-485-SNAPSHOT-sources.jar
+[INFO] 
+[INFO] --- source:3.4.0:test-jar-no-fork (attach-sources) @ trino-spi ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/core/trino-spi/target/trino-spi-485-SNAPSHOT-test-sources.jar
+[INFO] 
+[INFO] -----------------------< io.trino:trino-web-ui >------------------------
+[INFO] Building trino-web-ui 485-SNAPSHOT                                 [2/7]
+[INFO]   from /tmp/trino-smj-upstream-v02-check/core/trino-web-ui/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-web-ui ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-web-ui ---
+[INFO] 
+[INFO] --- frontend:2.0.2:install-bun (install bun) @ trino-web-ui ---
+[INFO] Installing Bun version v1.4.4
+[INFO] Creating install directory /tmp/trino-smj-upstream-v02-check/.bun
+[INFO] Unpacking /home/ivan/.m2/repository/com/github/eirslett/bun/1.4.4/bun-1.4.4.zip into /tmp/trino-smj-upstream-v02-check/.bun
+[INFO] Creating destination directory /tmp/trino-smj-upstream-v02-check/.bun/bun
+[INFO] Copying bun binary from /tmp/trino-smj-upstream-v02-check/.bun/bun-linux-x64/bun to /tmp/trino-smj-upstream-v02-check/.bun/bun/bun
+[INFO] Installed bun locally.
+[INFO] 
+[INFO] --- frontend:2.0.2:bun (package (webapp-legacy)) @ trino-web-ui ---
+[INFO] Running 'bun run package' in /tmp/trino-smj-upstream-v02-check/core/trino-web-ui/src/main/resources/webapp-legacy/src
+[ERROR] $ bun install && bun --bun webpack --config webpack.config.js
+[INFO] bun install v1.4.4 (38afee6c8)
+[INFO] 
+[INFO] + @babel/core@7.29.7
+[INFO] + @babel/preset-env@7.29.7
+[INFO] + @babel/preset-flow@7.29.7
+[INFO] + @babel/preset-react@7.29.7
+[INFO] + babel-loader@9.2.1
+[INFO] + flow-bin@0.241.0
+[INFO] + prettier@3.3.3
+[INFO] + terser-webpack-plugin@5.6.1
+[INFO] + webpack@5.108.4
+[INFO] + webpack-cli@5.1.4
+[INFO] + d3@5.16.0
+[INFO] + dagre-d3@0.6.4
+[INFO] + highlight.js@11.11.1
+[INFO] + react@16.14.0
+[INFO] + react-dom@16.14.0
+[INFO] + reactable@1.1.0
+[INFO] 
+[INFO] 298 packages installed [1.79s]
+[INFO] assets by status 3.52 MiB [big]
+[INFO]   asset query.js 575 KiB [emitted] [minimized] [big] (name: query)
+[INFO]   asset index.js 532 KiB [emitted] [minimized] [big] (name: index)
+[INFO]   asset stage.js 513 KiB [emitted] [minimized] [big] (name: stage)
+[INFO]   asset plan.js 507 KiB [emitted] [minimized] [big] (name: plan)
+[INFO]   asset embedded_plan.js 501 KiB [emitted] [minimized] [big] (name: embedded_plan)
+[INFO]   asset worker.js 493 KiB [emitted] [minimized] [big] (name: worker)
+[INFO]   asset references.js 482 KiB [emitted] [minimized] [big] (name: references)
+[INFO] asset workers.js 135 KiB [emitted] [minimized] (name: workers)
+[INFO] asset timeline.js 131 KiB [emitted] [minimized] (name: timeline)
+[INFO] orphan modules 814 KiB [orphan] 536 modules
+[INFO] runtime modules 12.5 KiB 46 modules
+[INFO] cacheable modules 1.6 MiB
+[INFO]   modules by path ./node_modules/lodash/*.js 187 KiB 240 modules
+[INFO]   modules by path ./node_modules/dagre/ 77.1 KiB 30 modules
+[INFO]   modules by path ./node_modules/dagre-d3/ 29.7 KiB 28 modules
+[INFO]   modules by path ./node_modules/graphlib/ 28 KiB 20 modules
+[INFO]   modules by path ./node_modules/reactable/lib/ 65.9 KiB 16 modules
+[INFO]   modules by path ./*.jsx 484 KiB 9 modules
+[INFO]   modules by path ./node_modules/react-dom/ 137 KiB 4 modules
+[INFO]   modules by path ./node_modules/react/ 6.7 KiB 2 modules
+[INFO]   modules by path ./node_modules/scheduler/ 5.12 KiB 2 modules
+[INFO]   + 3 modules
+[INFO] 
+[INFO] WARNING in asset size limit: The following asset(s) exceed the recommended size limit (244 KiB).
+[INFO] This can impact web performance.
+[INFO] Assets: 
+[INFO]   index.js (532 KiB)
+[INFO]   query.js (575 KiB)
+[INFO]   plan.js (507 KiB)
+[INFO]   embedded_plan.js (501 KiB)
+[INFO]   references.js (482 KiB)
+[INFO]   stage.js (513 KiB)
+[INFO]   worker.js (493 KiB)
+[INFO] 
+[INFO] WARNING in entrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (244 KiB). This can impact web performance.
+[INFO] Entrypoints:
+[INFO]   index (532 KiB)
+[INFO]       index.js
+[INFO]   query (575 KiB)
+[INFO]       query.js
+[INFO]   plan (507 KiB)
+[INFO]       plan.js
+[INFO]   embedded_plan (501 KiB)
+[INFO]       embedded_plan.js
+[INFO]   references (482 KiB)
+[INFO]       references.js
+[INFO]   stage (513 KiB)
+[INFO]       stage.js
+[INFO]   worker (493 KiB)
+[INFO]       worker.js
+[INFO] 
+[INFO] WARNING in webpack performance recommendations: 
+[INFO] You can limit the size of your bundles by using import() or require.ensure to lazy load some parts of your application.
+[INFO] For more info visit https://webpack.js.org/guides/code-splitting/
+[INFO] 
+[INFO] webpack 5.108.4 compiled with 3 warnings in 28440 ms
+[INFO] 
+[INFO] --- frontend:2.0.2:bun (package (webapp)) @ trino-web-ui ---
+[INFO] Running 'bun run package' in /tmp/trino-smj-upstream-v02-check/core/trino-web-ui/src/main/resources/webapp
+[ERROR] $ bun install && bun run build
+[ERROR] [0.04ms] ".env.production"
+[INFO] bun install v1.4.4 (38afee6c8)
+[INFO] 
+[INFO] + @eslint/js@9.39.5
+[INFO] + @types/lodash@4.17.27
+[INFO] + @types/lodash.merge@4.6.9
+[INFO] + @types/react@19.3.0
+[INFO] + @types/react-dom@19.3.0
+[INFO] + @typescript-eslint/eslint-plugin@8.71.2
+[INFO] + @typescript-eslint/parser@8.71.2
+[INFO] + @vitejs/plugin-react@5.2.0
+[INFO] + eslint@9.39.5
+[INFO] + eslint-plugin-react@7.37.5
+[INFO] + eslint-plugin-react-hooks@5.2.0
+[INFO] + eslint-plugin-react-refresh@0.5.7
+[INFO] + globals@16.5.0
+[INFO] + prettier@3.9.10
+[INFO] + typescript@6.0.3
+[INFO] + typescript-eslint@8.71.2
+[INFO] + vite@7.3.1
+[INFO] + @dagrejs/dagre@1.1.8
+[INFO] + @emotion/react@11.14.0
+[INFO] + @emotion/styled@11.14.1
+[INFO] + @fontsource/roboto@5.3.0
+[INFO] + @monaco-editor/react@4.7.0
+[INFO] + @mui/icons-material@9.5.0
+[INFO] + @mui/material@9.5.0
+[INFO] + @mui/x-charts@9.15.0
+[INFO] + @xyflow/react@12.12.0
+[INFO] + axios@1.20.0
+[INFO] + lodash@4.18.1
+[INFO] + monaco-editor@0.57.0
+[INFO] + react@19.3.1
+[INFO] + react-calendar-timeline@0.30.0-beta.4
+[INFO] + react-dom@19.3.1
+[INFO] + react-router-dom@7.18.5
+[INFO] + sass@1.105.2
+[INFO] + zustand@5.0.16
+[INFO] 
+[INFO] 434 packages installed [6.61s]
+[ERROR] $ bun --bun vite build
+[INFO] rolldown-vite v7.3.1 building client environment for production...
+[INFO] 
+[INFO] transforming...✓ 13830 modules transformed.rendering chunks...
+[INFO] computing gzip size...
+[INFO] dist/index.html                                         0.44 kB │ gzip:     0.28 kB
+[INFO] dist/assets/roboto-latin-400-normal-BqEyEoaF.woff2     21.88 kB
+[INFO] dist/assets/roboto-latin-300-normal-CCzlftfr.woff2     22.07 kB
+[INFO] dist/assets/roboto-latin-500-normal-7RbcRiD8.woff2     22.20 kB
+[INFO] dist/assets/roboto-latin-700-normal-BZpUvMxY.woff2     22.24 kB
+[INFO] dist/assets/codicon-DF1abBS2.ttf                      153.22 kB
+[INFO] dist/assets/json.worker-CYe1D-wJ.js                   432.60 kB
+[INFO] dist/assets/jsonMode-ZLFZSfOc.css                      86.92 kB │ gzip:    13.74 kB
+[INFO] dist/assets/index-tPi_a6TD.css                        117.69 kB │ gzip:    16.91 kB
+[INFO] dist/assets/java-BrPDxwPl.js                            2.90 kB │ gzip:     1.34 kB
+[INFO] dist/assets/sql--ruIZuUh.js                             8.84 kB │ gzip:     3.73 kB
+[INFO] dist/assets/jsonMode-De5POQ4c.js                    1,237.78 kB │ gzip:   312.58 kB
+[INFO] dist/assets/index-5asrG87X.js                       4,390.65 kB │ gzip: 1,214.55 kB
+[INFO] ✓ built in 3.82s
+[ERROR] [plugin builtin:vite-reporter] 
+[ERROR] (!) Some chunks are larger than 500 kB after minification. Consider:
+[ERROR] - Using dynamic import() to code-split the application
+[ERROR] - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+[ERROR] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ trino-web-ui ---
+[INFO] Copying 80 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.16.0:compile (default-compile) @ trino-web-ui ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 1 source file with javac [debug deprecation parameters release 25] to target/classes
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ trino-web-ui ---
+[INFO] skip non existing resourceDirectory /tmp/trino-smj-upstream-v02-check/core/trino-web-ui/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ trino-web-ui ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 1 source file with javac [debug deprecation parameters release 25] to target/test-classes
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer) @ trino-web-ui ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer-production-code) @ trino-web-ui ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-only (default) @ trino-web-ui ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-duplicate (default) @ trino-web-ui ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-exclusions (default) @ trino-web-ui ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-test) @ trino-web-ui ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- frontend:2.0.2:bun (check (webapp-legacy)) @ trino-web-ui ---
+[INFO] Skipping execution.
+[INFO] 
+[INFO] --- frontend:2.0.2:bun (check (webapp)) @ trino-web-ui ---
+[INFO] Skipping execution.
+[INFO] 
+[INFO] --- jar:3.5.1:jar (default-jar) @ trino-web-ui ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/core/trino-web-ui/target/trino-web-ui-485-SNAPSHOT.jar
+[INFO] 
+[INFO] --- jar:3.5.1:test-jar (attach-tests) @ trino-web-ui ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/core/trino-web-ui/target/trino-web-ui-485-SNAPSHOT-tests.jar
+[INFO] 
+[INFO] --- source:3.4.0:jar-no-fork (attach-sources) @ trino-web-ui ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/core/trino-web-ui/target/trino-web-ui-485-SNAPSHOT-sources.jar
+[INFO] 
+[INFO] --- source:3.4.0:test-jar-no-fork (attach-sources) @ trino-web-ui ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/core/trino-web-ui/target/trino-web-ui-485-SNAPSHOT-test-sources.jar
+[INFO] 
+[INFO] -----------------< io.trino:trino-testing-containers >------------------
+[INFO] Building trino-testing-containers 485-SNAPSHOT                     [3/7]
+[INFO]   from /tmp/trino-smj-upstream-v02-check/testing/trino-testing-containers/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-testing-containers ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-testing-containers ---
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ trino-testing-containers ---
+[INFO] Copying 2 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.16.0:compile (default-compile) @ trino-testing-containers ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 45 source files with javac [debug deprecation parameters release 25] to target/classes
+[WARNING] /tmp/trino-smj-upstream-v02-check/testing/trino-testing-containers/src/main/java/io/trino/testing/containers/BaseTestContainer.java:[107,18] addFileSystemBind(java.lang.String,java.lang.String,org.testcontainers.containers.BindMode) in org.testcontainers.containers.Container has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/testing/trino-testing-containers/src/main/java/io/trino/testing/containers/environment/ProductTestExtension.java:[219,17] <K,V>getOrComputeIfAbsent(K,java.util.function.Function<? super K,? extends V>,java.lang.Class<V>) in org.junit.jupiter.api.extension.ExtensionContext.Store has been deprecated
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ trino-testing-containers ---
+[INFO] skip non existing resourceDirectory /tmp/trino-smj-upstream-v02-check/testing/trino-testing-containers/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ trino-testing-containers ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 4 source files with javac [debug deprecation parameters release 25] to target/test-classes
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer) @ trino-testing-containers ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer-production-code) @ trino-testing-containers ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-only (default) @ trino-testing-containers ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-duplicate (default) @ trino-testing-containers ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-exclusions (default) @ trino-testing-containers ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-test) @ trino-testing-containers ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.5.1:jar (default-jar) @ trino-testing-containers ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/testing/trino-testing-containers/target/trino-testing-containers-485-SNAPSHOT.jar
+[INFO] 
+[INFO] --- jar:3.5.1:test-jar (attach-tests) @ trino-testing-containers ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/testing/trino-testing-containers/target/trino-testing-containers-485-SNAPSHOT-tests.jar
+[INFO] 
+[INFO] --- source:3.4.0:jar-no-fork (attach-sources) @ trino-testing-containers ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/testing/trino-testing-containers/target/trino-testing-containers-485-SNAPSHOT-sources.jar
+[INFO] 
+[INFO] --- source:3.4.0:test-jar-no-fork (attach-sources) @ trino-testing-containers ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/testing/trino-testing-containers/target/trino-testing-containers-485-SNAPSHOT-test-sources.jar
+[INFO] 
+[INFO] -------------------< io.trino:trino-plugin-toolkit >--------------------
+[INFO] Building trino-plugin-toolkit 485-SNAPSHOT                         [4/7]
+[INFO]   from /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-plugin-toolkit ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-plugin-toolkit ---
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ trino-plugin-toolkit ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 0 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.16.0:compile (default-compile) @ trino-plugin-toolkit ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 155 source files with javac [debug deprecation parameters release 25] to target/classes
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/MappedPageSource.java:[70,17] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/MappedPageSource.java:[72,24] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/classloader/ClassLoaderSafeConnectorMetadata.java:[351,58] streamTableColumns(io.trino.spi.connector.ConnectorSession,io.trino.spi.connector.SchemaTablePrefix) in io.trino.spi.connector.ConnectorMetadata has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/classloader/ClassLoaderSafeConnectorMetadata.java:[343,55] listTableColumns(io.trino.spi.connector.ConnectorSession,io.trino.spi.connector.SchemaTablePrefix) in io.trino.spi.connector.ConnectorMetadata has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/classloader/ClassLoaderSafeConnectorMetadata.java:[346,28] listTableColumns(io.trino.spi.connector.ConnectorSession,io.trino.spi.connector.SchemaTablePrefix) in io.trino.spi.connector.ConnectorMetadata has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/classloader/ClassLoaderSafeConnectorMetadata.java:[354,58] streamTableColumns(io.trino.spi.connector.ConnectorSession,io.trino.spi.connector.SchemaTablePrefix) in io.trino.spi.connector.ConnectorMetadata has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/classloader/ClassLoaderSafeConnectorPageSourceProvider.java:[48,32] createPageSource(io.trino.spi.connector.ConnectorTransactionHandle,io.trino.spi.connector.ConnectorSession,io.trino.spi.connector.ConnectorSplit,io.trino.spi.connector.ConnectorTableHandle,java.util.Optional<io.trino.spi.connector.ConnectorTableCredentials>,java.util.List<io.trino.spi.connector.ColumnHandle>,io.trino.spi.connector.DynamicFilter) in io.trino.spi.connector.ConnectorPageSourceProvider has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/classloader/ClassLoaderSafeConnectorPageSourceProvider.java:[58,28] createPageSource(io.trino.spi.connector.ConnectorTransactionHandle,io.trino.spi.connector.ConnectorSession,io.trino.spi.connector.ConnectorSplit,io.trino.spi.connector.ConnectorTableHandle,java.util.Optional<io.trino.spi.connector.ConnectorTableCredentials>,java.util.List<io.trino.spi.connector.ColumnHandle>,io.trino.spi.connector.DynamicFilter) in io.trino.spi.connector.ConnectorPageSourceProvider has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/AllowAllSystemAccessControl.java:[401,37] getColumnMask(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,java.lang.String,io.trino.spi.type.Type) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/AllowAllSystemAccessControl.java:[272,17] checkCanSetMaterializedViewAuthorization(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,io.trino.spi.security.TrinoPrincipal) in io.trino.spi.security.SystemAccessControl has been deprecated and marked for removal
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/AllowAllSystemAccessControl.java:[244,17] checkCanSetViewAuthorization(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,io.trino.spi.security.TrinoPrincipal) in io.trino.spi.security.SystemAccessControl has been deprecated and marked for removal
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/AllowAllSystemAccessControl.java:[198,17] checkCanSetTableAuthorization(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,io.trino.spi.security.TrinoPrincipal) in io.trino.spi.security.SystemAccessControl has been deprecated and marked for removal
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/AllowAllSystemAccessControl.java:[180,24] filterColumns(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,java.util.Set<java.lang.String>) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/AllowAllSystemAccessControl.java:[129,17] checkCanSetSchemaAuthorization(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaName,io.trino.spi.security.TrinoPrincipal) in io.trino.spi.security.SystemAccessControl has been deprecated and marked for removal
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/AllowAllSystemAccessControl.java:[75,17] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/FileBasedSystemAccessControl.java:[1157,37] getColumnMask(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,java.lang.String,io.trino.spi.type.Type) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/FileBasedSystemAccessControl.java:[851,17] checkCanSetMaterializedViewAuthorization(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,io.trino.spi.security.TrinoPrincipal) in io.trino.spi.security.SystemAccessControl has been deprecated and marked for removal
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/FileBasedSystemAccessControl.java:[763,17] checkCanSetViewAuthorization(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,io.trino.spi.security.TrinoPrincipal) in io.trino.spi.security.SystemAccessControl has been deprecated and marked for removal
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/FileBasedSystemAccessControl.java:[640,17] checkCanSetTableAuthorization(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,io.trino.spi.security.TrinoPrincipal) in io.trino.spi.security.SystemAccessControl has been deprecated and marked for removal
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/FileBasedSystemAccessControl.java:[586,24] filterColumns(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,java.util.Set<java.lang.String>) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/FileBasedSystemAccessControl.java:[456,17] checkCanSetSchemaAuthorization(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaName,io.trino.spi.security.TrinoPrincipal) in io.trino.spi.security.SystemAccessControl has been deprecated and marked for removal
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/FileBasedSystemAccessControl.java:[280,17] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/ForwardingSystemAccessControl.java:[644,37] getColumnMask(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,java.lang.String,io.trino.spi.type.Type) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/ForwardingSystemAccessControl.java:[416,17] checkCanSetMaterializedViewAuthorization(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,io.trino.spi.security.TrinoPrincipal) in io.trino.spi.security.SystemAccessControl has been deprecated and marked for removal
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/ForwardingSystemAccessControl.java:[361,17] checkCanSetViewAuthorization(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,io.trino.spi.security.TrinoPrincipal) in io.trino.spi.security.SystemAccessControl has been deprecated and marked for removal
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/ForwardingSystemAccessControl.java:[285,17] checkCanSetTableAuthorization(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,io.trino.spi.security.TrinoPrincipal) in io.trino.spi.security.SystemAccessControl has been deprecated and marked for removal
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/ForwardingSystemAccessControl.java:[249,24] filterColumns(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,java.util.Set<java.lang.String>) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/ForwardingSystemAccessControl.java:[159,17] checkCanSetSchemaAuthorization(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaName,io.trino.spi.security.TrinoPrincipal) in io.trino.spi.security.SystemAccessControl has been deprecated and marked for removal
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/ForwardingSystemAccessControl.java:[69,17] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/ForwardingSystemAccessControl.java:[71,19] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/ForwardingSystemAccessControl.java:[161,19] checkCanSetSchemaAuthorization(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaName,io.trino.spi.security.TrinoPrincipal) in io.trino.spi.security.SystemAccessControl has been deprecated and marked for removal
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/ForwardingSystemAccessControl.java:[251,26] filterColumns(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,java.util.Set<java.lang.String>) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/ForwardingSystemAccessControl.java:[287,19] checkCanSetTableAuthorization(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,io.trino.spi.security.TrinoPrincipal) in io.trino.spi.security.SystemAccessControl has been deprecated and marked for removal
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/ForwardingSystemAccessControl.java:[363,19] checkCanSetViewAuthorization(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,io.trino.spi.security.TrinoPrincipal) in io.trino.spi.security.SystemAccessControl has been deprecated and marked for removal
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/ForwardingSystemAccessControl.java:[418,19] checkCanSetMaterializedViewAuthorization(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,io.trino.spi.security.TrinoPrincipal) in io.trino.spi.security.SystemAccessControl has been deprecated and marked for removal
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/ForwardingSystemAccessControl.java:[646,26] getColumnMask(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,java.lang.String,io.trino.spi.type.Type) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/ReadOnlySystemAccessControl.java:[114,24] filterColumns(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,java.util.Set<java.lang.String>) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/main/java/io/trino/plugin/base/security/ReadOnlySystemAccessControl.java:[60,17] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.spi.security.SystemAccessControl has been deprecated
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ trino-plugin-toolkit ---
+[INFO] Copying 32 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ trino-plugin-toolkit ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 38 source files with javac [debug deprecation parameters release 25] to target/test-classes
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/test/java/io/trino/plugin/base/security/BaseFileBasedSystemAccessControlTest.java:[211,36] checkCanSetMaterializedViewAuthorization(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,io.trino.spi.security.TrinoPrincipal) in io.trino.spi.security.SystemAccessControl has been deprecated and marked for removal
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/test/java/io/trino/plugin/base/security/BaseFileBasedSystemAccessControlTest.java:[224,22] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/test/java/io/trino/plugin/base/security/BaseFileBasedSystemAccessControlTest.java:[225,22] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/test/java/io/trino/plugin/base/security/BaseFileBasedSystemAccessControlTest.java:[492,36] checkCanCreateViewWithSelectFromColumns(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,java.util.Set<java.lang.String>) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/test/java/io/trino/plugin/base/security/BaseFileBasedSystemAccessControlTest.java:[498,22] checkCanCreateViewWithSelectFromColumns(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,java.util.Set<java.lang.String>) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/test/java/io/trino/plugin/base/security/BaseFileBasedSystemAccessControlTest.java:[503,22] checkCanCreateViewWithSelectFromColumns(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,java.util.Set<java.lang.String>) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/test/java/io/trino/plugin/base/security/BaseFileBasedSystemAccessControlTest.java:[508,36] checkCanCreateViewWithSelectFromColumns(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,java.util.Set<java.lang.String>) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/test/java/io/trino/plugin/base/security/BaseFileBasedSystemAccessControlTest.java:[549,33] filterColumns(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,java.util.Set<java.lang.String>) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/test/java/io/trino/plugin/base/security/BaseFileBasedSystemAccessControlTest.java:[553,33] filterColumns(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,java.util.Set<java.lang.String>) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/test/java/io/trino/plugin/base/security/BaseFileBasedSystemAccessControlTest.java:[557,33] filterColumns(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,java.util.Set<java.lang.String>) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/test/java/io/trino/plugin/base/security/BaseFileBasedSystemAccessControlTest.java:[615,33] filterColumns(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,java.util.Set<java.lang.String>) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/test/java/io/trino/plugin/base/security/BaseFileBasedSystemAccessControlTest.java:[827,33] getColumnMask(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,java.lang.String,io.trino.spi.type.Type) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/test/java/io/trino/plugin/base/security/BaseFileBasedSystemAccessControlTest.java:[834,30] getColumnMask(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,java.lang.String,io.trino.spi.type.Type) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/test/java/io/trino/plugin/base/security/BaseFileBasedSystemAccessControlTest.java:[907,36] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/test/java/io/trino/plugin/base/security/BaseFileBasedSystemAccessControlTest.java:[910,22] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/test/java/io/trino/plugin/base/security/BaseFileBasedSystemAccessControlTest.java:[911,22] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/test/java/io/trino/plugin/base/security/BaseFileBasedSystemAccessControlTest.java:[913,36] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/test/java/io/trino/plugin/base/security/BaseFileBasedSystemAccessControlTest.java:[916,22] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/test/java/io/trino/plugin/base/security/BaseFileBasedSystemAccessControlTest.java:[918,36] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/test/java/io/trino/plugin/base/security/BaseFileBasedSystemAccessControlTest.java:[921,22] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/test/java/io/trino/plugin/base/security/BaseFileBasedSystemAccessControlTest.java:[922,22] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/test/java/io/trino/plugin/base/security/BaseFileBasedSystemAccessControlTest.java:[924,36] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/test/java/io/trino/plugin/base/security/BaseFileBasedSystemAccessControlTest.java:[928,32] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/test/java/io/trino/plugin/base/security/BaseFileBasedSystemAccessControlTest.java:[1541,33] getColumnMask(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,java.lang.String,io.trino.spi.type.Type) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/test/java/io/trino/plugin/base/security/BaseFileBasedSystemAccessControlTest.java:[1548,30] getColumnMask(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,java.lang.String,io.trino.spi.type.Type) in io.trino.spi.security.SystemAccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/src/test/java/io/trino/plugin/base/security/BaseFileBasedSystemAccessControlTest.java:[1560,30] getColumnMask(io.trino.spi.security.SystemSecurityContext,io.trino.spi.connector.CatalogSchemaTableName,java.lang.String,io.trino.spi.type.Type) in io.trino.spi.security.SystemAccessControl has been deprecated
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer) @ trino-plugin-toolkit ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer-production-code) @ trino-plugin-toolkit ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-only (default) @ trino-plugin-toolkit ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-duplicate (default) @ trino-plugin-toolkit ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-exclusions (default) @ trino-plugin-toolkit ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-test) @ trino-plugin-toolkit ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.5.1:jar (default-jar) @ trino-plugin-toolkit ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/target/trino-plugin-toolkit-485-SNAPSHOT.jar
+[INFO] 
+[INFO] --- jar:3.5.1:test-jar (attach-tests) @ trino-plugin-toolkit ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/target/trino-plugin-toolkit-485-SNAPSHOT-tests.jar
+[INFO] 
+[INFO] --- source:3.4.0:jar-no-fork (attach-sources) @ trino-plugin-toolkit ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/target/trino-plugin-toolkit-485-SNAPSHOT-sources.jar
+[INFO] 
+[INFO] --- source:3.4.0:test-jar-no-fork (attach-sources) @ trino-plugin-toolkit ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/lib/trino-plugin-toolkit/target/trino-plugin-toolkit-485-SNAPSHOT-test-sources.jar
+[INFO] 
+[INFO] ------------------------< io.trino:trino-main >-------------------------
+[INFO] Building trino-main 485-SNAPSHOT                                   [5/7]
+[INFO]   from /tmp/trino-smj-upstream-v02-check/core/trino-main/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-main ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-main ---
+[INFO] 
+[INFO] --- antlr4:4.13.2:antlr4 (default) @ trino-main ---
+[INFO] ANTLR 4: Processing source directory /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/antlr4
+[INFO] Processing grammar: io/trino/type/TypeCalculation.g4
+[INFO] Processing grammar: io/trino/jsonpath/JsonDateTimeTemplateLexer.g4
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ trino-main ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 0 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.16.0:compile (default-compile) @ trino-main ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 2734 source files with javac [debug deprecation parameters release 25] to target/classes
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/SystemSessionProperties.java:[608,40] getMarkDistinctStrategy() in io.trino.sql.planner.OptimizerConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/SystemSessionProperties.java:[803,39] isIncrementalHashArrayLoadFactorEnabled() in io.trino.FeaturesConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/analyzer/JsonPathAnalyzer.java:[126,40] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/util/DateTimeUtils.java:[248,49] CompositeIntervalQualifier(java.util.Optional<io.trino.sql.tree.DataTypeParameter>,io.trino.sql.tree.IntervalField,io.trino.sql.tree.IntervalField) in io.trino.sql.tree.CompositeIntervalQualifier has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/util/DateTimeUtils.java:[248,16] IntervalLiteral(java.lang.String,io.trino.sql.tree.IntervalLiteral.Sign,io.trino.sql.tree.IntervalQualifier) in io.trino.sql.tree.IntervalLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/analyzer/TypeDescriptorTranslator.java:[584,40] Field(java.util.Optional<io.trino.sql.tree.NodeLocation>,java.util.Optional<io.trino.sql.tree.Identifier>,io.trino.sql.tree.DataType) in io.trino.sql.tree.RowDataType.Field has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/metadata/PropertyUtil.java:[208,31] Property(io.trino.sql.tree.Identifier,io.trino.sql.tree.Expression) in io.trino.sql.tree.Property has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/metadata/PropertyUtil.java:[222,30] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/metadata/PropertyUtil.java:[223,31] BooleanLiteral(java.lang.String) in io.trino.sql.tree.BooleanLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/metadata/PropertyUtil.java:[224,39] LongLiteral(java.lang.String) in io.trino.sql.tree.LongLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/metadata/PropertyUtil.java:[225,30] DoubleLiteral(java.lang.String) in io.trino.sql.tree.DoubleLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/metadata/PropertyUtil.java:[226,34] Array(java.util.List<io.trino.sql.tree.Expression>) in io.trino.sql.tree.Array has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/DynamicFilterService.java:[307,24] <V>unmodifiableFuture(java.util.concurrent.CompletableFuture<V>) in io.airlift.concurrent.MoreFutures has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/planner/LocalDynamicFiltersCollector.java:[199,20] <V>unmodifiableFuture(java.util.concurrent.CompletableFuture<V>) in io.airlift.concurrent.MoreFutures has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/type/TypeCoercion.java:[129,53] getTypeParameters() in io.trino.spi.type.Type has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/type/TypeCoercion.java:[130,53] getTypeParameters() in io.trino.spi.type.Type has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/type/TypeCoercion.java:[400,49] getTypeParameters() in io.trino.spi.type.Type has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/type/TypeCoercion.java:[401,45] getTypeParameters() in io.trino.spi.type.Type has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/metadata/SignatureBinder.java:[314,53] getTypeParameters() in io.trino.spi.type.Type has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/metadata/SignatureBinder.java:[479,78] getTypeParameters() in io.trino.spi.type.Type has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/metadata/SignatureBinder.java:[652,32] getTypeParameters() in io.trino.spi.type.Type has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/analyzer/StatementAnalyzer.java:[5596,83] LongLiteral(java.lang.String) in io.trino.sql.tree.LongLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/analyzer/StatementAnalyzer.java:[5596,47] SubscriptExpression(io.trino.sql.tree.Expression,io.trino.sql.tree.Expression) in io.trino.sql.tree.SubscriptExpression has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/connector/DefaultNodeManager.java:[70,17] getCurrentNode() in io.trino.spi.NodeManager has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/connector/informationschema/InformationSchemaPageSource.java:[194,17] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/connector/informationschema/InformationSchemaPageSourceProvider.java:[50,32] createPageSource(io.trino.spi.connector.ConnectorTransactionHandle,io.trino.spi.connector.ConnectorSession,io.trino.spi.connector.ConnectorSplit,io.trino.spi.connector.ConnectorTableHandle,java.util.Optional<io.trino.spi.connector.ConnectorTableCredentials>,java.util.List<io.trino.spi.connector.ColumnHandle>,io.trino.spi.connector.DynamicFilter) in io.trino.spi.connector.ConnectorPageSourceProvider has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/execution/SqlTaskManager.java:[665,34] unsafeInvalidate(java.lang.Object) in io.trino.cache.NonKeyEvictableLoadingCache has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/planner/LocalExecutionPlanner.java:[460,13] expireAfterAccess(long,java.util.concurrent.TimeUnit) in com.google.common.cache.CacheBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/planner/LocalExecutionPlanner.java:[463,13] expireAfterAccess(long,java.util.concurrent.TimeUnit) in com.google.common.cache.CacheBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/HttpRequestSessionContextFactory.java:[87,50] getAlternateHeaderName() in io.trino.server.ProtocolConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/HttpRequestSessionContextFactory.java:[212,22] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.security.AccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/HttpRequestSessionContextFactory.java:[227,26] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.security.AccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/execution/SetSessionAuthorizationTask.java:[93,26] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.security.AccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/execution/resourcegroups/LegacyResourceGroupConfigurationManager.java:[45,38] getMaxConcurrentQueries() in io.trino.execution.QueryManagerConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/execution/resourcegroups/LegacyResourceGroupConfigurationManager.java:[46,27] getMaxQueuedQueries() in io.trino.execution.QueryManagerConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/metadata/SystemFunctionBundle.java:[820,31] getRegexLibrary() in io.trino.FeaturesConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/node/AirliftNodeInventoryModule.java:[48,65] isEnabled() in io.trino.node.EmbeddedDiscoveryConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/security/AllowAllAccessControl.java:[41,17] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.security.AccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/security/DenyAllAccessControl.java:[125,17] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.security.AccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/QuerySessionSupplier.java:[74,22] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.security.AccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/QuerySessionSupplier.java:[92,26] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.security.AccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/StatusResource.java:[90,74] getSystemCpuLoad() in com.sun.management.OperatingSystemMXBean has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/protocol/JsonEncodingUtils.java:[477,59] getTypeParameters() in io.trino.spi.type.Type has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/security/InsecureAuthenticator.java:[42,50] getAlternateHeaderName() in io.trino.server.ProtocolConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/security/CertificateAuthenticator.java:[63,74] authenticate(java.util.List<java.security.cert.X509Certificate>) in io.trino.spi.security.CertificateAuthenticator has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/security/HeaderAuthenticator.java:[63,52] createAuthenticatedPrincipal(io.trino.spi.security.HeaderAuthenticator.Headers) in io.trino.spi.security.HeaderAuthenticator has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/security/PasswordAuthenticator.java:[46,50] getAlternateHeaderName() in io.trino.server.ProtocolConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/security/PasswordAuthenticator.java:[67,52] createAuthenticatedPrincipal(java.lang.String,java.lang.String) in io.trino.spi.security.PasswordAuthenticator has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/security/oauth2/NimbusOAuth2Client.java:[392,33] TokenRequest(java.net.URI,com.nimbusds.oauth2.sdk.auth.ClientAuthentication,com.nimbusds.oauth2.sdk.AuthorizationGrant) in com.nimbusds.oauth2.sdk.TokenRequest has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/ui/PasswordManagerFormAuthenticator.java:[82,52] createAuthenticatedPrincipal(java.lang.String,java.lang.String) in io.trino.spi.security.PasswordAuthenticator has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/ui/WebUiStaticResource.java:[55,20] isPreviewEnabled() in io.trino.server.ui.WebUiConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/ui/WebUiStaticResource.java:[95,24] isPreviewEnabled() in io.trino.server.ui.WebUiConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/analyzer/JsonAccessorChain.java:[186,73] LongLiteral(java.lang.String) in io.trino.sql.tree.LongLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/planner/ParameterRewriter.java:[65,25] Cast(io.trino.sql.tree.Expression,io.trino.sql.tree.DataType,boolean) in io.trino.sql.tree.Cast has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/DetermineJoinDistributionType.java:[236,41] toPlanCost() in io.trino.cost.LocalCostEstimate has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/DetermineSemiJoinDistributionType.java:[150,41] toPlanCost() in io.trino.cost.LocalCostEstimate has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeInputRewrite.java:[92,38] NullLiteral() in io.trino.sql.tree.NullLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeInputRewrite.java:[92,29] Cast(io.trino.sql.tree.Expression,io.trino.sql.tree.DataType) in io.trino.sql.tree.Cast has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeInputRewrite.java:[93,42] NullLiteral() in io.trino.sql.tree.NullLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeInputRewrite.java:[93,33] Cast(io.trino.sql.tree.Expression,io.trino.sql.tree.DataType) in io.trino.sql.tree.Cast has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeInputRewrite.java:[95,39] LongLiteral(java.lang.String) in io.trino.sql.tree.LongLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeInputRewrite.java:[95,29] Limit(io.trino.sql.tree.Expression) in io.trino.sql.tree.Limit has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeInputRewrite.java:[175,21] LongLiteral(java.lang.String) in io.trino.sql.tree.LongLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeInputRewrite.java:[176,21] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[96,38] NullLiteral() in io.trino.sql.tree.NullLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[96,29] Cast(io.trino.sql.tree.Expression,io.trino.sql.tree.DataType) in io.trino.sql.tree.Cast has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[97,42] NullLiteral() in io.trino.sql.tree.NullLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[97,33] Cast(io.trino.sql.tree.Expression,io.trino.sql.tree.DataType) in io.trino.sql.tree.Cast has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[98,42] NullLiteral() in io.trino.sql.tree.NullLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[98,33] Cast(io.trino.sql.tree.Expression,io.trino.sql.tree.DataType) in io.trino.sql.tree.Cast has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[99,42] NullLiteral() in io.trino.sql.tree.NullLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[99,33] Cast(io.trino.sql.tree.Expression,io.trino.sql.tree.DataType) in io.trino.sql.tree.Cast has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[100,42] NullLiteral() in io.trino.sql.tree.NullLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[100,33] Cast(io.trino.sql.tree.Expression,io.trino.sql.tree.DataType) in io.trino.sql.tree.Cast has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[101,42] NullLiteral() in io.trino.sql.tree.NullLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[101,33] Cast(io.trino.sql.tree.Expression,io.trino.sql.tree.DataType) in io.trino.sql.tree.Cast has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[102,42] NullLiteral() in io.trino.sql.tree.NullLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[102,33] Cast(io.trino.sql.tree.Expression,io.trino.sql.tree.DataType) in io.trino.sql.tree.Cast has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[104,39] LongLiteral(java.lang.String) in io.trino.sql.tree.LongLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[104,29] Limit(io.trino.sql.tree.Expression) in io.trino.sql.tree.Limit has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[181,36] LongLiteral(java.lang.String) in io.trino.sql.tree.LongLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[183,28] LongLiteral(java.lang.String) in io.trino.sql.tree.LongLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[203,21] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[204,21] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[205,21] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[206,21] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[207,21] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[209,21] BooleanLiteral(java.lang.String) in io.trino.sql.tree.BooleanLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[269,70] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[273,122] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[273,187] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[312,59] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[313,57] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[358,42] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[364,38] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[382,43] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[395,32] AllColumns() in io.trino.sql.tree.AllColumns has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[413,120] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[413,179] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[427,38] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[INFO] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java: Some input files additionally use or override a deprecated API.
+[INFO] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/analyzer/CanonicalizationAware.java: Some input files use unchecked or unsafe operations.
+[INFO] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/analyzer/CanonicalizationAware.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ trino-main ---
+[INFO] Copying 32 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ trino-main ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 1546 source files with javac [debug deprecation parameters release 25] to target/test-classes
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/connector/MockConnector.java:[626,47] streamTableColumns(io.trino.spi.connector.ConnectorSession,io.trino.spi.connector.SchemaTablePrefix) in io.trino.spi.connector.ConnectorMetadata has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/connector/MockConnector.java:[620,59] listTableColumns(io.trino.spi.connector.ConnectorSession,io.trino.spi.connector.SchemaTablePrefix) in io.trino.spi.connector.ConnectorMetadata has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/connector/MockConnectorPageSource.java:[69,17] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/connector/MockConnectorPageSource.java:[71,24] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/test/PlanBuilder.java:[513,38] NullLiteral() in io.trino.sql.tree.NullLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/test/PlanBuilder.java:[529,38] NullLiteral() in io.trino.sql.tree.NullLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/cost/TestAggregationStatsRule.java:[179,107] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/cost/TestAggregationStatsRule.java:[179,123] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestAddColumnTask.java:[356,83] LongLiteral(java.lang.String) in io.trino.sql.tree.LongLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestAddColumnTask.java:[356,35] Property(io.trino.sql.tree.Identifier,io.trino.sql.tree.Expression) in io.trino.sql.tree.Property has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateCatalogTask.java:[74,134] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateCatalogTask.java:[74,76] Property(io.trino.sql.tree.Identifier,io.trino.sql.tree.Expression) in io.trino.sql.tree.Property has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateMaterializedViewTask.java:[127,40] AllColumns() in io.trino.sql.tree.AllColumns has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateMaterializedViewTask.java:[148,40] AllColumns() in io.trino.sql.tree.AllColumns has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateMaterializedViewTask.java:[171,40] AllColumns() in io.trino.sql.tree.AllColumns has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateMaterializedViewTask.java:[176,95] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateMaterializedViewTask.java:[194,40] AllColumns() in io.trino.sql.tree.AllColumns has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateMaterializedViewTask.java:[200,25] Property(io.trino.sql.tree.Identifier) in io.trino.sql.tree.Property has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateMaterializedViewTask.java:[201,25] Property(io.trino.sql.tree.Identifier) in io.trino.sql.tree.Property has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateMaterializedViewTask.java:[256,40] AllColumns() in io.trino.sql.tree.AllColumns has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateTableTask.java:[215,70] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateTableTask.java:[215,34] Property(io.trino.sql.tree.Identifier,io.trino.sql.tree.Expression) in io.trino.sql.tree.Property has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateViewTask.java:[210,108] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateViewTask.java:[223,108] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateViewTask.java:[246,46] AllColumns() in io.trino.sql.tree.AllColumns has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestPrepareTask.java:[88,46] AllColumns() in io.trino.sql.tree.AllColumns has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestPrepareTask.java:[101,46] AllColumns() in io.trino.sql.tree.AllColumns has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestQueryManagerConfig.java:[59,17] setMaxConcurrentQueries(int) in io.trino.execution.QueryManagerConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestQueryManagerConfig.java:[60,17] setMaxQueuedQueries(int) in io.trino.execution.QueryManagerConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestQueryManagerConfig.java:[234,17] setMaxConcurrentQueries(int) in io.trino.execution.QueryManagerConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestQueryManagerConfig.java:[235,17] setMaxQueuedQueries(int) in io.trino.execution.QueryManagerConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestQueryPreparer.java:[44,83] AllColumns() in io.trino.sql.tree.AllColumns has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestQueryPreparer.java:[54,83] AllColumns() in io.trino.sql.tree.AllColumns has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestQueryPreparer.java:[61,83] AllColumns() in io.trino.sql.tree.AllColumns has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetPropertiesTask.java:[51,97] LongLiteral(java.lang.String) in io.trino.sql.tree.LongLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetPropertiesTask.java:[51,33] Property(io.trino.sql.tree.Identifier,io.trino.sql.tree.Expression) in io.trino.sql.tree.Property has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetPropertiesTask.java:[52,97] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetPropertiesTask.java:[52,33] Property(io.trino.sql.tree.Identifier,io.trino.sql.tree.Expression) in io.trino.sql.tree.Property has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetPropertiesTask.java:[66,33] Property(io.trino.sql.tree.Identifier) in io.trino.sql.tree.Property has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetPropertiesTask.java:[67,33] Property(io.trino.sql.tree.Identifier) in io.trino.sql.tree.Property has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[151,31] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[154,17] FunctionCall(io.trino.sql.tree.QualifiedName,java.util.List<io.trino.sql.tree.Expression>) in io.trino.sql.tree.FunctionCall has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[155,25] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[156,25] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[163,45] LongLiteral(java.lang.String) in io.trino.sql.tree.LongLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[164,45] LongLiteral(java.lang.String) in io.trino.sql.tree.LongLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[166,70] LongLiteral(java.lang.String) in io.trino.sql.tree.LongLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[174,66] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[183,37] FunctionCall(io.trino.sql.tree.QualifiedName,java.util.List<io.trino.sql.tree.Expression>) in io.trino.sql.tree.FunctionCall has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[184,17] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[185,17] Parameter(int) in io.trino.sql.tree.Parameter has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[187,86] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetTimeZoneTask.java:[104,29] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetTimeZoneTask.java:[160,29] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetTimeZoneTask.java:[171,29] IntervalLiteral(java.lang.String,io.trino.sql.tree.IntervalLiteral.Sign,io.trino.sql.tree.IntervalQualifier) in io.trino.sql.tree.IntervalLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetTimeZoneTask.java:[244,29] IntervalLiteral(java.lang.String,io.trino.sql.tree.IntervalLiteral.Sign,io.trino.sql.tree.IntervalQualifier) in io.trino.sql.tree.IntervalLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetTimeZoneTask.java:[256,29] IntervalLiteral(java.lang.String,io.trino.sql.tree.IntervalLiteral.Sign,io.trino.sql.tree.IntervalQualifier) in io.trino.sql.tree.IntervalLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetTimeZoneTask.java:[268,29] IntervalLiteral(java.lang.String,io.trino.sql.tree.IntervalLiteral.Sign,io.trino.sql.tree.IntervalQualifier) in io.trino.sql.tree.IntervalLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestingPageSourceProvider.java:[54,32] createPageSource(io.trino.spi.connector.ConnectorTransactionHandle,io.trino.spi.connector.ConnectorSession,io.trino.spi.connector.ConnectorSplit,io.trino.spi.connector.ConnectorTableHandle,java.util.Optional<io.trino.spi.connector.ConnectorTableCredentials>,java.util.List<io.trino.spi.connector.ColumnHandle>,io.trino.spi.connector.DynamicFilter) in io.trino.spi.connector.ConnectorPageSourceProvider has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/security/TestAccessControlManager.java:[112,33] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.security.AccessControlManager has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[176,54] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.security.AccessControlManager has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[179,29] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.security.AccessControlManager has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[180,29] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.security.AccessControlManager has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[181,54] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.security.AccessControlManager has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[184,29] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.security.AccessControlManager has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[185,54] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.security.AccessControlManager has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[188,29] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.security.AccessControlManager has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[189,29] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.security.AccessControlManager has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[190,54] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.security.AccessControlManager has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[194,39] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.security.AccessControlManager has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/util/DynamicFiltersTestUtil.java:[147,20] <V>unmodifiableFuture(java.util.concurrent.CompletableFuture<V>) in io.airlift.concurrent.MoreFutures has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/server/TestEmbeddedDiscoveryConfig.java:[32,17] setEnabled(boolean) in io.trino.node.EmbeddedDiscoveryConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/server/TestEmbeddedDiscoveryConfig.java:[41,17] setEnabled(boolean) in io.trino.node.EmbeddedDiscoveryConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/server/TestHttpRequestSessionContextFactory.java:[208,25] setAlternateHeaderName(java.lang.String) in io.trino.server.ProtocolConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/server/TestProtocolConfig.java:[31,17] setAlternateHeaderName(java.lang.String) in io.trino.server.ProtocolConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/server/TestProtocolConfig.java:[46,17] setAlternateHeaderName(java.lang.String) in io.trino.server.ProtocolConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/server/security/TestHeaderAuthenticatorManager.java:[73,38] createAuthenticatedPrincipal(io.trino.spi.security.HeaderAuthenticator.Headers) in io.trino.spi.security.HeaderAuthenticator has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/server/security/TestPasswordAuthenticatorManager.java:[66,38] createAuthenticatedPrincipal(java.lang.String,java.lang.String) in io.trino.spi.security.PasswordAuthenticator has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/server/security/oauth2/TestingHydraIdentityProvider.java:[164,16] [deprecation] <SELF>FixedHostPortGenericContainer(@org.jetbrains.annotations.NotNull java.lang.String) in org.testcontainers.containers.FixedHostPortGenericContainer has been deprecated
+        return new FixedHostPortGenericContainer<>(HYDRA_IMAGE).withNetwork(network);
+               ^
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/server/ui/TestWebUiConfig.java:[32,17] setPreviewEnabled(boolean) in io.trino.server.ui.WebUiConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/server/ui/TestWebUiConfig.java:[46,17] setPreviewEnabled(boolean) in io.trino.server.ui.WebUiConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/split/TestRecordPageSourceProvider.java:[69,30] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/analyzer/TestFeaturesConfig.java:[46,17] setRegexLibrary(io.trino.sql.analyzer.RegexLibrary) in io.trino.FeaturesConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/analyzer/TestFeaturesConfig.java:[65,17] setIncrementalHashArrayLoadFactorEnabled(boolean) in io.trino.FeaturesConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/analyzer/TestFeaturesConfig.java:[117,17] setRegexLibrary(io.trino.sql.analyzer.RegexLibrary) in io.trino.FeaturesConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/analyzer/TestFeaturesConfig.java:[136,17] setIncrementalHashArrayLoadFactorEnabled(boolean) in io.trino.FeaturesConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/TestIncrementalRefreshVisitor.java:[107,17] NullLiteral() in io.trino.sql.tree.NullLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/TestSchedulingOrderVisitor.java:[62,40] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/TestSchedulingOrderVisitor.java:[64,45] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/TestSchedulingOrderVisitor.java:[69,28] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestAddIntermediateAggregations.java:[40,46] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestAddIntermediateAggregations.java:[46,70] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestAddIntermediateAggregations.java:[47,71] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestAddIntermediateAggregations.java:[59,43] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestAddIntermediateAggregations.java:[61,46] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestAddIntermediateAggregations.java:[65,87] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestAddIntermediateAggregations.java:[67,70] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestAddIntermediateAggregations.java:[68,71] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestDecorrelateInnerUnnestWithGlobalAggregation.java:[79,43] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestDecorrelateInnerUnnestWithGlobalAggregation.java:[80,35] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[INFO] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestDecorrelateInnerUnnestWithGlobalAggregation.java: Some input files additionally use or override a deprecated API.
+[INFO] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/block/TestMapBlock.java: Some input files use unchecked or unsafe operations.
+[INFO] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/block/TestMapBlock.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer) @ trino-main ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer-production-code) @ trino-main ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-only (default) @ trino-main ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-duplicate (default) @ trino-main ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-exclusions (default) @ trino-main ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-test) @ trino-main ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.5.1:jar (default-jar) @ trino-main ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/core/trino-main/target/trino-main-485-SNAPSHOT.jar
+[INFO] 
+[INFO] --- jar:3.5.1:test-jar (attach-tests) @ trino-main ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/core/trino-main/target/trino-main-485-SNAPSHOT-tests.jar
+[INFO] 
+[INFO] --- source:3.4.0:jar-no-fork (attach-sources) @ trino-main ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/core/trino-main/target/trino-main-485-SNAPSHOT-sources.jar
+[INFO] 
+[INFO] --- source:3.4.0:test-jar-no-fork (attach-sources) @ trino-main ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/core/trino-main/target/trino-main-485-SNAPSHOT-test-sources.jar
+[INFO] 
+[INFO] -----------------------< io.trino:trino-parquet >-----------------------
+[INFO] Building trino-parquet 485-SNAPSHOT                                [6/7]
+[INFO]   from /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-parquet ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-parquet ---
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ trino-parquet ---
+[INFO] skip non existing resourceDirectory /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.16.0:compile (default-compile) @ trino-parquet ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 180 source files with javac [debug deprecation parameters release 25] to target/classes
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/main/java/io/trino/parquet/metadata/ColumnChunkMetadata.java:[221,36] PLAIN_DICTIONARY in org.apache.parquet.column.Encoding has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/main/java/io/trino/parquet/metadata/ParquetMetadata.java:[254,37] precision(int) in org.apache.parquet.schema.Types.BasePrimitiveBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/main/java/io/trino/parquet/metadata/ParquetMetadata.java:[257,37] scale(int) in org.apache.parquet.schema.Types.BasePrimitiveBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/main/java/io/trino/parquet/metadata/ParquetMetadata.java:[273,50] toOriginalType() in org.apache.parquet.schema.LogicalTypeAnnotation has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/main/java/io/trino/parquet/metadata/ParquetMetadata.java:[273,98] toOriginalType() in org.apache.parquet.schema.LogicalTypeAnnotation has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/main/java/io/trino/parquet/writer/MessageTypeConverter.java:[59,34] getDecimalMetadata() in org.apache.parquet.schema.PrimitiveType has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/main/java/io/trino/parquet/writer/MessageTypeConverter.java:[60,55] getDecimalMetadata() in org.apache.parquet.schema.PrimitiveType has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/main/java/io/trino/parquet/writer/MessageTypeConverter.java:[61,51] getDecimalMetadata() in org.apache.parquet.schema.PrimitiveType has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/main/java/io/trino/parquet/writer/MessageTypeConverter.java:[149,51] org.apache.parquet.schema.OriginalType in org.apache.parquet.schema has been deprecated
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ trino-parquet ---
+[INFO] Copying 7 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ trino-parquet ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 111 source files with javac [debug deprecation parameters release 25] to target/test-classes
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/ParquetTestUtils.java:[380,63] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/TestParquetMetadataConverter.java:[50,40] BinaryStatistics() in org.apache.parquet.column.statistics.BinaryStatistics has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/TestParquetMetadataConverter.java:[51,20] setMinMax(org.apache.parquet.io.api.Binary,org.apache.parquet.io.api.Binary) in org.apache.parquet.column.statistics.BinaryStatistics has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/TestParquetMetadataConverter.java:[52,20] setNumNulls(long) in org.apache.parquet.column.statistics.Statistics has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/TestParquetMetadataConverter.java:[79,40] BinaryStatistics() in org.apache.parquet.column.statistics.BinaryStatistics has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/TestParquetMetadataConverter.java:[80,20] setMinMax(org.apache.parquet.io.api.Binary,org.apache.parquet.io.api.Binary) in org.apache.parquet.column.statistics.BinaryStatistics has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/TestParquetMetadataConverter.java:[81,20] setNumNulls(long) in org.apache.parquet.column.statistics.Statistics has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/TestParquetMetadataConverter.java:[107,40] BinaryStatistics() in org.apache.parquet.column.statistics.BinaryStatistics has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/TestParquetMetadataConverter.java:[108,20] setMinMax(org.apache.parquet.io.api.Binary,org.apache.parquet.io.api.Binary) in org.apache.parquet.column.statistics.BinaryStatistics has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/TestParquetMetadataConverter.java:[109,20] setNumNulls(long) in org.apache.parquet.column.statistics.Statistics has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/TestParquetMetadataConverter.java:[131,40] BinaryStatistics() in org.apache.parquet.column.statistics.BinaryStatistics has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/TestParquetMetadataConverter.java:[132,20] setMinMax(org.apache.parquet.io.api.Binary,org.apache.parquet.io.api.Binary) in org.apache.parquet.column.statistics.BinaryStatistics has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/TestParquetMetadataConverter.java:[133,20] setNumNulls(long) in org.apache.parquet.column.statistics.Statistics has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/TestParquetMetadataConverter.java:[157,40] BinaryStatistics() in org.apache.parquet.column.statistics.BinaryStatistics has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/TestParquetMetadataConverter.java:[158,20] setMinMax(org.apache.parquet.io.api.Binary,org.apache.parquet.io.api.Binary) in org.apache.parquet.column.statistics.BinaryStatistics has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/TestParquetMetadataConverter.java:[159,20] setNumNulls(long) in org.apache.parquet.column.statistics.Statistics has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/crypto/TestParquetEncryption.java:[659,37] withRowGroupSize(int) in org.apache.parquet.hadoop.ParquetWriter.Builder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/reader/AbstractColumnReaderBenchmark.java:[123,58] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/reader/AbstractColumnReaderRowRangesTest.java:[650,37] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/reader/AbstractColumnReaderRowRangesTest.java:[663,38] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/reader/AbstractColumnReaderTest.java:[686,61] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/reader/AbstractColumnReaderTest.java:[687,61] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/reader/AbstractColumnReaderTest.java:[688,46] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/reader/AbstractColumnReaderTest.java:[762,46] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/reader/TestInt96Timestamp.java:[158,61] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/reader/TestMetadataReader.java:[307,48] getMin() in org.apache.parquet.column.statistics.BinaryStatistics has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/reader/TestMetadataReader.java:[308,48] getMax() in org.apache.parquet.column.statistics.BinaryStatistics has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/reader/TestMetadataReader.java:[327,48] getMin() in org.apache.parquet.column.statistics.BinaryStatistics has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/reader/TestMetadataReader.java:[328,48] getMax() in org.apache.parquet.column.statistics.BinaryStatistics has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/reader/TestMetadataReader.java:[427,52] getMin() in org.apache.parquet.column.statistics.BinaryStatistics has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/reader/TestMetadataReader.java:[431,52] getMin() in org.apache.parquet.column.statistics.BinaryStatistics has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/reader/TestMetadataReader.java:[438,52] getMax() in org.apache.parquet.column.statistics.BinaryStatistics has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/reader/TestMetadataReader.java:[442,52] getMax() in org.apache.parquet.column.statistics.BinaryStatistics has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/reader/TestMetadataReader.java:[467,48] getMin() in org.apache.parquet.column.statistics.BinaryStatistics has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/reader/TestMetadataReader.java:[468,48] getMax() in org.apache.parquet.column.statistics.BinaryStatistics has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/reader/decoders/AbstractValueDecodersTest.java:[160,74] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/reader/decoders/ApacheParquetByteUnpacker.java:[41,21] unpack32Values(byte[],int,int[],int) in org.apache.parquet.column.values.bitpacking.BytePacker has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/reader/decoders/ApacheParquetIntUnpacker.java:[41,21] unpack8Values(byte[],int,int[],int) in org.apache.parquet.column.values.bitpacking.BytePacker has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/reader/decoders/ApacheParquetIntUnpacker.java:[51,21] unpack32Values(byte[],int,int[],int) in org.apache.parquet.column.values.bitpacking.BytePacker has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/reader/decoders/ApacheParquetShortUnpacker.java:[41,21] unpack32Values(byte[],int,int[],int) in org.apache.parquet.column.values.bitpacking.BytePacker has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/reader/decoders/BenchmarkRleBitPackingDecoder.java:[76,53] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/reader/flat/BenchmarkFlatDefinitionLevelDecoder.java:[164,37] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/reader/flat/TestFlatColumnReader.java:[457,46] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/reader/flat/TestFlatColumnReader.java:[477,46] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/reader/flat/TestFlatColumnReader.java:[533,50] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/reader/flat/TestNullsDecoder.java:[224,33] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/TestPrimitiveValueWriter.java:[171,49] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/TestPrimitiveValueWriter.java:[177,120] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/TestRunLengthBitPackingHybridEncoder.java:[44,77] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/TestRunLengthBitPackingHybridEncoder.java:[72,77] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/TestRunLengthBitPackingHybridEncoder.java:[91,77] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/TestRunLengthBitPackingHybridEncoder.java:[109,77] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/TestRunLengthBitPackingHybridEncoder.java:[134,77] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/TestRunLengthBitPackingHybridEncoder.java:[178,77] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/TestRunLengthBitPackingHybridEncoder.java:[204,77] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/TestRunLengthBitPackingHybridEncoder.java:[239,77] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/TestRunLengthBitPackingHybridEncoder.java:[290,19] unpack8Values(byte[],int,int[],int) in org.apache.parquet.column.values.bitpacking.BytePacker has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/TestRunLengthBitPackingHybridValuesWriter.java:[66,100] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDeltaLengthByteArrayValuesWriter.java:[69,37] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDeltaLengthByteArrayValuesWriter.java:[86,37] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDeltaLengthByteArrayValuesWriter.java:[99,37] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDeltaLengthByteArrayValuesWriter.java:[105,37] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDictionaryWriter.java:[130,83] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDictionaryWriter.java:[154,101] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDictionaryWriter.java:[188,101] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDictionaryWriter.java:[311,86] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDictionaryWriter.java:[318,86] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDictionaryWriter.java:[368,86] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDictionaryWriter.java:[376,86] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDictionaryWriter.java:[427,86] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDictionaryWriter.java:[434,86] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDictionaryWriter.java:[484,86] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDictionaryWriter.java:[492,86] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDictionaryWriter.java:[530,101] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDictionaryWriter.java:[538,101] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDictionaryWriter.java:[547,101] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDictionaryWriter.java:[566,101] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDictionaryWriter.java:[575,101] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDictionaryWriter.java:[583,101] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDictionaryWriter.java:[602,101] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDictionaryWriter.java:[611,101] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDictionaryWriter.java:[619,101] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDictionaryWriter.java:[638,101] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDictionaryWriter.java:[647,101] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDictionaryWriter.java:[655,101] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDictionaryWriter.java:[675,75] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDictionaryWriter.java:[691,75] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDictionaryWriter.java:[707,75] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDictionaryWriter.java:[719,75] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestDictionaryWriter.java:[780,38] copy(org.apache.parquet.bytes.BytesInput) in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestTrinoBooleanPlainValuesWriter.java:[45,47] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/src/test/java/io/trino/parquet/writer/valuewriter/TestTrinoBooleanPlainValuesWriter.java:[45,96] toByteArray() in org.apache.parquet.bytes.BytesInput has been deprecated
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer) @ trino-parquet ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer-production-code) @ trino-parquet ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-only (default) @ trino-parquet ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-duplicate (default) @ trino-parquet ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-exclusions (default) @ trino-parquet ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-test) @ trino-parquet ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.5.1:jar (default-jar) @ trino-parquet ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/target/trino-parquet-485-SNAPSHOT.jar
+[INFO] 
+[INFO] --- jar:3.5.1:test-jar (attach-tests) @ trino-parquet ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/target/trino-parquet-485-SNAPSHOT-tests.jar
+[INFO] 
+[INFO] --- source:3.4.0:jar-no-fork (attach-sources) @ trino-parquet ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/target/trino-parquet-485-SNAPSHOT-sources.jar
+[INFO] 
+[INFO] --- source:3.4.0:test-jar-no-fork (attach-sources) @ trino-parquet ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/lib/trino-parquet/target/trino-parquet-485-SNAPSHOT-test-sources.jar
+[INFO] 
+[INFO] --------------------< io.trino:trino-hive-formats >---------------------
+[INFO] Building trino-hive-formats 485-SNAPSHOT                           [7/7]
+[INFO]   from /tmp/trino-smj-upstream-v02-check/lib/trino-hive-formats/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-hive-formats ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-hive-formats ---
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ trino-hive-formats ---
+[INFO] skip non existing resourceDirectory /tmp/trino-smj-upstream-v02-check/lib/trino-hive-formats/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.16.0:compile (default-compile) @ trino-hive-formats ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 148 source files with javac [debug deprecation parameters release 25] to target/classes
+[INFO] /tmp/trino-smj-upstream-v02-check/lib/trino-hive-formats/src/main/java/io/trino/hive/formats/line/protobuf/ProtobufDeserializer.java: /tmp/trino-smj-upstream-v02-check/lib/trino-hive-formats/src/main/java/io/trino/hive/formats/line/protobuf/ProtobufDeserializer.java uses unchecked or unsafe operations.
+[INFO] /tmp/trino-smj-upstream-v02-check/lib/trino-hive-formats/src/main/java/io/trino/hive/formats/line/protobuf/ProtobufDeserializer.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- protoc-jar:3.11.4:run (generate-test-sources) @ trino-hive-formats ---
+[INFO] Resolving artifact: com.google.protobuf:protoc:4.36.2, platform: linux-x86_64
+protoc-jar: executing: [/tmp/protoc10598308144636333999.exe, --version]
+libprotoc 36.2
+[INFO] Protoc command: /tmp/protoc10598308144636333999.exe
+[INFO] Input directories:
+[INFO]     /tmp/trino-smj-upstream-v02-check/lib/trino-hive-formats/src/test/resources/protobuf/sources
+[INFO] Output targets:
+[INFO]     java: /tmp/trino-smj-upstream-v02-check/lib/trino-hive-formats/target/generated-test-sources (add: none, clean: false, plugin: null, outputOptions: null)
+[INFO]     descriptor: /tmp/trino-smj-upstream-v02-check/lib/trino-hive-formats/target/test-classes/protobuf/descriptors (add: none, clean: false, plugin: null, outputOptions: null)
+[INFO] /tmp/trino-smj-upstream-v02-check/lib/trino-hive-formats/target/generated-test-sources does not exist. Creating...
+[INFO] /tmp/trino-smj-upstream-v02-check/lib/trino-hive-formats/target/test-classes/protobuf/descriptors does not exist. Creating...
+[INFO]     Processing (java): datarecord.proto
+protoc-jar: executing: [/tmp/protoc10598308144636333999.exe, -I/tmp/trino-smj-upstream-v02-check/lib/trino-hive-formats/src/test/resources/protobuf/sources, --java_out=/tmp/trino-smj-upstream-v02-check/lib/trino-hive-formats/target/generated-test-sources, /tmp/trino-smj-upstream-v02-check/lib/trino-hive-formats/src/test/resources/protobuf/sources/datarecord.proto]
+[INFO]     Processing (descriptor): datarecord.proto
+protoc-jar: executing: [/tmp/protoc10598308144636333999.exe, -I/tmp/trino-smj-upstream-v02-check/lib/trino-hive-formats/src/test/resources/protobuf/sources, --descriptor_set_out=/tmp/trino-smj-upstream-v02-check/lib/trino-hive-formats/target/test-classes/protobuf/descriptors/datarecord.desc, --include_imports, /tmp/trino-smj-upstream-v02-check/lib/trino-hive-formats/src/test/resources/protobuf/sources/datarecord.proto]
+[INFO] 
+[INFO] --- build-helper:3.6.2:add-test-source (add-test-sources) @ trino-hive-formats ---
+[INFO] Test Source directory: /tmp/trino-smj-upstream-v02-check/lib/trino-hive-formats/target/generated-test-sources added.
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ trino-hive-formats ---
+[INFO] Copying 1 resource from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ trino-hive-formats ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 43 source files with javac [debug deprecation parameters release 25] to target/test-classes
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer) @ trino-hive-formats ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer-production-code) @ trino-hive-formats ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-only (default) @ trino-hive-formats ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-duplicate (default) @ trino-hive-formats ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-exclusions (default) @ trino-hive-formats ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-test) @ trino-hive-formats ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.5.1:jar (default-jar) @ trino-hive-formats ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/lib/trino-hive-formats/target/trino-hive-formats-485-SNAPSHOT.jar
+[INFO] 
+[INFO] --- jar:3.5.1:test-jar (attach-tests) @ trino-hive-formats ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/lib/trino-hive-formats/target/trino-hive-formats-485-SNAPSHOT-tests.jar
+[INFO] 
+[INFO] --- source:3.4.0:jar-no-fork (attach-sources) @ trino-hive-formats ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/lib/trino-hive-formats/target/trino-hive-formats-485-SNAPSHOT-sources.jar
+[INFO] 
+[INFO] --- source:3.4.0:test-jar-no-fork (attach-sources) @ trino-hive-formats ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/lib/trino-hive-formats/target/trino-hive-formats-485-SNAPSHOT-test-sources.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] Average project wall time: 38.00s
+[INFO] Total concurrency: 100%
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for trino-spi 485-SNAPSHOT:
+[INFO] 
+[INFO] trino-spi .......................................... SUCCESS [ 17.653 s]
+[INFO] trino-plugin-toolkit ............................... SUCCESS [  4.448 s]
+[INFO] trino-web-ui ....................................... SUCCESS [ 48.211 s]
+[INFO] trino-testing-containers ........................... SUCCESS [  1.832 s]
+[INFO] trino-main ......................................... SUCCESS [02:57 min]
+[INFO] trino-hive-formats ................................. SUCCESS [  5.950 s]
+[INFO] trino-parquet ...................................... SUCCESS [ 11.302 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  04:28 min
+[INFO] Finished at: 2026-11-08T15:04:08+03:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Njord session closed

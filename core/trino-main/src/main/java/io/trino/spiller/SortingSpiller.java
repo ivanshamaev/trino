@@ -24,6 +24,7 @@ import io.trino.operator.PageWithPositionComparator;
 import io.trino.operator.SpillContext;
 import io.trino.operator.WorkProcessor;
 import io.trino.spi.Page;
+import io.trino.spi.TrinoException;
 import io.trino.spi.type.Type;
 
 import java.io.Closeable;
@@ -33,6 +34,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableList.toImmutableList;
@@ -45,6 +47,7 @@ import static com.google.common.util.concurrent.Futures.transform;
 import static com.google.common.util.concurrent.Futures.transformAsync;
 import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
 import static io.airlift.concurrent.MoreFutures.checkSuccess;
+import static io.trino.spi.StandardErrorCode.GENERIC_INTERNAL_ERROR;
 import static io.trino.util.MergeSortedPages.mergeSortedPages;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -132,7 +135,7 @@ public final class SortingSpiller
         WorkProcessor<Page> merged = mergeSortedPages(
                 ImmutableList.of(WorkProcessor.fromIterator(getOnlyElement(left.spiller.getSpills())), WorkProcessor.fromIterator(getOnlyElement(right.spiller.getSpills()))),
                 comparator,
-                java.util.stream.IntStream.range(0, types.size()).boxed().collect(toImmutableList()),
+                IntStream.range(0, types.size()).boxed().collect(toImmutableList()),
                 types,
                 (builder, _) -> builder.getSizeInBytes() >= PAGE_BYTES,
                 false,
@@ -214,7 +217,7 @@ public final class SortingSpiller
             remaining.forEach(closer::register);
         }
         catch (IOException failure) {
-            throw new RuntimeException("Could not close sort spill runs", failure);
+            throw new TrinoException(GENERIC_INTERNAL_ERROR, "Could not close sort spill runs", failure);
         }
         finally {
             memoryContext.close();

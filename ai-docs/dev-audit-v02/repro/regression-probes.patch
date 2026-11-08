@@ -1,0 +1,374 @@
+diff --git a/core/trino-main/src/test/java/io/trino/operator/join/merge/TestMergeJoinOperator.java b/core/trino-main/src/test/java/io/trino/operator/join/merge/TestMergeJoinOperator.java
+index 79ed6bc55fb..545b926902b 100644
+--- a/core/trino-main/src/test/java/io/trino/operator/join/merge/TestMergeJoinOperator.java
++++ b/core/trino-main/src/test/java/io/trino/operator/join/merge/TestMergeJoinOperator.java
+@@ -1217,6 +1217,137 @@ public class TestMergeJoinOperator
+         }
+     }
+ 
++    @Test
++    public void testAuditV02ReplayAmplification(@TempDir Path spillPath)
++            throws Exception
++    {
++        double largestRatio = 0;
++        for (int pageCount : List.of(768, 3072, 12288)) {
++            List<Page> pages = new ArrayList<>();
++            RowPagesBuilder probe = rowPagesBuilder(BIGINT);
++            MaterializedResult.Builder expected = MaterializedResult.resultBuilder(BIGINT, BIGINT);
++            for (int page = 0; page < pageCount; page++) {
++                long key = page / 3;
++                pages.add(repeatedPage(key, 8));
++                if (page % 3 == 0) {
++                    probe.row(key);
++                }
++                for (int position = 0; position < 8; position++) {
++                    expected.row(key, key);
++                }
++            }
++            SpillIo io = assertSpilledJoin(spillPath, JoinType.INNER, pages, probe.build(), expected.build(), Optional.empty());
++            largestRatio = (double) io.readBytes() / io.writtenBytes();
++            System.out.printf(
++                    "AUDIT_V02 pages=%s replayedPages=%s writtenBytes=%s readBytes=%s readWriteRatio=%.4f%n",
++                    pageCount,
++                    io.replayedPages(),
++                    io.writtenBytes(),
++                    io.readBytes(),
++                    largestRatio);
++        }
++        assertThat(largestRatio).as("Linear replay IO for groups spanning three pages").isLessThanOrEqualTo(4);
++    }
++
++    @Test
++    public void testAuditV02OutputMemoryAccounting()
++            throws Exception
++    {
++        TaskContext task = TestingTaskContext.builder(executor, scheduledExecutor, SessionTestUtils.TEST_SESSION)
++                .setQueryMaxMemory(DataSize.ofBytes(16 * 1024))
++                .build();
++        DriverContext buildDriver = task.addPipelineContext(0, true, true, false).addDriverContext();
++        MergeJoinBridge bridge = new MergeJoinBridge(ImmutableList.of(BIGINT), ImmutableList.of(0), ImmutableList.of());
++        var buffer = new MergeJoinBufferOperatorFactory.MergeJoinBufferOperator(
++                buildDriver.addOperatorContext(0, NODE_ID, "build"),
++                bridge,
++                ImmutableList.of(BIGINT),
++                SessionTestUtils.TEST_SESSION.toConnectorSession(),
++                Optional.empty());
++        buffer.addInput(new Page(RunLengthEncodedBlock.create(BIGINT, 7L, 20_000)));
++        buffer.finish();
++        var retainedBuilder = new java.util.concurrent.atomic.AtomicReference<io.trino.spi.PageBuilder>();
++        var peakBuilderBytes = new java.util.concurrent.atomic.AtomicLong();
++        var observedReservation = new java.util.concurrent.atomic.AtomicLong();
++        JoinFilterFunctionFactory filter = (_, _, _) -> (_, _, _) -> {
++            long bytes = retainedBuilder.get().getRetainedSizeInBytes();
++            if (bytes > peakBuilderBytes.get()) {
++                peakBuilderBytes.set(bytes);
++                observedReservation.set(task.aggregateUserMemoryContext().getBytes());
++            }
++            return true;
++        };
++        var manager = new JoinBridgeManager<>(false, bridge, ImmutableList.of(BIGINT));
++        var factory = auditV02ProbeFactory(manager, Optional.of(filter));
++        DriverContext probeDriver = task.addPipelineContext(1, true, true, false).addDriverContext();
++        var operator = factory.create(probeDriver.addOperatorContext(0, NODE_ID, "probe"), io.trino.operator.WorkProcessor.of(repeatedPage(7, 1)));
++        var field = operator.getClass().getDeclaredField("transformation");
++        field.setAccessible(true);
++        Object transformation = field.get(operator);
++        var builderField = transformation.getClass().getDeclaredField("pageBuilder");
++        builderField.setAccessible(true);
++        retainedBuilder.set((io.trino.spi.PageBuilder) builderField.get(transformation));
++        try {
++            assertThat(operator.getOutputPages().process()).isTrue();
++            System.out.println("AUDIT_V02 outputBuilderRetainedBytes=" + peakBuilderBytes.get()
++                    + " taskUserReservationBytes=" + observedReservation.get() + " queryLimitBytes=16384");
++            assertThat(observedReservation.get()).isGreaterThanOrEqualTo(peakBuilderBytes.get());
++        }
++        finally {
++            operator.close();
++            factory.close();
++            buffer.close();
++            bridge.destroy();
++        }
++    }
++
++    @Test
++    public void testAuditV02YieldDuringRejectedGroup()
++            throws Exception
++    {
++        MergeJoinBridge bridge = new MergeJoinBridge(ImmutableList.of(BIGINT), ImmutableList.of(0), ImmutableList.of());
++        bridge.addPage(repeatedPage(7, 200_000));
++        bridge.finish();
++        var filterCalls = new java.util.concurrent.atomic.AtomicInteger();
++        JoinFilterFunctionFactory filter = (_, _, _) -> (_, _, _) -> {
++            filterCalls.incrementAndGet();
++            return false;
++        };
++        var manager = new JoinBridgeManager<>(false, bridge, ImmutableList.of(BIGINT));
++        var factory = auditV02ProbeFactory(manager, Optional.of(filter));
++        var operator = factory.create(driverContext.addOperatorContext(0, NODE_ID, "probe"), io.trino.operator.WorkProcessor.of(repeatedPage(7, 1)));
++        driverContext.getYieldSignal().forceYieldForTesting();
++        try {
++            operator.getOutputPages().process();
++            System.out.println("AUDIT_V02 filterCallsWithYieldSet=" + filterCalls.get());
++            assertThat(filterCalls.get()).isLessThan(200_000);
++        }
++        finally {
++            operator.close();
++            factory.close();
++            driverContext.getYieldSignal().resetYieldForTesting();
++        }
++    }
++
++    private MergeJoinOperatorFactory auditV02ProbeFactory(JoinBridgeManager<MergeJoinBridge> manager, Optional<JoinFilterFunctionFactory> filter)
++    {
++        return new MergeJoinOperatorFactory(
++                0,
++                NODE_ID,
++                manager,
++                JoinType.INNER,
++                false,
++                ImmutableList.of(BIGINT),
++                ImmutableList.of(BIGINT),
++                ImmutableList.of(0),
++                ImmutableList.of(0),
++                ImmutableList.of(0),
++                ImmutableList.of(0),
++                filter,
++                SessionTestUtils.TEST_SESSION.toConnectorSession(),
++                blockTypeOperators);
++    }
++
+     private record SpillIo(long replayedPages, long writtenBytes, long readBytes) {}
+ 
+     @Test
+diff --git a/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSortedWriting.java b/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSortedWriting.java
+index 7f270e273f0..382d3aff918 100644
+--- a/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSortedWriting.java
++++ b/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSortedWriting.java
+@@ -290,6 +290,36 @@ public class TestIcebergSortedWriting
+         }
+     }
+ 
++    @Test
++    public void testAuditV02NullSortOrderId()
++            throws Exception
++    {
++        try (TestTable table = new TestTable(getQueryRunner()::execute, "audit_v02_null_sort", "(k BIGINT) WITH (sorted_by = ARRAY['k'])")) {
++            assertUpdate("INSERT INTO " + table.getName() + " VALUES 1", 1);
++            var icebergTable = IcebergTestUtils.loadTable(
++                    table.getName(),
++                    IcebergTestUtils.getHiveMetastore(getQueryRunner()),
++                    IcebergTestUtils.getFileSystemFactory(getQueryRunner()),
++                    getSession().getCatalog().orElseThrow(),
++                    getSession().getSchema().orElseThrow());
++            org.apache.iceberg.DataFile original;
++            try (var files = icebergTable.newScan().planFiles()) {
++                original = files.iterator().next().file().copy();
++            }
++            var legacy = original.copy();
++            var sortOrderField = legacy.getClass().getSuperclass().getDeclaredField("sortOrderId");
++            sortOrderField.setAccessible(true);
++            sortOrderField.set(legacy, null);
++            assertThat(legacy.sortOrderId()).isNull();
++            icebergTable.newOverwrite().deleteFile(original).addFile(legacy).commit();
++            try (var files = icebergTable.newScan().planFiles()) {
++                assertThat(files.iterator().next().file().sortOrderId()).isNull();
++            }
++            Session off = Session.builder(getSession()).setSystemProperty("prefer_merge_join", "OFF").build();
++            assertQuery(off, "SELECT k FROM " + table.getName(), "VALUES BIGINT '1'");
++        }
++    }
++
+     private static List<LocalProperty<ColumnHandle>> getLocalProperties(Metadata metadata, Session session, String tableName)
+     {
+         QualifiedObjectName qualifiedObjectName = new QualifiedObjectName(
+diff --git a/core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoinAuditV02.java b/core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoinAuditV02.java
+new file mode 100644
+index 00000000000..dc71e745aeb
+--- /dev/null
++++ b/core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoinAuditV02.java
+@@ -0,0 +1,59 @@
++/*
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *     http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++package io.trino.sql.query;
++
++import io.airlift.json.JsonCodec;
++import io.trino.Session;
++import io.trino.operator.JoinOperatorType;
++import io.trino.operator.OperatorInfo;
++import io.trino.operator.join.merge.MergeJoinOperatorFactory.MergeJoinStatistics;
++import io.trino.sql.planner.plan.JoinType;
++import org.junit.jupiter.api.Test;
++
++import static io.trino.SessionTestUtils.TEST_SESSION;
++import static org.assertj.core.api.Assertions.assertThat;
++
++public class TestMergeJoinAuditV02
++{
++    @Test
++    public void testStatisticsRoundTrip()
++            throws Exception
++    {
++        var constructor = MergeJoinStatistics.class.getDeclaredConstructor(JoinOperatorType.class);
++        constructor.setAccessible(true);
++        OperatorInfo statistics = constructor.newInstance(JoinOperatorType.mergeJoin(JoinType.INNER, false));
++        JsonCodec<OperatorInfo> codec = JsonCodec.jsonCodec(OperatorInfo.class);
++        String json = codec.toJson(statistics);
++        System.out.println("AUDIT_V02 statisticsJson=" + json);
++        assertThat(codec.fromJson(json)).isInstanceOf(MergeJoinStatistics.class);
++    }
++
++    @Test
++    public void testRepeatedJoinSymbol()
++    {
++        try (QueryAssertions assertions = new QueryAssertions()) {
++            Session merge = Session.builder(TEST_SESSION)
++                    .setSystemProperty("prefer_merge_join", "FORCE")
++                    .setSystemProperty("join_distribution_type", "PARTITIONED")
++                    .setSystemProperty("join_reordering_strategy", "NONE")
++                    .build();
++            for (String join : new String[] {"JOIN", "LEFT JOIN", "RIGHT JOIN", "FULL JOIN"}) {
++                String query = "SELECT l.x, r.x, r.y FROM (VALUES 1, 2, 3) l(x) " + join
++                        + " (VALUES (1, 1), (2, 3), (3, 3)) r(x, y) ON l.x = r.x AND l.x = r.y";
++                System.out.println("AUDIT_V02 repeatedSymbolQuery=" + query);
++                assertThat(assertions.query(merge, query)).matches(query);
++            }
++        }
++    }
++}
+diff --git a/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestMergeJoinMarkerAuditV02.java b/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestMergeJoinMarkerAuditV02.java
+new file mode 100644
+index 00000000000..2942ac094f6
+--- /dev/null
++++ b/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestMergeJoinMarkerAuditV02.java
+@@ -0,0 +1,62 @@
++/*
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *     http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++package io.trino.sql.planner.iterative.rule;
++
++import com.google.common.collect.ImmutableList;
++import com.google.common.collect.ImmutableMap;
++import io.trino.matching.Captures;
++import io.trino.sql.ir.Logical;
++import io.trino.sql.planner.Symbol;
++import io.trino.sql.planner.iterative.Rule;
++import io.trino.sql.planner.plan.JoinNode;
++import io.trino.sql.planner.plan.PlanNodeId;
++import io.trino.sql.planner.plan.ValuesNode;
++import org.junit.jupiter.api.Test;
++
++import java.util.Optional;
++
++import static io.trino.spi.type.BigintType.BIGINT;
++import static io.trino.sql.ir.Booleans.TRUE;
++import static io.trino.sql.planner.plan.JoinType.INNER;
++import static org.assertj.core.api.Assertions.assertThat;
++
++public class TestMergeJoinMarkerAuditV02
++{
++    @Test
++    @SuppressWarnings("unchecked")
++    public void testFilterRewritePreservesAlgorithm()
++    {
++        Symbol left = new Symbol(BIGINT, "left");
++        Symbol right = new Symbol(BIGINT, "right");
++        JoinNode join = new JoinNode(
++                new PlanNodeId("join"),
++                INNER,
++                new ValuesNode(new PlanNodeId("left"), ImmutableList.of(left)),
++                new ValuesNode(new PlanNodeId("right"), ImmutableList.of(right)),
++                ImmutableList.of(new JoinNode.EquiJoinClause(left, right)),
++                ImmutableList.of(left),
++                ImmutableList.of(right),
++                false,
++                Optional.of(new Logical(Logical.Operator.AND, ImmutableList.of(TRUE, TRUE))),
++                Optional.of(JoinNode.DistributionType.PARTITIONED),
++                Optional.empty(),
++                Optional.of(JoinNode.JoinAlgorithm.MERGE),
++                ImmutableMap.of(),
++                Optional.empty());
++        Rule<JoinNode> rule = (Rule<JoinNode>) new ExpressionRewriteRuleSet((_, _) -> TRUE).joinExpressionRewrite();
++        JoinNode rewritten = (JoinNode) rule.apply(join, Captures.empty(), null).transformedPlan().orElseThrow();
++        System.out.println("AUDIT_V02 filterRewriteAlgorithm=" + rewritten.getAlgorithm());
++        assertThat(rewritten.getAlgorithm()).contains(JoinNode.JoinAlgorithm.MERGE);
++    }
++}
+diff --git a/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestMergeJoinDynamicFilterAuditV02.java b/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestMergeJoinDynamicFilterAuditV02.java
+new file mode 100644
+index 00000000000..2d3da3a5e3b
+--- /dev/null
++++ b/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestMergeJoinDynamicFilterAuditV02.java
+@@ -0,0 +1,52 @@
++/*
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *     http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++package io.trino.plugin.iceberg;
++
++import io.trino.Session;
++import io.trino.testing.sql.TestTable;
++import org.junit.jupiter.api.Test;
++
++import static org.assertj.core.api.Assertions.assertThat;
++
++public class TestMergeJoinDynamicFilterAuditV02
++        extends TestIcebergSortedWriting
++{
++    @Test
++    public void testRightMergeJoinCompletesDynamicFilter()
++    {
++        try (TestTable table = new TestTable(getQueryRunner()::execute, "audit_v02_right_df", "(k BIGINT) WITH (sorted_by = ARRAY['k'])")) {
++            assertUpdate("INSERT INTO " + table.getName() + " VALUES 1, 2, 3", 3);
++            Session session = Session.builder(getSession())
++                    .setSystemProperty("prefer_merge_join", "FORCE")
++                    .setSystemProperty("join_distribution_type", "PARTITIONED")
++                    .setSystemProperty("join_reordering_strategy", "NONE")
++                    .setSystemProperty("enable_dynamic_filtering", "true")
++                    .build();
++            for (String join : new String[] {"JOIN", "RIGHT JOIN"}) {
++                String query = "SELECT l.k, r.k FROM " + table.getName() + " l " + join + " " + table.getName() + " r ON l.k = r.k";
++                String explain = (String) getQueryRunner().execute(session, "EXPLAIN " + query).getOnlyValue();
++                assertThat(explain).contains("Algorithm: MERGE");
++                System.out.println("AUDIT_V02 dynamicFilterPlan=" + explain);
++                var result = getQueryRunner().executeWithPlan(session, query);
++                assertThat(result.result().getMaterializedRows()).hasSize(3);
++                var stats = getDistributedQueryRunner().getCoordinator().getQueryManager().getFullQueryInfo(result.queryId())
++                        .getQueryStats().getDynamicFiltersStats();
++                System.out.println("AUDIT_V02 join=" + join + " dynamicFiltersTotal=" + stats.getTotalDynamicFilters()
++                        + " dynamicFiltersCompleted=" + stats.getDynamicFiltersCompleted());
++                assertThat(stats.getTotalDynamicFilters()).isGreaterThan(0);
++                assertThat(stats.getDynamicFiltersCompleted()).isEqualTo(stats.getTotalDynamicFilters());
++            }
++        }
++    }
++}

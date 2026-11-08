@@ -187,7 +187,7 @@ public class LimitPushDown
                 return new TopNNode(node.getId(), rewrittenSource, limit.getCount(), node.getOrderingScheme(), TopNNode.Step.SINGLE);
             }
             if (rewrittenSource != node.getSource()) {
-                return new SortNode(node.getId(), rewrittenSource, node.getOrderingScheme(), node.isPartial(), node.isInputPagesPreSorted());
+                return new SortNode(node.getId(), rewrittenSource, node.getOrderingScheme(), node.isPartial(), node.isInputPagesPreSorted(), node.isBoundedSpill());
             }
             return node;
         }

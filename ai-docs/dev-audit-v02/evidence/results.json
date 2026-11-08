@@ -1,0 +1,71 @@
+{
+  "revision": "773afdee3bd26dc1a59eb0524a3445657fc1b0d7",
+  "findings": {
+    "P0": 0,
+    "P1": 6,
+    "P2": 4
+  },
+  "runs": [
+    {
+      "name": "existing_core_regression",
+      "tests": 134,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 6,
+      "evidence": "core-regression.log"
+    },
+    {
+      "name": "sql_and_json_probes",
+      "tests": 2,
+      "failures": 0,
+      "errors": 2,
+      "evidence": "statistics-and-criteria.txt"
+    },
+    {
+      "name": "replay_sweep",
+      "tests": 1,
+      "failures": 1,
+      "errors": 0,
+      "evidence": "replay-amplification.txt"
+    },
+    {
+      "name": "memory_and_yield",
+      "tests": 2,
+      "failures": 2,
+      "errors": 0,
+      "evidence": "memory-and-yield.txt"
+    },
+    {
+      "name": "marker_rewrite",
+      "tests": 1,
+      "failures": 1,
+      "errors": 0,
+      "evidence": "marker-rewrite.txt"
+    },
+    {
+      "name": "iceberg_null_id_and_existing_oracles",
+      "tests": 3,
+      "failures": 1,
+      "errors": 0,
+      "evidence": "iceberg-null-sort-order.txt"
+    },
+    {
+      "name": "existing_iceberg_config",
+      "tests": 3,
+      "failures": 2,
+      "errors": 0,
+      "evidence": "iceberg-config.txt"
+    },
+    {
+      "name": "right_dynamic_filter_with_inner_control",
+      "tests": 1,
+      "failures": 1,
+      "errors": 0,
+      "evidence": "right-dynamic-filter.txt"
+    }
+  ],
+  "negative_probes_intentionally_assert_required_contract": true,
+  "production_java_modified": false,
+  "transient_test_changes_restored": true,
+  "crash_logs_read": false
+}

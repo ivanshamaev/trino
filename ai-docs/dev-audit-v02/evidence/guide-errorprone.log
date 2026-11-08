@@ -1,0 +1,381 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] trino-main                                                         [jar]
+[INFO] trino-iceberg                                             [trino-plugin]
+[INFO] trino-tests                                                        [jar]
+[INFO] 
+[INFO] ------------------------< io.trino:trino-main >-------------------------
+[INFO] Building trino-main 485-SNAPSHOT                                   [1/3]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-clean-plugin/3.5.0/maven-clean-plugin-3.5.0.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-clean-plugin/3.5.0/maven-clean-plugin-3.5.0.pom (5.7 kB at 9.4 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-plugins/44/maven-plugins-44.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-plugins/44/maven-plugins-44.pom (8.4 kB at 84 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-clean-plugin/3.5.0/maven-clean-plugin-3.5.0.jar
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-clean-plugin/3.5.0/maven-clean-plugin-3.5.0.jar (37 kB at 280 kB/s)
+[INFO] 
+[INFO] --- clean:3.5.0:clean (default-clean) @ trino-main ---
+[INFO] Deleting /home/ivan/opencode/trino/core/trino-main/target
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-main ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-main ---
+[INFO] 
+[INFO] --- antlr4:4.13.2:antlr4 (default) @ trino-main ---
+[INFO] ANTLR 4: Processing source directory /home/ivan/opencode/trino/core/trino-main/src/main/antlr4
+[INFO] Processing grammar: io/trino/jsonpath/JsonDateTimeTemplateLexer.g4
+[INFO] Processing grammar: io/trino/type/TypeCalculation.g4
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ trino-main ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 0 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.16.0:compile (default-compile) @ trino-main ---
+Downloading from central: https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_core/2.51.0/error_prone_core-2.51.0.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_core/2.51.0/error_prone_core-2.51.0.pom (17 kB at 167 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_annotation/2.51.0/error_prone_annotation-2.51.0.pom
+Downloading from central: https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_check_api/2.51.0/error_prone_check_api-2.51.0.pom
+Downloading from central: https://repo.maven.apache.org/maven2/com/google/googlejavaformat/google-java-format/1.37.0/google-java-format-1.37.0.pom
+Downloading from central: https://repo.maven.apache.org/maven2/com/google/auto/auto-common/1.2.2/auto-common-1.2.2.pom
+Downloading from central: https://repo.maven.apache.org/maven2/io/github/eisop/dataflow-errorprone/3.41.0-eisop1/dataflow-errorprone-3.41.0-eisop1.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_annotation/2.51.0/error_prone_annotation-2.51.0.pom (1.8 kB at 18 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/com/google/auto/service/auto-service-annotations/1.1.1/auto-service-annotations-1.1.1.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/com/google/auto/service/auto-service-annotations/1.1.1/auto-service-annotations-1.1.1.pom (2.3 kB at 23 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/com/google/auto/service/auto-service-aggregator/1.1.1/auto-service-aggregator-1.1.1.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/com/google/googlejavaformat/google-java-format/1.37.0/google-java-format-1.37.0.pom (11 kB at 32 kB/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/com/google/auto/auto-common/1.2.2/auto-common-1.2.2.pom (5.2 kB at 15 kB/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/io/github/eisop/dataflow-errorprone/3.41.0-eisop1/dataflow-errorprone-3.41.0-eisop1.pom (2.3 kB at 6.9 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/com/google/googlejavaformat/google-java-format-parent/1.37.0/google-java-format-parent-1.37.0.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/com/google/auto/service/auto-service-aggregator/1.1.1/auto-service-aggregator-1.1.1.pom (4.3 kB at 45 kB/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_check_api/2.51.0/error_prone_check_api-2.51.0.pom (7.3 kB at 20 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/io/github/java-diff-utils/java-diff-utils/4.17/java-diff-utils-4.17.pom
+Downloading from central: https://repo.maven.apache.org/maven2/com/github/kevinstern/software-and-algorithms/1.0/software-and-algorithms-1.0.pom
+Downloading from central: https://repo.maven.apache.org/maven2/org/safere/safere/1.0.0/safere-1.0.0.pom
+Downloading from central: https://repo.maven.apache.org/maven2/com/github/ben-manes/caffeine/caffeine/3.3.0/caffeine-3.3.0.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/io/github/java-diff-utils/java-diff-utils/4.17/java-diff-utils-4.17.pom (2.3 kB at 23 kB/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/com/github/ben-manes/caffeine/caffeine/3.3.0/caffeine-3.3.0.pom (2.1 kB at 20 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/io/github/java-diff-utils/java-diff-utils-parent/4.17/java-diff-utils-parent-4.17.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/com/github/kevinstern/software-and-algorithms/1.0/software-and-algorithms-1.0.pom (3.4 kB at 32 kB/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/org/safere/safere/1.0.0/safere-1.0.0.pom (1.3 kB at 11 kB/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/io/github/java-diff-utils/java-diff-utils-parent/4.17/java-diff-utils-parent-4.17.pom (9.2 kB at 86 kB/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/com/google/googlejavaformat/google-java-format-parent/1.37.0/google-java-format-parent-1.37.0.pom (13 kB at 39 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/commonmark/commonmark/0.29.0/commonmark-0.29.0.pom
+Downloading from central: https://repo.maven.apache.org/maven2/org/commonmark/commonmark-ext-gfm-tables/0.29.0/commonmark-ext-gfm-tables-0.29.0.pom
+Downloading from central: https://repo.maven.apache.org/maven2/com/google/guava/guava/32.0.1-jre/guava-32.0.1-jre.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/commonmark/commonmark/0.29.0/commonmark-0.29.0.pom (2.4 kB at 18 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/commonmark/commonmark-parent/0.29.0/commonmark-parent-0.29.0.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/commonmark/commonmark-ext-gfm-tables/0.29.0/commonmark-ext-gfm-tables-0.29.0.pom (1.0 kB at 10 kB/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/com/google/guava/guava/32.0.1-jre/guava-32.0.1-jre.pom (11 kB at 106 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/com/google/guava/guava-parent/32.0.1-jre/guava-parent-32.0.1-jre.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/commonmark/commonmark-parent/0.29.0/commonmark-parent-0.29.0.pom (13 kB at 128 kB/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/com/google/guava/guava-parent/32.0.1-jre/guava-parent-32.0.1-jre.pom (21 kB at 191 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_core/2.51.0/error_prone_core-2.51.0.jar
+Downloaded from central: https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_core/2.51.0/error_prone_core-2.51.0.jar (4.1 MB at 6.4 MB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_annotation/2.51.0/error_prone_annotation-2.51.0.jar
+Downloading from central: https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_check_api/2.51.0/error_prone_check_api-2.51.0.jar
+Downloading from central: https://repo.maven.apache.org/maven2/io/github/java-diff-utils/java-diff-utils/4.17/java-diff-utils-4.17.jar
+Downloading from central: https://repo.maven.apache.org/maven2/com/github/kevinstern/software-and-algorithms/1.0/software-and-algorithms-1.0.jar
+Downloading from central: https://repo.maven.apache.org/maven2/com/github/ben-manes/caffeine/caffeine/3.3.0/caffeine-3.3.0.jar
+Downloaded from central: https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_annotation/2.51.0/error_prone_annotation-2.51.0.jar (8.2 kB at 74 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/safere/safere/1.0.0/safere-1.0.0.jar
+Downloaded from central: https://repo.maven.apache.org/maven2/com/github/kevinstern/software-and-algorithms/1.0/software-and-algorithms-1.0.jar (64 kB at 390 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/com/google/googlejavaformat/google-java-format/1.37.0/google-java-format-1.37.0.jar
+Downloaded from central: https://repo.maven.apache.org/maven2/io/github/java-diff-utils/java-diff-utils/4.17/java-diff-utils-4.17.jar (79 kB at 446 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/commonmark/commonmark/0.29.0/commonmark-0.29.0.jar
+Downloaded from central: https://repo.maven.apache.org/maven2/com/github/ben-manes/caffeine/caffeine/3.3.0/caffeine-3.3.0.jar (1.1 MB at 2.8 MB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/commonmark/commonmark-ext-gfm-tables/0.29.0/commonmark-ext-gfm-tables-0.29.0.jar
+Downloaded from central: https://repo.maven.apache.org/maven2/org/commonmark/commonmark/0.29.0/commonmark-0.29.0.jar (216 kB at 551 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/com/google/auto/auto-common/1.2.2/auto-common-1.2.2.jar
+Downloaded from central: https://repo.maven.apache.org/maven2/com/google/googlejavaformat/google-java-format/1.37.0/google-java-format-1.37.0.jar (339 kB at 832 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/io/github/eisop/dataflow-errorprone/3.41.0-eisop1/dataflow-errorprone-3.41.0-eisop1.jar
+Downloaded from central: https://repo.maven.apache.org/maven2/org/safere/safere/1.0.0/safere-1.0.0.jar (723 kB at 1.7 MB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/com/google/auto/service/auto-service-annotations/1.1.1/auto-service-annotations-1.1.1.jar
+Downloaded from central: https://repo.maven.apache.org/maven2/org/commonmark/commonmark-ext-gfm-tables/0.29.0/commonmark-ext-gfm-tables-0.29.0.jar (23 kB at 44 kB/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_check_api/2.51.0/error_prone_check_api-2.51.0.jar (721 kB at 1.4 MB/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/com/google/auto/service/auto-service-annotations/1.1.1/auto-service-annotations-1.1.1.jar (3.2 kB at 6.0 kB/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/com/google/auto/auto-common/1.2.2/auto-common-1.2.2.jar (112 kB at 210 kB/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/io/github/eisop/dataflow-errorprone/3.41.0-eisop1/dataflow-errorprone-3.41.0-eisop1.jar (5.3 MB at 5.2 MB/s)
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 2741 source files with javac [forked debug deprecation parameters release 25] to target/classes
+[INFO] Some input files additionally use or override a deprecated API.
+[INFO] Some input files use unchecked or unsafe operations.
+[INFO] Recompile with -Xlint:unchecked for details.
+[INFO] -------------------------------------------------------------
+[WARNING] COMPILATION WARNING : 
+[INFO] -------------------------------------------------------------
+[WARNING] Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+/home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/SystemSessionProperties.java:[647,40] [deprecation] getMarkDistinctStrategy() in OptimizerConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/SystemSessionProperties.java:[842,39] [deprecation] isIncrementalHashArrayLoadFactorEnabled() in FeaturesConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/analyzer/JsonPathAnalyzer.java:[126,40] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/util/DateTimeUtils.java:[248,49] [deprecation] CompositeIntervalQualifier(Optional<DataTypeParameter>,IntervalField,IntervalField) in CompositeIntervalQualifier has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/util/DateTimeUtils.java:[248,16] [deprecation] IntervalLiteral(String,Sign,IntervalQualifier) in IntervalLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/analyzer/TypeDescriptorTranslator.java:[584,40] [deprecation] Field(Optional<NodeLocation>,Optional<Identifier>,DataType) in Field has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/metadata/PropertyUtil.java:[208,31] [deprecation] Property(Identifier,Expression) in Property has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/metadata/PropertyUtil.java:[222,30] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/metadata/PropertyUtil.java:[223,31] [deprecation] BooleanLiteral(String) in BooleanLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/metadata/PropertyUtil.java:[224,39] [deprecation] LongLiteral(String) in LongLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/metadata/PropertyUtil.java:[225,30] [deprecation] DoubleLiteral(String) in DoubleLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/metadata/PropertyUtil.java:[226,34] [deprecation] Array(List<Expression>) in Array has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/server/DynamicFilterService.java:[307,24] [deprecation] <V>unmodifiableFuture(CompletableFuture<V>) in MoreFutures has been deprecated
+  where V is a type-variable:
+    V extends Object declared in method <V>unmodifiableFuture(CompletableFuture<V>)
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/planner/LocalDynamicFiltersCollector.java:[199,20] [deprecation] <V>unmodifiableFuture(CompletableFuture<V>) in MoreFutures has been deprecated
+  where V is a type-variable:
+    V extends Object declared in method <V>unmodifiableFuture(CompletableFuture<V>)
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/type/TypeCoercion.java:[129,53] [deprecation] getTypeParameters() in Type has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/type/TypeCoercion.java:[130,53] [deprecation] getTypeParameters() in Type has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/type/TypeCoercion.java:[400,49] [deprecation] getTypeParameters() in Type has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/type/TypeCoercion.java:[401,45] [deprecation] getTypeParameters() in Type has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/metadata/SignatureBinder.java:[314,53] [deprecation] getTypeParameters() in Type has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/metadata/SignatureBinder.java:[479,78] [deprecation] getTypeParameters() in Type has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/metadata/SignatureBinder.java:[652,32] [deprecation] getTypeParameters() in Type has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/analyzer/StatementAnalyzer.java:[5596,83] [deprecation] LongLiteral(String) in LongLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/analyzer/StatementAnalyzer.java:[5596,47] [deprecation] SubscriptExpression(Expression,Expression) in SubscriptExpression has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/connector/DefaultNodeManager.java:[70,17] [deprecation] getCurrentNode() in NodeManager has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/connector/informationschema/InformationSchemaPageSource.java:[194,17] [deprecation] getMemoryUsage() in ConnectorPageSource has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/connector/informationschema/InformationSchemaPageSourceProvider.java:[50,32] [deprecation] createPageSource(ConnectorTransactionHandle,ConnectorSession,ConnectorSplit,ConnectorTableHandle,Optional<ConnectorTableCredentials>,List<ColumnHandle>,DynamicFilter) in ConnectorPageSourceProvider has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/execution/SqlTaskManager.java:[665,34] [deprecation] unsafeInvalidate(Object) in NonKeyEvictableLoadingCache has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/planner/LocalExecutionPlanner.java:[465,13] [deprecation] expireAfterAccess(long,TimeUnit) in CacheBuilder has been deprecated
+  where K,V are type-variables:
+    K extends Object declared in class CacheBuilder
+    V extends Object declared in class CacheBuilder
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/planner/LocalExecutionPlanner.java:[468,13] [deprecation] expireAfterAccess(long,TimeUnit) in CacheBuilder has been deprecated
+  where K,V are type-variables:
+    K extends Object declared in class CacheBuilder
+    V extends Object declared in class CacheBuilder
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/server/HttpRequestSessionContextFactory.java:[87,50] [deprecation] getAlternateHeaderName() in ProtocolConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/server/HttpRequestSessionContextFactory.java:[212,22] [deprecation] checkCanSetUser(Optional<Principal>,String) in AccessControl has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/server/HttpRequestSessionContextFactory.java:[227,26] [deprecation] checkCanSetUser(Optional<Principal>,String) in AccessControl has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/execution/SetSessionAuthorizationTask.java:[93,26] [deprecation] checkCanSetUser(Optional<Principal>,String) in AccessControl has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/execution/resourcegroups/LegacyResourceGroupConfigurationManager.java:[45,38] [deprecation] getMaxConcurrentQueries() in QueryManagerConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/execution/resourcegroups/LegacyResourceGroupConfigurationManager.java:[46,27] [deprecation] getMaxQueuedQueries() in QueryManagerConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/metadata/SystemFunctionBundle.java:[820,31] [deprecation] getRegexLibrary() in FeaturesConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/node/AirliftNodeInventoryModule.java:[48,65] [deprecation] isEnabled() in EmbeddedDiscoveryConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/security/AllowAllAccessControl.java:[41,17] [deprecation] checkCanSetUser(Optional<Principal>,String) in AccessControl has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/security/DenyAllAccessControl.java:[125,17] [deprecation] checkCanSetUser(Optional<Principal>,String) in AccessControl has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/server/QuerySessionSupplier.java:[74,22] [deprecation] checkCanSetUser(Optional<Principal>,String) in AccessControl has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/server/QuerySessionSupplier.java:[92,26] [deprecation] checkCanSetUser(Optional<Principal>,String) in AccessControl has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/server/StatusResource.java:[90,74] [deprecation] getSystemCpuLoad() in OperatingSystemMXBean has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/server/protocol/JsonEncodingUtils.java:[477,59] [deprecation] getTypeParameters() in Type has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/server/security/InsecureAuthenticator.java:[42,50] [deprecation] getAlternateHeaderName() in ProtocolConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/server/security/CertificateAuthenticator.java:[63,74] [deprecation] authenticate(List<X509Certificate>) in CertificateAuthenticator has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/server/security/HeaderAuthenticator.java:[63,52] [deprecation] createAuthenticatedPrincipal(Headers) in HeaderAuthenticator has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/server/security/PasswordAuthenticator.java:[46,50] [deprecation] getAlternateHeaderName() in ProtocolConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/server/security/PasswordAuthenticator.java:[67,52] [deprecation] createAuthenticatedPrincipal(String,String) in PasswordAuthenticator has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/server/security/oauth2/NimbusOAuth2Client.java:[392,33] [deprecation] TokenRequest(URI,ClientAuthentication,AuthorizationGrant) in TokenRequest has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/server/ui/PasswordManagerFormAuthenticator.java:[82,52] [deprecation] createAuthenticatedPrincipal(String,String) in PasswordAuthenticator has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/server/ui/WebUiStaticResource.java:[55,20] [deprecation] isPreviewEnabled() in WebUiConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/server/ui/WebUiStaticResource.java:[95,24] [deprecation] isPreviewEnabled() in WebUiConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/analyzer/JsonAccessorChain.java:[186,73] [deprecation] LongLiteral(String) in LongLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/planner/ParameterRewriter.java:[65,25] [deprecation] Cast(Expression,DataType,boolean) in Cast has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/DetermineJoinDistributionType.java:[236,41] [deprecation] toPlanCost() in LocalCostEstimate has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/DetermineSemiJoinDistributionType.java:[150,41] [deprecation] toPlanCost() in LocalCostEstimate has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeInputRewrite.java:[92,38] [deprecation] NullLiteral() in NullLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeInputRewrite.java:[92,29] [deprecation] Cast(Expression,DataType) in Cast has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeInputRewrite.java:[93,42] [deprecation] NullLiteral() in NullLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeInputRewrite.java:[93,33] [deprecation] Cast(Expression,DataType) in Cast has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeInputRewrite.java:[95,39] [deprecation] LongLiteral(String) in LongLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeInputRewrite.java:[95,29] [deprecation] Limit(Expression) in Limit has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeInputRewrite.java:[175,21] [deprecation] LongLiteral(String) in LongLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeInputRewrite.java:[176,21] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[96,38] [deprecation] NullLiteral() in NullLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[96,29] [deprecation] Cast(Expression,DataType) in Cast has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[97,42] [deprecation] NullLiteral() in NullLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[97,33] [deprecation] Cast(Expression,DataType) in Cast has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[98,42] [deprecation] NullLiteral() in NullLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[98,33] [deprecation] Cast(Expression,DataType) in Cast has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[99,42] [deprecation] NullLiteral() in NullLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[99,33] [deprecation] Cast(Expression,DataType) in Cast has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[100,42] [deprecation] NullLiteral() in NullLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[100,33] [deprecation] Cast(Expression,DataType) in Cast has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[101,42] [deprecation] NullLiteral() in NullLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[101,33] [deprecation] Cast(Expression,DataType) in Cast has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[102,42] [deprecation] NullLiteral() in NullLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[102,33] [deprecation] Cast(Expression,DataType) in Cast has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[104,39] [deprecation] LongLiteral(String) in LongLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[104,29] [deprecation] Limit(Expression) in Limit has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[181,36] [deprecation] LongLiteral(String) in LongLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[183,28] [deprecation] LongLiteral(String) in LongLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[203,21] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[204,21] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[205,21] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[206,21] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[207,21] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[209,21] [deprecation] BooleanLiteral(String) in BooleanLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[269,70] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[273,122] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[273,187] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[312,59] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[313,57] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[358,42] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[364,38] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[382,43] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[395,32] [deprecation] AllColumns() in AllColumns has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[413,120] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[413,179] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[427,38] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[INFO] 100 warnings 
+[INFO] -------------------------------------------------------------
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinBufferOperatorFactory.java:[128,33] [UnnecessarilyFullyQualified] The fully qualified name 'io.trino.spiller.Spiller' is unambiguous to the compiler if imported, prefer using the name 'Spiller'.
+    (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+  Did you mean 'private Spiller spiller;'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java:[202,25] [UnnecessarilyFullyQualified] The fully qualified name 'java.util.Optional' is unambiguous to the compiler if imported, prefer using the name 'Optional'.
+    (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+  Did you mean 'public Optional<io.trino.operator.OperatorInfo> getOperatorInfo()'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java:[204,29] [UnnecessarilyFullyQualified] The fully qualified name 'java.util.Optional' is unambiguous to the compiler if imported, prefer using the name 'Optional'.
+    (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+  Did you mean 'public Optional<io.trino.operator.OperatorInfo> getOperatorInfo()'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java:[202,52] [UnnecessarilyFullyQualified] The fully qualified name 'io.trino.operator.OperatorInfo' is unambiguous to the compiler if imported, prefer using the name 'OperatorInfo'.
+    (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+  Did you mean 'public java.util.Optional<OperatorInfo> getOperatorInfo()'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java:[234,41] [UnnecessarilyFullyQualified] The fully qualified name 'io.trino.operator.OperatorInfo' is unambiguous to the compiler if imported, prefer using the name 'OperatorInfo'.
+    (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+  Did you mean 'public java.util.Optional<OperatorInfo> getOperatorInfo()'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java:[237,50] [UnnecessarilyFullyQualified] The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'.
+    (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+  Did you mean 'private final AtomicLong probeRows = new AtomicLong();'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java:[237,105] [UnnecessarilyFullyQualified] The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'.
+    (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+  Did you mean 'private final AtomicLong probeRows = new AtomicLong();'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java:[238,50] [UnnecessarilyFullyQualified] The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'.
+    (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+  Did you mean 'private final AtomicLong probeRows = new AtomicLong();'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java:[238,106] [UnnecessarilyFullyQualified] The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'.
+    (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+  Did you mean 'private final AtomicLong probeRows = new AtomicLong();'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java:[239,50] [UnnecessarilyFullyQualified] The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'.
+    (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+  Did you mean 'private final AtomicLong probeRows = new AtomicLong();'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java:[239,105] [UnnecessarilyFullyQualified] The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'.
+    (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+  Did you mean 'private final AtomicLong probeRows = new AtomicLong();'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java:[240,50] [UnnecessarilyFullyQualified] The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'.
+    (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+  Did you mean 'private final AtomicLong probeRows = new AtomicLong();'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java:[240,105] [UnnecessarilyFullyQualified] The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'.
+    (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+  Did you mean 'private final AtomicLong probeRows = new AtomicLong();'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java:[241,50] [UnnecessarilyFullyQualified] The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'.
+    (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+  Did you mean 'private final AtomicLong probeRows = new AtomicLong();'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java:[241,113] [UnnecessarilyFullyQualified] The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'.
+    (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+  Did you mean 'private final AtomicLong probeRows = new AtomicLong();'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/spiller/SortingSpiller.java:[135,33] [UnnecessarilyFullyQualified] The fully qualified name 'java.util.stream.IntStream' is unambiguous to the compiler if imported, prefer using the name 'IntStream'.
+    (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+  Did you mean 'IntStream.range(0, types.size()).boxed().collect(toImmutableList()),'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/planner/optimizations/PropertyDerivations.java:[604,68] [UnnecessarilyFullyQualified] The fully qualified name 'io.trino.sql.planner.plan.JoinType' is unambiguous to the compiler if imported, prefer using the name 'JoinType'.
+    (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+  Did you mean '&& (node.getType() == JoinType.INNER || node.getType() == JoinType.LEFT)) {'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/planner/optimizations/PropertyDerivations.java:[604,130] [UnnecessarilyFullyQualified] The fully qualified name 'io.trino.sql.planner.plan.JoinType' is unambiguous to the compiler if imported, prefer using the name 'JoinType'.
+    (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+  Did you mean '&& (node.getType() == JoinType.INNER || node.getType() == JoinType.LEFT)) {'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/DetermineJoinAlgorithm.java:[70,1] [RemoveUnusedImports] Unused imports: java.lang.Math.max
+    (see https://errorprone.info/bugpattern/RemoveUnusedImports)
+  Did you mean to remove this line?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/DetermineJoinAlgorithm.java:[244,45] [UnnecessarilyFullyQualified] The fully qualified name 'java.util.Optional' is unambiguous to the compiler if imported, prefer using the name 'Optional'.
+    (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+  Did you mean '.stream().allMatch(Optional::isEmpty);'?
+[ERROR] only showing the first 100 warnings, of 2066 total; use -Xmaxwarns if you would like to see more
+[INFO] 21 errors 
+[INFO] -------------------------------------------------------------
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Skipping trino-iceberg
+[INFO] This project has been banned from the build due to previous failures.
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Skipping trino-tests
+[INFO] This project has been banned from the build due to previous failures.
+[INFO] ------------------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for trino-main 485-SNAPSHOT:
+[INFO] 
+[INFO] trino-main ......................................... FAILURE [03:19 min]
+[INFO] trino-iceberg ...................................... SKIPPED
+[INFO] trino-tests ........................................ SKIPPED
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  03:21 min
+[INFO] Finished at: 2026-11-08T13:41:13+03:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Njord session closed
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.16.0:compile (default-compile) on project trino-main: Compilation failure: Compilation failure: 
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinBufferOperatorFactory.java:[128,33] [UnnecessarilyFullyQualified] The fully qualified name 'io.trino.spiller.Spiller' is unambiguous to the compiler if imported, prefer using the name 'Spiller'.
+[ERROR]     (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+[ERROR]   Did you mean 'private Spiller spiller;'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java:[202,25] [UnnecessarilyFullyQualified] The fully qualified name 'java.util.Optional' is unambiguous to the compiler if imported, prefer using the name 'Optional'.
+[ERROR]     (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+[ERROR]   Did you mean 'public Optional<io.trino.operator.OperatorInfo> getOperatorInfo()'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java:[204,29] [UnnecessarilyFullyQualified] The fully qualified name 'java.util.Optional' is unambiguous to the compiler if imported, prefer using the name 'Optional'.
+[ERROR]     (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+[ERROR]   Did you mean 'public Optional<io.trino.operator.OperatorInfo> getOperatorInfo()'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java:[202,52] [UnnecessarilyFullyQualified] The fully qualified name 'io.trino.operator.OperatorInfo' is unambiguous to the compiler if imported, prefer using the name 'OperatorInfo'.
+[ERROR]     (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+[ERROR]   Did you mean 'public java.util.Optional<OperatorInfo> getOperatorInfo()'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java:[234,41] [UnnecessarilyFullyQualified] The fully qualified name 'io.trino.operator.OperatorInfo' is unambiguous to the compiler if imported, prefer using the name 'OperatorInfo'.
+[ERROR]     (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+[ERROR]   Did you mean 'public java.util.Optional<OperatorInfo> getOperatorInfo()'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java:[237,50] [UnnecessarilyFullyQualified] The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'.
+[ERROR]     (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+[ERROR]   Did you mean 'private final AtomicLong probeRows = new AtomicLong();'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java:[237,105] [UnnecessarilyFullyQualified] The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'.
+[ERROR]     (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+[ERROR]   Did you mean 'private final AtomicLong probeRows = new AtomicLong();'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java:[238,50] [UnnecessarilyFullyQualified] The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'.
+[ERROR]     (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+[ERROR]   Did you mean 'private final AtomicLong probeRows = new AtomicLong();'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java:[238,106] [UnnecessarilyFullyQualified] The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'.
+[ERROR]     (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+[ERROR]   Did you mean 'private final AtomicLong probeRows = new AtomicLong();'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java:[239,50] [UnnecessarilyFullyQualified] The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'.
+[ERROR]     (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+[ERROR]   Did you mean 'private final AtomicLong probeRows = new AtomicLong();'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java:[239,105] [UnnecessarilyFullyQualified] The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'.
+[ERROR]     (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+[ERROR]   Did you mean 'private final AtomicLong probeRows = new AtomicLong();'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java:[240,50] [UnnecessarilyFullyQualified] The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'.
+[ERROR]     (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+[ERROR]   Did you mean 'private final AtomicLong probeRows = new AtomicLong();'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java:[240,105] [UnnecessarilyFullyQualified] The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'.
+[ERROR]     (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+[ERROR]   Did you mean 'private final AtomicLong probeRows = new AtomicLong();'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java:[241,50] [UnnecessarilyFullyQualified] The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'.
+[ERROR]     (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+[ERROR]   Did you mean 'private final AtomicLong probeRows = new AtomicLong();'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java:[241,113] [UnnecessarilyFullyQualified] The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'.
+[ERROR]     (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+[ERROR]   Did you mean 'private final AtomicLong probeRows = new AtomicLong();'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/spiller/SortingSpiller.java:[135,33] [UnnecessarilyFullyQualified] The fully qualified name 'java.util.stream.IntStream' is unambiguous to the compiler if imported, prefer using the name 'IntStream'.
+[ERROR]     (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+[ERROR]   Did you mean 'IntStream.range(0, types.size()).boxed().collect(toImmutableList()),'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/planner/optimizations/PropertyDerivations.java:[604,68] [UnnecessarilyFullyQualified] The fully qualified name 'io.trino.sql.planner.plan.JoinType' is unambiguous to the compiler if imported, prefer using the name 'JoinType'.
+[ERROR]     (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+[ERROR]   Did you mean '&& (node.getType() == JoinType.INNER || node.getType() == JoinType.LEFT)) {'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/planner/optimizations/PropertyDerivations.java:[604,130] [UnnecessarilyFullyQualified] The fully qualified name 'io.trino.sql.planner.plan.JoinType' is unambiguous to the compiler if imported, prefer using the name 'JoinType'.
+[ERROR]     (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+[ERROR]   Did you mean '&& (node.getType() == JoinType.INNER || node.getType() == JoinType.LEFT)) {'?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/DetermineJoinAlgorithm.java:[70,1] [RemoveUnusedImports] Unused imports: java.lang.Math.max
+[ERROR]     (see https://errorprone.info/bugpattern/RemoveUnusedImports)
+[ERROR]   Did you mean to remove this line?
+[ERROR] /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/DetermineJoinAlgorithm.java:[244,45] [UnnecessarilyFullyQualified] The fully qualified name 'java.util.Optional' is unambiguous to the compiler if imported, prefer using the name 'Optional'.
+[ERROR]     (see https://errorprone.info/bugpattern/UnnecessarilyFullyQualified)
+[ERROR]   Did you mean '.stream().allMatch(Optional::isEmpty);'?
+[ERROR] only showing the first 100 warnings, of 2066 total; use -Xmaxwarns if you would like to see more
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

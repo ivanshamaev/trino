@@ -1,0 +1,167 @@
+{
+  "all_diagnostic_paths_changed_by_smj_branch": true,
+  "core_test_compile_reached": false,
+  "iceberg_and_trino_tests_in_first_run": "SKIPPED",
+  "compiler_reported_errors_in_initial_core_run": 21,
+  "unique_source_diagnostics_in_initial_core_run": [
+    {
+      "path": "core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinBufferOperatorFactory.java",
+      "line": 128,
+      "column": 33,
+      "check": "UnnecessarilyFullyQualified",
+      "message": "The fully qualified name 'io.trino.spiller.Spiller' is unambiguous to the compiler if imported, prefer using the name 'Spiller'."
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java",
+      "line": 202,
+      "column": 25,
+      "check": "UnnecessarilyFullyQualified",
+      "message": "The fully qualified name 'java.util.Optional' is unambiguous to the compiler if imported, prefer using the name 'Optional'."
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java",
+      "line": 204,
+      "column": 29,
+      "check": "UnnecessarilyFullyQualified",
+      "message": "The fully qualified name 'java.util.Optional' is unambiguous to the compiler if imported, prefer using the name 'Optional'."
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java",
+      "line": 202,
+      "column": 52,
+      "check": "UnnecessarilyFullyQualified",
+      "message": "The fully qualified name 'io.trino.operator.OperatorInfo' is unambiguous to the compiler if imported, prefer using the name 'OperatorInfo'."
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java",
+      "line": 234,
+      "column": 41,
+      "check": "UnnecessarilyFullyQualified",
+      "message": "The fully qualified name 'io.trino.operator.OperatorInfo' is unambiguous to the compiler if imported, prefer using the name 'OperatorInfo'."
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java",
+      "line": 237,
+      "column": 50,
+      "check": "UnnecessarilyFullyQualified",
+      "message": "The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'."
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java",
+      "line": 237,
+      "column": 105,
+      "check": "UnnecessarilyFullyQualified",
+      "message": "The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'."
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java",
+      "line": 238,
+      "column": 50,
+      "check": "UnnecessarilyFullyQualified",
+      "message": "The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'."
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java",
+      "line": 238,
+      "column": 106,
+      "check": "UnnecessarilyFullyQualified",
+      "message": "The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'."
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java",
+      "line": 239,
+      "column": 50,
+      "check": "UnnecessarilyFullyQualified",
+      "message": "The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'."
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java",
+      "line": 239,
+      "column": 105,
+      "check": "UnnecessarilyFullyQualified",
+      "message": "The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'."
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java",
+      "line": 240,
+      "column": 50,
+      "check": "UnnecessarilyFullyQualified",
+      "message": "The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'."
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java",
+      "line": 240,
+      "column": 105,
+      "check": "UnnecessarilyFullyQualified",
+      "message": "The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'."
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java",
+      "line": 241,
+      "column": 50,
+      "check": "UnnecessarilyFullyQualified",
+      "message": "The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'."
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java",
+      "line": 241,
+      "column": 113,
+      "check": "UnnecessarilyFullyQualified",
+      "message": "The fully qualified name 'java.util.concurrent.atomic.AtomicLong' is unambiguous to the compiler if imported, prefer using the name 'AtomicLong'."
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/spiller/SortingSpiller.java",
+      "line": 135,
+      "column": 33,
+      "check": "UnnecessarilyFullyQualified",
+      "message": "The fully qualified name 'java.util.stream.IntStream' is unambiguous to the compiler if imported, prefer using the name 'IntStream'."
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/sql/planner/optimizations/PropertyDerivations.java",
+      "line": 604,
+      "column": 68,
+      "check": "UnnecessarilyFullyQualified",
+      "message": "The fully qualified name 'io.trino.sql.planner.plan.JoinType' is unambiguous to the compiler if imported, prefer using the name 'JoinType'."
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/sql/planner/optimizations/PropertyDerivations.java",
+      "line": 604,
+      "column": 130,
+      "check": "UnnecessarilyFullyQualified",
+      "message": "The fully qualified name 'io.trino.sql.planner.plan.JoinType' is unambiguous to the compiler if imported, prefer using the name 'JoinType'."
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/DetermineJoinAlgorithm.java",
+      "line": 70,
+      "column": 1,
+      "check": "RemoveUnusedImports",
+      "message": "Unused imports: java.lang.Math.max"
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/DetermineJoinAlgorithm.java",
+      "line": 244,
+      "column": 45,
+      "check": "UnnecessarilyFullyQualified",
+      "message": "The fully qualified name 'java.util.Optional' is unambiguous to the compiler if imported, prefer using the name 'Optional'."
+    }
+  ],
+  "independent_iceberg_run": {
+    "main_compile": "SUCCESS",
+    "test_compile": "FAILURE",
+    "unique_source_diagnostics": [
+      {
+        "path": "plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSortedWriting.java",
+        "line": 177,
+        "column": 48,
+        "check": "UnnecessarilyFullyQualified",
+        "message": "The fully qualified name 'io.trino.testing.QueryFailedException' is unambiguous to the compiler if imported, prefer using the name 'QueryFailedException'."
+      }
+    ]
+  },
+  "independent_trino_tests_run": {
+    "main_compile": "SUCCESS",
+    "test_compile": "SUCCESS",
+    "warnings_present": true
+  },
+  "total_unique_source_error_diagnostics": 21
+}

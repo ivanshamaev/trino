@@ -1,0 +1,50 @@
+[
+  {
+    "phase": "review-stage-3-tests",
+    "command": [
+      "./mvnw",
+      "initialize",
+      "surefire:test",
+      "-Dair.check.skip-all=true",
+      "-pl",
+      "core/trino-main",
+      "-Dtest=TestAppendingSpiller,TestCachingStatsProvider,TestColocatedJoin,TestCostCalculator,TestDetermineJoinAlgorithm,TestDiskBackedMatchBitmap,TestDynamicFilterService,TestEffectivePredicateExtractor,TestEliminateCrossJoins,TestFileSingleStreamSpiller,TestFileSingleStreamSpillerFactory,TestIncrementalRefreshVisitor,TestJoinNodeAlgorithm,TestJoinStatsRule,TestMergeJoin,TestMergeJoinCostModel,TestMergeJoinExpressionRewrite,TestMergeJoinOperator,TestMergeJoinOperatorInfo,TestMergeJoinRepeatedKeys,TestMultiSourcePartitionedScheduler,TestOptimizerConfig,TestOrderByOperator,TestPagesIndex,TestSchedulingUtils,TestSortingSpiller,TestSourcePartitionedScheduler,TestTopologicalOrderSubPlanVisitor"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T13:01:54.116685+00:00",
+    "elapsed_seconds": 38.114,
+    "exit_code": 0,
+    "log": "implementation-evidence/review-stage-3-tests.log"
+  },
+  {
+    "phase": "checkout-stage-4",
+    "command": [
+      "git",
+      "checkout",
+      "--detach",
+      "b94d66d5b1159dd885a647bfc49b62ea6e10226d"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T13:02:32.231400+00:00",
+    "elapsed_seconds": 0.067,
+    "exit_code": 0,
+    "log": "implementation-evidence/review-stage-4-checkout.log"
+  },
+  {
+    "phase": "review-stage-4-build",
+    "command": [
+      "./mvnw",
+      "package",
+      "-DskipTests",
+      "-Dair.check.skip-all=true",
+      "-Dmaven.javadoc.skip=true",
+      "-pl",
+      "plugin/trino-iceberg,testing/trino-tests"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T13:02:32.299118+00:00",
+    "elapsed_seconds": 32.469,
+    "exit_code": 1,
+    "log": "implementation-evidence/review-stage-4-build.log"
+  }
+]

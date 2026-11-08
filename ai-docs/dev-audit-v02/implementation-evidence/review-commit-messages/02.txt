@@ -1,0 +1,5 @@
+Add bounded spill runs for explicit merge sorts
+
+Bound retained sort runs and final merge fan-in when explicitly enabled.
+Preserve the existing final merge for ordinary ORDER BY operators.
+

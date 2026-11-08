@@ -1,0 +1,179 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] trino-iceberg                                             [trino-plugin]
+[INFO] trino-tests                                                        [jar]
+[INFO] 
+[INFO] -----------------------< io.trino:trino-iceberg >-----------------------
+[INFO] Building trino-iceberg 485-SNAPSHOT                                [1/2]
+[INFO]   from pom.xml
+[INFO] ----------------------------[ trino-plugin ]----------------------------
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-iceberg ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-iceberg ---
+[INFO] 
+[INFO] --- antlr4:4.13.2:antlr4 (default) @ trino-iceberg ---
+[INFO] No ANTLR 4 grammars to compile in /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/antlr4
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ trino-iceberg ---
+[INFO] skip non existing resourceDirectory /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.16.0:compile (default-compile) @ trino-iceberg ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- trino:26:generate-service-descriptor (default-generate-service-descriptor) @ trino-iceberg ---
+[INFO] Wrote io.trino.plugin.iceberg.IcebergPlugin to /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/target/trino-iceberg-485-SNAPSHOT-services.jar
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ trino-iceberg ---
+[INFO] Copying 98 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ trino-iceberg ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 218 source files with javac [debug deprecation parameters release 25] to target/test-classes
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/BaseIcebergConnectorTest.java:[1956,21] nonTrinoExceptionFailure() in io.trino.sql.query.QueryAssertions.QueryAssert has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/IcebergTestUtils.java:[349,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/BaseIcebergSystemTables.java:[835,48] non-varargs call of varargs method with inexact argument type for last parameter;
+  cast to java.lang.Object for a varargs call
+  cast to java.lang.Object[] for a non-varargs call and to suppress this warning
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[56,17] setUseFileSizeFromMetadata(boolean) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[74,17] setHideMaterializedViewStorageTable(boolean) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[75,17] setMaterializedViewsStorageSchema(java.lang.String) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[158,17] setUseFileSizeFromMetadata(boolean) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[176,17] setHideMaterializedViewStorageTable(boolean) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[177,17] setMaterializedViewsStorageSchema(java.lang.String) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[209,25] setHideMaterializedViewStorageTable(boolean) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[210,25] setMaterializedViewsStorageSchema(java.lang.String) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergMaterializedViewSummary.java:[239,35] removedDataFiles(org.apache.iceberg.io.FileIO) in org.apache.iceberg.Snapshot has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergMaterializedViewSummary.java:[233,35] addedDataFiles(org.apache.iceberg.io.FileIO) in org.apache.iceberg.Snapshot has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergMergeAppend.java:[68,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergOrcMetricsCollection.java:[108,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergPageSourceProvider.java:[280,34] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergRegisterTableProcedure.java:[103,35] TestingIcebergPlugin(java.nio.file.Path,java.util.function.Supplier<java.util.Optional<com.google.inject.Module>>) in io.trino.plugin.iceberg.TestingIcebergPlugin has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSplitSource.java:[173,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSplitSource.java:[397,31] rewriteFiles(java.util.Set<org.apache.iceberg.DataFile>,java.util.Set<org.apache.iceberg.DataFile>) in org.apache.iceberg.RewriteFiles has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergStatistics.java:[686,17] nonTrinoExceptionFailure() in io.trino.sql.query.QueryAssertions.QueryAssert has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergStatistics.java:[689,17] nonTrinoExceptionFailure() in io.trino.sql.query.QueryAssertions.QueryAssert has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/file/TestIcebergFileMetastoreCreateTableFailure.java:[156,35] TestingIcebergPlugin(java.nio.file.Path,java.util.function.Supplier<java.util.Optional<com.google.inject.Module>>) in io.trino.plugin.iceberg.TestingIcebergPlugin has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/file/TestTrinoHiveCatalogWithFileMetastore.java:[122,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestIcebergGlueAccessDeniedException.java:[68,35] TestingIcebergPlugin(java.nio.file.Path,java.util.function.Supplier<java.util.Optional<com.google.inject.Module>>) in io.trino.plugin.iceberg.TestingIcebergPlugin has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestIcebergGlueTableOperationsCreateTableFailure.java:[128,35] TestingIcebergPlugin(java.nio.file.Path,java.util.function.Supplier<java.util.Optional<com.google.inject.Module>>) in io.trino.plugin.iceberg.TestingIcebergPlugin has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestIcebergGlueTableOperationsInsertFailure.java:[99,35] TestingIcebergPlugin(java.nio.file.Path,java.util.function.Supplier<java.util.Optional<com.google.inject.Module>>) in io.trino.plugin.iceberg.TestingIcebergPlugin has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestTrinoGlueCatalog.java:[131,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestTrinoGlueCatalog.java:[279,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[INFO] 
+[INFO] --- duplicate-finder:2.0.1:check (default) @ trino-iceberg ---
+[INFO] Skipping duplicate-finder execution!
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer) @ trino-iceberg ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer-production-code) @ trino-iceberg ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-only (default) @ trino-iceberg ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-duplicate (default) @ trino-iceberg ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-exclusions (default) @ trino-iceberg ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-test) @ trino-iceberg ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- trino:26:check-spi-dependencies (default-check-spi-dependencies) @ trino-iceberg ---
+[INFO] 
+[INFO] --- jar:3.5.1:jar (default-jar) @ trino-iceberg ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/target/trino-iceberg-485-SNAPSHOT.jar
+[INFO] 
+[INFO] --- trino:26:package-trino-plugin (default-package-trino-plugin) @ trino-iceberg ---
+[INFO] Created Trino plugin package: trino-iceberg-485-SNAPSHOT.zip
+[INFO] 
+[INFO] --- jar:3.5.1:test-jar (attach-tests) @ trino-iceberg ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/target/trino-iceberg-485-SNAPSHOT-tests.jar
+[INFO] 
+[INFO] --- jar:3.5.1:test-jar (default) @ trino-iceberg ---
+[WARNING] artifact io.trino:trino-iceberg:test-jar:tests:485-SNAPSHOT already attached, replace previous instance
+[INFO] 
+[INFO] --- source:3.4.0:jar-no-fork (attach-sources) @ trino-iceberg ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/target/trino-iceberg-485-SNAPSHOT-sources.jar
+[INFO] 
+[INFO] --- source:3.4.0:test-jar-no-fork (attach-sources) @ trino-iceberg ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/target/trino-iceberg-485-SNAPSHOT-test-sources.jar
+[INFO] 
+[INFO] ------------------------< io.trino:trino-tests >------------------------
+[INFO] Building trino-tests 485-SNAPSHOT                                  [2/2]
+[INFO]   from /tmp/trino-smj-upstream-v02-check/testing/trino-tests/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-tests ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-tests ---
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ trino-tests ---
+[INFO] skip non existing resourceDirectory /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.16.0:compile (default-compile) @ trino-tests ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 1 source file with javac [debug deprecation parameters release 25] to target/classes
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ trino-tests ---
+[INFO] Copying 269 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ trino-tests ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 136 source files with javac [debug deprecation parameters release 25] to target/test-classes
+[WARNING] /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/test/java/io/trino/execution/AbstractTestCoordinatorDynamicFiltering.java:[592,44] createPageSource(io.trino.spi.connector.ConnectorTransactionHandle,io.trino.spi.connector.ConnectorSession,io.trino.spi.connector.ConnectorSplit,io.trino.spi.connector.ConnectorTableHandle,java.util.Optional<io.trino.spi.connector.ConnectorTableCredentials>,java.util.List<io.trino.spi.connector.ColumnHandle>,io.trino.spi.connector.DynamicFilter) in io.trino.spi.connector.ConnectorPageSourceProvider has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/test/java/io/trino/execution/TestBeginQuery.java:[201,44] createPageSource(io.trino.spi.connector.ConnectorTransactionHandle,io.trino.spi.connector.ConnectorSession,io.trino.spi.connector.ConnectorSplit,io.trino.spi.connector.ConnectorTableHandle,java.util.Optional<io.trino.spi.connector.ConnectorTableCredentials>,java.util.List<io.trino.spi.connector.ColumnHandle>,io.trino.spi.connector.DynamicFilter) in io.trino.spi.connector.ConnectorPageSourceProvider has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/test/java/io/trino/execution/TestErrorThrowableInQuery.java:[118,17] nonTrinoExceptionFailure() in io.trino.sql.query.QueryAssertions.QueryAssert has been deprecated
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer) @ trino-tests ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer-production-code) @ trino-tests ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-only (default) @ trino-tests ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-duplicate (default) @ trino-tests ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-exclusions (default) @ trino-tests ---
+[INFO] 
+[INFO] --- duplicate-finder:2.0.1:check (default) @ trino-tests ---
+[INFO] Skipping duplicate-finder execution!
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-test) @ trino-tests ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.5.1:jar (default-jar) @ trino-tests ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/testing/trino-tests/target/trino-tests-485-SNAPSHOT.jar
+[INFO] 
+[INFO] --- jar:3.5.1:test-jar (attach-tests) @ trino-tests ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/testing/trino-tests/target/trino-tests-485-SNAPSHOT-tests.jar
+[INFO] 
+[INFO] --- source:3.4.0:jar-no-fork (attach-sources) @ trino-tests ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/testing/trino-tests/target/trino-tests-485-SNAPSHOT-sources.jar
+[INFO] 
+[INFO] --- source:3.4.0:test-jar-no-fork (attach-sources) @ trino-tests ---
+[INFO] Building jar: /tmp/trino-smj-upstream-v02-check/testing/trino-tests/target/trino-tests-485-SNAPSHOT-test-sources.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] Average project wall time: 16.00s
+[INFO] Total concurrency: 100%
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for trino-iceberg 485-SNAPSHOT:
+[INFO] 
+[INFO] trino-iceberg ...................................... SUCCESS [ 25.443 s]
+[INFO] trino-tests ........................................ SUCCESS [  6.967 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  34.612 s
+[INFO] Finished at: 2026-11-08T16:06:31+03:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Njord session closed

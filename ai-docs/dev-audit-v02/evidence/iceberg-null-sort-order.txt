@@ -1,0 +1,58 @@
+-------------------------------------------------------------------------------
+Test set: io.trino.plugin.iceberg.TestIcebergSortedWriting
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 32.14 s <<< FAILURE! -- in io.trino.plugin.iceberg.TestIcebergSortedWriting
+io.trino.plugin.iceberg.TestIcebergSortedWriting.testAuditV02NullSortOrderId -- Time elapsed: 0.382 s <<< FAILURE!
+java.lang.AssertionError: Execution of 'actual' query 20261108_101133_00027_5r9my failed: SELECT k FROM audit_v02_null_sortzg86uehmtn
+	at io.trino.testing.QueryAssertions.assertDistributedQuery(QueryAssertions.java:298)
+	at io.trino.testing.QueryAssertions.assertQuery(QueryAssertions.java:186)
+	at io.trino.testing.QueryAssertions.assertQuery(QueryAssertions.java:159)
+	at io.trino.testing.AbstractTestQueryFramework.assertQuery(AbstractTestQueryFramework.java:361)
+	at io.trino.plugin.iceberg.TestIcebergSortedWriting.testAuditV02NullSortOrderId(TestIcebergSortedWriting.java:319)
+Caused by: io.trino.testing.QueryFailedException: Cannot invoke "java.lang.Integer.intValue()" because the return value of "org.apache.iceberg.DataFile.sortOrderId()" is null
+	at io.trino.testing.AbstractTestingTrinoClient.execute(AbstractTestingTrinoClient.java:133)
+	at io.trino.testing.DistributedQueryRunner.executeInternal(DistributedQueryRunner.java:597)
+	at io.trino.testing.DistributedQueryRunner.executeWithPlan(DistributedQueryRunner.java:586)
+	at io.trino.testing.QueryAssertions.assertDistributedQuery(QueryAssertions.java:289)
+	... 4 more
+	Suppressed: java.lang.Exception: SQL: SELECT k FROM audit_v02_null_sortzg86uehmtn
+		at io.trino.testing.DistributedQueryRunner.executeInternal(DistributedQueryRunner.java:604)
+		... 6 more
+Caused by: java.lang.NullPointerException: Cannot invoke "java.lang.Integer.intValue()" because the return value of "org.apache.iceberg.DataFile.sortOrderId()" is null
+	at io.trino.plugin.iceberg.IcebergMetadata.filesHaveSortOrder(IcebergMetadata.java:1823)
+	at io.trino.plugin.iceberg.IcebergMetadata.lambda$getSortingProperties$0(IcebergMetadata.java:1794)
+	at java.base/java.util.concurrent.ConcurrentHashMap.computeIfAbsent(ConcurrentHashMap.java:1724)
+	at io.trino.plugin.iceberg.IcebergMetadata.getSortingProperties(IcebergMetadata.java:1794)
+	at io.trino.plugin.iceberg.IcebergMetadata.getTableProperties(IcebergMetadata.java:1089)
+	at io.trino.plugin.base.classloader.ClassLoaderSafeConnectorMetadata.getTableProperties(ClassLoaderSafeConnectorMetadata.java:1095)
+	at io.trino.tracing.TracingConnectorMetadata.getTableProperties(TracingConnectorMetadata.java:1282)
+	at io.trino.metadata.MetadataManager.getTableProperties(MetadataManager.java:464)
+	at io.trino.tracing.TracingMetadata.getTableProperties(TracingMetadata.java:278)
+	at io.trino.sql.planner.iterative.rule.DetermineTableScanNodePartitioning.setUseConnectorNodePartitioning(DetermineTableScanNodePartitioning.java:81)
+	at io.trino.sql.planner.iterative.rule.DetermineTableScanNodePartitioning.apply(DetermineTableScanNodePartitioning.java:65)
+	at io.trino.sql.planner.iterative.rule.DetermineTableScanNodePartitioning.apply(DetermineTableScanNodePartitioning.java:39)
+	at io.trino.sql.planner.iterative.IterativeOptimizer.transform(IterativeOptimizer.java:224)
+	at io.trino.sql.planner.iterative.IterativeOptimizer.exploreNode(IterativeOptimizer.java:190)
+	at io.trino.sql.planner.iterative.IterativeOptimizer.exploreGroup(IterativeOptimizer.java:155)
+	at io.trino.sql.planner.iterative.IterativeOptimizer.exploreChildren(IterativeOptimizer.java:272)
+	at io.trino.sql.planner.iterative.IterativeOptimizer.exploreGroup(IterativeOptimizer.java:157)
+	at io.trino.sql.planner.iterative.IterativeOptimizer.optimizeAndMarkPlanChanges(IterativeOptimizer.java:130)
+	at io.trino.sql.planner.optimizations.AdaptivePlanOptimizer.optimize(AdaptivePlanOptimizer.java:33)
+	at io.trino.sql.planner.LogicalPlanner.runOptimizer(LogicalPlanner.java:317)
+	at io.trino.sql.planner.LogicalPlanner.plan(LogicalPlanner.java:281)
+	at io.trino.sql.planner.LogicalPlanner.plan(LogicalPlanner.java:253)
+	at io.trino.sql.planner.LogicalPlanner.plan(LogicalPlanner.java:248)
+	at io.trino.execution.SqlQueryExecution.doPlanQuery(SqlQueryExecution.java:503)
+	at io.trino.execution.SqlQueryExecution.planQuery(SqlQueryExecution.java:482)
+	at io.trino.execution.SqlQueryExecution.start(SqlQueryExecution.java:420)
+	at io.trino.execution.QueryManager.createQuery(QueryManager.java:333)
+	at io.trino.dispatcher.LocalDispatchQuery.startExecution(LocalDispatchQuery.java:151)
+	at io.trino.dispatcher.LocalDispatchQuery.lambda$waitForMinimumWorkers$1(LocalDispatchQuery.java:135)
+	at io.airlift.concurrent.MoreFutures.lambda$addSuccessCallback$0(MoreFutures.java:570)
+	at io.airlift.concurrent.MoreFutures$3.onSuccess(MoreFutures.java:545)
+	at com.google.common.util.concurrent.Futures$CallbackListener.run(Futures.java:1128)
+	at io.trino.$gen.Trino_testversion___Runnable.run(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base/java.lang.Thread.run(Thread.java:1474)
+

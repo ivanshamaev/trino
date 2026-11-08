@@ -27,7 +27,7 @@ import static io.trino.testing.assertions.Assert.assertEqualsIgnoreOrder;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * End-to-end tests for the forced merge join: the planner marks eligible INNER/LEFT
+ * End-to-end tests for the forced merge join: the planner marks eligible INNER/LEFT/RIGHT/FULL
  * equi-joins with {@code prefer_merge_join=FORCE}, adds canonical sorts on both
  * sides, and the local execution planner builds the merge join pipelines. Results
  * must be identical to the standard (hash) evaluation of the same query.

@@ -1,0 +1,6 @@
+START review-stage-3-tests
+END review-stage-3-tests exit=0
+START checkout-stage-4
+END checkout-stage-4 exit=0
+START review-stage-4-build
+END review-stage-4-build exit=1

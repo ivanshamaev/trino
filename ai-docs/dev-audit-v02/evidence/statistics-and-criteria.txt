@@ -1,0 +1,76 @@
+-------------------------------------------------------------------------------
+Test set: io.trino.sql.query.TestMergeJoinAuditV02
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 8.037 s <<< FAILURE! -- in io.trino.sql.query.TestMergeJoinAuditV02
+io.trino.sql.query.TestMergeJoinAuditV02.testStatisticsRoundTrip -- Time elapsed: 0.076 s <<< ERROR!
+java.lang.IllegalArgumentException: Invalid JSON string for [simple type, class io.trino.operator.OperatorInfo]
+	at io.airlift.json.JsonCodec.mapException(JsonCodec.java:291)
+	at io.airlift.json.JsonCodec.fromJson(JsonCodec.java:151)
+	at io.trino.sql.query.TestMergeJoinAuditV02.testStatisticsRoundTrip(TestMergeJoinAuditV02.java:39)
+Caused by: com.fasterxml.jackson.databind.exc.InvalidTypeIdException: Could not resolve type id 'MergeJoinOperatorFactory$MergeJoinStatistics' as a subtype of `io.trino.operator.OperatorInfo`: known type ids = [directExchangeClientStatus, joinOperatorInfo, localExchangeBuffer, outputSpooling, partitionedOutput, tableFinish, tableWriter, windowInfo]
+ at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 2, column: 13]
+	at com.fasterxml.jackson.databind.exc.InvalidTypeIdException.from(InvalidTypeIdException.java:43)
+	at com.fasterxml.jackson.databind.DeserializationContext.invalidTypeIdException(DeserializationContext.java:2088)
+	at com.fasterxml.jackson.databind.DeserializationContext.handleUnknownTypeId(DeserializationContext.java:1637)
+	at com.fasterxml.jackson.databind.jsontype.impl.TypeDeserializerBase._handleUnknownTypeId(TypeDeserializerBase.java:341)
+	at com.fasterxml.jackson.databind.jsontype.impl.TypeDeserializerBase._findDeserializer(TypeDeserializerBase.java:180)
+	at com.fasterxml.jackson.databind.jsontype.impl.AsPropertyTypeDeserializer._deserializeTypedForId(AsPropertyTypeDeserializer.java:150)
+	at com.fasterxml.jackson.databind.jsontype.impl.AsPropertyTypeDeserializer.deserializeTypedFromObject(AsPropertyTypeDeserializer.java:135)
+	at com.fasterxml.jackson.databind.deser.AbstractDeserializer.deserializeWithType(AbstractDeserializer.java:262)
+	at com.fasterxml.jackson.databind.deser.impl.TypeWrappedDeserializer.deserialize(TypeWrappedDeserializer.java:74)
+	at com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:342)
+	at com.fasterxml.jackson.databind.ObjectReader._bindAndClose(ObjectReader.java:2148)
+	at com.fasterxml.jackson.databind.ObjectReader.readValue(ObjectReader.java:1569)
+	at io.airlift.json.JsonCodec.fromJson(JsonCodec.java:148)
+	... 1 more
+
+io.trino.sql.query.TestMergeJoinAuditV02.testRepeatedJoinSymbol -- Time elapsed: 7.959 s <<< ERROR!
+io.trino.testing.QueryFailedException: Multiple entries with same key: field::[integer]=ASC NULLS LAST and field::[integer]=ASC NULLS LAST
+	at io.trino.testing.TestingDirectTrinoClient.toMaterializedRows(TestingDirectTrinoClient.java:80)
+	at io.trino.testing.TestingDirectTrinoClient.lambda$execute$0(TestingDirectTrinoClient.java:68)
+	at io.trino.testing.StandaloneQueryRunner.execute(StandaloneQueryRunner.java:119)
+	at io.trino.sql.query.QueryAssertions$QueryAssert.lambda$new$1(QueryAssertions.java:298)
+	at com.google.common.base.Suppliers$NonSerializableMemoizingSupplier.get(Suppliers.java:196)
+	at io.trino.sql.query.QueryAssertions$QueryAssert.result(QueryAssertions.java:423)
+	at io.trino.sql.query.QueryAssertions$QueryAssert.matches(QueryAssertions.java:344)
+	at io.trino.sql.query.QueryAssertions$QueryAssert.matches(QueryAssertions.java:338)
+	at io.trino.sql.query.TestMergeJoinAuditV02.testRepeatedJoinSymbol(TestMergeJoinAuditV02.java:55)
+Caused by: java.lang.IllegalArgumentException: Multiple entries with same key: field::[integer]=ASC NULLS LAST and field::[integer]=ASC NULLS LAST
+	at com.google.common.collect.ImmutableMap.conflictException(ImmutableMap.java:384)
+	at com.google.common.collect.ImmutableMap.checkNoConflict(ImmutableMap.java:378)
+	at com.google.common.collect.RegularImmutableMap.checkNoConflictInKeyBucket(RegularImmutableMap.java:245)
+	at com.google.common.collect.RegularImmutableMap.fromEntryArrayCheckingBucketOverflow(RegularImmutableMap.java:134)
+	at com.google.common.collect.RegularImmutableMap.fromEntryArray(RegularImmutableMap.java:97)
+	at com.google.common.collect.ImmutableMap$Builder.build(ImmutableMap.java:581)
+	at com.google.common.collect.ImmutableMap$Builder.buildOrThrow(ImmutableMap.java:609)
+	at java.base/java.util.stream.ReferencePipeline.collect(ReferencePipeline.java:727)
+	at io.trino.sql.planner.optimizations.AddExchanges$Rewriter.withCanonicalSort(AddExchanges.java:1041)
+	at io.trino.sql.planner.optimizations.AddExchanges$Rewriter.planPartitionedJoin(AddExchanges.java:1031)
+	at io.trino.sql.planner.optimizations.AddExchanges$Rewriter.planPartitionedJoin(AddExchanges.java:976)
+	at io.trino.sql.planner.optimizations.AddExchanges$Rewriter.visitJoin(AddExchanges.java:971)
+	at io.trino.sql.planner.optimizations.AddExchanges$Rewriter.visitJoin(AddExchanges.java:176)
+	at io.trino.sql.planner.plan.JoinNode.accept(JoinNode.java:357)
+	at io.trino.sql.planner.optimizations.AddExchanges$Rewriter.planChild(AddExchanges.java:1557)
+	at io.trino.sql.planner.optimizations.AddExchanges$Rewriter.visitOutput(AddExchanges.java:215)
+	at io.trino.sql.planner.optimizations.AddExchanges$Rewriter.visitOutput(AddExchanges.java:176)
+	at io.trino.sql.planner.plan.OutputNode.accept(OutputNode.java:83)
+	at io.trino.sql.planner.optimizations.AddExchanges.optimize(AddExchanges.java:170)
+	at io.trino.sql.planner.optimizations.StatsRecordingPlanOptimizer.optimize(StatsRecordingPlanOptimizer.java:41)
+	at io.trino.sql.planner.LogicalPlanner.runOptimizer(LogicalPlanner.java:317)
+	at io.trino.sql.planner.LogicalPlanner.plan(LogicalPlanner.java:281)
+	at io.trino.sql.planner.LogicalPlanner.plan(LogicalPlanner.java:253)
+	at io.trino.sql.planner.LogicalPlanner.plan(LogicalPlanner.java:248)
+	at io.trino.execution.SqlQueryExecution.doPlanQuery(SqlQueryExecution.java:503)
+	at io.trino.execution.SqlQueryExecution.planQuery(SqlQueryExecution.java:482)
+	at io.trino.execution.SqlQueryExecution.start(SqlQueryExecution.java:420)
+	at io.trino.execution.QueryManager.createQuery(QueryManager.java:333)
+	at io.trino.dispatcher.LocalDispatchQuery.startExecution(LocalDispatchQuery.java:151)
+	at io.trino.dispatcher.LocalDispatchQuery.lambda$waitForMinimumWorkers$1(LocalDispatchQuery.java:135)
+	at io.airlift.concurrent.MoreFutures.lambda$addSuccessCallback$0(MoreFutures.java:570)
+	at io.airlift.concurrent.MoreFutures$3.onSuccess(MoreFutures.java:545)
+	at com.google.common.util.concurrent.Futures$CallbackListener.run(Futures.java:1128)
+	at io.trino.$gen.Trino_testversion___Runnable.run(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base/java.lang.Thread.run(Thread.java:1474)
+

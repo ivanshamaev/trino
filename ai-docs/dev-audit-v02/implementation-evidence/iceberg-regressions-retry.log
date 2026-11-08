@@ -1,0 +1,144 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] 
+[INFO] -----------------------< io.trino:trino-iceberg >-----------------------
+[INFO] Building trino-iceberg 485-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] ----------------------------[ trino-plugin ]----------------------------
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-iceberg ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-iceberg ---
+[INFO] 
+[INFO] --- antlr4:4.13.2:antlr4 (default) @ trino-iceberg ---
+[INFO] No ANTLR 4 grammars to compile in /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/antlr4
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ trino-iceberg ---
+[INFO] skip non existing resourceDirectory /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.16.0:compile (default-compile) @ trino-iceberg ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- trino:26:generate-service-descriptor (default-generate-service-descriptor) @ trino-iceberg ---
+[INFO] Wrote io.trino.plugin.iceberg.IcebergPlugin to /home/ivan/opencode/trino/plugin/trino-iceberg/target/trino-iceberg-485-SNAPSHOT-services.jar
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ trino-iceberg ---
+[INFO] Copying 98 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ trino-iceberg ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 217 source files with javac [debug deprecation parameters release 25] to target/test-classes
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/BaseIcebergConnectorTest.java:[1956,21] nonTrinoExceptionFailure() in io.trino.sql.query.QueryAssertions.QueryAssert has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/IcebergTestUtils.java:[349,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/BaseIcebergSystemTables.java:[835,48] non-varargs call of varargs method with inexact argument type for last parameter;
+  cast to java.lang.Object for a varargs call
+  cast to java.lang.Object[] for a non-varargs call and to suppress this warning
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[56,17] setUseFileSizeFromMetadata(boolean) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[74,17] setHideMaterializedViewStorageTable(boolean) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[75,17] setMaterializedViewsStorageSchema(java.lang.String) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[158,17] setUseFileSizeFromMetadata(boolean) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[176,17] setHideMaterializedViewStorageTable(boolean) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[177,17] setMaterializedViewsStorageSchema(java.lang.String) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[209,25] setHideMaterializedViewStorageTable(boolean) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[210,25] setMaterializedViewsStorageSchema(java.lang.String) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergMaterializedViewSummary.java:[239,35] removedDataFiles(org.apache.iceberg.io.FileIO) in org.apache.iceberg.Snapshot has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergMaterializedViewSummary.java:[233,35] addedDataFiles(org.apache.iceberg.io.FileIO) in org.apache.iceberg.Snapshot has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergMergeAppend.java:[68,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergOrcMetricsCollection.java:[108,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergPageSourceProvider.java:[280,34] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergRegisterTableProcedure.java:[103,35] TestingIcebergPlugin(java.nio.file.Path,java.util.function.Supplier<java.util.Optional<com.google.inject.Module>>) in io.trino.plugin.iceberg.TestingIcebergPlugin has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSplitSource.java:[170,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSplitSource.java:[394,31] rewriteFiles(java.util.Set<org.apache.iceberg.DataFile>,java.util.Set<org.apache.iceberg.DataFile>) in org.apache.iceberg.RewriteFiles has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergStatistics.java:[686,17] nonTrinoExceptionFailure() in io.trino.sql.query.QueryAssertions.QueryAssert has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergStatistics.java:[689,17] nonTrinoExceptionFailure() in io.trino.sql.query.QueryAssertions.QueryAssert has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/file/TestIcebergFileMetastoreCreateTableFailure.java:[156,35] TestingIcebergPlugin(java.nio.file.Path,java.util.function.Supplier<java.util.Optional<com.google.inject.Module>>) in io.trino.plugin.iceberg.TestingIcebergPlugin has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/file/TestTrinoHiveCatalogWithFileMetastore.java:[122,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestIcebergGlueAccessDeniedException.java:[68,35] TestingIcebergPlugin(java.nio.file.Path,java.util.function.Supplier<java.util.Optional<com.google.inject.Module>>) in io.trino.plugin.iceberg.TestingIcebergPlugin has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestIcebergGlueTableOperationsCreateTableFailure.java:[128,35] TestingIcebergPlugin(java.nio.file.Path,java.util.function.Supplier<java.util.Optional<com.google.inject.Module>>) in io.trino.plugin.iceberg.TestingIcebergPlugin has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestIcebergGlueTableOperationsInsertFailure.java:[99,35] TestingIcebergPlugin(java.nio.file.Path,java.util.function.Supplier<java.util.Optional<com.google.inject.Module>>) in io.trino.plugin.iceberg.TestingIcebergPlugin has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestTrinoGlueCatalog.java:[131,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestTrinoGlueCatalog.java:[279,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[INFO] 
+[INFO] --- duplicate-finder:2.0.1:check (default) @ trino-iceberg ---
+[INFO] Skipping duplicate-finder execution!
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer) @ trino-iceberg ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer-production-code) @ trino-iceberg ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-only (default) @ trino-iceberg ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-duplicate (default) @ trino-iceberg ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-exclusions (default) @ trino-iceberg ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-test) @ trino-iceberg ---
+[INFO] Tests will run in random order. To reproduce ordering use flag -Dsurefire.runOrder.random.seed=19091201824885
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+WARNING: Using incubator modules: jdk.incubator.vector
+[INFO] Running io.trino.plugin.iceberg.TestIcebergConfig
+[INFO] Running io.trino.plugin.iceberg.TestIcebergSortedWriting
+2026-11-08T05:27:38.875-0600	INFO	ForkJoinPool-1-worker-2	org.hibernate.validator.internal.util.Version	HV000001: Hibernate Validator 9.1.5.Final
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.803 s -- in io.trino.plugin.iceberg.TestIcebergConfig
+2026-11-08T05:27:40.525-0600	INFO	ForkJoinPool-1-worker-1	io.trino.simd.BlockEncodingSimdSupport	Detected SIMD Support for architecture=amd64, vectorBitWidth=128: SimdSupport[capabilities=[]]
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::loadLibrary has been called by com.aayushatharva.brotli4j.Brotli4jLoader in an unnamed module (file:/home/ivan/.m2/repository/com/aayushatharva/brotli4j/brotli4j/1.23.0/brotli4j-1.23.0.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+2026-11-08T05:27:46.051-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 221.00ms: 539.35MB -> 209.43MB
+2026-11-08T05:27:46.056-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 221.00ms: 539.35MB -> 209.43MB
+2026-11-08T05:27:46.057-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 221.00ms: 539.35MB -> 209.43MB
+2026-11-08T05:27:46.371-0600	INFO	ForkJoinPool-1-worker-1	io.trino.testing.DistributedQueryRunner	Created DistributedQueryRunner in 7.05s (unclosed instances = 1)
+2026-11-08T05:27:46.449-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T05:27:46.466-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T05:27:46.466-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T05:27:46.475-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T05:27:46.476-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T05:27:46.485-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T05:27:46.596-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	Usage filesystem.metadata of catalog iceberg requires [LOW_LATENCY], selected blob cache manager memory
+2026-11-08T05:27:52.191-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 5.79s, stopped 357.00ms: 701.99MB -> 565.52MB
+2026-11-08T05:27:52.192-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 5.79s, stopped 357.00ms: 701.99MB -> 565.52MB
+2026-11-08T05:27:52.192-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 5.79s, stopped 357.00ms: 701.99MB -> 565.52MB
+2026-11-08T05:27:55.766-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.23s, stopped 350.00ms: 1.34GB -> 617.36MB
+2026-11-08T05:27:55.767-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.23s, stopped 350.00ms: 1.34GB -> 617.36MB
+2026-11-08T05:27:55.767-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.23s, stopped 350.00ms: 1.34GB -> 617.36MB
+2026-11-08T05:27:59.970-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.76s, stopped 444.00ms: 1.29GB -> 676.50MB
+2026-11-08T05:27:59.999-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.76s, stopped 444.00ms: 1.29GB -> 676.50MB
+2026-11-08T05:27:59.999-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.76s, stopped 444.00ms: 1.29GB -> 676.50MB
+2026-11-08T05:28:01.541-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 1.12s, stopped 453.00ms: 1018.88MB -> 701.05MB
+2026-11-08T05:28:01.550-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 1.12s, stopped 453.00ms: 1018.88MB -> 701.05MB
+2026-11-08T05:28:01.550-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 1.12s, stopped 453.00ms: 1018.88MB -> 701.05MB
+2026-11-08T05:28:03.304-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 1.37s, stopped 400.00ms: 1.16GB -> 721.34MB
+2026-11-08T05:28:03.304-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 1.37s, stopped 400.00ms: 1.16GB -> 721.34MB
+2026-11-08T05:28:03.305-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 1.37s, stopped 400.00ms: 1.16GB -> 721.34MB
+2026-11-08T05:28:05.170-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 1.45s, stopped 417.00ms: 1.28GB -> 735.61MB
+2026-11-08T05:28:05.171-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 1.45s, stopped 417.00ms: 1.28GB -> 735.61MB
+2026-11-08T05:28:05.172-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 1.45s, stopped 417.00ms: 1.28GB -> 735.61MB
+2026-11-08T05:28:10.162-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 4.49s, stopped 474.00ms: 1.43GB -> 771.29MB
+2026-11-08T05:28:10.219-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 4.49s, stopped 474.00ms: 1.43GB -> 771.29MB
+2026-11-08T05:28:10.220-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 4.49s, stopped 474.00ms: 1.43GB -> 771.29MB
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 45.84 s -- in io.trino.plugin.iceberg.TestIcebergSortedWriting
+2026-11-08T05:28:24.161-0600	INFO	main	io.trino.testing.containers.junit.ReportLeakedContainers	DockerClientFactory not initialized, so there should be no leaked containers, skipping the check
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  01:11 min
+[INFO] Finished at: 2026-11-08T14:28:24+03:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Njord session closed

@@ -201,6 +201,13 @@ public class MergeJoinBridge
         }
     }
 
+    public void releasePreviousReplayPage()
+    {
+        if (spilledPages != null) {
+            spilledPages.releasePreviousReplayPage();
+        }
+    }
+
     public Path createMatchFile()
     {
         checkState(spiller instanceof AppendingSpiller, "Large build groups require a replayable spiller");
@@ -468,10 +475,23 @@ public class MergeJoinBridge
                 return cachedPage;
             }
             if (previousPageIndex == index) {
-                return previousPage;
+                // The page being processed must stay in the primary cache slot.
+                // Output-buffer growth may evict the optional second slot.
+                Page page = cachedPage;
+                int pageIndex = cachedPageIndex;
+                cachedPage = previousPage;
+                cachedPageIndex = previousPageIndex;
+                previousPage = page;
+                previousPageIndex = pageIndex;
+                return cachedPage;
             }
             if (replayReader == null || nextReplayPage != index || !replayReader.hasNext()) {
-                replayReader = streamingBridge == null ? replayableSpiller.getSpilledPagesFrom(index) : replayableSpiller.getSpilledPagesFrom(index, streamingBridge.getPublishedPageCount());
+                if (streamingBridge == null) {
+                    replayReader = replayableSpiller.getSpilledPagesFrom(index);
+                }
+                else {
+                    replayReader = replayableSpiller.getSpilledPagesFrom(index, streamingBridge.getPublishedPageCount());
+                }
                 nextReplayPage = index;
             }
             checkState(replayReader.hasNext(), "spill ended before requested build page %s", index);
@@ -494,6 +514,15 @@ public class MergeJoinBridge
             cachedPage = page;
             cachedPageIndex = index;
             return page;
+        }
+
+        private void releasePreviousReplayPage()
+        {
+            if (previousPage != null) {
+                memoryContext.setBytes(memoryContext.getBytes() - previousPage.getRetainedSizeInBytes());
+                previousPage = null;
+                previousPageIndex = -1;
+            }
         }
 
         private Page nextSpilledPage()

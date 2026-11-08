@@ -1740,8 +1740,7 @@ public class IcebergMetadata
     }
 
     /**
-     * Conservatively reports table sortedness to the engine (see ai-docs/smj-research/risks/
-     * 04-implementation-plan-with-risk-gates.md, phase 0):
+     * Conservatively reports file-level sortedness to the engine:
      * <ul>
      *     <li>every data file of the (pruned) snapshot must carry the current table sort order id
      *     (file-level {@code sortOrderId}, not the table-level one)</li>
@@ -1820,7 +1819,8 @@ public class IcebergMetadata
                 .planWith(icebergPlanningExecutor);
         try (CloseableIterable<FileScanTask> fileScanTasks = tableScan.planFiles()) {
             for (FileScanTask fileScanTask : fileScanTasks) {
-                if (fileScanTask.file().sortOrderId() != sortOrderId) {
+                Integer fileSortOrderId = fileScanTask.file().sortOrderId();
+                if (fileSortOrderId == null || fileSortOrderId != sortOrderId) {
                     return false;
                 }
             }

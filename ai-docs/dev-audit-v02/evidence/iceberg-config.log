@@ -1,0 +1,101 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] 
+[INFO] -----------------------< io.trino:trino-iceberg >-----------------------
+[INFO] Building trino-iceberg 485-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] ----------------------------[ trino-plugin ]----------------------------
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-iceberg ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-iceberg ---
+[INFO] 
+[INFO] --- antlr4:4.13.2:antlr4 (default) @ trino-iceberg ---
+[INFO] No ANTLR 4 grammars to compile in /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/antlr4
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ trino-iceberg ---
+[INFO] skip non existing resourceDirectory /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.16.0:compile (default-compile) @ trino-iceberg ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- trino:26:generate-service-descriptor (default-generate-service-descriptor) @ trino-iceberg ---
+[INFO] Wrote io.trino.plugin.iceberg.IcebergPlugin to /home/ivan/opencode/trino/plugin/trino-iceberg/target/trino-iceberg-485-SNAPSHOT-services.jar
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ trino-iceberg ---
+[INFO] Copying 98 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ trino-iceberg ---
+[INFO] Compiling 1 source file with javac [debug deprecation parameters release 25] to target/test-classes
+[INFO] 
+[INFO] --- duplicate-finder:2.0.1:check (default) @ trino-iceberg ---
+[INFO] Skipping duplicate-finder execution!
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer) @ trino-iceberg ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer-production-code) @ trino-iceberg ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-only (default) @ trino-iceberg ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-duplicate (default) @ trino-iceberg ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-exclusions (default) @ trino-iceberg ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-test) @ trino-iceberg ---
+[INFO] Tests will run in random order. To reproduce ordering use flag -Dsurefire.runOrder.random.seed=14685776338167
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[WARNING] System property [junit.jupiter.execution.parallel.enabled] overwritten by user properties from Maven session
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+WARNING: Using incubator modules: jdk.incubator.vector
+[INFO] Running io.trino.plugin.iceberg.TestIcebergConfig
+2026-11-08T04:14:12.920-0600	INFO	main	org.hibernate.validator.internal.util.Version	HV000001: Hibernate Validator 9.1.5.Final
+[ERROR] Tests run: 3, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.702 s <<< FAILURE! -- in io.trino.plugin.iceberg.TestIcebergConfig
+[ERROR] io.trino.plugin.iceberg.TestIcebergConfig.testDefaults -- Time elapsed: 0.314 s <<< FAILURE!
+java.lang.AssertionError: Untested attributes: [ReportSortedness]
+	at io.airlift.configuration.testing.ConfigAssertions.assertDefaults(ConfigAssertions.java:83)
+	at io.airlift.configuration.testing.ConfigAssertions.assertRecordedDefaults(ConfigAssertions.java:296)
+	at io.trino.plugin.iceberg.TestIcebergConfig.testDefaults(TestIcebergConfig.java:50)
+
+[ERROR] io.trino.plugin.iceberg.TestIcebergConfig.testExplicitPropertyMappings -- Time elapsed: 0.015 s <<< FAILURE!
+java.lang.AssertionError: Untested properties [iceberg.report-sortedness]
+	at io.airlift.configuration.testing.ConfigAssertions.assertFullMapping(ConfigAssertions.java:139)
+	at io.airlift.configuration.testing.ConfigAssertions.assertFullMapping(ConfigAssertions.java:106)
+	at io.trino.plugin.iceberg.TestIcebergConfig.testExplicitPropertyMappings(TestIcebergConfig.java:198)
+
+2026-11-08T04:14:13.537-0600	INFO	main	io.trino.testing.containers.junit.ReportLeakedContainers	DockerClientFactory not initialized, so there should be no leaked containers, skipping the check
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Failures: 
+[ERROR]   TestIcebergConfig.testDefaults:50 Untested attributes: [ReportSortedness]
+[ERROR]   TestIcebergConfig.testExplicitPropertyMappings:198 Untested properties [iceberg.report-sortedness]
+[INFO] 
+[ERROR] Tests run: 3, Failures: 2, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  10.075 s
+[INFO] Finished at: 2026-11-08T13:14:13+03:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Njord session closed
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.6.1:test (default-test) on project trino-iceberg: There are test failures.
+[ERROR] 
+[ERROR] See /home/ivan/opencode/trino/plugin/trino-iceberg/target/surefire-reports for the individual test results.
+[ERROR] See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

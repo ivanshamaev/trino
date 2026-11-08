@@ -1,0 +1,622 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] trino-main                                                         [jar]
+[INFO] trino-iceberg                                             [trino-plugin]
+[INFO] trino-tests                                                        [jar]
+[INFO] 
+[INFO] ------------------------< io.trino:trino-main >-------------------------
+[INFO] Building trino-main 485-SNAPSHOT                                   [1/3]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-javadoc-plugin/3.12.0/maven-javadoc-plugin-3.12.0.pom
+Progress (1): 740 BProgress (1): 798 BProgress (1): 2.7 kBProgress (1): 4.3 kBProgress (1): 7.3 kBProgress (1): 11 kB Progress (1): 15 kBProgress (1): 17 kBProgress (1): 20 kBProgress (1): 21 kB                   Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-javadoc-plugin/3.12.0/maven-javadoc-plugin-3.12.0.pom (21 kB at 25 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-javadoc-plugin/3.12.0/maven-javadoc-plugin-3.12.0.jar
+Progress (1): 0.5/493 kBProgress (1): 1.9/493 kBProgress (1): 3.2/493 kBProgress (1): 4.5/493 kBProgress (1): 5.9/493 kBProgress (1): 7.3/493 kBProgress (1): 8.7/493 kBProgress (1): 10/493 kB Progress (1): 11/493 kBProgress (1): 13/493 kBProgress (1): 14/493 kBProgress (1): 15/493 kBProgress (1): 17/493 kBProgress (1): 18/493 kBProgress (1): 20/493 kBProgress (1): 21/493 kBProgress (1): 22/493 kBProgress (1): 24/493 kBProgress (1): 25/493 kBProgress (1): 26/493 kBProgress (1): 28/493 kBProgress (1): 29/493 kBProgress (1): 30/493 kBProgress (1): 32/493 kBProgress (1): 33/493 kBProgress (1): 35/493 kBProgress (1): 36/493 kBProgress (1): 37/493 kBProgress (1): 39/493 kBProgress (1): 40/493 kBProgress (1): 41/493 kBProgress (1): 43/493 kBProgress (1): 44/493 kBProgress (1): 46/493 kBProgress (1): 47/493 kBProgress (1): 48/493 kBProgress (1): 53/493 kBProgress (1): 57/493 kBProgress (1): 61/493 kBProgress (1): 65/493 kBProgress (1): 69/493 kBProgress (1): 74/493 kBProgress (1): 78/493 kBProgress (1): 82/493 kBProgress (1): 85/493 kBProgress (1): 89/493 kBProgress (1): 93/493 kBProgress (1): 98/493 kBProgress (1): 102/493 kBProgress (1): 106/493 kBProgress (1): 110/493 kBProgress (1): 114/493 kBProgress (1): 119/493 kBProgress (1): 123/493 kBProgress (1): 127/493 kBProgress (1): 131/493 kBProgress (1): 134/493 kBProgress (1): 138/493 kBProgress (1): 143/493 kBProgress (1): 147/493 kBProgress (1): 151/493 kBProgress (1): 155/493 kBProgress (1): 159/493 kBProgress (1): 163/493 kBProgress (1): 167/493 kBProgress (1): 172/493 kBProgress (1): 176/493 kBProgress (1): 180/493 kBProgress (1): 184/493 kBProgress (1): 188/493 kBProgress (1): 193/493 kBProgress (1): 197/493 kBProgress (1): 201/493 kBProgress (1): 205/493 kBProgress (1): 210/493 kBProgress (1): 214/493 kBProgress (1): 230/493 kBProgress (1): 247/493 kBProgress (1): 263/493 kBProgress (1): 279/493 kBProgress (1): 290/493 kBProgress (1): 306/493 kBProgress (1): 323/493 kBProgress (1): 339/493 kBProgress (1): 355/493 kBProgress (1): 372/493 kBProgress (1): 388/493 kBProgress (1): 405/493 kBProgress (1): 421/493 kBProgress (1): 437/493 kBProgress (1): 454/493 kBProgress (1): 470/493 kBProgress (1): 487/493 kBProgress (1): 493 kB                        Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-javadoc-plugin/3.12.0/maven-javadoc-plugin-3.12.0.jar (493 kB at 1.9 MB/s)
+[INFO] 
+[INFO] --- enforcer:3.7.0:enforce (default) @ trino-main ---
+[INFO] Rule 0: org.apache.maven.enforcer.rules.dependency.BannedDependencies passed
+[INFO] Rule 1: org.apache.maven.enforcer.rules.RequireProfileIdsExist passed
+[INFO] Rule 2: org.codehaus.mojo.extraenforcer.model.RequirePropertyDiverges passed
+[INFO] Rule 3: org.apache.maven.enforcer.rules.property.RequireProperty passed
+[INFO] Rule 4: org.apache.maven.enforcer.rules.RequireJavaVendor passed
+[INFO] Rule 5: org.apache.maven.enforcer.rules.BanDuplicatePomDependencyVersions passed
+[INFO] Rule 6: org.apache.maven.enforcer.rules.dependency.RequireUpperBoundDeps passed
+[INFO] Rule 7: org.apache.maven.enforcer.rules.version.RequireMavenVersion passed
+[INFO] Rule 8: org.apache.maven.enforcer.rules.version.RequireJavaVersion passed
+[INFO] Rule 9: org.codehaus.mojo.extraenforcer.dependencies.EnforceBytecodeVersion passed
+[INFO] Rule 10: org.apache.maven.enforcer.rules.RequirePluginVersions passed
+[INFO] Rule 11: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 12: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 13: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 14: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 15: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 16: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 17: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] 
+[INFO] --- enforcer:3.7.0:enforce (junit-extensions) @ trino-main ---
+[INFO] Rule 0: io.airlift.airbase.RequireJunitExtensions passed
+[INFO] 
+[INFO] --- enforcer:3.7.0:enforce (trino-restrict-imports) @ trino-main ---
+[INFO] Rule 0: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 1: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 2: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 3: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] 
+[INFO] --- sortpom:4.0.0:verify (default) @ trino-main ---
+[INFO] Verifying file /home/ivan/opencode/trino/core/trino-main/pom.xml
+[INFO] 
+[INFO] --- license:5.1.2:check (default) @ trino-main ---
+[INFO] Checking licenses...
+[WARNING] Unknown file extension: /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/execution/executor/scheduler/group-state-diagram.dot
+[INFO] License check: 4254 file(s) checked (OK: 4253, Missing: 0, Unknown: 1)
+[WARNING] Unable to find a comment style definition for some files. You may want to add a custom mapping for the relevant file extensions.
+[INFO] 
+[INFO] --- airstyle:10:check (airstyle) @ trino-main ---
+[INFO] All 4284 files are already formatted
+[INFO] 
+[INFO] --- checkstyle:3.6.0:check (checkstyle) @ trino-main ---
+[INFO] You have 0 Checkstyle violations.
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-main ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-main ---
+[INFO] 
+[INFO] --- jacoco:0.8.16:prepare-agent (default) @ trino-main ---
+[INFO] Skipping JaCoCo execution because property jacoco.skip is set.
+[INFO] 
+[INFO] --- antlr4:4.13.2:antlr4 (default) @ trino-main ---
+[INFO] No grammars to process
+[INFO] ANTLR 4: Processing source directory /home/ivan/opencode/trino/core/trino-main/src/main/antlr4
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ trino-main ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 0 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.16.0:compile (default-compile) @ trino-main ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ trino-main ---
+[INFO] Copying 32 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ trino-main ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 1550 source files with javac [debug deprecation parameters release 25] to target/test-classes
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/connector/MockConnector.java:[626,47] streamTableColumns(io.trino.spi.connector.ConnectorSession,io.trino.spi.connector.SchemaTablePrefix) in io.trino.spi.connector.ConnectorMetadata has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/connector/MockConnector.java:[620,59] listTableColumns(io.trino.spi.connector.ConnectorSession,io.trino.spi.connector.SchemaTablePrefix) in io.trino.spi.connector.ConnectorMetadata has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/connector/MockConnectorPageSource.java:[69,17] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/connector/MockConnectorPageSource.java:[71,24] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/test/PlanBuilder.java:[513,38] NullLiteral() in io.trino.sql.tree.NullLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/test/PlanBuilder.java:[529,38] NullLiteral() in io.trino.sql.tree.NullLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/cost/TestAggregationStatsRule.java:[179,107] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/cost/TestAggregationStatsRule.java:[179,123] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestAddColumnTask.java:[356,83] LongLiteral(java.lang.String) in io.trino.sql.tree.LongLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestAddColumnTask.java:[356,35] Property(io.trino.sql.tree.Identifier,io.trino.sql.tree.Expression) in io.trino.sql.tree.Property has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestCreateCatalogTask.java:[74,134] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestCreateCatalogTask.java:[74,76] Property(io.trino.sql.tree.Identifier,io.trino.sql.tree.Expression) in io.trino.sql.tree.Property has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestCreateMaterializedViewTask.java:[127,40] AllColumns() in io.trino.sql.tree.AllColumns has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestCreateMaterializedViewTask.java:[148,40] AllColumns() in io.trino.sql.tree.AllColumns has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestCreateMaterializedViewTask.java:[171,40] AllColumns() in io.trino.sql.tree.AllColumns has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestCreateMaterializedViewTask.java:[176,95] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestCreateMaterializedViewTask.java:[194,40] AllColumns() in io.trino.sql.tree.AllColumns has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestCreateMaterializedViewTask.java:[200,25] Property(io.trino.sql.tree.Identifier) in io.trino.sql.tree.Property has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestCreateMaterializedViewTask.java:[201,25] Property(io.trino.sql.tree.Identifier) in io.trino.sql.tree.Property has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestCreateMaterializedViewTask.java:[256,40] AllColumns() in io.trino.sql.tree.AllColumns has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestCreateTableTask.java:[215,70] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestCreateTableTask.java:[215,34] Property(io.trino.sql.tree.Identifier,io.trino.sql.tree.Expression) in io.trino.sql.tree.Property has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestCreateViewTask.java:[210,108] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestCreateViewTask.java:[223,108] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestCreateViewTask.java:[246,46] AllColumns() in io.trino.sql.tree.AllColumns has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestPrepareTask.java:[88,46] AllColumns() in io.trino.sql.tree.AllColumns has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestPrepareTask.java:[101,46] AllColumns() in io.trino.sql.tree.AllColumns has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestQueryManagerConfig.java:[59,17] setMaxConcurrentQueries(int) in io.trino.execution.QueryManagerConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestQueryManagerConfig.java:[60,17] setMaxQueuedQueries(int) in io.trino.execution.QueryManagerConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestQueryManagerConfig.java:[234,17] setMaxConcurrentQueries(int) in io.trino.execution.QueryManagerConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestQueryManagerConfig.java:[235,17] setMaxQueuedQueries(int) in io.trino.execution.QueryManagerConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestQueryPreparer.java:[44,83] AllColumns() in io.trino.sql.tree.AllColumns has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestQueryPreparer.java:[54,83] AllColumns() in io.trino.sql.tree.AllColumns has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestQueryPreparer.java:[61,83] AllColumns() in io.trino.sql.tree.AllColumns has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestSetPropertiesTask.java:[51,97] LongLiteral(java.lang.String) in io.trino.sql.tree.LongLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestSetPropertiesTask.java:[51,33] Property(io.trino.sql.tree.Identifier,io.trino.sql.tree.Expression) in io.trino.sql.tree.Property has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestSetPropertiesTask.java:[52,97] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestSetPropertiesTask.java:[52,33] Property(io.trino.sql.tree.Identifier,io.trino.sql.tree.Expression) in io.trino.sql.tree.Property has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestSetPropertiesTask.java:[66,33] Property(io.trino.sql.tree.Identifier) in io.trino.sql.tree.Property has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestSetPropertiesTask.java:[67,33] Property(io.trino.sql.tree.Identifier) in io.trino.sql.tree.Property has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[151,31] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[154,17] FunctionCall(io.trino.sql.tree.QualifiedName,java.util.List<io.trino.sql.tree.Expression>) in io.trino.sql.tree.FunctionCall has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[155,25] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[156,25] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[163,45] LongLiteral(java.lang.String) in io.trino.sql.tree.LongLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[164,45] LongLiteral(java.lang.String) in io.trino.sql.tree.LongLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[166,70] LongLiteral(java.lang.String) in io.trino.sql.tree.LongLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[174,66] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[183,37] FunctionCall(io.trino.sql.tree.QualifiedName,java.util.List<io.trino.sql.tree.Expression>) in io.trino.sql.tree.FunctionCall has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[184,17] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[185,17] Parameter(int) in io.trino.sql.tree.Parameter has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[187,86] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestSetTimeZoneTask.java:[104,29] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestSetTimeZoneTask.java:[160,29] StringLiteral(java.lang.String) in io.trino.sql.tree.StringLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestSetTimeZoneTask.java:[171,29] IntervalLiteral(java.lang.String,io.trino.sql.tree.IntervalLiteral.Sign,io.trino.sql.tree.IntervalQualifier) in io.trino.sql.tree.IntervalLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestSetTimeZoneTask.java:[244,29] IntervalLiteral(java.lang.String,io.trino.sql.tree.IntervalLiteral.Sign,io.trino.sql.tree.IntervalQualifier) in io.trino.sql.tree.IntervalLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestSetTimeZoneTask.java:[256,29] IntervalLiteral(java.lang.String,io.trino.sql.tree.IntervalLiteral.Sign,io.trino.sql.tree.IntervalQualifier) in io.trino.sql.tree.IntervalLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestSetTimeZoneTask.java:[268,29] IntervalLiteral(java.lang.String,io.trino.sql.tree.IntervalLiteral.Sign,io.trino.sql.tree.IntervalQualifier) in io.trino.sql.tree.IntervalLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/execution/TestingPageSourceProvider.java:[54,32] createPageSource(io.trino.spi.connector.ConnectorTransactionHandle,io.trino.spi.connector.ConnectorSession,io.trino.spi.connector.ConnectorSplit,io.trino.spi.connector.ConnectorTableHandle,java.util.Optional<io.trino.spi.connector.ConnectorTableCredentials>,java.util.List<io.trino.spi.connector.ColumnHandle>,io.trino.spi.connector.DynamicFilter) in io.trino.spi.connector.ConnectorPageSourceProvider has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/security/TestAccessControlManager.java:[112,33] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.security.AccessControlManager has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[176,54] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.security.AccessControlManager has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[179,29] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.security.AccessControlManager has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[180,29] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.security.AccessControlManager has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[181,54] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.security.AccessControlManager has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[184,29] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.security.AccessControlManager has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[185,54] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.security.AccessControlManager has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[188,29] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.security.AccessControlManager has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[189,29] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.security.AccessControlManager has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[190,54] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.security.AccessControlManager has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[194,39] checkCanSetUser(java.util.Optional<java.security.Principal>,java.lang.String) in io.trino.security.AccessControlManager has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/util/DynamicFiltersTestUtil.java:[147,20] <V>unmodifiableFuture(java.util.concurrent.CompletableFuture<V>) in io.airlift.concurrent.MoreFutures has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/server/TestEmbeddedDiscoveryConfig.java:[32,17] setEnabled(boolean) in io.trino.node.EmbeddedDiscoveryConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/server/TestEmbeddedDiscoveryConfig.java:[41,17] setEnabled(boolean) in io.trino.node.EmbeddedDiscoveryConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/server/TestHttpRequestSessionContextFactory.java:[208,25] setAlternateHeaderName(java.lang.String) in io.trino.server.ProtocolConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/server/TestProtocolConfig.java:[31,17] setAlternateHeaderName(java.lang.String) in io.trino.server.ProtocolConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/server/TestProtocolConfig.java:[46,17] setAlternateHeaderName(java.lang.String) in io.trino.server.ProtocolConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/server/security/TestHeaderAuthenticatorManager.java:[73,38] createAuthenticatedPrincipal(io.trino.spi.security.HeaderAuthenticator.Headers) in io.trino.spi.security.HeaderAuthenticator has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/server/security/TestPasswordAuthenticatorManager.java:[66,38] createAuthenticatedPrincipal(java.lang.String,java.lang.String) in io.trino.spi.security.PasswordAuthenticator has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/server/security/oauth2/TestingHydraIdentityProvider.java:[164,16] [deprecation] <SELF>FixedHostPortGenericContainer(@org.jetbrains.annotations.NotNull java.lang.String) in org.testcontainers.containers.FixedHostPortGenericContainer has been deprecated
+        return new FixedHostPortGenericContainer<>(HYDRA_IMAGE).withNetwork(network);
+               ^
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/server/ui/TestWebUiConfig.java:[32,17] setPreviewEnabled(boolean) in io.trino.server.ui.WebUiConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/server/ui/TestWebUiConfig.java:[46,17] setPreviewEnabled(boolean) in io.trino.server.ui.WebUiConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/split/TestRecordPageSourceProvider.java:[69,30] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/sql/analyzer/TestFeaturesConfig.java:[46,17] setRegexLibrary(io.trino.sql.analyzer.RegexLibrary) in io.trino.FeaturesConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/sql/analyzer/TestFeaturesConfig.java:[65,17] setIncrementalHashArrayLoadFactorEnabled(boolean) in io.trino.FeaturesConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/sql/analyzer/TestFeaturesConfig.java:[117,17] setRegexLibrary(io.trino.sql.analyzer.RegexLibrary) in io.trino.FeaturesConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/sql/analyzer/TestFeaturesConfig.java:[136,17] setIncrementalHashArrayLoadFactorEnabled(boolean) in io.trino.FeaturesConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/sql/planner/TestIncrementalRefreshVisitor.java:[108,17] NullLiteral() in io.trino.sql.tree.NullLiteral has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/sql/planner/TestSchedulingOrderVisitor.java:[62,40] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/sql/planner/TestSchedulingOrderVisitor.java:[64,45] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/sql/planner/TestSchedulingOrderVisitor.java:[69,28] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestAddIntermediateAggregations.java:[40,46] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestAddIntermediateAggregations.java:[46,70] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestAddIntermediateAggregations.java:[47,71] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestAddIntermediateAggregations.java:[59,43] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestAddIntermediateAggregations.java:[61,46] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestAddIntermediateAggregations.java:[65,87] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestAddIntermediateAggregations.java:[67,70] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestAddIntermediateAggregations.java:[68,71] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestDecorrelateInnerUnnestWithGlobalAggregation.java:[79,43] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[WARNING] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestDecorrelateInnerUnnestWithGlobalAggregation.java:[80,35] symbol(java.lang.String) in io.trino.sql.planner.iterative.rule.test.PlanBuilder has been deprecated
+[INFO] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestDecorrelateInnerUnnestWithGlobalAggregation.java: Some input files additionally use or override a deprecated API.
+[INFO] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/block/TestMapBlock.java: Some input files use unchecked or unsafe operations.
+[INFO] /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/block/TestMapBlock.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-only (default) @ trino-main ---
+[INFO] No dependency problems found
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-duplicate (default) @ trino-main ---
+[INFO] No duplicate dependencies found in <dependencies/> or in <dependencyManagement/>
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-exclusions (default) @ trino-main ---
+[INFO] No problems with dependencies exclusions
+[INFO] 
+[INFO] --- duplicate-finder:2.0.1:check (default) @ trino-main ---
+[INFO] Checking compile classpath
+[INFO] Checking runtime classpath
+[INFO] Checking test classpath
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer) @ trino-main ---
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer-production-code) @ trino-main ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-test) @ trino-main ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jacoco:0.8.16:report (report) @ trino-main ---
+[INFO] Skipping JaCoCo execution because property jacoco.skip is set.
+[INFO] 
+[INFO] --- jar:3.5.1:jar (default-jar) @ trino-main ---
+[INFO] Building jar: /home/ivan/opencode/trino/core/trino-main/target/trino-main-485-SNAPSHOT.jar
+[INFO] 
+[INFO] --- jar:3.5.1:test-jar (attach-tests) @ trino-main ---
+[INFO] Building jar: /home/ivan/opencode/trino/core/trino-main/target/trino-main-485-SNAPSHOT-tests.jar
+[INFO] 
+[INFO] --- source:3.4.0:jar-no-fork (attach-sources) @ trino-main ---
+[INFO] 
+[INFO] --- source:3.4.0:test-jar-no-fork (attach-sources) @ trino-main ---
+[INFO] Building jar: /home/ivan/opencode/trino/core/trino-main/target/trino-main-485-SNAPSHOT-test-sources.jar
+[INFO] 
+[INFO] >>> spotbugs:4.10.5.0:check (default) > :spotbugs @ trino-main >>>
+[INFO] 
+[INFO] --- spotbugs:4.10.5.0:spotbugs (spotbugs) @ trino-main ---
+[INFO] Spotbugs plugin skipped
+[INFO] Skipping com.github.spotbugs:spotbugs-maven-plugin:4.10.5.0:spotbugs report goal
+[INFO] 
+[INFO] <<< spotbugs:4.10.5.0:check (default) < :spotbugs @ trino-main <<<
+[INFO] 
+[INFO] 
+[INFO] --- spotbugs:4.10.5.0:check (default) @ trino-main ---
+[INFO] Spotbugs plugin skipped
+[INFO] 
+[INFO] >>> pmd:3.28.0:check (default) > :pmd @ trino-main >>>
+[INFO] 
+[INFO] --- pmd:3.28.0:pmd (pmd) @ trino-main ---
+[INFO] Skipping org.apache.maven.plugins:maven-pmd-plugin:3.28.0:pmd report goal
+[INFO] 
+[INFO] <<< pmd:3.28.0:check (default) < :pmd @ trino-main <<<
+[INFO] 
+[INFO] 
+[INFO] --- pmd:3.28.0:check (default) @ trino-main ---
+[INFO] Skipping PMD execution
+[INFO] 
+[INFO] --- javadoc:3.12.0:jar (attach-javadocs) @ trino-main ---
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-java/1.5.0/plexus-java-1.5.0.pom
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-provider-api/3.5.3/wagon-provider-api-3.5.3.pom
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-io/3.5.1/plexus-io-3.5.1.pom
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/3.3.0/maven-invoker-3.3.0.pom
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-archiver/3.6.4/maven-archiver-3.6.4.pom
+Progress (1): 1.9 kBProgress (1): 4.1 kB                    Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-java/1.5.0/plexus-java-1.5.0.pom (4.1 kB at 34 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-languages/1.5.0/plexus-languages-1.5.0.pom
+Progress (1): 1.4 kBProgress (1): 3.9 kB                    Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-languages/1.5.0/plexus-languages-1.5.0.pom (3.9 kB at 39 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/4.10.0/plexus-archiver-4.10.0.pom
+Progress (1): 1.2 kBProgress (1): 1.3 kBProgress (1): 4.2 kBProgress (1): 4.3 kB                    Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-io/3.5.1/plexus-io-3.5.1.pom (4.3 kB at 13 kB/s)
+Progress (1): 1.2 kBProgress (1): 4.1 kBProgress (1): 5.8 kB                    Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/4.10.0/plexus-archiver-4.10.0.pom (5.8 kB at 50 kB/s)
+Progress (1): 827 BProgress (1): 881 BProgress (1): 1.9 kB                    Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-provider-api/3.5.3/wagon-provider-api-3.5.3.pom (1.9 kB at 5.6 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon/3.5.3/wagon-3.5.3.pom
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/1.4/plexus-interactivity-api-1.4.pom
+Progress (1): 802 BProgress (1): 856 BProgress (1): 2.4 kBProgress (1): 4.6 kB                    Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-archiver/3.6.4/maven-archiver-3.6.4.pom (4.6 kB at 13 kB/s)
+Progress (1): 798 BProgress (1): 848 BProgress (1): 2.4 kBProgress (1): 4.2 kBProgress (1): 4.2 kB                    Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/3.3.0/maven-invoker-3.3.0.pom (4.2 kB at 11 kB/s)
+Progress (1): 1.6 kBProgress (1): 1.7 kB                    Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/1.4/plexus-interactivity-api-1.4.pom (1.7 kB at 16 kB/s)
+Progress (1): 740 BProgress (1): 782 BProgress (1): 2.3 kBProgress (1): 4.8 kBProgress (1): 7.7 kBProgress (1): 11 kB Progress (1): 14 kBProgress (1): 16 kBProgress (1): 20 kBProgress (1): 21 kB                   Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon/3.5.3/wagon-3.5.3.pom (21 kB at 191 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity/1.4/plexus-interactivity-1.4.pom
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-io/3.5.0/plexus-io-3.5.0.pom
+Downloading from central: https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/1.5.6-3/zstd-jni-1.5.6-3.pom
+Progress (1): 1.2 kBProgress (1): 4.1 kBProgress (1): 4.3 kB                    Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-io/3.5.0/plexus-io-3.5.0.pom (4.3 kB at 44 kB/s)
+Progress (1): 1.3 kBProgress (1): 1.3 kBProgress (1): 1.7 kB                    Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity/1.4/plexus-interactivity-1.4.pom (1.7 kB at 15 kB/s)
+Progress (1): 1.1 kBProgress (1): 1.2 kBProgress (1): 2.0 kB                    Downloaded from central: https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/1.5.6-3/zstd-jni-1.5.6-3.pom (2.0 kB at 19 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-archiver/3.6.4/maven-archiver-3.6.4.jar
+Progress (1): 0.5/27 kBProgress (1): 1.9/27 kBProgress (1): 3.3/27 kBProgress (1): 4.7/27 kBProgress (1): 6.0/27 kBProgress (1): 7.4/27 kBProgress (1): 8.8/27 kBProgress (1): 10/27 kB Progress (1): 12/27 kBProgress (1): 13/27 kBProgress (1): 14/27 kBProgress (1): 16/27 kBProgress (1): 17/27 kBProgress (1): 18/27 kBProgress (1): 20/27 kBProgress (1): 21/27 kBProgress (1): 22/27 kBProgress (1): 24/27 kBProgress (1): 25/27 kBProgress (1): 27/27 kBProgress (1): 27 kB                      Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-archiver/3.6.4/maven-archiver-3.6.4.jar (27 kB at 227 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/3.3.0/maven-invoker-3.3.0.jar
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-provider-api/3.5.3/wagon-provider-api-3.5.3.jar
+Downloading from central: https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.11/commons-codec-1.11.jar
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-java/1.5.0/plexus-java-1.5.0.jar
+Downloading from central: https://repo.maven.apache.org/maven2/org/ow2/asm/asm/9.8/asm-9.8.jar
+Progress (1): 0.9/57 kBProgress (2): 0.9/57 kB | 0.9/335 kBProgress (2): 2.3/57 kB | 0.9/335 kBProgress (2): 3.6/57 kB | 0.9/335 kBProgress (2): 3.6/57 kB | 2.3/335 kBProgress (2): 3.6/57 kB | 3.6/335 kBProgress (2): 5.0/57 kB | 3.6/335 kBProgress (2): 6.4/57 kB | 3.6/335 kBProgress (2): 6.4/57 kB | 5.0/335 kBProgress (2): 6.4/57 kB | 6.4/335 kBProgress (2): 7.7/57 kB | 6.4/335 kBProgress (2): 9.1/57 kB | 6.4/335 kBProgress (3): 9.1/57 kB | 6.4/335 kB | 3.2/34 kBProgress (3): 9.1/57 kB | 7.7/335 kB | 3.2/34 kBProgress (3): 9.1/57 kB | 7.7/335 kB | 11/34 kB Progress (3): 10/57 kB | 7.7/335 kB | 11/34 kB Progress (3): 12/57 kB | 7.7/335 kB | 11/34 kBProgress (3): 12/57 kB | 9.1/335 kB | 11/34 kBProgress (3): 12/57 kB | 10/335 kB | 11/34 kB Progress (3): 12/57 kB | 12/335 kB | 11/34 kBProgress (4): 12/57 kB | 12/335 kB | 11/34 kB | 0.9/126 kBProgress (4): 12/57 kB | 12/335 kB | 11/34 kB | 2.3/126 kBProgress (4): 12/57 kB | 12/335 kB | 11/34 kB | 3.2/126 kBProgress (4): 13/57 kB | 12/335 kB | 11/34 kB | 3.2/126 kBProgress (5): 13/57 kB | 12/335 kB | 11/34 kB | 3.2/126 kB | 0.9/55 kBProgress (5): 15/57 kB | 12/335 kB | 11/34 kB | 3.2/126 kB | 0.9/55 kBProgress (5): 15/57 kB | 12/335 kB | 11/34 kB | 3.2/126 kB | 2.3/55 kBProgress (5): 15/57 kB | 12/335 kB | 11/34 kB | 4.5/126 kB | 2.3/55 kBProgress (5): 15/57 kB | 12/335 kB | 11/34 kB | 4.5/126 kB | 3.6/55 kBProgress (5): 15/57 kB | 12/335 kB | 11/34 kB | 4.5/126 kB | 5.0/55 kBProgress (5): 15/57 kB | 12/335 kB | 11/34 kB | 4.5/126 kB | 6.4/55 kBProgress (5): 15/57 kB | 13/335 kB | 11/34 kB | 4.5/126 kB | 6.4/55 kBProgress (5): 15/57 kB | 13/335 kB | 11/34 kB | 4.5/126 kB | 7.3/55 kBProgress (5): 15/57 kB | 13/335 kB | 11/34 kB | 4.5/126 kB | 8.6/55 kBProgress (5): 15/57 kB | 15/335 kB | 11/34 kB | 4.5/126 kB | 8.6/55 kBProgress (5): 15/57 kB | 15/335 kB | 11/34 kB | 4.5/126 kB | 10/55 kB Progress (5): 15/57 kB | 15/335 kB | 28/34 kB | 4.5/126 kB | 10/55 kBProgress (5): 15/57 kB | 15/335 kB | 34 kB | 4.5/126 kB | 10/55 kB   Progress (5): 15/57 kB | 15/335 kB | 34 kB | 4.5/126 kB | 10/55 kBProgress (5): 15/57 kB | 17/335 kB | 34 kB | 4.5/126 kB | 10/55 kBProgress (5): 15/57 kB | 17/335 kB | 34 kB | 4.5/126 kB | 10/55 kB                                                                  Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/3.3.0/maven-invoker-3.3.0.jar (34 kB at 305 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-io/3.5.1/plexus-io-3.5.1.jar
+Progress (4): 15/57 kB | 17/335 kB | 4.5/126 kB | 11/55 kBProgress (4): 17/57 kB | 17/335 kB | 4.5/126 kB | 11/55 kBProgress (4): 17/57 kB | 17/335 kB | 4.5/126 kB | 13/55 kBProgress (4): 18/57 kB | 17/335 kB | 4.5/126 kB | 13/55 kBProgress (4): 20/57 kB | 17/335 kB | 4.5/126 kB | 13/55 kBProgress (4): 20/57 kB | 17/335 kB | 4.5/126 kB | 14/55 kBProgress (4): 20/57 kB | 17/335 kB | 4.5/126 kB | 15/55 kBProgress (4): 20/57 kB | 18/335 kB | 4.5/126 kB | 15/55 kBProgress (4): 20/57 kB | 20/335 kB | 4.5/126 kB | 15/55 kBProgress (4): 20/57 kB | 20/335 kB | 5.9/126 kB | 15/55 kBProgress (4): 21/57 kB | 20/335 kB | 5.9/126 kB | 15/55 kBProgress (4): 21/57 kB | 20/335 kB | 7.3/126 kB | 15/55 kBProgress (4): 22/57 kB | 20/335 kB | 7.3/126 kB | 15/55 kBProgress (4): 22/57 kB | 20/335 kB | 8.7/126 kB | 15/55 kBProgress (4): 22/57 kB | 20/335 kB | 8.7/126 kB | 17/55 kBProgress (4): 22/57 kB | 20/335 kB | 10/126 kB | 17/55 kB Progress (4): 22/57 kB | 20/335 kB | 10/126 kB | 18/55 kBProgress (4): 22/57 kB | 21/335 kB | 10/126 kB | 18/55 kBProgress (4): 22/57 kB | 21/335 kB | 11/126 kB | 18/55 kBProgress (4): 22/57 kB | 22/335 kB | 11/126 kB | 18/55 kBProgress (4): 22/57 kB | 22/335 kB | 13/126 kB | 18/55 kBProgress (4): 22/57 kB | 22/335 kB | 14/126 kB | 18/55 kBProgress (4): 22/57 kB | 22/335 kB | 15/126 kB | 18/55 kBProgress (4): 24/57 kB | 22/335 kB | 15/126 kB | 18/55 kBProgress (4): 25/57 kB | 22/335 kB | 15/126 kB | 18/55 kBProgress (4): 26/57 kB | 22/335 kB | 15/126 kB | 18/55 kBProgress (4): 26/57 kB | 24/335 kB | 15/126 kB | 18/55 kBProgress (4): 26/57 kB | 25/335 kB | 15/126 kB | 18/55 kBProgress (4): 26/57 kB | 25/335 kB | 17/126 kB | 18/55 kBProgress (4): 26/57 kB | 25/335 kB | 18/126 kB | 18/55 kBProgress (4): 26/57 kB | 25/335 kB | 20/126 kB | 18/55 kBProgress (4): 26/57 kB | 25/335 kB | 21/126 kB | 18/55 kBProgress (4): 28/57 kB | 25/335 kB | 21/126 kB | 18/55 kBProgress (4): 28/57 kB | 25/335 kB | 21/126 kB | 22/55 kBProgress (4): 28/57 kB | 25/335 kB | 21/126 kB | 27/55 kBProgress (4): 28/57 kB | 25/335 kB | 22/126 kB | 27/55 kBProgress (4): 28/57 kB | 25/335 kB | 24/126 kB | 27/55 kBProgress (4): 28/57 kB | 25/335 kB | 25/126 kB | 27/55 kBProgress (4): 28/57 kB | 25/335 kB | 26/126 kB | 27/55 kBProgress (4): 28/57 kB | 25/335 kB | 26/126 kB | 31/55 kBProgress (4): 28/57 kB | 25/335 kB | 28/126 kB | 31/55 kBProgress (4): 28/57 kB | 25/335 kB | 29/126 kB | 31/55 kBProgress (4): 28/57 kB | 25/335 kB | 29/126 kB | 35/55 kBProgress (4): 28/57 kB | 25/335 kB | 29/126 kB | 39/55 kBProgress (4): 28/57 kB | 26/335 kB | 29/126 kB | 39/55 kBProgress (4): 29/57 kB | 26/335 kB | 29/126 kB | 39/55 kBProgress (4): 31/57 kB | 26/335 kB | 29/126 kB | 39/55 kBProgress (4): 32/57 kB | 26/335 kB | 29/126 kB | 39/55 kBProgress (4): 32/57 kB | 28/335 kB | 29/126 kB | 39/55 kBProgress (4): 32/57 kB | 29/335 kB | 29/126 kB | 39/55 kBProgress (4): 32/57 kB | 29/335 kB | 29/126 kB | 44/55 kBProgress (4): 33/57 kB | 29/335 kB | 29/126 kB | 44/55 kBProgress (4): 35/57 kB | 29/335 kB | 29/126 kB | 44/55 kBProgress (4): 35/57 kB | 31/335 kB | 29/126 kB | 44/55 kBProgress (4): 35/57 kB | 32/335 kB | 29/126 kB | 44/55 kBProgress (4): 35/57 kB | 32/335 kB | 29/126 kB | 48/55 kBProgress (4): 36/57 kB | 32/335 kB | 29/126 kB | 48/55 kBProgress (4): 37/57 kB | 32/335 kB | 29/126 kB | 48/55 kBProgress (4): 37/57 kB | 33/335 kB | 29/126 kB | 48/55 kBProgress (4): 37/57 kB | 35/335 kB | 29/126 kB | 48/55 kBProgress (4): 37/57 kB | 35/335 kB | 30/126 kB | 48/55 kBProgress (4): 37/57 kB | 35/335 kB | 32/126 kB | 48/55 kBProgress (4): 39/57 kB | 35/335 kB | 32/126 kB | 48/55 kBProgress (4): 39/57 kB | 36/335 kB | 32/126 kB | 48/55 kBProgress (4): 39/57 kB | 37/335 kB | 32/126 kB | 48/55 kBProgress (4): 39/57 kB | 37/335 kB | 33/126 kB | 48/55 kBProgress (4): 39/57 kB | 37/335 kB | 33/126 kB | 52/55 kBProgress (4): 39/57 kB | 37/335 kB | 35/126 kB | 52/55 kBProgress (4): 39/57 kB | 37/335 kB | 35/126 kB | 55 kB   Progress (4): 40/57 kB | 37/335 kB | 35/126 kB | 55 kB                                                      Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-provider-api/3.5.3/wagon-provider-api-3.5.3.jar (55 kB at 396 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/4.10.0/plexus-archiver-4.10.0.jar
+Progress (3): 40/57 kB | 39/335 kB | 35/126 kBProgress (3): 40/57 kB | 39/335 kB | 36/126 kBProgress (3): 40/57 kB | 40/335 kB | 36/126 kBProgress (3): 40/57 kB | 40/335 kB | 37/126 kBProgress (3): 40/57 kB | 41/335 kB | 37/126 kBProgress (3): 44/57 kB | 41/335 kB | 37/126 kBProgress (3): 44/57 kB | 41/335 kB | 39/126 kBProgress (3): 44/57 kB | 43/335 kB | 39/126 kBProgress (3): 44/57 kB | 43/335 kB | 40/126 kBProgress (3): 44/57 kB | 44/335 kB | 40/126 kBProgress (3): 44/57 kB | 44/335 kB | 41/126 kBProgress (3): 49/57 kB | 44/335 kB | 41/126 kBProgress (3): 49/57 kB | 46/335 kB | 41/126 kBProgress (3): 49/57 kB | 46/335 kB | 43/126 kBProgress (3): 49/57 kB | 47/335 kB | 43/126 kBProgress (3): 49/57 kB | 47/335 kB | 44/126 kBProgress (3): 53/57 kB | 47/335 kB | 44/126 kBProgress (3): 53/57 kB | 48/335 kB | 44/126 kBProgress (3): 53/57 kB | 48/335 kB | 46/126 kBProgress (3): 53/57 kB | 50/335 kB | 46/126 kBProgress (3): 53/57 kB | 50/335 kB | 47/126 kBProgress (3): 53/57 kB | 51/335 kB | 47/126 kBProgress (3): 57/57 kB | 51/335 kB | 47/126 kBProgress (3): 57/57 kB | 51/335 kB | 48/126 kBProgress (3): 57 kB | 51/335 kB | 48/126 kB   Progress (3): 57 kB | 55/335 kB | 48/126 kBProgress (3): 57 kB | 59/335 kB | 48/126 kBProgress (4): 57 kB | 59/335 kB | 48/126 kB | 3.2/80 kBProgress (4): 57 kB | 64/335 kB | 48/126 kB | 3.2/80 kBProgress (4): 57 kB | 65/335 kB | 48/126 kB | 3.2/80 kBProgress (4): 57 kB | 65/335 kB | 48/126 kB | 11/80 kB                                                       Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-java/1.5.0/plexus-java-1.5.0.jar (57 kB at 70 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.26.2/commons-compress-1.26.2.jar
+Progress (3): 65/335 kB | 48/126 kB | 28/80 kBProgress (4): 65/335 kB | 48/126 kB | 28/80 kB | 3.8/225 kBProgress (4): 65/335 kB | 48/126 kB | 28/80 kB | 8.0/225 kBProgress (4): 69/335 kB | 48/126 kB | 28/80 kB | 8.0/225 kBProgress (4): 69/335 kB | 48/126 kB | 28/80 kB | 11/225 kB Progress (4): 73/335 kB | 48/126 kB | 28/80 kB | 11/225 kBProgress (4): 73/335 kB | 48/126 kB | 28/80 kB | 16/225 kBProgress (4): 77/335 kB | 48/126 kB | 28/80 kB | 16/225 kBProgress (4): 77/335 kB | 48/126 kB | 28/80 kB | 20/225 kBProgress (4): 77/335 kB | 48/126 kB | 28/80 kB | 24/225 kBProgress (4): 77/335 kB | 48/126 kB | 28/80 kB | 28/225 kBProgress (4): 77/335 kB | 50/126 kB | 28/80 kB | 28/225 kBProgress (4): 77/335 kB | 51/126 kB | 28/80 kB | 28/225 kBProgress (4): 82/335 kB | 51/126 kB | 28/80 kB | 28/225 kBProgress (4): 82/335 kB | 55/126 kB | 28/80 kB | 28/225 kBProgress (4): 82/335 kB | 59/126 kB | 28/80 kB | 28/225 kBProgress (4): 82/335 kB | 61/126 kB | 28/80 kB | 28/225 kBProgress (4): 86/335 kB | 61/126 kB | 28/80 kB | 28/225 kBProgress (4): 86/335 kB | 61/126 kB | 28/80 kB | 32/225 kBProgress (4): 90/335 kB | 61/126 kB | 28/80 kB | 32/225 kBProgress (4): 90/335 kB | 61/126 kB | 28/80 kB | 36/225 kBProgress (4): 94/335 kB | 61/126 kB | 28/80 kB | 36/225 kBProgress (4): 94/335 kB | 61/126 kB | 28/80 kB | 40/225 kBProgress (4): 98/335 kB | 61/126 kB | 28/80 kB | 40/225 kBProgress (4): 98/335 kB | 65/126 kB | 28/80 kB | 40/225 kBProgress (4): 103/335 kB | 65/126 kB | 28/80 kB | 40/225 kBProgress (4): 107/335 kB | 65/126 kB | 28/80 kB | 40/225 kBProgress (4): 111/335 kB | 65/126 kB | 28/80 kB | 40/225 kBProgress (4): 111/335 kB | 69/126 kB | 28/80 kB | 40/225 kBProgress (4): 111/335 kB | 73/126 kB | 28/80 kB | 40/225 kBProgress (4): 115/335 kB | 73/126 kB | 28/80 kB | 40/225 kBProgress (4): 115/335 kB | 77/126 kB | 28/80 kB | 40/225 kBProgress (4): 120/335 kB | 77/126 kB | 28/80 kB | 40/225 kBProgress (4): 120/335 kB | 82/126 kB | 28/80 kB | 40/225 kBProgress (4): 120/335 kB | 86/126 kB | 28/80 kB | 40/225 kBProgress (4): 124/335 kB | 86/126 kB | 28/80 kB | 40/225 kBProgress (4): 124/335 kB | 86/126 kB | 28/80 kB | 45/225 kBProgress (4): 124/335 kB | 86/126 kB | 28/80 kB | 49/225 kBProgress (4): 128/335 kB | 86/126 kB | 28/80 kB | 49/225 kBProgress (4): 128/335 kB | 86/126 kB | 28/80 kB | 53/225 kBProgress (4): 128/335 kB | 90/126 kB | 28/80 kB | 53/225 kBProgress (4): 130/335 kB | 90/126 kB | 28/80 kB | 53/225 kBProgress (4): 130/335 kB | 90/126 kB | 28/80 kB | 57/225 kBProgress (4): 130/335 kB | 94/126 kB | 28/80 kB | 57/225 kBProgress (4): 134/335 kB | 94/126 kB | 28/80 kB | 57/225 kBProgress (4): 134/335 kB | 99/126 kB | 28/80 kB | 57/225 kBProgress (4): 134/335 kB | 99/126 kB | 44/80 kB | 57/225 kBProgress (4): 134/335 kB | 103/126 kB | 44/80 kB | 57/225 kBProgress (4): 134/335 kB | 103/126 kB | 61/80 kB | 57/225 kBProgress (4): 134/335 kB | 103/126 kB | 77/80 kB | 57/225 kBProgress (4): 139/335 kB | 103/126 kB | 77/80 kB | 57/225 kBProgress (4): 139/335 kB | 103/126 kB | 80 kB | 57/225 kB   Progress (4): 139/335 kB | 103/126 kB | 80 kB | 62/225 kBProgress (4): 139/335 kB | 103/126 kB | 80 kB | 66/225 kB                                                         Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-io/3.5.1/plexus-io-3.5.1.jar (80 kB at 96 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/1.5.6-3/zstd-jni-1.5.6-3.jar
+Progress (3): 139/335 kB | 103/126 kB | 69/225 kBProgress (3): 143/335 kB | 103/126 kB | 69/225 kBProgress (3): 143/335 kB | 103/126 kB | 73/225 kBProgress (3): 143/335 kB | 103/126 kB | 77/225 kBProgress (3): 143/335 kB | 107/126 kB | 77/225 kBProgress (3): 143/335 kB | 107/126 kB | 81/225 kBProgress (3): 143/335 kB | 111/126 kB | 81/225 kBProgress (3): 143/335 kB | 111/126 kB | 86/225 kBProgress (3): 143/335 kB | 115/126 kB | 86/225 kBProgress (3): 143/335 kB | 115/126 kB | 90/225 kBProgress (3): 143/335 kB | 120/126 kB | 90/225 kBProgress (3): 147/335 kB | 120/126 kB | 90/225 kBProgress (3): 147/335 kB | 120/126 kB | 94/225 kBProgress (3): 147/335 kB | 124/126 kB | 94/225 kBProgress (3): 147/335 kB | 126 kB | 94/225 kB    Progress (3): 147/335 kB | 126 kB | 98/225 kBProgress (3): 147/335 kB | 126 kB | 103/225 kB                                              Downloaded from central: https://repo.maven.apache.org/maven2/org/ow2/asm/asm/9.8/asm-9.8.jar (126 kB at 150 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/1.4/plexus-interactivity-api-1.4.jar
+Progress (2): 147/335 kB | 107/225 kBProgress (2): 147/335 kB | 111/225 kBProgress (2): 147/335 kB | 115/225 kBProgress (2): 151/335 kB | 115/225 kBProgress (2): 151/335 kB | 119/225 kBProgress (2): 155/335 kB | 119/225 kBProgress (2): 155/335 kB | 124/225 kBProgress (2): 155/335 kB | 128/225 kBProgress (2): 160/335 kB | 128/225 kBProgress (2): 164/335 kB | 128/225 kBProgress (2): 164/335 kB | 144/225 kBProgress (2): 168/335 kB | 144/225 kBProgress (2): 172/335 kB | 144/225 kBProgress (2): 177/335 kB | 144/225 kBProgress (2): 177/335 kB | 161/225 kBProgress (2): 181/335 kB | 161/225 kBProgress (2): 185/335 kB | 161/225 kBProgress (2): 185/335 kB | 177/225 kBProgress (2): 189/335 kB | 177/225 kBProgress (2): 194/335 kB | 177/225 kBProgress (2): 196/335 kB | 177/225 kBProgress (2): 196/335 kB | 193/225 kBProgress (2): 200/335 kB | 193/225 kBProgress (2): 204/335 kB | 193/225 kBProgress (2): 204/335 kB | 200/225 kBProgress (2): 208/335 kB | 200/225 kBProgress (2): 213/335 kB | 200/225 kBProgress (2): 213/335 kB | 216/225 kBProgress (2): 213/335 kB | 225 kB    Progress (2): 229/335 kB | 225 kB                                 Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/4.10.0/plexus-archiver-4.10.0.jar (225 kB at 267 kB/s)
+Progress (1): 245/335 kBProgress (1): 262/335 kBProgress (1): 278/335 kBProgress (1): 294/335 kBProgress (1): 311/335 kBProgress (1): 327/335 kBProgress (1): 335 kB                        Downloaded from central: https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.11/commons-codec-1.11.jar (335 kB at 393 kB/s)
+Progress (1): 0/1.1 MBProgress (1): 0/1.1 MBProgress (1): 0/1.1 MBProgress (1): 0/1.1 MBProgress (1): 0/1.1 MBProgress (1): 0/1.1 MBProgress (1): 0/1.1 MBProgress (1): 0/1.1 MBProgress (1): 0/1.1 MBProgress (1): 0/1.1 MBProgress (1): 0/1.1 MBProgress (1): 0/1.1 MBProgress (1): 0.1/1.1 MBProgress (2): 0.1/1.1 MB | 0/6.7 MBProgress (2): 0.1/1.1 MB | 0/6.7 MBProgress (2): 0.1/1.1 MB | 0/6.7 MBProgress (2): 0.1/1.1 MB | 0/6.7 MBProgress (2): 0.1/1.1 MB | 0/6.7 MBProgress (2): 0.1/1.1 MB | 0/6.7 MBProgress (2): 0.1/1.1 MB | 0/6.7 MBProgress (3): 0.1/1.1 MB | 0/6.7 MB | 3.8/10 kBProgress (3): 0.1/1.1 MB | 0.1/6.7 MB | 3.8/10 kBProgress (3): 0.1/1.1 MB | 0.1/6.7 MB | 7.2/10 kBProgress (3): 0.1/1.1 MB | 0.1/6.7 MB | 10 kB    Progress (3): 0.1/1.1 MB | 0.1/6.7 MB | 10 kB                                             Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/1.4/plexus-interactivity-api-1.4.jar (10 kB at 11 kB/s)
+Progress (2): 0.1/1.1 MB | 0.1/6.7 MBProgress (2): 0.1/1.1 MB | 0.1/6.7 MBProgress (2): 0.1/1.1 MB | 0.1/6.7 MBProgress (2): 0.1/1.1 MB | 0.1/6.7 MBProgress (2): 0.1/1.1 MB | 0.1/6.7 MBProgress (2): 0.1/1.1 MB | 0.1/6.7 MBProgress (2): 0.1/1.1 MB | 0.1/6.7 MBProgress (2): 0.1/1.1 MB | 0.2/6.7 MBProgress (2): 0.1/1.1 MB | 0.2/6.7 MBProgress (2): 0.1/1.1 MB | 0.2/6.7 MBProgress (2): 0.1/1.1 MB | 0.2/6.7 MBProgress (2): 0.1/1.1 MB | 0.2/6.7 MBProgress (2): 0.1/1.1 MB | 0.2/6.7 MBProgress (2): 0.1/1.1 MB | 0.2/6.7 MBProgress (2): 0.1/1.1 MB | 0.2/6.7 MBProgress (2): 0.1/1.1 MB | 0.2/6.7 MBProgress (2): 0.1/1.1 MB | 0.2/6.7 MBProgress (2): 0.1/1.1 MB | 0.2/6.7 MBProgress (2): 0.1/1.1 MB | 0.2/6.7 MBProgress (2): 0.1/1.1 MB | 0.2/6.7 MBProgress (2): 0.1/1.1 MB | 0.3/6.7 MBProgress (2): 0.1/1.1 MB | 0.3/6.7 MBProgress (2): 0.1/1.1 MB | 0.3/6.7 MBProgress (2): 0.1/1.1 MB | 0.3/6.7 MBProgress (2): 0.1/1.1 MB | 0.3/6.7 MBProgress (2): 0.1/1.1 MB | 0.3/6.7 MBProgress (2): 0.1/1.1 MB | 0.3/6.7 MBProgress (2): 0.1/1.1 MB | 0.3/6.7 MBProgress (2): 0.1/1.1 MB | 0.3/6.7 MBProgress (2): 0.1/1.1 MB | 0.3/6.7 MBProgress (2): 0.1/1.1 MB | 0.4/6.7 MBProgress (2): 0.1/1.1 MB | 0.4/6.7 MBProgress (2): 0.1/1.1 MB | 0.4/6.7 MBProgress (2): 0.1/1.1 MB | 0.4/6.7 MBProgress (2): 0.1/1.1 MB | 0.4/6.7 MBProgress (2): 0.1/1.1 MB | 0.4/6.7 MBProgress (2): 0.1/1.1 MB | 0.4/6.7 MBProgress (2): 0.1/1.1 MB | 0.4/6.7 MBProgress (2): 0.1/1.1 MB | 0.4/6.7 MBProgress (2): 0.1/1.1 MB | 0.4/6.7 MBProgress (2): 0.1/1.1 MB | 0.4/6.7 MBProgress (2): 0.1/1.1 MB | 0.4/6.7 MBProgress (2): 0.1/1.1 MB | 0.5/6.7 MBProgress (2): 0.1/1.1 MB | 0.5/6.7 MBProgress (2): 0.2/1.1 MB | 0.5/6.7 MBProgress (2): 0.2/1.1 MB | 0.5/6.7 MBProgress (2): 0.2/1.1 MB | 0.5/6.7 MBProgress (2): 0.2/1.1 MB | 0.5/6.7 MBProgress (2): 0.2/1.1 MB | 0.5/6.7 MBProgress (2): 0.2/1.1 MB | 0.6/6.7 MBProgress (2): 0.2/1.1 MB | 0.6/6.7 MBProgress (2): 0.2/1.1 MB | 0.6/6.7 MBProgress (2): 0.2/1.1 MB | 0.6/6.7 MBProgress (2): 0.2/1.1 MB | 0.6/6.7 MBProgress (2): 0.2/1.1 MB | 0.6/6.7 MBProgress (2): 0.2/1.1 MB | 0.6/6.7 MBProgress (2): 0.2/1.1 MB | 0.6/6.7 MBProgress (2): 0.2/1.1 MB | 0.6/6.7 MBProgress (2): 0.2/1.1 MB | 0.6/6.7 MBProgress (2): 0.2/1.1 MB | 0.7/6.7 MBProgress (2): 0.2/1.1 MB | 0.7/6.7 MBProgress (2): 0.2/1.1 MB | 0.7/6.7 MBProgress (2): 0.2/1.1 MB | 0.7/6.7 MBProgress (2): 0.2/1.1 MB | 0.7/6.7 MBProgress (2): 0.2/1.1 MB | 0.7/6.7 MBProgress (2): 0.2/1.1 MB | 0.7/6.7 MBProgress (2): 0.2/1.1 MB | 0.7/6.7 MBProgress (2): 0.2/1.1 MB | 0.7/6.7 MBProgress (2): 0.3/1.1 MB | 0.7/6.7 MBProgress (2): 0.3/1.1 MB | 0.8/6.7 MBProgress (2): 0.3/1.1 MB | 0.8/6.7 MBProgress (2): 0.3/1.1 MB | 0.8/6.7 MBProgress (2): 0.3/1.1 MB | 0.8/6.7 MBProgress (2): 0.3/1.1 MB | 0.8/6.7 MBProgress (2): 0.3/1.1 MB | 0.8/6.7 MBProgress (2): 0.3/1.1 MB | 0.8/6.7 MBProgress (2): 0.3/1.1 MB | 0.8/6.7 MBProgress (2): 0.3/1.1 MB | 0.8/6.7 MBProgress (2): 0.3/1.1 MB | 0.9/6.7 MBProgress (2): 0.3/1.1 MB | 0.9/6.7 MBProgress (2): 0.3/1.1 MB | 0.9/6.7 MBProgress (2): 0.3/1.1 MB | 0.9/6.7 MBProgress (2): 0.3/1.1 MB | 0.9/6.7 MBProgress (2): 0.3/1.1 MB | 0.9/6.7 MBProgress (2): 0.3/1.1 MB | 0.9/6.7 MBProgress (2): 0.3/1.1 MB | 0.9/6.7 MBProgress (2): 0.4/1.1 MB | 0.9/6.7 MBProgress (2): 0.4/1.1 MB | 1.0/6.7 MBProgress (2): 0.4/1.1 MB | 1.0/6.7 MBProgress (2): 0.4/1.1 MB | 1.0/6.7 MBProgress (2): 0.4/1.1 MB | 1.0/6.7 MBProgress (2): 0.4/1.1 MB | 1.0/6.7 MBProgress (2): 0.4/1.1 MB | 1.0/6.7 MBProgress (2): 0.4/1.1 MB | 1.0/6.7 MBProgress (2): 0.4/1.1 MB | 1.0/6.7 MBProgress (2): 0.4/1.1 MB | 1.0/6.7 MBProgress (2): 0.4/1.1 MB | 1.0/6.7 MBProgress (2): 0.4/1.1 MB | 1.1/6.7 MBProgress (2): 0.4/1.1 MB | 1.1/6.7 MBProgress (2): 0.4/1.1 MB | 1.1/6.7 MBProgress (2): 0.4/1.1 MB | 1.1/6.7 MBProgress (2): 0.4/1.1 MB | 1.1/6.7 MBProgress (2): 0.4/1.1 MB | 1.1/6.7 MBProgress (2): 0.4/1.1 MB | 1.1/6.7 MBProgress (2): 0.5/1.1 MB | 1.1/6.7 MBProgress (2): 0.5/1.1 MB | 1.1/6.7 MBProgress (2): 0.5/1.1 MB | 1.1/6.7 MBProgress (2): 0.5/1.1 MB | 1.2/6.7 MBProgress (2): 0.5/1.1 MB | 1.2/6.7 MBProgress (2): 0.5/1.1 MB | 1.2/6.7 MBProgress (2): 0.5/1.1 MB | 1.2/6.7 MBProgress (2): 0.5/1.1 MB | 1.2/6.7 MBProgress (2): 0.5/1.1 MB | 1.2/6.7 MBProgress (2): 0.6/1.1 MB | 1.2/6.7 MBProgress (2): 0.6/1.1 MB | 1.2/6.7 MBProgress (2): 0.6/1.1 MB | 1.2/6.7 MBProgress (2): 0.6/1.1 MB | 1.2/6.7 MBProgress (2): 0.6/1.1 MB | 1.2/6.7 MBProgress (2): 0.6/1.1 MB | 1.2/6.7 MBProgress (2): 0.6/1.1 MB | 1.2/6.7 MBProgress (2): 0.6/1.1 MB | 1.2/6.7 MBProgress (2): 0.6/1.1 MB | 1.3/6.7 MBProgress (2): 0.6/1.1 MB | 1.3/6.7 MBProgress (2): 0.6/1.1 MB | 1.3/6.7 MBProgress (2): 0.6/1.1 MB | 1.3/6.7 MBProgress (2): 0.6/1.1 MB | 1.3/6.7 MBProgress (2): 0.7/1.1 MB | 1.3/6.7 MBProgress (2): 0.7/1.1 MB | 1.3/6.7 MBProgress (2): 0.7/1.1 MB | 1.3/6.7 MBProgress (2): 0.7/1.1 MB | 1.3/6.7 MBProgress (2): 0.7/1.1 MB | 1.3/6.7 MBProgress (2): 0.7/1.1 MB | 1.3/6.7 MBProgress (2): 0.7/1.1 MB | 1.4/6.7 MBProgress (2): 0.7/1.1 MB | 1.4/6.7 MBProgress (2): 0.7/1.1 MB | 1.4/6.7 MBProgress (2): 0.7/1.1 MB | 1.4/6.7 MBProgress (2): 0.7/1.1 MB | 1.4/6.7 MBProgress (2): 0.7/1.1 MB | 1.4/6.7 MBProgress (2): 0.7/1.1 MB | 1.4/6.7 MBProgress (2): 0.7/1.1 MB | 1.5/6.7 MBProgress (2): 0.7/1.1 MB | 1.5/6.7 MBProgress (2): 0.7/1.1 MB | 1.5/6.7 MBProgress (2): 0.7/1.1 MB | 1.5/6.7 MBProgress (2): 0.7/1.1 MB | 1.5/6.7 MBProgress (2): 0.7/1.1 MB | 1.5/6.7 MBProgress (2): 0.7/1.1 MB | 1.5/6.7 MBProgress (2): 0.7/1.1 MB | 1.5/6.7 MBProgress (2): 0.8/1.1 MB | 1.5/6.7 MBProgress (2): 0.8/1.1 MB | 1.6/6.7 MBProgress (2): 0.8/1.1 MB | 1.6/6.7 MBProgress (2): 0.8/1.1 MB | 1.6/6.7 MBProgress (2): 0.8/1.1 MB | 1.6/6.7 MBProgress (2): 0.8/1.1 MB | 1.6/6.7 MBProgress (2): 0.8/1.1 MB | 1.6/6.7 MBProgress (2): 0.8/1.1 MB | 1.6/6.7 MBProgress (2): 0.8/1.1 MB | 1.6/6.7 MBProgress (2): 0.8/1.1 MB | 1.6/6.7 MBProgress (2): 0.8/1.1 MB | 1.7/6.7 MBProgress (2): 0.8/1.1 MB | 1.7/6.7 MBProgress (2): 0.8/1.1 MB | 1.7/6.7 MBProgress (2): 0.8/1.1 MB | 1.7/6.7 MBProgress (2): 0.8/1.1 MB | 1.7/6.7 MBProgress (2): 0.9/1.1 MB | 1.7/6.7 MBProgress (2): 0.9/1.1 MB | 1.7/6.7 MBProgress (2): 0.9/1.1 MB | 1.7/6.7 MBProgress (2): 0.9/1.1 MB | 1.7/6.7 MBProgress (2): 0.9/1.1 MB | 1.7/6.7 MBProgress (2): 0.9/1.1 MB | 1.7/6.7 MBProgress (2): 0.9/1.1 MB | 1.8/6.7 MBProgress (2): 0.9/1.1 MB | 1.8/6.7 MBProgress (2): 0.9/1.1 MB | 1.8/6.7 MBProgress (2): 0.9/1.1 MB | 1.8/6.7 MBProgress (2): 0.9/1.1 MB | 1.8/6.7 MBProgress (2): 0.9/1.1 MB | 1.8/6.7 MBProgress (2): 0.9/1.1 MB | 1.8/6.7 MBProgress (2): 1.0/1.1 MB | 1.8/6.7 MBProgress (2): 1.0/1.1 MB | 1.8/6.7 MBProgress (2): 1.0/1.1 MB | 1.8/6.7 MBProgress (2): 1.0/1.1 MB | 1.8/6.7 MBProgress (2): 1.0/1.1 MB | 1.9/6.7 MBProgress (2): 1.0/1.1 MB | 1.9/6.7 MBProgress (2): 1.0/1.1 MB | 1.9/6.7 MBProgress (2): 1.0/1.1 MB | 1.9/6.7 MBProgress (2): 1.0/1.1 MB | 1.9/6.7 MBProgress (2): 1.0/1.1 MB | 1.9/6.7 MBProgress (2): 1.0/1.1 MB | 1.9/6.7 MBProgress (2): 1.0/1.1 MB | 1.9/6.7 MBProgress (2): 1.0/1.1 MB | 1.9/6.7 MBProgress (2): 1.0/1.1 MB | 1.9/6.7 MBProgress (2): 1.0/1.1 MB | 1.9/6.7 MBProgress (2): 1.0/1.1 MB | 1.9/6.7 MBProgress (2): 1.1/1.1 MB | 1.9/6.7 MBProgress (2): 1.1/1.1 MB | 2.0/6.7 MBProgress (2): 1.1/1.1 MB | 2.0/6.7 MBProgress (2): 1.1 MB | 2.0/6.7 MB    Progress (2): 1.1 MB | 2.0/6.7 MB                                 Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.26.2/commons-compress-1.26.2.jar (1.1 MB at 903 kB/s)
+Progress (1): 2.0/6.7 MBProgress (1): 2.0/6.7 MBProgress (1): 2.0/6.7 MBProgress (1): 2.0/6.7 MBProgress (1): 2.1/6.7 MBProgress (1): 2.1/6.7 MBProgress (1): 2.1/6.7 MBProgress (1): 2.1/6.7 MBProgress (1): 2.1/6.7 MBProgress (1): 2.1/6.7 MBProgress (1): 2.2/6.7 MBProgress (1): 2.2/6.7 MBProgress (1): 2.2/6.7 MBProgress (1): 2.2/6.7 MBProgress (1): 2.2/6.7 MBProgress (1): 2.2/6.7 MBProgress (1): 2.3/6.7 MBProgress (1): 2.3/6.7 MBProgress (1): 2.3/6.7 MBProgress (1): 2.3/6.7 MBProgress (1): 2.3/6.7 MBProgress (1): 2.3/6.7 MBProgress (1): 2.4/6.7 MBProgress (1): 2.4/6.7 MBProgress (1): 2.4/6.7 MBProgress (1): 2.4/6.7 MBProgress (1): 2.4/6.7 MBProgress (1): 2.4/6.7 MBProgress (1): 2.5/6.7 MBProgress (1): 2.5/6.7 MBProgress (1): 2.5/6.7 MBProgress (1): 2.5/6.7 MBProgress (1): 2.5/6.7 MBProgress (1): 2.5/6.7 MBProgress (1): 2.6/6.7 MBProgress (1): 2.6/6.7 MBProgress (1): 2.6/6.7 MBProgress (1): 2.6/6.7 MBProgress (1): 2.6/6.7 MBProgress (1): 2.6/6.7 MBProgress (1): 2.7/6.7 MBProgress (1): 2.7/6.7 MBProgress (1): 2.7/6.7 MBProgress (1): 2.7/6.7 MBProgress (1): 2.7/6.7 MBProgress (1): 2.7/6.7 MBProgress (1): 2.8/6.7 MBProgress (1): 2.8/6.7 MBProgress (1): 2.8/6.7 MBProgress (1): 2.8/6.7 MBProgress (1): 2.8/6.7 MBProgress (1): 2.8/6.7 MBProgress (1): 2.9/6.7 MBProgress (1): 2.9/6.7 MBProgress (1): 2.9/6.7 MBProgress (1): 2.9/6.7 MBProgress (1): 2.9/6.7 MBProgress (1): 2.9/6.7 MBProgress (1): 2.9/6.7 MBProgress (1): 3.0/6.7 MBProgress (1): 3.0/6.7 MBProgress (1): 3.0/6.7 MBProgress (1): 3.0/6.7 MBProgress (1): 3.0/6.7 MBProgress (1): 3.0/6.7 MBProgress (1): 3.1/6.7 MBProgress (1): 3.1/6.7 MBProgress (1): 3.1/6.7 MBProgress (1): 3.1/6.7 MBProgress (1): 3.1/6.7 MBProgress (1): 3.1/6.7 MBProgress (1): 3.1/6.7 MBProgress (1): 3.2/6.7 MBProgress (1): 3.2/6.7 MBProgress (1): 3.2/6.7 MBProgress (1): 3.2/6.7 MBProgress (1): 3.2/6.7 MBProgress (1): 3.2/6.7 MBProgress (1): 3.3/6.7 MBProgress (1): 3.3/6.7 MBProgress (1): 3.3/6.7 MBProgress (1): 3.3/6.7 MBProgress (1): 3.3/6.7 MBProgress (1): 3.3/6.7 MBProgress (1): 3.4/6.7 MBProgress (1): 3.4/6.7 MBProgress (1): 3.4/6.7 MBProgress (1): 3.4/6.7 MBProgress (1): 3.4/6.7 MBProgress (1): 3.4/6.7 MBProgress (1): 3.5/6.7 MBProgress (1): 3.5/6.7 MBProgress (1): 3.5/6.7 MBProgress (1): 3.5/6.7 MBProgress (1): 3.5/6.7 MBProgress (1): 3.5/6.7 MBProgress (1): 3.6/6.7 MBProgress (1): 3.6/6.7 MBProgress (1): 3.6/6.7 MBProgress (1): 3.6/6.7 MBProgress (1): 3.6/6.7 MBProgress (1): 3.6/6.7 MBProgress (1): 3.7/6.7 MBProgress (1): 3.7/6.7 MBProgress (1): 3.7/6.7 MBProgress (1): 3.7/6.7 MBProgress (1): 3.7/6.7 MBProgress (1): 3.7/6.7 MBProgress (1): 3.8/6.7 MBProgress (1): 3.8/6.7 MBProgress (1): 3.8/6.7 MBProgress (1): 3.8/6.7 MBProgress (1): 3.8/6.7 MBProgress (1): 3.8/6.7 MBProgress (1): 3.9/6.7 MBProgress (1): 3.9/6.7 MBProgress (1): 3.9/6.7 MBProgress (1): 3.9/6.7 MBProgress (1): 3.9/6.7 MBProgress (1): 3.9/6.7 MBProgress (1): 4.0/6.7 MBProgress (1): 4.0/6.7 MBProgress (1): 4.0/6.7 MBProgress (1): 4.0/6.7 MBProgress (1): 4.0/6.7 MBProgress (1): 4.0/6.7 MBProgress (1): 4.0/6.7 MBProgress (1): 4.1/6.7 MBProgress (1): 4.1/6.7 MBProgress (1): 4.1/6.7 MBProgress (1): 4.1/6.7 MBProgress (1): 4.1/6.7 MBProgress (1): 4.1/6.7 MBProgress (1): 4.2/6.7 MBProgress (1): 4.2/6.7 MBProgress (1): 4.2/6.7 MBProgress (1): 4.2/6.7 MBProgress (1): 4.2/6.7 MBProgress (1): 4.2/6.7 MBProgress (1): 4.3/6.7 MBProgress (1): 4.3/6.7 MBProgress (1): 4.3/6.7 MBProgress (1): 4.3/6.7 MBProgress (1): 4.3/6.7 MBProgress (1): 4.3/6.7 MBProgress (1): 4.4/6.7 MBProgress (1): 4.4/6.7 MBProgress (1): 4.4/6.7 MBProgress (1): 4.4/6.7 MBProgress (1): 4.4/6.7 MBProgress (1): 4.4/6.7 MBProgress (1): 4.5/6.7 MBProgress (1): 4.5/6.7 MBProgress (1): 4.5/6.7 MBProgress (1): 4.5/6.7 MBProgress (1): 4.5/6.7 MBProgress (1): 4.5/6.7 MBProgress (1): 4.6/6.7 MBProgress (1): 4.6/6.7 MBProgress (1): 4.6/6.7 MBProgress (1): 4.6/6.7 MBProgress (1): 4.6/6.7 MBProgress (1): 4.6/6.7 MBProgress (1): 4.7/6.7 MBProgress (1): 4.7/6.7 MBProgress (1): 4.7/6.7 MBProgress (1): 4.7/6.7 MBProgress (1): 4.7/6.7 MBProgress (1): 4.7/6.7 MBProgress (1): 4.7/6.7 MBProgress (1): 4.8/6.7 MBProgress (1): 4.8/6.7 MBProgress (1): 4.8/6.7 MBProgress (1): 4.8/6.7 MBProgress (1): 4.8/6.7 MBProgress (1): 4.8/6.7 MBProgress (1): 4.8/6.7 MBProgress (1): 4.9/6.7 MBProgress (1): 4.9/6.7 MBProgress (1): 4.9/6.7 MBProgress (1): 4.9/6.7 MBProgress (1): 4.9/6.7 MBProgress (1): 4.9/6.7 MBProgress (1): 5.0/6.7 MBProgress (1): 5.0/6.7 MBProgress (1): 5.0/6.7 MBProgress (1): 5.0/6.7 MBProgress (1): 5.0/6.7 MBProgress (1): 5.0/6.7 MBProgress (1): 5.1/6.7 MBProgress (1): 5.1/6.7 MBProgress (1): 5.1/6.7 MBProgress (1): 5.1/6.7 MBProgress (1): 5.1/6.7 MBProgress (1): 5.1/6.7 MBProgress (1): 5.1/6.7 MBProgress (1): 5.2/6.7 MBProgress (1): 5.2/6.7 MBProgress (1): 5.2/6.7 MBProgress (1): 5.2/6.7 MBProgress (1): 5.2/6.7 MBProgress (1): 5.2/6.7 MBProgress (1): 5.3/6.7 MBProgress (1): 5.3/6.7 MBProgress (1): 5.3/6.7 MBProgress (1): 5.3/6.7 MBProgress (1): 5.3/6.7 MBProgress (1): 5.3/6.7 MBProgress (1): 5.4/6.7 MBProgress (1): 5.4/6.7 MBProgress (1): 5.4/6.7 MBProgress (1): 5.4/6.7 MBProgress (1): 5.4/6.7 MBProgress (1): 5.4/6.7 MBProgress (1): 5.5/6.7 MBProgress (1): 5.5/6.7 MBProgress (1): 5.5/6.7 MBProgress (1): 5.5/6.7 MBProgress (1): 5.5/6.7 MBProgress (1): 5.5/6.7 MBProgress (1): 5.5/6.7 MBProgress (1): 5.6/6.7 MBProgress (1): 5.6/6.7 MBProgress (1): 5.6/6.7 MBProgress (1): 5.6/6.7 MBProgress (1): 5.6/6.7 MBProgress (1): 5.6/6.7 MBProgress (1): 5.7/6.7 MBProgress (1): 5.7/6.7 MBProgress (1): 5.7/6.7 MBProgress (1): 5.7/6.7 MBProgress (1): 5.7/6.7 MBProgress (1): 5.7/6.7 MBProgress (1): 5.8/6.7 MBProgress (1): 5.8/6.7 MBProgress (1): 5.8/6.7 MBProgress (1): 5.8/6.7 MBProgress (1): 5.8/6.7 MBProgress (1): 5.8/6.7 MBProgress (1): 5.8/6.7 MBProgress (1): 5.9/6.7 MBProgress (1): 5.9/6.7 MBProgress (1): 5.9/6.7 MBProgress (1): 5.9/6.7 MBProgress (1): 5.9/6.7 MBProgress (1): 5.9/6.7 MBProgress (1): 6.0/6.7 MBProgress (1): 6.0/6.7 MBProgress (1): 6.0/6.7 MBProgress (1): 6.0/6.7 MBProgress (1): 6.0/6.7 MBProgress (1): 6.0/6.7 MBProgress (1): 6.0/6.7 MBProgress (1): 6.1/6.7 MBProgress (1): 6.1/6.7 MBProgress (1): 6.1/6.7 MBProgress (1): 6.1/6.7 MBProgress (1): 6.1/6.7 MBProgress (1): 6.1/6.7 MBProgress (1): 6.2/6.7 MBProgress (1): 6.2/6.7 MBProgress (1): 6.2/6.7 MBProgress (1): 6.2/6.7 MBProgress (1): 6.2/6.7 MBProgress (1): 6.2/6.7 MBProgress (1): 6.3/6.7 MBProgress (1): 6.3/6.7 MBProgress (1): 6.3/6.7 MBProgress (1): 6.3/6.7 MBProgress (1): 6.3/6.7 MBProgress (1): 6.3/6.7 MBProgress (1): 6.3/6.7 MBProgress (1): 6.4/6.7 MBProgress (1): 6.4/6.7 MBProgress (1): 6.4/6.7 MBProgress (1): 6.4/6.7 MBProgress (1): 6.4/6.7 MBProgress (1): 6.4/6.7 MBProgress (1): 6.5/6.7 MBProgress (1): 6.5/6.7 MBProgress (1): 6.5/6.7 MBProgress (1): 6.5/6.7 MBProgress (1): 6.5/6.7 MBProgress (1): 6.5/6.7 MBProgress (1): 6.6/6.7 MBProgress (1): 6.6/6.7 MBProgress (1): 6.6/6.7 MBProgress (1): 6.6/6.7 MBProgress (1): 6.6/6.7 MBProgress (1): 6.6/6.7 MBProgress (1): 6.7 MB                        Downloaded from central: https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/1.5.6-3/zstd-jni-1.5.6-3.jar (6.7 MB at 4.2 MB/s)
+[WARNING] Javadoc Warnings
+[WARNING] warning: [incubating] using incubating module(s): jdk.incubator.vector
+[WARNING] warning: [incubating] using incubating module(s): jdk.incubator.vector
+[WARNING] 2 warnings
+[INFO] Building jar: /home/ivan/opencode/trino/core/trino-main/target/trino-main-485-SNAPSHOT-javadoc.jar
+[INFO] 
+[INFO] -----------------------< io.trino:trino-iceberg >-----------------------
+[INFO] Building trino-iceberg 485-SNAPSHOT                                [2/3]
+[INFO]   from /home/ivan/opencode/trino/plugin/trino-iceberg/pom.xml
+[INFO] ----------------------------[ trino-plugin ]----------------------------
+[INFO] 
+[INFO] --- enforcer:3.7.0:enforce (default) @ trino-iceberg ---
+[INFO] Rule 0: org.apache.maven.enforcer.rules.dependency.BannedDependencies passed
+[INFO] Rule 1: org.apache.maven.enforcer.rules.dependency.BannedDependencies passed
+[INFO] Rule 2: org.apache.maven.enforcer.rules.RequireProfileIdsExist passed
+[INFO] Rule 3: org.codehaus.mojo.extraenforcer.model.RequirePropertyDiverges passed
+[INFO] Rule 4: org.apache.maven.enforcer.rules.property.RequireProperty passed
+[INFO] Rule 6: org.apache.maven.enforcer.rules.BanDuplicatePomDependencyVersions passed
+[INFO] Rule 7: org.apache.maven.enforcer.rules.dependency.RequireUpperBoundDeps passed
+[INFO] Rule 10: org.codehaus.mojo.extraenforcer.dependencies.EnforceBytecodeVersion passed
+[INFO] Rule 11: org.apache.maven.enforcer.rules.RequirePluginVersions passed
+[INFO] Rule 12: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 13: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 14: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 15: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 16: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 17: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 18: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] 
+[INFO] --- enforcer:3.7.0:enforce (junit-extensions) @ trino-iceberg ---
+[INFO] Rule 0: io.airlift.airbase.RequireJunitExtensions passed
+[INFO] 
+[INFO] --- enforcer:3.7.0:enforce (trino-restrict-imports) @ trino-iceberg ---
+[INFO] Rule 0: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 1: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 2: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 3: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] 
+[INFO] --- sortpom:4.0.0:verify (default) @ trino-iceberg ---
+[INFO] Verifying file /home/ivan/opencode/trino/plugin/trino-iceberg/pom.xml
+[INFO] 
+[INFO] --- license:5.1.2:check (default) @ trino-iceberg ---
+[INFO] Checking licenses...
+[INFO] License check: 494 file(s) checked (OK: 494, Missing: 0, Unknown: 0)
+[INFO] 
+[INFO] --- airstyle:10:check (airstyle) @ trino-iceberg ---
+[INFO] All 494 files are already formatted
+[INFO] 
+[INFO] --- checkstyle:3.6.0:check (checkstyle) @ trino-iceberg ---
+[INFO] You have 0 Checkstyle violations.
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-iceberg ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-iceberg ---
+[INFO] 
+[INFO] --- jacoco:0.8.16:prepare-agent (default) @ trino-iceberg ---
+[INFO] Skipping JaCoCo execution because property jacoco.skip is set.
+[INFO] 
+[INFO] --- antlr4:4.13.2:antlr4 (default) @ trino-iceberg ---
+[INFO] No ANTLR 4 grammars to compile in /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/antlr4
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ trino-iceberg ---
+[INFO] skip non existing resourceDirectory /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.16.0:compile (default-compile) @ trino-iceberg ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- trino:26:generate-service-descriptor (default-generate-service-descriptor) @ trino-iceberg ---
+[INFO] Wrote io.trino.plugin.iceberg.IcebergPlugin to /home/ivan/opencode/trino/plugin/trino-iceberg/target/trino-iceberg-485-SNAPSHOT-services.jar
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ trino-iceberg ---
+[INFO] Copying 98 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ trino-iceberg ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 217 source files with javac [debug deprecation parameters release 25] to target/test-classes
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/BaseIcebergConnectorTest.java:[1956,21] nonTrinoExceptionFailure() in io.trino.sql.query.QueryAssertions.QueryAssert has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/IcebergTestUtils.java:[349,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/BaseIcebergSystemTables.java:[835,48] non-varargs call of varargs method with inexact argument type for last parameter;
+  cast to java.lang.Object for a varargs call
+  cast to java.lang.Object[] for a non-varargs call and to suppress this warning
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[56,17] setUseFileSizeFromMetadata(boolean) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[73,17] setHideMaterializedViewStorageTable(boolean) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[74,17] setMaterializedViewsStorageSchema(java.lang.String) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[156,17] setUseFileSizeFromMetadata(boolean) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[173,17] setHideMaterializedViewStorageTable(boolean) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[174,17] setMaterializedViewsStorageSchema(java.lang.String) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[206,25] setHideMaterializedViewStorageTable(boolean) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[207,25] setMaterializedViewsStorageSchema(java.lang.String) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergMaterializedViewSummary.java:[239,35] removedDataFiles(org.apache.iceberg.io.FileIO) in org.apache.iceberg.Snapshot has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergMaterializedViewSummary.java:[233,35] addedDataFiles(org.apache.iceberg.io.FileIO) in org.apache.iceberg.Snapshot has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergMergeAppend.java:[68,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergOrcMetricsCollection.java:[108,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergPageSourceProvider.java:[280,34] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergRegisterTableProcedure.java:[103,35] TestingIcebergPlugin(java.nio.file.Path,java.util.function.Supplier<java.util.Optional<com.google.inject.Module>>) in io.trino.plugin.iceberg.TestingIcebergPlugin has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSplitSource.java:[170,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSplitSource.java:[394,31] rewriteFiles(java.util.Set<org.apache.iceberg.DataFile>,java.util.Set<org.apache.iceberg.DataFile>) in org.apache.iceberg.RewriteFiles has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergStatistics.java:[686,17] nonTrinoExceptionFailure() in io.trino.sql.query.QueryAssertions.QueryAssert has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergStatistics.java:[689,17] nonTrinoExceptionFailure() in io.trino.sql.query.QueryAssertions.QueryAssert has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/file/TestIcebergFileMetastoreCreateTableFailure.java:[156,35] TestingIcebergPlugin(java.nio.file.Path,java.util.function.Supplier<java.util.Optional<com.google.inject.Module>>) in io.trino.plugin.iceberg.TestingIcebergPlugin has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/file/TestTrinoHiveCatalogWithFileMetastore.java:[122,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestIcebergGlueAccessDeniedException.java:[68,35] TestingIcebergPlugin(java.nio.file.Path,java.util.function.Supplier<java.util.Optional<com.google.inject.Module>>) in io.trino.plugin.iceberg.TestingIcebergPlugin has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestIcebergGlueTableOperationsCreateTableFailure.java:[128,35] TestingIcebergPlugin(java.nio.file.Path,java.util.function.Supplier<java.util.Optional<com.google.inject.Module>>) in io.trino.plugin.iceberg.TestingIcebergPlugin has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestIcebergGlueTableOperationsInsertFailure.java:[99,35] TestingIcebergPlugin(java.nio.file.Path,java.util.function.Supplier<java.util.Optional<com.google.inject.Module>>) in io.trino.plugin.iceberg.TestingIcebergPlugin has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestTrinoGlueCatalog.java:[131,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestTrinoGlueCatalog.java:[279,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-only (default) @ trino-iceberg ---
+[INFO] No dependency problems found
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-duplicate (default) @ trino-iceberg ---
+[INFO] No duplicate dependencies found in <dependencies/> or in <dependencyManagement/>
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-exclusions (default) @ trino-iceberg ---
+[INFO] No problems with dependencies exclusions
+[INFO] 
+[INFO] --- duplicate-finder:2.0.1:check (default) @ trino-iceberg ---
+[INFO] Checking compile classpath
+[INFO] Checking runtime classpath
+[INFO] Checking test classpath
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer) @ trino-iceberg ---
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer-production-code) @ trino-iceberg ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-test) @ trino-iceberg ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jacoco:0.8.16:report (report) @ trino-iceberg ---
+[INFO] Skipping JaCoCo execution because property jacoco.skip is set.
+[INFO] 
+[INFO] --- trino:26:check-spi-dependencies (default-check-spi-dependencies) @ trino-iceberg ---
+[INFO] 
+[INFO] --- jar:3.5.1:jar (default-jar) @ trino-iceberg ---
+[INFO] Building jar: /home/ivan/opencode/trino/plugin/trino-iceberg/target/trino-iceberg-485-SNAPSHOT.jar
+[INFO] 
+[INFO] --- trino:26:package-trino-plugin (default-package-trino-plugin) @ trino-iceberg ---
+[INFO] Created Trino plugin package: trino-iceberg-485-SNAPSHOT.zip
+[INFO] 
+[INFO] --- jar:3.5.1:test-jar (attach-tests) @ trino-iceberg ---
+[INFO] Building jar: /home/ivan/opencode/trino/plugin/trino-iceberg/target/trino-iceberg-485-SNAPSHOT-tests.jar
+[INFO] 
+[INFO] --- jar:3.5.1:test-jar (default) @ trino-iceberg ---
+[WARNING] artifact io.trino:trino-iceberg:test-jar:tests:485-SNAPSHOT already attached, replace previous instance
+[INFO] 
+[INFO] --- source:3.4.0:jar-no-fork (attach-sources) @ trino-iceberg ---
+[INFO] Building jar: /home/ivan/opencode/trino/plugin/trino-iceberg/target/trino-iceberg-485-SNAPSHOT-sources.jar
+[INFO] 
+[INFO] --- source:3.4.0:test-jar-no-fork (attach-sources) @ trino-iceberg ---
+[INFO] Building jar: /home/ivan/opencode/trino/plugin/trino-iceberg/target/trino-iceberg-485-SNAPSHOT-test-sources.jar
+[INFO] 
+[INFO] >>> spotbugs:4.10.5.0:check (default) > :spotbugs @ trino-iceberg >>>
+[INFO] 
+[INFO] --- spotbugs:4.10.5.0:spotbugs (spotbugs) @ trino-iceberg ---
+[INFO] Spotbugs plugin skipped
+[INFO] Skipping com.github.spotbugs:spotbugs-maven-plugin:4.10.5.0:spotbugs report goal
+[INFO] 
+[INFO] <<< spotbugs:4.10.5.0:check (default) < :spotbugs @ trino-iceberg <<<
+[INFO] 
+[INFO] 
+[INFO] --- spotbugs:4.10.5.0:check (default) @ trino-iceberg ---
+[INFO] Spotbugs plugin skipped
+[INFO] 
+[INFO] >>> pmd:3.28.0:check (default) > :pmd @ trino-iceberg >>>
+[INFO] 
+[INFO] --- pmd:3.28.0:pmd (pmd) @ trino-iceberg ---
+[INFO] Skipping org.apache.maven.plugins:maven-pmd-plugin:3.28.0:pmd report goal
+[INFO] 
+[INFO] <<< pmd:3.28.0:check (default) < :pmd @ trino-iceberg <<<
+[INFO] 
+[INFO] 
+[INFO] --- pmd:3.28.0:check (default) @ trino-iceberg ---
+[INFO] Skipping PMD execution
+[INFO] 
+[INFO] --- javadoc:3.12.0:jar (attach-javadocs) @ trino-iceberg ---
+[WARNING] Javadoc Warnings
+[WARNING] warning: unknown enum constant SchemaType.OBJECT
+[WARNING] reason: class file for org.eclipse.microprofile.openapi.annotations.enums.SchemaType not found
+[WARNING] 1 warning
+[INFO] Building jar: /home/ivan/opencode/trino/plugin/trino-iceberg/target/trino-iceberg-485-SNAPSHOT-javadoc.jar
+[INFO] 
+[INFO] ------------------------< io.trino:trino-tests >------------------------
+[INFO] Building trino-tests 485-SNAPSHOT                                  [3/3]
+[INFO]   from /home/ivan/opencode/trino/testing/trino-tests/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.7.0:enforce (default) @ trino-tests ---
+[INFO] Rule 0: org.apache.maven.enforcer.rules.dependency.BannedDependencies passed
+[INFO] Rule 1: org.apache.maven.enforcer.rules.RequireProfileIdsExist passed
+[INFO] Rule 2: org.codehaus.mojo.extraenforcer.model.RequirePropertyDiverges passed
+[INFO] Rule 3: org.apache.maven.enforcer.rules.property.RequireProperty passed
+[INFO] Rule 5: org.apache.maven.enforcer.rules.BanDuplicatePomDependencyVersions passed
+[INFO] Rule 6: org.apache.maven.enforcer.rules.dependency.RequireUpperBoundDeps passed
+[INFO] Rule 9: org.codehaus.mojo.extraenforcer.dependencies.EnforceBytecodeVersion passed
+[INFO] Rule 10: org.apache.maven.enforcer.rules.RequirePluginVersions passed
+[INFO] Rule 11: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 12: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 13: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 14: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 15: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 16: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 17: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] 
+[INFO] --- enforcer:3.7.0:enforce (junit-extensions) @ trino-tests ---
+[INFO] Rule 0: io.airlift.airbase.RequireJunitExtensions passed
+[INFO] 
+[INFO] --- enforcer:3.7.0:enforce (trino-restrict-imports) @ trino-tests ---
+[INFO] Rule 0: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 1: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 2: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 3: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] 
+[INFO] --- sortpom:4.0.0:verify (default) @ trino-tests ---
+[INFO] Verifying file /home/ivan/opencode/trino/testing/trino-tests/pom.xml
+[INFO] 
+[INFO] --- license:5.1.2:check (default) @ trino-tests ---
+[INFO] Checking licenses...
+[INFO] License check: 137 file(s) checked (OK: 137, Missing: 0, Unknown: 0)
+[INFO] 
+[INFO] --- airstyle:10:check (airstyle) @ trino-tests ---
+[INFO] All 137 files are already formatted
+[INFO] 
+[INFO] --- checkstyle:3.6.0:check (checkstyle) @ trino-tests ---
+[INFO] You have 0 Checkstyle violations.
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-tests ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-tests ---
+[INFO] 
+[INFO] --- jacoco:0.8.16:prepare-agent (default) @ trino-tests ---
+[INFO] Skipping JaCoCo execution because property jacoco.skip is set.
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ trino-tests ---
+[INFO] skip non existing resourceDirectory /home/ivan/opencode/trino/testing/trino-tests/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.16.0:compile (default-compile) @ trino-tests ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ trino-tests ---
+[INFO] Copying 269 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ trino-tests ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 136 source files with javac [debug deprecation parameters release 25] to target/test-classes
+[WARNING] /home/ivan/opencode/trino/testing/trino-tests/src/test/java/io/trino/execution/AbstractTestCoordinatorDynamicFiltering.java:[592,44] createPageSource(io.trino.spi.connector.ConnectorTransactionHandle,io.trino.spi.connector.ConnectorSession,io.trino.spi.connector.ConnectorSplit,io.trino.spi.connector.ConnectorTableHandle,java.util.Optional<io.trino.spi.connector.ConnectorTableCredentials>,java.util.List<io.trino.spi.connector.ColumnHandle>,io.trino.spi.connector.DynamicFilter) in io.trino.spi.connector.ConnectorPageSourceProvider has been deprecated
+[WARNING] /home/ivan/opencode/trino/testing/trino-tests/src/test/java/io/trino/execution/TestBeginQuery.java:[201,44] createPageSource(io.trino.spi.connector.ConnectorTransactionHandle,io.trino.spi.connector.ConnectorSession,io.trino.spi.connector.ConnectorSplit,io.trino.spi.connector.ConnectorTableHandle,java.util.Optional<io.trino.spi.connector.ConnectorTableCredentials>,java.util.List<io.trino.spi.connector.ColumnHandle>,io.trino.spi.connector.DynamicFilter) in io.trino.spi.connector.ConnectorPageSourceProvider has been deprecated
+[WARNING] /home/ivan/opencode/trino/testing/trino-tests/src/test/java/io/trino/execution/TestErrorThrowableInQuery.java:[118,17] nonTrinoExceptionFailure() in io.trino.sql.query.QueryAssertions.QueryAssert has been deprecated
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-only (default) @ trino-tests ---
+[INFO] No dependency problems found
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-duplicate (default) @ trino-tests ---
+[INFO] No duplicate dependencies found in <dependencies/> or in <dependencyManagement/>
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-exclusions (default) @ trino-tests ---
+[INFO] 
+[INFO] --- duplicate-finder:2.0.1:check (default) @ trino-tests ---
+[INFO] Checking compile classpath
+[INFO] Checking runtime classpath
+[INFO] Checking test classpath
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer) @ trino-tests ---
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer-production-code) @ trino-tests ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-test) @ trino-tests ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jacoco:0.8.16:report (report) @ trino-tests ---
+[INFO] Skipping JaCoCo execution because property jacoco.skip is set.
+[INFO] 
+[INFO] --- jar:3.5.1:jar (default-jar) @ trino-tests ---
+[INFO] Building jar: /home/ivan/opencode/trino/testing/trino-tests/target/trino-tests-485-SNAPSHOT.jar
+[INFO] 
+[INFO] --- jar:3.5.1:test-jar (attach-tests) @ trino-tests ---
+[INFO] Building jar: /home/ivan/opencode/trino/testing/trino-tests/target/trino-tests-485-SNAPSHOT-tests.jar
+[INFO] 
+[INFO] --- source:3.4.0:jar-no-fork (attach-sources) @ trino-tests ---
+[INFO] Building jar: /home/ivan/opencode/trino/testing/trino-tests/target/trino-tests-485-SNAPSHOT-sources.jar
+[INFO] 
+[INFO] --- source:3.4.0:test-jar-no-fork (attach-sources) @ trino-tests ---
+[INFO] Building jar: /home/ivan/opencode/trino/testing/trino-tests/target/trino-tests-485-SNAPSHOT-test-sources.jar
+[INFO] 
+[INFO] >>> spotbugs:4.10.5.0:check (default) > :spotbugs @ trino-tests >>>
+[INFO] 
+[INFO] --- spotbugs:4.10.5.0:spotbugs (spotbugs) @ trino-tests ---
+[INFO] Spotbugs plugin skipped
+[INFO] Skipping com.github.spotbugs:spotbugs-maven-plugin:4.10.5.0:spotbugs report goal
+[INFO] 
+[INFO] <<< spotbugs:4.10.5.0:check (default) < :spotbugs @ trino-tests <<<
+[INFO] 
+[INFO] 
+[INFO] --- spotbugs:4.10.5.0:check (default) @ trino-tests ---
+[INFO] Spotbugs plugin skipped
+[INFO] 
+[INFO] >>> pmd:3.28.0:check (default) > :pmd @ trino-tests >>>
+[INFO] 
+[INFO] --- pmd:3.28.0:pmd (pmd) @ trino-tests ---
+[INFO] Skipping org.apache.maven.plugins:maven-pmd-plugin:3.28.0:pmd report goal
+[INFO] 
+[INFO] <<< pmd:3.28.0:check (default) < :pmd @ trino-tests <<<
+[INFO] 
+[INFO] 
+[INFO] --- pmd:3.28.0:check (default) @ trino-tests ---
+[INFO] Skipping PMD execution
+[INFO] 
+[INFO] --- javadoc:3.12.0:jar (attach-javadocs) @ trino-tests ---
+[INFO] Building jar: /home/ivan/opencode/trino/testing/trino-tests/target/trino-tests-485-SNAPSHOT-javadoc.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] Average project wall time: 131.00s
+[INFO] Total concurrency: 100%
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for trino-main 485-SNAPSHOT:
+[INFO] 
+[INFO] trino-main ......................................... SUCCESS [05:04 min]
+[INFO] trino-iceberg ...................................... SUCCESS [01:12 min]
+[INFO] trino-tests ........................................ SUCCESS [ 17.111 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  06:35 min
+[INFO] Finished at: 2026-11-08T13:36:34+03:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Njord session closed

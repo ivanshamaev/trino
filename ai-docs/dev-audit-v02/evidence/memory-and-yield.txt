@@ -1,0 +1,23 @@
+-------------------------------------------------------------------------------
+Test set: io.trino.operator.join.merge.TestMergeJoinOperator
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.728 s <<< FAILURE! -- in io.trino.operator.join.merge.TestMergeJoinOperator
+io.trino.operator.join.merge.TestMergeJoinOperator.testAuditV02YieldDuringRejectedGroup -- Time elapsed: 0.646 s <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting actual:
+  200000
+to be less than:
+  200000 
+	at io.trino.operator.join.merge.TestMergeJoinOperator.testAuditV02YieldDuringRejectedGroup(TestMergeJoinOperator.java:1323)
+
+io.trino.operator.join.merge.TestMergeJoinOperator.testAuditV02OutputMemoryAccounting -- Time elapsed: 0.031 s <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting actual:
+  160L
+to be greater than or equal to:
+  465328L
+
+	at io.trino.operator.join.merge.TestMergeJoinOperator.testAuditV02OutputMemoryAccounting(TestMergeJoinOperator.java:1294)
+

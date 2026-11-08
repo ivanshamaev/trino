@@ -1,0 +1,55 @@
+Commit subjects must not start with a lowercase letter or end with a period.
+Common past-tense leading verbs must use their imperative form.
+Commit subjects should be at most 50 characters; this check fails subjects over 60 characters.
+
+5b36c36a6aa3 Add DetermineJoinAlgorithm rule and prefer_merge_join property
+  subject: 62 characters
+
+508a623f2020 Propagate join algorithm through plan rewrites, add rule tests, sorted output derivation, EXPLAIN support
+  subject: 105 characters
+
+befa3f855c01 Fix merge join livelock by enforcing single-stream join pipelines in AddLocalExchanges
+  subject: 86 characters
+
+cc00465b3645 Update dev todo list: all MVP items complete, RIGHT/FULL supported, KP-1 resolved
+  subject: 81 characters
+
+38691c6a14a4 Add IS NOT NULL filters for INNER merge join to prune NULL tail before shuffle
+  subject: 78 characters
+
+3dd8e29c5c72 Update dev todo list: all Stage 1-4 and 3.3/3.5 items complete
+  subject: 62 characters
+
+f39e649cd548 Add COST_BASED merge join strategy with memory pressure thresholds
+  subject: 66 characters
+
+250156c87830 Update dev todo list: COST_BASED implemented, architecture verification complete
+  subject: 80 characters
+
+515dded0a3ed Relax ExchangeNode invariant to support REPARTITION exchanges with ordering for merge join
+  subject: 90 characters
+
+45f749e92cef Add spill infrastructure to merge join buffer and finalize dev todo list
+  subject: 72 characters
+
+ef5574afbf40 Wire mergingPartitionedExchange in AddExchanges and SpillerFactory from LEP for merge join build spilling
+  subject: 105 characters
+
+327e213c431c Finalize Stage 7 items and comprehensive architecture cross-check
+  subject: 65 characters
+
+3563040d906b Implement actual build-side spilling in merge join buffer operator with SpillerFactory
+  subject: 86 characters
+
+6be8b69b1c8d Fix INNER to LEFT/RIGHT conversion to keep merge join marker since RIGHT is now supported
+  subject: 89 characters
+
+fd5886e7b51a Add JoinOperatorType.mergeJoin factory and MergeJoinStatistics for WebUI observability
+  subject: 86 characters
+
+1d7ab12541e8 Mark item 2.8 (JoinOperatorType.mergeJoin + statistics) as complete
+  subject: 67 characters
+
+71cbe8ca3d9e codex some fixes
+  subject: starts with a lowercase letter
+

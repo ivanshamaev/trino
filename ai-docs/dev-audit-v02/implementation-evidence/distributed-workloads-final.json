@@ -1,0 +1,317 @@
+{
+  "source_log": "review-iceberg-tests-workloads.log",
+  "candidate_commit": "a0a11bff2fa450885f748da16549e4f8a9c202a7",
+  "worker_count": 2,
+  "per_node_memory_limit_bytes": 134217728,
+  "statistics": [
+    "table=merge_join_entropysim49dyrr3 statistics=[[k, null, 746677.0, 0.0, null, 0, 749999], [v, 5.38589987E8, 739709.0, 0.0, null, null, null], [null, null, null, null, 750000.0, null, null]] logicalVarcharBytes=384000000",
+    "table=merge_join_wide8d5fy9v8t6 statistics=[[k, null, 746677.0, 0.0, null, 0, 749999], [v, 4.0285312E7, 739320.0, 0.0, null, null, null], [null, null, null, null, 750000.0, null, null]] logicalVarcharBytes=384000000"
+  ],
+  "samples": [
+    {
+      "scenario": "wide-full-entropy",
+      "strategy": "OFF",
+      "memoryLimitExceeded": "true"
+    },
+    {
+      "scenario": "wide-full-entropy",
+      "strategy": "FORCE",
+      "elapsedMs": "10467.84",
+      "peakBytes": "135684832",
+      "spillBytes": "4408196182",
+      "merge": "true"
+    },
+    {
+      "scenario": "wide-full-entropy",
+      "strategy": "COST_BASED",
+      "elapsedMs": "10696.18",
+      "peakBytes": "139642136",
+      "spillBytes": "4358678002",
+      "merge": "true"
+    },
+    {
+      "scenario": "concurrent-chain-skew",
+      "strategy": "FORCE",
+      "elapsedMs": "2675.68",
+      "peakBytes": "56962008",
+      "spillBytes": "372024835",
+      "merge": "true"
+    },
+    {
+      "scenario": "concurrent-chain-skew",
+      "strategy": "FORCE",
+      "elapsedMs": "2911.49",
+      "peakBytes": "86906256",
+      "spillBytes": "538704330",
+      "merge": "true"
+    },
+    {
+      "scenario": "concurrent-chain-skew",
+      "strategy": "FORCE",
+      "elapsedMs": "2854.78",
+      "peakBytes": "68616376",
+      "spillBytes": "381406231",
+      "merge": "true"
+    },
+    {
+      "scenario": "concurrent-chain-skew",
+      "strategy": "FORCE",
+      "elapsedMs": "3028.68",
+      "peakBytes": "61300272",
+      "spillBytes": "365100492",
+      "merge": "true"
+    },
+    {
+      "scenario": "concurrent-chain-skew",
+      "strategy": "FORCE",
+      "elapsedMs": "3401.77",
+      "peakBytes": "79795968",
+      "spillBytes": "496683554",
+      "merge": "true"
+    },
+    {
+      "scenario": "concurrent-chain-skew",
+      "strategy": "FORCE",
+      "elapsedMs": "3516.33",
+      "peakBytes": "69543776",
+      "spillBytes": "491420374",
+      "merge": "true"
+    },
+    {
+      "scenario": "wide-full-compressible",
+      "strategy": "FORCE",
+      "elapsedMs": "10347.64",
+      "peakBytes": "108491568",
+      "spillBytes": "4305571716",
+      "merge": "true"
+    },
+    {
+      "scenario": "wide-full-compressible",
+      "strategy": "COST_BASED",
+      "merge": "false",
+      "memoryLimitExceeded": "true",
+      "compressedSizeEstimate": "true"
+    },
+    {
+      "scenario": "threshold-small-24350",
+      "strategy": "OFF",
+      "elapsedMs": "259.13",
+      "peakBytes": "1040",
+      "spillBytes": "0",
+      "merge": "false"
+    },
+    {
+      "scenario": "threshold-small-24350",
+      "strategy": "FORCE",
+      "elapsedMs": "347.75",
+      "peakBytes": "2784768",
+      "spillBytes": "36168380",
+      "merge": "true"
+    },
+    {
+      "scenario": "threshold-small-24350",
+      "strategy": "COST_BASED",
+      "elapsedMs": "244.00",
+      "peakBytes": "10487840",
+      "spillBytes": "0",
+      "merge": "false"
+    },
+    {
+      "scenario": "threshold-small-27056",
+      "strategy": "OFF",
+      "elapsedMs": "264.78",
+      "peakBytes": "9438224",
+      "spillBytes": "0",
+      "merge": "false"
+    },
+    {
+      "scenario": "threshold-small-27056",
+      "strategy": "FORCE",
+      "elapsedMs": "376.38",
+      "peakBytes": "12667360",
+      "spillBytes": "0",
+      "merge": "true"
+    },
+    {
+      "scenario": "threshold-small-27056",
+      "strategy": "COST_BASED",
+      "elapsedMs": "277.41",
+      "peakBytes": "9438224",
+      "spillBytes": "0",
+      "merge": "false"
+    },
+    {
+      "scenario": "threshold-small-29761",
+      "strategy": "OFF",
+      "elapsedMs": "284.02",
+      "peakBytes": "10487840",
+      "spillBytes": "0",
+      "merge": "false"
+    },
+    {
+      "scenario": "threshold-small-29761",
+      "strategy": "FORCE",
+      "elapsedMs": "365.53",
+      "peakBytes": "9439184",
+      "spillBytes": "0",
+      "merge": "true"
+    },
+    {
+      "scenario": "threshold-small-29761",
+      "strategy": "COST_BASED",
+      "elapsedMs": "282.84",
+      "peakBytes": "9438224",
+      "spillBytes": "0",
+      "merge": "false"
+    },
+    {
+      "scenario": "threshold-pressure-56817",
+      "strategy": "OFF",
+      "elapsedMs": "449.10",
+      "peakBytes": "2320",
+      "spillBytes": "0",
+      "merge": "false"
+    },
+    {
+      "scenario": "threshold-pressure-56817",
+      "strategy": "FORCE",
+      "elapsedMs": "542.27",
+      "peakBytes": "3559736",
+      "spillBytes": "0",
+      "merge": "true"
+    },
+    {
+      "scenario": "threshold-pressure-56817",
+      "strategy": "COST_BASED",
+      "elapsedMs": "446.67",
+      "peakBytes": "2088",
+      "spillBytes": "0",
+      "merge": "false"
+    },
+    {
+      "scenario": "threshold-pressure-63130",
+      "strategy": "OFF",
+      "elapsedMs": "454.13",
+      "peakBytes": "2320",
+      "spillBytes": "0",
+      "merge": "false"
+    },
+    {
+      "scenario": "threshold-pressure-63130",
+      "strategy": "FORCE",
+      "elapsedMs": "663.70",
+      "peakBytes": "12150336",
+      "spillBytes": "82367904",
+      "merge": "true"
+    },
+    {
+      "scenario": "threshold-pressure-63130",
+      "strategy": "COST_BASED",
+      "elapsedMs": "498.80",
+      "peakBytes": "2088",
+      "spillBytes": "0",
+      "merge": "false"
+    },
+    {
+      "scenario": "threshold-pressure-69443",
+      "strategy": "OFF",
+      "elapsedMs": "520.25",
+      "peakBytes": "2466872",
+      "spillBytes": "0",
+      "merge": "false"
+    },
+    {
+      "scenario": "threshold-pressure-69443",
+      "strategy": "FORCE",
+      "elapsedMs": "695.17",
+      "peakBytes": "3557984",
+      "spillBytes": "102459716",
+      "merge": "true"
+    },
+    {
+      "scenario": "threshold-pressure-69443",
+      "strategy": "COST_BASED",
+      "elapsedMs": "528.16",
+      "peakBytes": "3516488",
+      "spillBytes": "0",
+      "merge": "false"
+    },
+    {
+      "scenario": "threshold-big-164995",
+      "strategy": "OFF",
+      "elapsedMs": "1036.17",
+      "peakBytes": "108232576",
+      "spillBytes": "0",
+      "merge": "false"
+    },
+    {
+      "scenario": "threshold-big-164995",
+      "strategy": "FORCE",
+      "elapsedMs": "1877.80",
+      "peakBytes": "61215584",
+      "spillBytes": "552633590",
+      "merge": "true"
+    },
+    {
+      "scenario": "threshold-big-164995",
+      "strategy": "COST_BASED",
+      "elapsedMs": "1066.58",
+      "peakBytes": "67644216",
+      "spillBytes": "0",
+      "merge": "false"
+    },
+    {
+      "scenario": "threshold-big-183328",
+      "strategy": "OFF",
+      "elapsedMs": "1116.47",
+      "peakBytes": "124391344",
+      "spillBytes": "0",
+      "merge": "false"
+    },
+    {
+      "scenario": "threshold-big-183328",
+      "strategy": "FORCE",
+      "elapsedMs": "2115.65",
+      "peakBytes": "118540848",
+      "spillBytes": "639031770",
+      "merge": "true"
+    },
+    {
+      "scenario": "threshold-big-183328",
+      "strategy": "COST_BASED",
+      "elapsedMs": "1105.05",
+      "peakBytes": "118048008",
+      "spillBytes": "0",
+      "merge": "false"
+    },
+    {
+      "scenario": "threshold-big-201660",
+      "strategy": "OFF",
+      "elapsedMs": "1717.23",
+      "peakBytes": "154681728",
+      "spillBytes": "0",
+      "merge": "false"
+    },
+    {
+      "scenario": "threshold-big-201660",
+      "strategy": "FORCE",
+      "elapsedMs": "2316.65",
+      "peakBytes": "99224672",
+      "spillBytes": "734423348",
+      "merge": "true"
+    },
+    {
+      "scenario": "threshold-big-201660",
+      "strategy": "COST_BASED",
+      "elapsedMs": "1223.93",
+      "peakBytes": "127762304",
+      "spillBytes": "0",
+      "merge": "false"
+    }
+  ],
+  "notes": [
+    "Peak bytes are QueryStats peak user reservations, not a worker heap bound.",
+    "Measurements are single-process embedded distributed-query-runner validation with two workers. No latency or physical-device IO guarantee is inferred.",
+    "The compressible input counterexample is expected and documented; wrong results or a failed selected MERGE plan are not accepted."
+  ]
+}

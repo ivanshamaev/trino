@@ -1,0 +1,2838 @@
+diff --git a/core/trino-main/src/main/java/io/trino/SystemSessionProperties.java b/core/trino-main/src/main/java/io/trino/SystemSessionProperties.java
+index 75a124d5901..0b900126da6 100644
+--- a/core/trino-main/src/main/java/io/trino/SystemSessionProperties.java
++++ b/core/trino-main/src/main/java/io/trino/SystemSessionProperties.java
+@@ -282,19 +282,19 @@ public final class SystemSessionProperties
+                         false),
+                 doubleProperty(
+                         MERGE_JOIN_MEMORY_PRESSURE_THRESHOLD,
+-                        "Merge join memory pressure threshold (COST_BASED: fraction of per-node memory above which merge is preferred)",
++                        "Fraction of model memory allowance that triggers cost-based consideration of merge join",
+                         optimizerConfig.getMergeJoinMemoryPressureThreshold(),
+                         value -> validateMergeJoinFraction(value, MERGE_JOIN_MEMORY_PRESSURE_THRESHOLD, false),
+                         false),
+                 doubleProperty(
+                         MERGE_JOIN_SMALL_BUILD_THRESHOLD,
+-                        "Merge join small build threshold (COST_BASED: fraction below which hash is always preferred)",
++                        "Small-build fraction of model memory allowance, unless both inputs are compatibly partitioned and sorted",
+                         optimizerConfig.getMergeJoinSmallBuildThreshold(),
+                         value -> validateMergeJoinFraction(value, MERGE_JOIN_SMALL_BUILD_THRESHOLD, false),
+                         false),
+                 doubleProperty(
+                         MERGE_JOIN_BIG_SIDE_THRESHOLD,
+-                        "Merge join big side threshold (COST_BASED: fraction above which a side is considered big)",
++                        "Fraction of model memory allowance above which both inputs are considered large",
+                         optimizerConfig.getMergeJoinBigSideThreshold(),
+                         value -> {
+                             if (!Double.isFinite(value) || value < 0) {
+diff --git a/core/trino-main/src/main/java/io/trino/cost/MergeJoinCostModel.java b/core/trino-main/src/main/java/io/trino/cost/MergeJoinCostModel.java
+index 627adc7f9d9..6b192cc7a2c 100644
+--- a/core/trino-main/src/main/java/io/trino/cost/MergeJoinCostModel.java
++++ b/core/trino-main/src/main/java/io/trino/cost/MergeJoinCostModel.java
+@@ -70,7 +70,10 @@ public final class MergeJoinCostModel
+         // be divided between these local partitions.
+         double unspillFraction = max(1.0 / tasks / hashPartitions, 1.0 / max(1, build.distinctKeys()));
+         double unspillMemory = (2 * build.bytes() + HASH_ROW_OVERHEAD * build.rows()) * unspillFraction;
+-        double hashPeak = hashSpills ? max(min(hashMemory, memoryPerTask), unspillMemory) : hashMemory;
++        double hashPeak = hashMemory;
++        if (hashSpills) {
++            hashPeak = max(min(hashMemory, memoryPerTask), unspillMemory);
++        }
+         PlanCostEstimate hash = new PlanCostEstimate(hashCpu, hashPeak * tasks, hashPeak * tasks, network);
+         if ((!hashSpillable && hashMemory > memoryLimit) || (hashSpills && unspillMemory > memoryLimit)) {
+             hash = PlanCostEstimate.infinite();
+@@ -86,7 +89,10 @@ public final class MergeJoinCostModel
+         double probeGroupBytes = probe.bytes() / max(1, min(probe.distinctKeys(), build.distinctKeys()));
+         double replayPasses = max(1, ceil(probeGroupBytes / min(MAX_PROBE_BLOCK_BYTES, memoryPerTask / 4)));
+         if (buildBytes > memoryPerTask / 4) {
+-            mergeCpu += (2 + replayPasses) * build.bytes();
++            // Indexed replay adds one eight-byte disk offset per build page. No
++            // seek scans grow with the total file length; passes depend on chunks.
++            double indexedBuildBytes = build.bytes() + ceil(build.rows() / PAGE_ROWS) * Long.BYTES;
++            mergeCpu += (2 + replayPasses) * indexedBuildBytes;
+         }
+         double mergeMemory = min(memoryPerTask, probeBytes + buildBytes + min(MAX_PROBE_BLOCK_BYTES, probeBytes));
+         PlanCostEstimate merge = new PlanCostEstimate(mergeCpu, mergeMemory * tasks, mergeMemory * tasks, network);
+diff --git a/core/trino-main/src/main/java/io/trino/operator/JoinOperatorType.java b/core/trino-main/src/main/java/io/trino/operator/JoinOperatorType.java
+index 3b61baabf92..349f23bd80c 100644
+--- a/core/trino-main/src/main/java/io/trino/operator/JoinOperatorType.java
++++ b/core/trino-main/src/main/java/io/trino/operator/JoinOperatorType.java
+@@ -61,7 +61,7 @@ public class JoinOperatorType
+      * Factory for merge join operators: the merge join always waits for the build side
+      * to publish its sorted stream through the bridge before processing probe rows.
+      */
+-    public static JoinOperatorType mergeJoin(io.trino.sql.planner.plan.JoinType joinNodeType, boolean outputSingleMatch)
++    public static JoinOperatorType mergeJoin(JoinType joinNodeType, boolean outputSingleMatch)
+     {
+         return ofJoinNodeType(joinNodeType, outputSingleMatch, true);
+     }
+diff --git a/core/trino-main/src/main/java/io/trino/operator/OperatorInfo.java b/core/trino-main/src/main/java/io/trino/operator/OperatorInfo.java
+index 955db5aa201..d306e2d01ae 100644
+--- a/core/trino-main/src/main/java/io/trino/operator/OperatorInfo.java
++++ b/core/trino-main/src/main/java/io/trino/operator/OperatorInfo.java
+@@ -19,6 +19,7 @@ import io.trino.operator.OutputSpoolingOperatorFactory.OutputSpoolingInfo;
+ import io.trino.operator.TableWriterOperator.TableWriterInfo;
+ import io.trino.operator.exchange.LocalExchangeBufferInfo;
+ import io.trino.operator.join.JoinOperatorInfo;
++import io.trino.operator.join.merge.MergeJoinOperatorInfo;
+ import io.trino.operator.output.PartitionedOutputOperator.PartitionedOutputInfo;
+ 
+ @JsonTypeInfo(
+@@ -28,6 +29,7 @@ import io.trino.operator.output.PartitionedOutputOperator.PartitionedOutputInfo;
+         @JsonSubTypes.Type(value = DirectExchangeClientStatus.class, name = "directExchangeClientStatus"),
+         @JsonSubTypes.Type(value = JoinOperatorInfo.class, name = "joinOperatorInfo"),
+         @JsonSubTypes.Type(value = LocalExchangeBufferInfo.class, name = "localExchangeBuffer"),
++        @JsonSubTypes.Type(value = MergeJoinOperatorInfo.class, name = "mergeJoinOperatorInfo"),
+         @JsonSubTypes.Type(value = OutputSpoolingInfo.class, name = "outputSpooling"),
+         @JsonSubTypes.Type(value = PartitionedOutputInfo.class, name = "partitionedOutput"),
+         @JsonSubTypes.Type(value = TableFinishInfo.class, name = "tableFinish"),
+diff --git a/core/trino-main/src/main/java/io/trino/operator/OrderByOperator.java b/core/trino-main/src/main/java/io/trino/operator/OrderByOperator.java
+index 70d75f4a7a9..9fa423083df 100644
+--- a/core/trino-main/src/main/java/io/trino/operator/OrderByOperator.java
++++ b/core/trino-main/src/main/java/io/trino/operator/OrderByOperator.java
+@@ -42,6 +42,7 @@ import static com.google.common.collect.Iterators.transform;
+ import static com.google.common.util.concurrent.Futures.immediateVoidFuture;
+ import static io.airlift.concurrent.MoreFutures.asVoid;
+ import static io.airlift.concurrent.MoreFutures.checkSuccess;
++import static io.trino.util.MergeSortedPages.mergeSortedPages;
+ import static java.util.Objects.requireNonNull;
+ 
+ public class OrderByOperator
+@@ -62,6 +63,7 @@ public class OrderByOperator
+         private final Optional<SpillerFactory> spillerFactory;
+         private final OrderingCompiler orderingCompiler;
+         private final boolean inputPagesPreSorted;
++        private final boolean boundedSpill;
+ 
+         private boolean closed;
+ 
+@@ -94,6 +96,24 @@ public class OrderByOperator
+                 Optional<SpillerFactory> spillerFactory,
+                 OrderingCompiler orderingCompiler,
+                 boolean inputPagesPreSorted)
++        {
++            this(operatorId, planNodeId, sourceTypes, outputChannels, expectedPositions, sortChannels, sortOrder, pagesIndexFactory, spillEnabled, spillerFactory, orderingCompiler, inputPagesPreSorted, inputPagesPreSorted);
++        }
++
++        public OrderByOperatorFactory(
++                int operatorId,
++                PlanNodeId planNodeId,
++                List<? extends Type> sourceTypes,
++                List<Integer> outputChannels,
++                int expectedPositions,
++                List<Integer> sortChannels,
++                List<SortOrder> sortOrder,
++                PagesIndex.Factory pagesIndexFactory,
++                boolean spillEnabled,
++                Optional<SpillerFactory> spillerFactory,
++                OrderingCompiler orderingCompiler,
++                boolean inputPagesPreSorted,
++                boolean boundedSpill)
+         {
+             this.operatorId = operatorId;
+             this.planNodeId = requireNonNull(planNodeId, "planNodeId is null");
+@@ -108,6 +128,7 @@ public class OrderByOperator
+             this.spillerFactory = requireNonNull(spillerFactory, "spillerFactory is null");
+             this.orderingCompiler = requireNonNull(orderingCompiler, "orderingCompiler is null");
+             this.inputPagesPreSorted = inputPagesPreSorted;
++            this.boundedSpill = boundedSpill;
+             checkArgument(!spillEnabled || spillerFactory.isPresent(), "Spiller Factory is not present when spill is enabled");
+         }
+ 
+@@ -128,7 +149,8 @@ public class OrderByOperator
+                     spillEnabled,
+                     spillerFactory,
+                     orderingCompiler,
+-                    inputPagesPreSorted);
++                    inputPagesPreSorted,
++                    boundedSpill);
+         }
+ 
+         @Override
+@@ -152,7 +174,8 @@ public class OrderByOperator
+                     spillEnabled,
+                     spillerFactory,
+                     orderingCompiler,
+-                    inputPagesPreSorted);
++                    inputPagesPreSorted,
++                    boundedSpill);
+         }
+     }
+ 
+@@ -179,6 +202,7 @@ public class OrderByOperator
+     private final Optional<SpillerFactory> spillerFactory;
+     private final OrderingCompiler orderingCompiler;
+     private final boolean inputPagesPreSorted;
++    private final boolean boundedSpill;
+     private final Optional<PageWithPositionComparator> pageComparator;
+     private final LocalMemoryContext mergeMemoryContext;
+     private final LocalMemoryContext spillOutputMemoryContext;
+@@ -225,6 +249,23 @@ public class OrderByOperator
+             Optional<SpillerFactory> spillerFactory,
+             OrderingCompiler orderingCompiler,
+             boolean inputPagesPreSorted)
++    {
++        this(operatorContext, sourceTypes, outputChannels, expectedPositions, sortChannels, sortOrder, pagesIndexFactory, spillEnabled, spillerFactory, orderingCompiler, inputPagesPreSorted, inputPagesPreSorted);
++    }
++
++    public OrderByOperator(
++            OperatorContext operatorContext,
++            List<Type> sourceTypes,
++            List<Integer> outputChannels,
++            int expectedPositions,
++            List<Integer> sortChannels,
++            List<SortOrder> sortOrder,
++            PagesIndex.Factory pagesIndexFactory,
++            boolean spillEnabled,
++            Optional<SpillerFactory> spillerFactory,
++            OrderingCompiler orderingCompiler,
++            boolean inputPagesPreSorted,
++            boolean boundedSpill)
+     {
+         requireNonNull(pagesIndexFactory, "pagesIndexFactory is null");
+ 
+@@ -242,6 +283,7 @@ public class OrderByOperator
+         this.spillerFactory = requireNonNull(spillerFactory, "spillerFactory is null");
+         this.orderingCompiler = requireNonNull(orderingCompiler, "orderingCompiler is null");
+         this.inputPagesPreSorted = inputPagesPreSorted;
++        this.boundedSpill = boundedSpill;
+         this.inputPagesSorted = inputPagesPreSorted;
+         if (inputPagesPreSorted) {
+             this.pageComparator = Optional.of(orderingCompiler.compilePageWithPositionComparator(
+@@ -286,7 +328,7 @@ public class OrderByOperator
+             return;
+         }
+ 
+-        if (spiller.isPresent() && !finalMergeReady) {
++        if (boundedSpill && spiller.isPresent() && !finalMergeReady) {
+             if (pageIndex.getPositionCount() > 0) {
+                 spillToDisk();
+                 finishingSpill = true;
+@@ -321,7 +363,7 @@ public class OrderByOperator
+         if (spilledPages.isEmpty()) {
+             sortedPages = transform(sortedPagesIndex, Optional::of);
+         }
+-        else {
++        else if (boundedSpill) {
+             // SortingSpiller produces one final run. Reading it directly avoids
+             // allocating another merge page and retaining one head per old run.
+             verify(spilledPages.size() == 1 && pageIndex.getPositionCount() == 0, "Unexpected sort spill state");
+@@ -330,6 +372,19 @@ public class OrderByOperator
+                 return page;
+             }).yieldingIterator();
+         }
++        else {
++            List<WorkProcessor<Page>> sortedStreams = ImmutableList.<WorkProcessor<Page>>builder()
++                    .addAll(spilledPages)
++                    .add(WorkProcessor.fromIterator(sortedPagesIndex))
++                    .build();
++            List<Type> sortTypes = sortChannels.stream().map(sourceTypes::get).collect(toImmutableList());
++            sortedPages = mergeSortedPages(
++                    sortedStreams,
++                    orderingCompiler.compilePageWithPositionComparator(sortTypes, sortChannels, sortOrder),
++                    sourceTypes,
++                    operatorContext.aggregateUserMemoryContext(),
++                    operatorContext.getDriverContext().getYieldSignal()).yieldingIterator();
++        }
+     }
+ 
+     @Override
+@@ -417,12 +472,20 @@ public class OrderByOperator
+ 
+         if (spiller.isEmpty()) {
+             List<Type> sortTypes = sortChannels.stream().map(sourceTypes::get).collect(toImmutableList());
+-            spiller = Optional.of(new SortingSpiller(
+-                    sourceTypes,
+-                    orderingCompiler.compilePageWithPositionComparator(sortTypes, sortChannels, sortOrder),
+-                    spillerFactory.orElseThrow(),
+-                    operatorContext.getSpillContext(),
+-                    operatorContext.newAggregateUserMemoryContext()));
++            if (boundedSpill) {
++                spiller = Optional.of(new SortingSpiller(
++                        sourceTypes,
++                        orderingCompiler.compilePageWithPositionComparator(sortTypes, sortChannels, sortOrder),
++                        spillerFactory.orElseThrow(),
++                        operatorContext.getSpillContext(),
++                        operatorContext.newAggregateUserMemoryContext()));
++            }
++            else {
++                spiller = Optional.of(spillerFactory.orElseThrow().create(
++                        sourceTypes,
++                        operatorContext.getSpillContext(),
++                        operatorContext.newAggregateUserMemoryContext()));
++            }
+         }
+ 
+         sortPages();
+diff --git a/core/trino-main/src/main/java/io/trino/operator/join/merge/AppendingSpiller.java b/core/trino-main/src/main/java/io/trino/operator/join/merge/AppendingSpiller.java
+index 802a646b082..5d8effcd6b7 100644
+--- a/core/trino-main/src/main/java/io/trino/operator/join/merge/AppendingSpiller.java
++++ b/core/trino-main/src/main/java/io/trino/operator/join/merge/AppendingSpiller.java
+@@ -45,6 +45,20 @@ public final class AppendingSpiller
+     {
+         this.delegate = requireNonNull(delegate, "delegate is null");
+         this.memoryContext = requireNonNull(memoryContext, "memoryContext is null");
++        if (delegate instanceof FileSingleStreamSpiller fileSpiller) {
++            try {
++                fileSpiller.enableIndexedReplay();
++            }
++            catch (RuntimeException | Error failure) {
++                try {
++                    delegate.close();
++                }
++                catch (RuntimeException | Error closeFailure) {
++                    failure.addSuppressed(closeFailure);
++                }
++                throw failure;
++            }
++        }
+     }
+ 
+     public static SpillerFactory factory(SingleStreamSpillerFactory singleStreamSpillerFactory)
+@@ -55,7 +69,7 @@ public final class AppendingSpiller
+             try {
+                 return new AppendingSpiller(singleStreamSpillerFactory.create(types, spillContext, localMemoryContext, false), localMemoryContext);
+             }
+-            catch (RuntimeException e) {
++            catch (RuntimeException | Error e) {
+                 localMemoryContext.close();
+                 throw e;
+             }
+diff --git a/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinBridge.java b/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinBridge.java
+index 5de57e640fd..8c94e7d6601 100644
+--- a/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinBridge.java
++++ b/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinBridge.java
+@@ -201,6 +201,13 @@ public class MergeJoinBridge
+         }
+     }
+ 
++    public void releasePreviousReplayPage()
++    {
++        if (spilledPages != null) {
++            spilledPages.releasePreviousReplayPage();
++        }
++    }
++
+     public Path createMatchFile()
+     {
+         checkState(spiller instanceof AppendingSpiller, "Large build groups require a replayable spiller");
+@@ -468,10 +475,23 @@ public class MergeJoinBridge
+                 return cachedPage;
+             }
+             if (previousPageIndex == index) {
+-                return previousPage;
++                // The page being processed must stay in the primary cache slot.
++                // Output-buffer growth may evict the optional second slot.
++                Page page = cachedPage;
++                int pageIndex = cachedPageIndex;
++                cachedPage = previousPage;
++                cachedPageIndex = previousPageIndex;
++                previousPage = page;
++                previousPageIndex = pageIndex;
++                return cachedPage;
+             }
+             if (replayReader == null || nextReplayPage != index || !replayReader.hasNext()) {
+-                replayReader = streamingBridge == null ? replayableSpiller.getSpilledPagesFrom(index) : replayableSpiller.getSpilledPagesFrom(index, streamingBridge.getPublishedPageCount());
++                if (streamingBridge == null) {
++                    replayReader = replayableSpiller.getSpilledPagesFrom(index);
++                }
++                else {
++                    replayReader = replayableSpiller.getSpilledPagesFrom(index, streamingBridge.getPublishedPageCount());
++                }
+                 nextReplayPage = index;
+             }
+             checkState(replayReader.hasNext(), "spill ended before requested build page %s", index);
+@@ -496,6 +516,15 @@ public class MergeJoinBridge
+             return page;
+         }
+ 
++        private void releasePreviousReplayPage()
++        {
++            if (previousPage != null) {
++                memoryContext.setBytes(memoryContext.getBytes() - previousPage.getRetainedSizeInBytes());
++                previousPage = null;
++                previousPageIndex = -1;
++            }
++        }
++
+         private Page nextSpilledPage()
+         {
+             while (currentRun == null || !currentRun.hasNext()) {
+diff --git a/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinBufferOperatorFactory.java b/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinBufferOperatorFactory.java
+index 605f26531b2..2053b94b6ee 100644
+--- a/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinBufferOperatorFactory.java
++++ b/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinBufferOperatorFactory.java
+@@ -24,6 +24,7 @@ import io.trino.operator.OperatorFactory;
+ import io.trino.spi.Page;
+ import io.trino.spi.connector.ConnectorSession;
+ import io.trino.spi.type.Type;
++import io.trino.spiller.Spiller;
+ import io.trino.spiller.SpillerFactory;
+ import io.trino.sql.planner.plan.PlanNodeId;
+ 
+@@ -125,7 +126,7 @@ public class MergeJoinBufferOperatorFactory
+ 
+         private boolean finished;
+         private long retainedBytes;
+-        private io.trino.spiller.Spiller spiller;
++        private Spiller spiller;
+         private ListenableFuture<DataSize> spillInProgress = immediateFuture(DataSize.ofBytes(0));
+         private ListenableFuture<Void> memoryAvailable = immediateFuture(null);
+         private boolean spilledPagesRetained;
+diff --git a/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java b/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java
+index ee31d01f9e4..201cda453e1 100644
+--- a/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java
++++ b/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java
+@@ -17,8 +17,10 @@ import com.google.common.collect.ImmutableList;
+ import com.google.common.util.concurrent.ListenableFuture;
+ import io.trino.memory.QueryContext;
+ import io.trino.memory.context.LocalMemoryContext;
++import io.trino.operator.DriverYieldSignal;
+ import io.trino.operator.JoinOperatorType;
+ import io.trino.operator.OperatorContext;
++import io.trino.operator.OperatorInfo;
+ import io.trino.operator.WorkProcessor;
+ import io.trino.operator.WorkProcessorOperator;
+ import io.trino.operator.WorkProcessorOperatorFactory;
+@@ -41,11 +43,13 @@ import it.unimi.dsi.fastutil.longs.LongArrayList;
+ import java.util.ArrayList;
+ import java.util.List;
+ import java.util.Optional;
++import java.util.concurrent.atomic.AtomicLong;
+ 
+ import static com.google.common.base.Preconditions.checkArgument;
+ import static com.google.common.base.Preconditions.checkState;
+ import static com.google.common.util.concurrent.Futures.getUnchecked;
+ import static io.trino.spi.StandardErrorCode.EXCEEDED_LOCAL_MEMORY_LIMIT;
++import static io.trino.spi.block.PageBuilderStatus.DEFAULT_MAX_PAGE_SIZE_IN_BYTES;
+ import static java.util.Objects.requireNonNull;
+ 
+ /**
+@@ -132,8 +136,15 @@ public class MergeJoinOperatorFactory
+     public WorkProcessorOperator create(OperatorContext operatorContext, WorkProcessor<Page> sourcePages)
+     {
+         checkState(!closed, "Factory is already closed");
++        requireNonNull(sourcePages, "sourcePages is null");
+         bridgeManager.probeOperatorCreated();
+-        return new MergeJoinOperator(operatorContext, sourcePages, this, bridgeManager::probeOperatorClosed);
++        try {
++            return new MergeJoinOperator(operatorContext, sourcePages, this, bridgeManager::probeOperatorClosed);
++        }
++        catch (RuntimeException | Error failure) {
++            bridgeManager.probeOperatorClosed();
++            throw failure;
++        }
+     }
+ 
+     @Override
+@@ -177,6 +188,7 @@ public class MergeJoinOperatorFactory
+         private final MergeJoinStatistics statistics;
+         private final LocalMemoryContext userMemoryContext;
+         private final LocalMemoryContext probeChunkMemoryContext;
++        private final LocalMemoryContext outputMemoryContext;
+         private final MergeJoinTransformation transformation;
+ 
+         private MergeJoinOperator(OperatorContext operatorContext, WorkProcessor<Page> sourcePages, MergeJoinOperatorFactory factory, Runnable closeCallback)
+@@ -184,10 +196,19 @@ public class MergeJoinOperatorFactory
+             this.statistics = new MergeJoinStatistics(factory.joinOperatorType);
+             this.userMemoryContext = operatorContext.newLocalUserMemoryContext(MergeJoinOperator.class.getSimpleName());
+             this.probeChunkMemoryContext = operatorContext.newLocalUserMemoryContext("MergeJoinProbeChunk");
++            this.outputMemoryContext = operatorContext.newLocalUserMemoryContext("MergeJoinOutput");
+             QueryContext queryContext = operatorContext.getDriverContext().getPipelineContext().getTaskContext().getQueryContext();
+             long queryMemoryLimit = queryContext.getMaxUserMemory();
+             long maxProbeChunkBytes = Math.min(MAX_PROBE_CHUNK_BYTES, Math.max(1, queryMemoryLimit / 4));
+-            this.transformation = new MergeJoinTransformation(factory, statistics, userMemoryContext, probeChunkMemoryContext, queryContext, queryMemoryLimit, maxProbeChunkBytes);
++            try {
++                this.transformation = new MergeJoinTransformation(factory, statistics, userMemoryContext, probeChunkMemoryContext, outputMemoryContext, queryContext, queryMemoryLimit, maxProbeChunkBytes, operatorContext.getDriverContext().getYieldSignal());
++            }
++            catch (RuntimeException | Error failure) {
++                userMemoryContext.close();
++                probeChunkMemoryContext.close();
++                outputMemoryContext.close();
++                throw failure;
++            }
+             this.pages = sourcePages.transform(transformation);
+             this.closeCallback = requireNonNull(closeCallback, "closeCallback is null");
+         }
+@@ -199,9 +220,9 @@ public class MergeJoinOperatorFactory
+         }
+ 
+         @Override
+-        public java.util.Optional<io.trino.operator.OperatorInfo> getOperatorInfo()
++        public Optional<OperatorInfo> getOperatorInfo()
+         {
+-            return java.util.Optional.of(statistics);
++            return Optional.of(statistics.snapshot());
+         }
+ 
+         @Override
+@@ -219,7 +240,12 @@ public class MergeJoinOperatorFactory
+                         probeChunkMemoryContext.close();
+                     }
+                     finally {
+-                        closeCallback.run();
++                        try {
++                            outputMemoryContext.close();
++                        }
++                        finally {
++                            closeCallback.run();
++                        }
+                     }
+                 }
+             }
+@@ -227,18 +253,17 @@ public class MergeJoinOperatorFactory
+     }
+ 
+     /**
+-     * Basic merge join statistics for the WebUI. Tracks probe rows, output rows,
++     * Driver-local counters used to create immutable operator-info snapshots. Tracks probe rows, output rows,
+      * build rows, and the number of distinct key groups encountered.
+      */
+-    public static class MergeJoinStatistics
+-            implements io.trino.operator.OperatorInfo
++    private static class MergeJoinStatistics
+     {
+         private final JoinOperatorType joinOperatorType;
+-        private final java.util.concurrent.atomic.AtomicLong probeRows = new java.util.concurrent.atomic.AtomicLong();
+-        private final java.util.concurrent.atomic.AtomicLong outputRows = new java.util.concurrent.atomic.AtomicLong();
+-        private final java.util.concurrent.atomic.AtomicLong buildRows = new java.util.concurrent.atomic.AtomicLong();
+-        private final java.util.concurrent.atomic.AtomicLong keyGroups = new java.util.concurrent.atomic.AtomicLong();
+-        private final java.util.concurrent.atomic.AtomicLong maxBuildGroupRows = new java.util.concurrent.atomic.AtomicLong();
++        private final AtomicLong probeRows = new AtomicLong();
++        private final AtomicLong outputRows = new AtomicLong();
++        private final AtomicLong buildRows = new AtomicLong();
++        private final AtomicLong keyGroups = new AtomicLong();
++        private final AtomicLong maxBuildGroupRows = new AtomicLong();
+ 
+         private MergeJoinStatistics(JoinOperatorType joinOperatorType)
+         {
+@@ -270,40 +295,14 @@ public class MergeJoinOperatorFactory
+             maxBuildGroupRows.accumulateAndGet(rows, Math::max);
+         }
+ 
+-        public long getProbeRows()
+-        {
+-            return probeRows.get();
+-        }
+-
+-        public long getOutputRows()
+-        {
+-            return outputRows.get();
+-        }
+-
+-        public long getBuildRows()
+-        {
+-            return buildRows.get();
+-        }
+-
+-        public long getKeyGroups()
++        void recordProbeRows(long count)
+         {
+-            return keyGroups.get();
++            probeRows.addAndGet(count);
+         }
+ 
+-        public long getMaxBuildGroupRows()
++        MergeJoinOperatorInfo snapshot()
+         {
+-            return maxBuildGroupRows.get();
+-        }
+-
+-        @Override
+-        public String toString()
+-        {
+-            return "MergeJoinStatistics{joinType=" + joinOperatorType.getType()
+-                    + ", probeRows=" + probeRows
+-                    + ", outputRows=" + outputRows
+-                    + ", buildRows=" + buildRows
+-                    + ", keyGroups=" + keyGroups
+-                    + ", maxBuildGroupRows=" + maxBuildGroupRows + "}";
++            return new MergeJoinOperatorInfo(joinOperatorType.getType(), probeRows.get(), outputRows.get(), buildRows.get(), keyGroups.get(), maxBuildGroupRows.get());
+         }
+     }
+ 
+@@ -314,11 +313,15 @@ public class MergeJoinOperatorFactory
+         private final MergeJoinStatistics statistics;
+         private final LocalMemoryContext userMemoryContext;
+         private final LocalMemoryContext probeChunkMemoryContext;
++        private final LocalMemoryContext outputMemoryContext;
+         private final QueryContext queryContext;
+         private final long queryMemoryLimit;
+         private final long maxProbeChunkBytes;
+         private final PageBuilder pageBuilder;
+         private final int outputChannelCount;
++        private final DriverYieldSignal yieldSignal;
++        private static final int MAX_PROCESS_POSITIONS = 65_536;
++        private int processedPositions;
+ 
+         private final KeyAccessor probeKeys;
+         private final KeyAccessor buildKeys;
+@@ -374,12 +377,14 @@ public class MergeJoinOperatorFactory
+         private int chunkProbePage;
+         private int chunkProbePos;
+ 
+-        private MergeJoinTransformation(MergeJoinOperatorFactory factory, MergeJoinStatistics statistics, LocalMemoryContext userMemoryContext, LocalMemoryContext probeChunkMemoryContext, QueryContext queryContext, long queryMemoryLimit, long maxProbeChunkBytes)
++        private MergeJoinTransformation(MergeJoinOperatorFactory factory, MergeJoinStatistics statistics, LocalMemoryContext userMemoryContext, LocalMemoryContext probeChunkMemoryContext, LocalMemoryContext outputMemoryContext, QueryContext queryContext, long queryMemoryLimit, long maxProbeChunkBytes, DriverYieldSignal yieldSignal)
+         {
+             this.factory = requireNonNull(factory, "factory is null");
+             this.statistics = requireNonNull(statistics, "statistics is null");
+             this.userMemoryContext = requireNonNull(userMemoryContext, "userMemoryContext is null");
+             this.probeChunkMemoryContext = requireNonNull(probeChunkMemoryContext, "probeChunkMemoryContext is null");
++            this.outputMemoryContext = requireNonNull(outputMemoryContext, "outputMemoryContext is null");
++            this.yieldSignal = requireNonNull(yieldSignal, "yieldSignal is null");
+             this.queryContext = requireNonNull(queryContext, "queryContext is null");
+             this.queryMemoryLimit = queryMemoryLimit;
+             this.maxProbeChunkBytes = maxProbeChunkBytes;
+@@ -391,7 +396,9 @@ public class MergeJoinOperatorFactory
+             for (int channel : factory.buildOutputChannels) {
+                 outputTypes.add(factory.buildTypes.get(channel));
+             }
+-            this.pageBuilder = new PageBuilder(outputTypes.build());
++            int maxOutputBytes = (int) Math.min(DEFAULT_MAX_PAGE_SIZE_IN_BYTES, Math.max(1, queryMemoryLimit / 8));
++            this.pageBuilder = PageBuilder.withMaxPageSize(maxOutputBytes, outputTypes.build());
++            outputMemoryContext.setBytes(pageBuilder.getRetainedSizeInBytes());
+             this.outputChannelCount = factory.probeOutputChannels.size() + factory.buildOutputChannels.size();
+ 
+             this.probeKeys = new KeyAccessor(factory.probeTypes, factory.probeKeyChannels);
+@@ -407,6 +414,10 @@ public class MergeJoinOperatorFactory
+         @Override
+         public WorkProcessor.TransformationState<Page> process(Page inputPage)
+         {
++            processedPositions = 0;
++            if (yieldSignal.isSet()) {
++                return WorkProcessor.TransformationState.yielded();
++            }
+             // A completed spill batch is enough to begin the merge.
+             if (bridge == null) {
+                 MergeJoinBridge joinBridge = factory.bridgeManager.getJoinBridge();
+@@ -432,6 +443,9 @@ public class MergeJoinOperatorFactory
+             if (!probeChunk.isEmpty() && (probeChunkActive || currentInput == null || !canAddToProbeChunk(currentInput)
+                     || probeChunkMemoryContext.getBytes() + currentInput.getRetainedSizeInBytes() > maxProbeChunkBytes)) {
+                 processProbeChunk();
++                if (shouldYield()) {
++                    return yieldProbeChunk();
++                }
+                 if (pageBuilder.isFull()) {
+                     return outputPage(false);
+                 }
+@@ -453,6 +467,9 @@ public class MergeJoinOperatorFactory
+                 }
+                 if (!probeChunk.isEmpty()) {
+                     processProbeChunk();
++                    if (shouldYield()) {
++                        return yieldProbeChunk();
++                    }
+                     if (pageBuilder.isFull()) {
+                         return outputPage(false);
+                     }
+@@ -488,6 +505,9 @@ public class MergeJoinOperatorFactory
+                     // null element; on the next call the drain is complete and finished() is returned
+                     return outputPage(false);
+                 }
++                if (shouldYield()) {
++                    return WorkProcessor.TransformationState.yielded();
++                }
+                 return WorkProcessor.TransformationState.finished();
+             }
+ 
+@@ -496,7 +516,7 @@ public class MergeJoinOperatorFactory
+                 probePos = 0;
+             }
+ 
+-            while (!pageBuilder.isFull() && probePos < probePage.getPositionCount()) {
++            while (!pageBuilder.isFull() && probePos < probePage.getPositionCount() && !shouldYield()) {
+                 processProbeRow();
+                 if (waitingForBuild != null) {
+                     return waitForBuild();
+@@ -515,6 +535,11 @@ public class MergeJoinOperatorFactory
+             return inputConsumed ? WorkProcessor.TransformationState.needsMoreData() : WorkProcessor.TransformationState.yielded();
+         }
+ 
++        private boolean shouldYield()
++        {
++            return yieldSignal.isSet() || processedPositions++ >= MAX_PROCESS_POSITIONS;
++        }
++
+         private Page currentInputRegion(Page source)
+         {
+             if (inputSourcePage != source) {
+@@ -525,16 +550,16 @@ public class MergeJoinOperatorFactory
+             if (inputRegion != null) {
+                 return inputRegion;
+             }
+-            int end = source.getPositionCount();
++            int end = nextInputRegionStart + Math.min(source.getPositionCount() - nextInputRegionStart, MAX_PROCESS_POSITIONS);
+             if (bridge.canCreateMatchFile() && !factory.outputSingleMatch) {
+                 int position = nextInputRegionStart;
+-                while (position < end) {
++                while (position < end && !yieldSignal.isSet()) {
+                     if (probeKeys.isUnmatchable(source, position)) {
+                         position++;
+                         continue;
+                     }
+                     int runEnd = position + 1;
+-                    while (runEnd < end && !probeKeys.isUnmatchable(source, runEnd)
++                    while (runEnd < end && !yieldSignal.isSet() && !probeKeys.isUnmatchable(source, runEnd)
+                             && compareProbeKeys(source, position, source, runEnd) == 0) {
+                         runEnd++;
+                     }
+@@ -580,6 +605,7 @@ public class MergeJoinOperatorFactory
+         {
+             Page output = pageBuilder.build();
+             pageBuilder.reset();
++            reserveOutputMemory();
+             return WorkProcessor.TransformationState.ofResult(output, needsMoreData);
+         }
+ 
+@@ -602,6 +628,9 @@ public class MergeJoinOperatorFactory
+                 return false;
+             }
+             for (int position = 1; position < page.getPositionCount(); position++) {
++                if (yieldSignal.isSet()) {
++                    return false;
++                }
+                 if (probeKeys.isUnmatchable(page, position) || compareProbeKeys(page, position, page, 0) != 0) {
+                     return false;
+                 }
+@@ -624,9 +653,7 @@ public class MergeJoinOperatorFactory
+             if (isProbeOuter()) {
+                 probeChunkMatched.add(new boolean[page.getPositionCount()]);
+             }
+-            for (int position = 0; position < page.getPositionCount(); position++) {
+-                statistics.recordProbeRow();
+-            }
++            statistics.recordProbeRows(page.getPositionCount());
+             return true;
+         }
+ 
+@@ -667,12 +694,12 @@ public class MergeJoinOperatorFactory
+             }
+ 
+             int processedRows = 0;
+-            while (isInGroup(chunkBuildPage, chunkBuildPos) && !pageBuilder.isFull() && processedRows < 65_536) {
++            while (isInGroup(chunkBuildPage, chunkBuildPos) && !pageBuilder.isFull() && processedRows < 65_536 && !shouldYield()) {
+                 Page buildPage = buildPages.get(chunkBuildPage);
+                 if (filterAddress != null) {
+                     filterAddress.set(chunkBuildPage, chunkBuildPos);
+                 }
+-                while (chunkProbePage < probeChunk.size() && !pageBuilder.isFull() && processedRows < 65_536) {
++                while (chunkProbePage < probeChunk.size() && !pageBuilder.isFull() && processedRows < 65_536 && !shouldYield()) {
+                     probePage = probeChunk.get(chunkProbePage);
+                     probePos = chunkProbePos;
+                     if (filterFunction == null || filterFunction.filter(0, probePos, probePage)) {
+@@ -731,7 +758,7 @@ public class MergeJoinOperatorFactory
+         private void drainUnmatchedProbeChunk()
+         {
+             int scannedRows = 0;
+-            while (chunkProbePage < probeChunk.size() && !pageBuilder.isFull() && scannedRows < 65_536) {
++            while (chunkProbePage < probeChunk.size() && !pageBuilder.isFull() && scannedRows < 65_536 && !shouldYield()) {
+                 probePage = probeChunk.get(chunkProbePage);
+                 probePos = chunkProbePos;
+                 if (!probeChunkMatched.get(chunkProbePage)[chunkProbePos]) {
+@@ -825,7 +852,7 @@ public class MergeJoinOperatorFactory
+                 currentProbeMatched = false;
+                 probeRowInProgress = true;
+             }
+-            while (isInGroup(iterationPage, iterationPos) && !pageBuilder.isFull()) {
++            while (isInGroup(iterationPage, iterationPos) && !pageBuilder.isFull() && !shouldYield()) {
+                 if (filterAddress != null) {
+                     filterAddress.set(iterationPage, iterationPos);
+                 }
+@@ -852,7 +879,7 @@ public class MergeJoinOperatorFactory
+                     iterationPos = 0;
+                 }
+             }
+-            if (pageBuilder.isFull() && !factory.outputSingleMatch && isInGroup(iterationPage, iterationPos)) {
++            if (isInGroup(iterationPage, iterationPos) && !(factory.outputSingleMatch && currentProbeMatched)) {
+                 // Keep the current probe row and its position within the build group.
+                 return;
+             }
+@@ -885,7 +912,7 @@ public class MergeJoinOperatorFactory
+             }
+             int page = scanPage;
+             int pos = scanPos;
+-            while (page < buildPages.size()) {
++            while (page < buildPages.size() && !shouldYield()) {
+                 Page buildPage = buildPages.get(page);
+                 if (pos >= buildPage.getPositionCount()) {
+                     page++;
+@@ -917,6 +944,9 @@ public class MergeJoinOperatorFactory
+             }
+             scanPage = page;
+             scanPos = pos;
++            if (shouldYield()) {
++                return false;
++            }
+ 
+             if (page >= buildPages.size()) {
+                 if (!bridge.isFinished()) {
+@@ -949,7 +979,7 @@ public class MergeJoinOperatorFactory
+ 
+         private boolean finishGroupScan()
+         {
+-            while (groupScanPage < buildPages.size()) {
++            while (groupScanPage < buildPages.size() && !shouldYield()) {
+                 Page buildPage = buildPages.get(groupScanPage);
+                 if (groupScanPos >= buildPage.getPositionCount()) {
+                     groupScanPage++;
+@@ -973,6 +1003,9 @@ public class MergeJoinOperatorFactory
+                 groupScanRows++;
+                 groupScanPos++;
+             }
++            if (shouldYield()) {
++                return false;
++            }
+             if (groupScanPage >= buildPages.size() && !bridge.isFinished()) {
+                 waitingForBuild = bridge.whenPagesAvailable(groupScanPage);
+                 return false;
+@@ -1024,7 +1057,7 @@ public class MergeJoinOperatorFactory
+             if (buildRowMatched == null && diskRowMatched == null) {
+                 return true;
+             }
+-            while ((drainPage < scanPage || (drainPage == scanPage && drainPos < scanPos)) && !pageBuilder.isFull()) {
++            while ((drainPage < scanPage || (drainPage == scanPage && drainPos < scanPos)) && !pageBuilder.isFull() && !shouldYield()) {
+                 Page buildPage = buildPages.get(drainPage);
+                 if (drainPos == buildPage.getPositionCount()) {
+                     drainPage++;
+@@ -1073,7 +1106,7 @@ public class MergeJoinOperatorFactory
+ 
+         private void drainRemainingBuildRows()
+         {
+-            while (drainPage < buildPages.size() && !pageBuilder.isFull()) {
++            while (drainPage < buildPages.size() && !pageBuilder.isFull() && !shouldYield()) {
+                 Page buildPage = buildPages.get(drainPage);
+                 if (drainPos == buildPage.getPositionCount()) {
+                     drainPage++;
+@@ -1177,6 +1210,7 @@ public class MergeJoinOperatorFactory
+                 pageBuilder.getBlockBuilder(channel).append(block.getUnderlyingValueBlock(), block.getUnderlyingValuePosition(position));
+                 channel++;
+             }
++            reserveOutputMemory();
+         }
+ 
+         private void appendNullBuildRow()
+@@ -1186,6 +1220,21 @@ public class MergeJoinOperatorFactory
+                 pageBuilder.getBlockBuilder(channel).appendNull();
+                 channel++;
+             }
++            reserveOutputMemory();
++        }
++
++        private void reserveOutputMemory()
++        {
++            long retainedBytes = pageBuilder.getRetainedSizeInBytes();
++            if (retainedBytes == outputMemoryContext.getBytes()) {
++                return;
++            }
++            if (!outputMemoryContext.trySetBytes(retainedBytes)) {
++                // The second replay page is an optional cache. Prefer the output
++                // buffer over retaining it when a block builder grows.
++                bridge.releasePreviousReplayPage();
++                outputMemoryContext.setBytes(retainedBytes);
++            }
+         }
+ 
+         private void appendNullProbeRow()
+diff --git a/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorInfo.java b/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorInfo.java
+new file mode 100644
+index 00000000000..807828da7ef
+--- /dev/null
++++ b/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorInfo.java
+@@ -0,0 +1,59 @@
++/*
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *     http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++package io.trino.operator.join.merge;
++
++import com.fasterxml.jackson.annotation.JsonCreator;
++import com.fasterxml.jackson.annotation.JsonProperty;
++import io.trino.operator.OperatorInfo;
++import io.trino.operator.join.JoinType;
++import io.trino.spi.Mergeable;
++
++import static com.google.common.base.Preconditions.checkArgument;
++import static java.util.Objects.requireNonNull;
++
++public record MergeJoinOperatorInfo(
++        @JsonProperty("joinType") JoinType joinType,
++        @JsonProperty("probeRows") long probeRows,
++        @JsonProperty("outputRows") long outputRows,
++        @JsonProperty("buildRows") long buildRows,
++        @JsonProperty("keyGroups") long keyGroups,
++        @JsonProperty("maxBuildGroupRows") long maxBuildGroupRows)
++        implements OperatorInfo, Mergeable<MergeJoinOperatorInfo>
++{
++    @JsonCreator
++    public MergeJoinOperatorInfo
++    {
++        requireNonNull(joinType, "joinType is null");
++        checkArgument(probeRows >= 0 && outputRows >= 0 && buildRows >= 0 && keyGroups >= 0 && maxBuildGroupRows >= 0, "negative merge join counter");
++    }
++
++    @Override
++    public MergeJoinOperatorInfo mergeWith(MergeJoinOperatorInfo other)
++    {
++        checkArgument(joinType == other.joinType, "different join types");
++        return new MergeJoinOperatorInfo(
++                joinType,
++                probeRows + other.probeRows,
++                outputRows + other.outputRows,
++                buildRows + other.buildRows,
++                keyGroups + other.keyGroups,
++                Math.max(maxBuildGroupRows, other.maxBuildGroupRows));
++    }
++
++    @Override
++    public boolean isFinal()
++    {
++        return true;
++    }
++}
+diff --git a/core/trino-main/src/main/java/io/trino/spiller/FileSingleStreamSpiller.java b/core/trino-main/src/main/java/io/trino/spiller/FileSingleStreamSpiller.java
+index eadd55538c5..685e4ccc529 100644
+--- a/core/trino-main/src/main/java/io/trino/spiller/FileSingleStreamSpiller.java
++++ b/core/trino-main/src/main/java/io/trino/spiller/FileSingleStreamSpiller.java
+@@ -37,6 +37,8 @@ import java.io.Closeable;
+ import java.io.IOException;
+ import java.io.InputStream;
+ import java.io.UncheckedIOException;
++import java.nio.ByteBuffer;
++import java.nio.channels.FileChannel;
+ import java.nio.file.Files;
+ import java.nio.file.Path;
+ import java.util.ArrayList;
+@@ -54,6 +56,8 @@ import static com.google.common.util.concurrent.Futures.immediateFuture;
+ import static io.trino.spi.StandardErrorCode.GENERIC_INTERNAL_ERROR;
+ import static io.trino.spiller.FileSingleStreamSpillerFactory.SPILL_FILE_PREFIX;
+ import static io.trino.spiller.FileSingleStreamSpillerFactory.SPILL_FILE_SUFFIX;
++import static java.nio.file.StandardOpenOption.READ;
++import static java.nio.file.StandardOpenOption.WRITE;
+ import static java.util.Objects.requireNonNull;
+ 
+ @NotThreadSafe
+@@ -85,6 +89,9 @@ public class FileSingleStreamSpiller
+     private final AtomicLong spilledPagesInMemorySize = new AtomicLong();
+     private ListenableFuture<DataSize> spillInProgress = immediateFuture(DataSize.ofBytes(0L));
+     private InputStream replayInput;
++    private FileChannel replayIndex;
++    private final ByteBuffer indexWriteBuffer = ByteBuffer.allocate(Long.BYTES);
++    private final ByteBuffer indexReadBuffer = ByteBuffer.allocate(Long.BYTES);
+ 
+     private final Runnable fileSystemErrorHandler;
+ 
+@@ -143,6 +150,27 @@ public class FileSingleStreamSpiller
+         return spillInProgress;
+     }
+ 
++    /**
++     * Opt in before writing the first page. An on-disk offset per page permits exact
++     * group replay without an index that grows in memory or reads from sparse checkpoints.
++     * Ordinary hash/sort spillers keep their existing file layout.
++     */
++    public void enableIndexedReplay()
++    {
++        checkNoSpillInProgress();
++        checkState(spilledPageCount == 0 && replayIndex == null, "Replay must be enabled before spilling");
++        checkState(spillFiles.size() == 1, "Indexed replay requires a single spill file");
++        try {
++            Path indexPath = Files.createTempFile(spillDirectory, SPILL_FILE_PREFIX + "-replay-index-", SPILL_FILE_SUFFIX);
++            closer.register(() -> Files.deleteIfExists(indexPath));
++            replayIndex = closer.register(FileChannel.open(indexPath, READ, WRITE));
++        }
++        catch (IOException e) {
++            fileSystemErrorHandler.run();
++            throw new TrinoException(GENERIC_INTERNAL_ERROR, "Failed to create spill replay index", e);
++        }
++    }
++
+     @Override
+     public long getSpilledPagesInMemorySize()
+     {
+@@ -210,6 +238,10 @@ public class FileSingleStreamSpiller
+         try {
+             if (replayInput != null) {
+                 replayInput.close();
++                replayInput = null;
++            }
++            if (pageIndex == pageCount) {
++                return ImmutableList.<Page>of().iterator();
+             }
+             InputStream input = spillFiles.get(0).newInputStream();
+             replayInput = input;
+@@ -330,8 +362,19 @@ public class FileSingleStreamSpiller
+     }
+ 
+     private synchronized void recordReplayCheckpoint(long serializedPageSize)
++            throws IOException
+     {
+-        if (spilledPageCount % replayCheckpointInterval == 0) {
++        if (replayIndex != null) {
++            indexWriteBuffer.clear();
++            indexWriteBuffer.putLong(spillFileOffset).flip();
++            long offset = (long) spilledPageCount * Long.BYTES;
++            while (indexWriteBuffer.hasRemaining()) {
++                offset += replayIndex.write(indexWriteBuffer, offset);
++            }
++            localSpillContext.updateBytes(Long.BYTES);
++            spillerStats.addToTotalSpilledBytes(Long.BYTES);
++        }
++        else if (spilledPageCount % replayCheckpointInterval == 0) {
+             if (replayCheckpoints.size() == MAX_REPLAY_CHECKPOINTS) {
+                 for (int i = replayCheckpoints.size() - 1; i > 0; i -= 2) {
+                     replayCheckpoints.remove(i);
+@@ -347,7 +390,20 @@ public class FileSingleStreamSpiller
+     }
+ 
+     private synchronized ReplayCheckpoint replayCheckpointFor(int pageIndex)
++            throws IOException
+     {
++        if (replayIndex != null && pageIndex < completedSpilledPageCount) {
++            indexReadBuffer.clear();
++            long offset = (long) pageIndex * Long.BYTES;
++            while (indexReadBuffer.hasRemaining()) {
++                int bytes = replayIndex.read(indexReadBuffer, offset);
++                checkState(bytes > 0, "Missing replay index entry for page %s", pageIndex);
++                offset += bytes;
++            }
++            indexReadBuffer.flip();
++            spillerStats.addToTotalSpillReadBytes(Long.BYTES);
++            return new ReplayCheckpoint(pageIndex, indexReadBuffer.getLong());
++        }
+         ReplayCheckpoint checkpoint = new ReplayCheckpoint(0, 0);
+         for (ReplayCheckpoint candidate : replayCheckpoints) {
+             if (candidate.pageIndex() > pageIndex) {
+@@ -363,7 +419,7 @@ public class FileSingleStreamSpiller
+     public Path createTemporaryFile()
+     {
+         try {
+-            return Files.createTempFile(spillDirectory, "merge-join-matches", ".bin");
++            return Files.createTempFile(spillDirectory, SPILL_FILE_PREFIX + "-merge-join-matches-", SPILL_FILE_SUFFIX);
+         }
+         catch (IOException e) {
+             fileSystemErrorHandler.run();
+diff --git a/core/trino-main/src/main/java/io/trino/spiller/FileSingleStreamSpillerFactory.java b/core/trino-main/src/main/java/io/trino/spiller/FileSingleStreamSpillerFactory.java
+index 7f6b9d3a0a1..41ec3d44a9b 100644
+--- a/core/trino-main/src/main/java/io/trino/spiller/FileSingleStreamSpillerFactory.java
++++ b/core/trino-main/src/main/java/io/trino/spiller/FileSingleStreamSpillerFactory.java
+@@ -72,7 +72,8 @@ public class FileSingleStreamSpillerFactory
+     static final String SPILL_FILE_PREFIX = "spill";
+     @VisibleForTesting
+     static final String SPILL_FILE_SUFFIX = ".bin";
+-    private static final String SPILL_FILE_GLOB = "spill*.bin";
++    // Include bitmap files from before they adopted the common spill prefix.
++    private static final String SPILL_FILE_GLOB = "{spill*,merge-join-matches[0-9]*}.bin";
+     private static final Duration SPILL_PATH_HEALTH_EXPIRY_INTERVAL = Duration.ofMinutes(5);
+ 
+     private final ListeningExecutorService executor;
+diff --git a/core/trino-main/src/main/java/io/trino/spiller/SortingSpiller.java b/core/trino-main/src/main/java/io/trino/spiller/SortingSpiller.java
+index bd4798f93e5..33c337cfd0b 100644
+--- a/core/trino-main/src/main/java/io/trino/spiller/SortingSpiller.java
++++ b/core/trino-main/src/main/java/io/trino/spiller/SortingSpiller.java
+@@ -24,6 +24,7 @@ import io.trino.operator.PageWithPositionComparator;
+ import io.trino.operator.SpillContext;
+ import io.trino.operator.WorkProcessor;
+ import io.trino.spi.Page;
++import io.trino.spi.TrinoException;
+ import io.trino.spi.type.Type;
+ 
+ import java.io.Closeable;
+@@ -33,6 +34,7 @@ import java.util.HashSet;
+ import java.util.Iterator;
+ import java.util.List;
+ import java.util.Set;
++import java.util.stream.IntStream;
+ 
+ import static com.google.common.base.Preconditions.checkState;
+ import static com.google.common.collect.ImmutableList.toImmutableList;
+@@ -45,6 +47,7 @@ import static com.google.common.util.concurrent.Futures.transform;
+ import static com.google.common.util.concurrent.Futures.transformAsync;
+ import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
+ import static io.airlift.concurrent.MoreFutures.checkSuccess;
++import static io.trino.spi.StandardErrorCode.GENERIC_INTERNAL_ERROR;
+ import static io.trino.util.MergeSortedPages.mergeSortedPages;
+ import static java.lang.Math.max;
+ import static java.lang.Math.min;
+@@ -132,7 +135,7 @@ public final class SortingSpiller
+         WorkProcessor<Page> merged = mergeSortedPages(
+                 ImmutableList.of(WorkProcessor.fromIterator(getOnlyElement(left.spiller.getSpills())), WorkProcessor.fromIterator(getOnlyElement(right.spiller.getSpills()))),
+                 comparator,
+-                java.util.stream.IntStream.range(0, types.size()).boxed().collect(toImmutableList()),
++                IntStream.range(0, types.size()).boxed().collect(toImmutableList()),
+                 types,
+                 (builder, _) -> builder.getSizeInBytes() >= PAGE_BYTES,
+                 false,
+@@ -214,7 +217,7 @@ public final class SortingSpiller
+             remaining.forEach(closer::register);
+         }
+         catch (IOException failure) {
+-            throw new RuntimeException("Could not close sort spill runs", failure);
++            throw new TrinoException(GENERIC_INTERNAL_ERROR, "Could not close sort spill runs", failure);
+         }
+         finally {
+             memoryContext.close();
+diff --git a/core/trino-main/src/main/java/io/trino/sql/planner/LocalExecutionPlanner.java b/core/trino-main/src/main/java/io/trino/sql/planner/LocalExecutionPlanner.java
+index 0ab4677993c..e69f4a02ee7 100644
+--- a/core/trino-main/src/main/java/io/trino/sql/planner/LocalExecutionPlanner.java
++++ b/core/trino-main/src/main/java/io/trino/sql/planner/LocalExecutionPlanner.java
+@@ -1897,7 +1897,8 @@ public class LocalExecutionPlanner
+                     spillEnabled,
+                     Optional.of(spillerFactory),
+                     orderingCompiler,
+-                    node.isInputPagesPreSorted());
++                    node.isInputPagesPreSorted(),
++                    node.isBoundedSpill());
+ 
+             return new PhysicalOperation(operator, source.getLayout(), source);
+         }
+@@ -2933,10 +2934,10 @@ public class LocalExecutionPlanner
+             // The merge operator drains unmatched build rows itself; it has no outer operator.
+             JoinBridgeManager<MergeJoinBridge> bridgeManager = new JoinBridgeManager<>(false, bridge, buildOutputTypes);
+ 
+-            // dynamic filtering: collect domains on the build side (INNER only, same as hash join)
++            // INNER and RIGHT joins can filter the probe using the complete build-side domain.
+             boolean partitioned = !isBuildSideReplicated(node);
+             Optional<LocalDynamicFilterConsumer> localDynamicFilter = createDynamicFilter(buildSource, node, context, localDynamicFilters, partitioned);
+-            if (localDynamicFilter.isPresent() && node.getType() == INNER) {
++            if (localDynamicFilter.isPresent()) {
+                 buildSource = createDynamicFilterSourceOperatorFactory(
+                         buildContext.getNextOperatorId(),
+                         localDynamicFilter.get(),
+diff --git a/core/trino-main/src/main/java/io/trino/sql/planner/OptimizerConfig.java b/core/trino-main/src/main/java/io/trino/sql/planner/OptimizerConfig.java
+index 24ba538ac7d..81b5e72ead8 100644
+--- a/core/trino-main/src/main/java/io/trino/sql/planner/OptimizerConfig.java
++++ b/core/trino-main/src/main/java/io/trino/sql/planner/OptimizerConfig.java
+@@ -227,7 +227,7 @@ public class OptimizerConfig
+     }
+ 
+     @Config("optimizer.merge-join-memory-pressure-threshold")
+-    @ConfigDescription("Fraction of task memory above which the merge join is preferred over hash join (COST_BASED mode)")
++    @ConfigDescription("Fraction of model memory allowance that triggers cost-based consideration of merge join")
+     public OptimizerConfig setMergeJoinMemoryPressureThreshold(double threshold)
+     {
+         this.mergeJoinMemoryPressureThreshold = threshold;
+@@ -242,7 +242,7 @@ public class OptimizerConfig
+     }
+ 
+     @Config("optimizer.merge-join-small-build-threshold")
+-    @ConfigDescription("Fraction of task memory below which hash join is always preferred (COST_BASED mode)")
++    @ConfigDescription("Small-build fraction of model memory allowance, unless both inputs are compatibly partitioned and sorted")
+     public OptimizerConfig setMergeJoinSmallBuildThreshold(double threshold)
+     {
+         this.mergeJoinSmallBuildThreshold = threshold;
+@@ -256,7 +256,7 @@ public class OptimizerConfig
+     }
+ 
+     @Config("optimizer.merge-join-big-side-threshold")
+-    @ConfigDescription("Fraction of task memory above which both sides are considered big (COST_BASED mode)")
++    @ConfigDescription("Fraction of model memory allowance above which both inputs are considered large")
+     public OptimizerConfig setMergeJoinBigSideThreshold(double threshold)
+     {
+         this.mergeJoinBigSideThreshold = threshold;
+diff --git a/core/trino-main/src/main/java/io/trino/sql/planner/PlanCopier.java b/core/trino-main/src/main/java/io/trino/sql/planner/PlanCopier.java
+index bfbb7698569..412bd7525e1 100644
+--- a/core/trino-main/src/main/java/io/trino/sql/planner/PlanCopier.java
++++ b/core/trino-main/src/main/java/io/trino/sql/planner/PlanCopier.java
+@@ -187,7 +187,7 @@ public final class PlanCopier
+         @Override
+         public PlanNode visitSort(SortNode node, RewriteContext<Void> context)
+         {
+-            return new SortNode(idAllocator.getNextId(), context.rewrite(node.getSource()), node.getOrderingScheme(), node.isPartial(), node.isInputPagesPreSorted());
++            return new SortNode(idAllocator.getNextId(), context.rewrite(node.getSource()), node.getOrderingScheme(), node.isPartial(), node.isInputPagesPreSorted(), node.isBoundedSpill());
+         }
+ 
+         @Override
+diff --git a/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/DetermineJoinAlgorithm.java b/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/DetermineJoinAlgorithm.java
+index f0cec9722d2..555ae0be671 100644
+--- a/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/DetermineJoinAlgorithm.java
++++ b/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/DetermineJoinAlgorithm.java
+@@ -53,6 +53,7 @@ import io.trino.sql.planner.plan.SetOperationNode;
+ 
+ import java.util.List;
+ import java.util.Map;
++import java.util.Optional;
+ import java.util.Set;
+ 
+ import static com.google.common.collect.ImmutableList.toImmutableList;
+@@ -67,7 +68,6 @@ import static io.trino.SystemSessionProperties.isSpillEnabled;
+ import static io.trino.sql.ir.IrUtils.combineConjuncts;
+ import static io.trino.sql.planner.plan.Patterns.join;
+ import static java.lang.Double.isFinite;
+-import static java.lang.Math.max;
+ import static java.util.Objects.requireNonNull;
+ 
+ /**
+@@ -241,7 +241,7 @@ public class DetermineJoinAlgorithm
+     private static boolean sortedPages(ActualProperties properties, List<Symbol> keys)
+     {
+         return LocalProperties.match(properties.getLocalProperties(), keys.stream().map(symbol -> new SortingProperty<>(symbol, SortOrder.ASC_NULLS_LAST)).collect(toImmutableList()))
+-                .stream().allMatch(java.util.Optional::isEmpty);
++                .stream().allMatch(Optional::isEmpty);
+     }
+ 
+     private JoinNode addNotNullFilters(JoinNode joinNode, Session session, Context context)
+@@ -295,7 +295,7 @@ public class DetermineJoinAlgorithm
+             return false;
+         }
+         // Dynamic filters are supported: the merge join build side collects them via the
+-        // DynamicFilterSourceOperator wrapper in LocalExecutionPlanner.createMergeJoin (INNER only)
++        // DynamicFilterSourceOperator wrapper in LocalExecutionPlanner.createMergeJoin (INNER and RIGHT)
+         if (getRetryPolicy(session) != RetryPolicy.NONE) {
+             return false;
+         }
+diff --git a/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/ExpressionRewriteRuleSet.java b/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/ExpressionRewriteRuleSet.java
+index 15436912f17..525046440cc 100644
+--- a/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/ExpressionRewriteRuleSet.java
++++ b/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/ExpressionRewriteRuleSet.java
+@@ -289,6 +289,7 @@ public class ExpressionRewriteRuleSet
+         {
+             Optional<Expression> filter = joinNode.getFilter().map(x -> rewriter.rewrite(x, context));
+             if (!joinNode.getFilter().equals(filter)) {
++                // A residual-only rewrite preserves keys, distribution and input ordering.
+                 return Result.ofPlanNode(new JoinNode(
+                         joinNode.getId(),
+                         joinNode.getType(),
+@@ -301,7 +302,7 @@ public class ExpressionRewriteRuleSet
+                         filter,
+                         joinNode.getDistributionType(),
+                         joinNode.isSpillable(),
+-                        Optional.empty(),
++                        joinNode.getAlgorithm(),
+                         joinNode.getDynamicFilters(),
+                         joinNode.getReorderJoinStatsAndCost()));
+             }
+diff --git a/core/trino-main/src/main/java/io/trino/sql/planner/optimizations/AddExchanges.java b/core/trino-main/src/main/java/io/trino/sql/planner/optimizations/AddExchanges.java
+index e7af72c9a71..c231509be89 100644
+--- a/core/trino-main/src/main/java/io/trino/sql/planner/optimizations/AddExchanges.java
++++ b/core/trino-main/src/main/java/io/trino/sql/planner/optimizations/AddExchanges.java
+@@ -614,7 +614,9 @@ public class AddExchanges
+                                         idAllocator.getNextId(),
+                                         source,
+                                         node.getOrderingScheme(),
+-                                        true),
++                                        true,
++                                        node.isInputPagesPreSorted(),
++                                        node.isBoundedSpill()),
+                                 node.getOrderingScheme()),
+                         child.getProperties());
+             }
+@@ -1037,6 +1039,9 @@ public class AddExchanges
+ 
+         private PlanWithProperties withCanonicalSort(PlanWithProperties side, List<Symbol> keySymbols)
+         {
++            // Equi-criteria may repeat a symbol (especially for FULL joins).
++            // Remove repetitions only from the physical ordering, preserving all join constraints.
++            keySymbols = keySymbols.stream().distinct().collect(toImmutableList());
+             Map<Symbol, SortOrder> orderings = keySymbols.stream()
+                     .collect(toImmutableMap(symbol -> symbol, _ -> SortOrder.ASC_NULLS_LAST));
+             OrderingScheme orderingScheme = new OrderingScheme(keySymbols, orderings);
+@@ -1060,6 +1065,7 @@ public class AddExchanges
+                         .collect(toImmutableMap(outputLayout::get, inputLayout::get));
+                 List<Symbol> sourceKeys = keySymbols.stream()
+                         .map(outputToInput::get)
++                        .distinct()
+                         .collect(toImmutableList());
+                 OrderingScheme sourceOrdering = new OrderingScheme(
+                         sourceKeys,
+@@ -1068,7 +1074,7 @@ public class AddExchanges
+                 boolean inputPagesPreSorted = LocalProperties.match(
+                                 derivePropertiesRecursively(source).getLocalProperties(), sourceOrdering.toLocalProperties()).stream()
+                         .allMatch(Optional::isEmpty);
+-                SortNode partialSort = new SortNode(idAllocator.getNextId(), source, sourceOrdering, true, inputPagesPreSorted);
++                SortNode partialSort = new SortNode(idAllocator.getNextId(), source, sourceOrdering, true, inputPagesPreSorted, true);
+                 ExchangeNode mergingExchange = ExchangeNode.mergingPartitionedExchange(
+                         exchange,
+                         partialSort,
+@@ -1082,7 +1088,7 @@ public class AddExchanges
+             // Fallback: SortNode after the exchange (inside the join stage)
+             boolean inputPagesPreSorted = LocalProperties.match(side.getProperties().getLocalProperties(), orderingScheme.toLocalProperties()).stream()
+                     .allMatch(Optional::isEmpty);
+-            PlanNode sort = new SortNode(idAllocator.getNextId(), node, orderingScheme, false, inputPagesPreSorted);
++            PlanNode sort = new SortNode(idAllocator.getNextId(), node, orderingScheme, false, inputPagesPreSorted, true);
+             ActualProperties properties = ActualProperties.builderFrom(side.getProperties())
+                     .local(orderingScheme.toLocalProperties())
+                     .build();
+diff --git a/core/trino-main/src/main/java/io/trino/sql/planner/optimizations/LimitPushDown.java b/core/trino-main/src/main/java/io/trino/sql/planner/optimizations/LimitPushDown.java
+index 4ea11a9cfa8..42b09bc22d4 100644
+--- a/core/trino-main/src/main/java/io/trino/sql/planner/optimizations/LimitPushDown.java
++++ b/core/trino-main/src/main/java/io/trino/sql/planner/optimizations/LimitPushDown.java
+@@ -187,7 +187,7 @@ public class LimitPushDown
+                 return new TopNNode(node.getId(), rewrittenSource, limit.getCount(), node.getOrderingScheme(), TopNNode.Step.SINGLE);
+             }
+             if (rewrittenSource != node.getSource()) {
+-                return new SortNode(node.getId(), rewrittenSource, node.getOrderingScheme(), node.isPartial(), node.isInputPagesPreSorted());
++                return new SortNode(node.getId(), rewrittenSource, node.getOrderingScheme(), node.isPartial(), node.isInputPagesPreSorted(), node.isBoundedSpill());
+             }
+             return node;
+         }
+diff --git a/core/trino-main/src/main/java/io/trino/sql/planner/optimizations/PropertyDerivations.java b/core/trino-main/src/main/java/io/trino/sql/planner/optimizations/PropertyDerivations.java
+index 06dd4ac6c47..360a77cb420 100644
+--- a/core/trino-main/src/main/java/io/trino/sql/planner/optimizations/PropertyDerivations.java
++++ b/core/trino-main/src/main/java/io/trino/sql/planner/optimizations/PropertyDerivations.java
+@@ -601,9 +601,10 @@ public final class PropertyDerivations
+             // order (both inputs are pre-sorted by the planner); the order is stable
+             // regardless of spilling of the underlying sorts
+             if (node.getAlgorithm().isPresent()
+-                    && (node.getType() == io.trino.sql.planner.plan.JoinType.INNER || node.getType() == io.trino.sql.planner.plan.JoinType.LEFT)) {
++                    && (node.getType() == JoinType.INNER || node.getType() == JoinType.LEFT)) {
+                 List<Symbol> leftKeySymbols = node.getCriteria().stream()
+                         .map(JoinNode.EquiJoinClause::getLeft)
++                        .distinct()
+                         .collect(toImmutableList());
+                 if (node.getOutputSymbols().containsAll(leftKeySymbols)) {
+                     Map<Symbol, SortOrder> orderings = leftKeySymbols.stream()
+diff --git a/core/trino-main/src/main/java/io/trino/sql/planner/optimizations/UnaliasSymbolReferences.java b/core/trino-main/src/main/java/io/trino/sql/planner/optimizations/UnaliasSymbolReferences.java
+index 9bdb012a064..07c24bb1b2e 100644
+--- a/core/trino-main/src/main/java/io/trino/sql/planner/optimizations/UnaliasSymbolReferences.java
++++ b/core/trino-main/src/main/java/io/trino/sql/planner/optimizations/UnaliasSymbolReferences.java
+@@ -802,7 +802,7 @@ public class UnaliasSymbolReferences
+             OrderingScheme newOrderingScheme = mapper.map(node.getOrderingScheme());
+ 
+             return new PlanAndMappings(
+-                    new SortNode(node.getId(), rewrittenSource.getRoot(), newOrderingScheme, node.isPartial(), node.isInputPagesPreSorted()),
++                    new SortNode(node.getId(), rewrittenSource.getRoot(), newOrderingScheme, node.isPartial(), node.isInputPagesPreSorted(), node.isBoundedSpill()),
+                     mapping);
+         }
+ 
+diff --git a/core/trino-main/src/main/java/io/trino/sql/planner/plan/SortNode.java b/core/trino-main/src/main/java/io/trino/sql/planner/plan/SortNode.java
+index 7f49bfe888e..b66da18bf5a 100644
+--- a/core/trino-main/src/main/java/io/trino/sql/planner/plan/SortNode.java
++++ b/core/trino-main/src/main/java/io/trino/sql/planner/plan/SortNode.java
+@@ -31,6 +31,7 @@ public class SortNode
+     private final OrderingScheme orderingScheme;
+     private final boolean partial;
+     private final boolean inputPagesPreSorted;
++    private final boolean boundedSpill;
+ 
+     public SortNode(
+             PlanNodeId id,
+@@ -41,13 +42,19 @@ public class SortNode
+         this(id, source, orderingScheme, partial, false);
+     }
+ 
++    public SortNode(PlanNodeId id, PlanNode source, OrderingScheme orderingScheme, boolean partial, boolean inputPagesPreSorted)
++    {
++        this(id, source, orderingScheme, partial, inputPagesPreSorted, false);
++    }
++
+     @JsonCreator
+     public SortNode(
+             @JsonProperty("id") PlanNodeId id,
+             @JsonProperty("source") PlanNode source,
+             @JsonProperty("orderingScheme") OrderingScheme orderingScheme,
+             @JsonProperty("partial") boolean partial,
+-            @JsonProperty("inputPagesPreSorted") boolean inputPagesPreSorted)
++            @JsonProperty("inputPagesPreSorted") boolean inputPagesPreSorted,
++            @JsonProperty("boundedSpill") boolean boundedSpill)
+     {
+         super(id);
+ 
+@@ -58,6 +65,7 @@ public class SortNode
+         this.orderingScheme = orderingScheme;
+         this.partial = partial;
+         this.inputPagesPreSorted = inputPagesPreSorted;
++        this.boundedSpill = boundedSpill;
+     }
+ 
+     @Override
+@@ -90,6 +98,12 @@ public class SortNode
+         return inputPagesPreSorted;
+     }
+ 
++    @JsonProperty
++    public boolean isBoundedSpill()
++    {
++        return boundedSpill;
++    }
++
+     @JsonProperty("orderingScheme")
+     public OrderingScheme getOrderingScheme()
+     {
+@@ -105,6 +119,6 @@ public class SortNode
+     @Override
+     public PlanNode replaceChildren(List<PlanNode> newChildren)
+     {
+-        return new SortNode(getId(), Iterables.getOnlyElement(newChildren), orderingScheme, partial, inputPagesPreSorted);
++        return new SortNode(getId(), Iterables.getOnlyElement(newChildren), orderingScheme, partial, inputPagesPreSorted, boundedSpill);
+     }
+ }
+diff --git a/core/trino-main/src/test/java/io/trino/operator/join/merge/TestMergeJoinOperator.java b/core/trino-main/src/test/java/io/trino/operator/join/merge/TestMergeJoinOperator.java
+index 79ed6bc55fb..ffdbaab8701 100644
+--- a/core/trino-main/src/test/java/io/trino/operator/join/merge/TestMergeJoinOperator.java
++++ b/core/trino-main/src/test/java/io/trino/operator/join/merge/TestMergeJoinOperator.java
+@@ -25,12 +25,14 @@ import io.trino.operator.Operator;
+ import io.trino.operator.OperatorContext;
+ import io.trino.operator.OperatorFactory;
+ import io.trino.operator.TaskContext;
++import io.trino.operator.WorkProcessor;
+ import io.trino.operator.WorkProcessorOperatorAdapter;
+ import io.trino.operator.join.JoinBridgeManager;
+ import io.trino.operator.join.JoinFilterFunction;
+ import io.trino.operator.join.NonCopyingPageList;
+ import io.trino.operator.join.StandardJoinFilterFunction;
+ import io.trino.spi.Page;
++import io.trino.spi.PageBuilder;
+ import io.trino.spi.TrinoException;
+ import io.trino.spi.block.LongArrayBlock;
+ import io.trino.spi.block.RunLengthEncodedBlock;
+@@ -52,6 +54,8 @@ import org.junit.jupiter.api.BeforeEach;
+ import org.junit.jupiter.api.Test;
+ import org.junit.jupiter.api.TestInstance;
+ import org.junit.jupiter.api.io.TempDir;
++import org.junit.jupiter.params.ParameterizedTest;
++import org.junit.jupiter.params.provider.EnumSource;
+ 
+ import java.nio.file.Files;
+ import java.nio.file.Path;
+@@ -62,9 +66,13 @@ import java.util.List;
+ import java.util.Optional;
+ import java.util.concurrent.ExecutorService;
+ import java.util.concurrent.ScheduledExecutorService;
++import java.util.concurrent.atomic.AtomicInteger;
++import java.util.concurrent.atomic.AtomicLong;
++import java.util.concurrent.atomic.AtomicReference;
+ import java.util.stream.IntStream;
+ 
+ import static com.google.common.collect.ImmutableList.toImmutableList;
++import static com.google.common.util.concurrent.Futures.immediateFuture;
+ import static com.google.common.util.concurrent.MoreExecutors.listeningDecorator;
+ import static io.trino.RowPagesBuilder.rowPagesBuilder;
+ import static io.trino.execution.buffer.CompressionCodec.NONE;
+@@ -738,8 +746,8 @@ public class TestMergeJoinOperator
+                 driverContext,
+                 rowPagesBuilder(BIGINT).row(7L).build(),
+                 MaterializedResult.resultBuilder(BIGINT, BIGINT).row(7L, 7L).build());
+-        MergeJoinOperatorFactory.MergeJoinStatistics statistics = (MergeJoinOperatorFactory.MergeJoinStatistics) driverContext.getOperatorContexts().get(0).getOperatorStats().getInfo();
+-        assertThat(statistics.getMaxBuildGroupRows()).isEqualTo(2L * rowsPerPage);
++        MergeJoinOperatorInfo statistics = (MergeJoinOperatorInfo) driverContext.getOperatorContexts().get(0).getOperatorStats().getInfo();
++        assertThat(statistics.maxBuildGroupRows()).isEqualTo(2L * rowsPerPage);
+     }
+ 
+     @Test
+@@ -789,8 +797,8 @@ public class TestMergeJoinOperator
+             }
+             assertThat(outputRows).isEqualTo(2L * rowsPerPage);
+             assertThat(taskContext.getPeakMemoryReservation().toBytes()).isLessThanOrEqualTo(memoryLimit);
+-            MergeJoinOperatorFactory.MergeJoinStatistics statistics = (MergeJoinOperatorFactory.MergeJoinStatistics) probeDriver.getOperatorContexts().get(0).getOperatorStats().getInfo();
+-            assertThat(statistics.getMaxBuildGroupRows()).isEqualTo(outputRows);
++            MergeJoinOperatorInfo statistics = (MergeJoinOperatorInfo) probeDriver.getOperatorContexts().get(0).getOperatorStats().getInfo();
++            assertThat(statistics.maxBuildGroupRows()).isEqualTo(outputRows);
+         }
+         finally {
+             probe.close();
+@@ -1024,7 +1032,8 @@ public class TestMergeJoinOperator
+                 ImmutableList.of(largeBuildPage, largeBuildPage),
+                 probePages.build(),
+                 MaterializedResult.resultBuilder(BIGINT, BIGINT).build(),
+-                Optional.of(filterFactory));
++                Optional.of(filterFactory),
++                20 * 1024);
+     }
+ 
+     @Test
+@@ -1156,9 +1165,15 @@ public class TestMergeJoinOperator
+     private SpillIo assertSpilledJoin(Path spillPath, JoinType joinType, List<Page> pages, List<Page> probePages, MaterializedResult expected, Optional<JoinFilterFunctionFactory> filterFactory)
+             throws Exception
+     {
+-        assertThat(pages.stream().mapToLong(Page::getRetainedSizeInBytes).sum()).isGreaterThan(16 * 1024);
++        return assertSpilledJoin(spillPath, joinType, pages, probePages, expected, filterFactory, 16 * 1024);
++    }
++
++    private SpillIo assertSpilledJoin(Path spillPath, JoinType joinType, List<Page> pages, List<Page> probePages, MaterializedResult expected, Optional<JoinFilterFunctionFactory> filterFactory, long memoryLimit)
++            throws Exception
++    {
++        assertThat(pages.stream().mapToLong(Page::getRetainedSizeInBytes).sum()).isGreaterThan(memoryLimit);
+         TaskContext taskContext = TestingTaskContext.builder(executor, scheduledExecutor, SessionTestUtils.TEST_SESSION)
+-                .setQueryMaxMemory(DataSize.ofBytes(16 * 1024))
++                .setQueryMaxMemory(DataSize.ofBytes(memoryLimit))
+                 .build();
+         DriverContext buildDriver = taskContext.addPipelineContext(0, true, true, false).addDriverContext();
+         OperatorContext context = buildDriver.addOperatorContext(0, NODE_ID, "MergeJoinBufferOperator");
+@@ -1217,6 +1232,216 @@ public class TestMergeJoinOperator
+         }
+     }
+ 
++    @Test
++    public void testLinearReplayForSmallGroups(@TempDir Path spillPath)
++            throws Exception
++    {
++        for (int pagesPerGroup : List.of(2, 3, 4)) {
++            for (int pageCount : List.of(768, 3072, 12288)) {
++                List<Page> pages = new ArrayList<>();
++                RowPagesBuilder probe = rowPagesBuilder(BIGINT);
++                MaterializedResult.Builder expected = MaterializedResult.resultBuilder(BIGINT, BIGINT);
++                for (int page = 0; page < pageCount; page++) {
++                    long key = page / pagesPerGroup;
++                    pages.add(repeatedPage(key, 8));
++                    if (page % pagesPerGroup == 0) {
++                        probe.row(key);
++                    }
++                    for (int position = 0; position < 8; position++) {
++                        expected.row(key, key);
++                    }
++                }
++                SpillIo io = assertSpilledJoin(spillPath, JoinType.INNER, pages, probe.build(), expected.build(), Optional.empty());
++                double ratio = (double) io.readBytes() / io.writtenBytes();
++                System.out.printf(
++                        "SMJ replay groupPages=%s pages=%s replayedPages=%s writtenBytes=%s readBytes=%s readWriteRatio=%.4f%n",
++                        pagesPerGroup,
++                        pageCount,
++                        io.replayedPages(),
++                        io.writtenBytes(),
++                        io.readBytes(),
++                        ratio);
++                assertThat(ratio).as("Replay IO for %s pages in %s-page groups", pageCount, pagesPerGroup).isLessThanOrEqualTo(4);
++            }
++        }
++    }
++
++    @Test
++    public void testOutputMemoryAccounting()
++            throws Exception
++    {
++        TaskContext task = TestingTaskContext.builder(executor, scheduledExecutor, SessionTestUtils.TEST_SESSION)
++                .setQueryMaxMemory(DataSize.ofBytes(16 * 1024))
++                .build();
++        DriverContext buildDriver = task.addPipelineContext(0, true, true, false).addDriverContext();
++        MergeJoinBridge bridge = new MergeJoinBridge(ImmutableList.of(BIGINT), ImmutableList.of(0), ImmutableList.of());
++        var buffer = new MergeJoinBufferOperatorFactory.MergeJoinBufferOperator(
++                buildDriver.addOperatorContext(0, NODE_ID, "build"),
++                bridge,
++                ImmutableList.of(BIGINT),
++                SessionTestUtils.TEST_SESSION.toConnectorSession(),
++                Optional.empty());
++        buffer.addInput(new Page(RunLengthEncodedBlock.create(BIGINT, 7L, 20_000)));
++        buffer.finish();
++        var retainedBuilder = new AtomicReference<PageBuilder>();
++        var peakBuilderBytes = new AtomicLong();
++        var observedReservation = new AtomicLong();
++        JoinFilterFunctionFactory filter = (_, _, _) -> (_, _, _) -> {
++            long bytes = retainedBuilder.get().getRetainedSizeInBytes();
++            if (bytes > peakBuilderBytes.get()) {
++                peakBuilderBytes.set(bytes);
++                observedReservation.set(task.aggregateUserMemoryContext().getBytes());
++            }
++            return true;
++        };
++        var manager = new JoinBridgeManager<>(false, bridge, ImmutableList.of(BIGINT));
++        var factory = probeFactory(manager, Optional.of(filter));
++        DriverContext probeDriver = task.addPipelineContext(1, true, true, false).addDriverContext();
++        var operator = factory.create(probeDriver.addOperatorContext(0, NODE_ID, "probe"), WorkProcessor.of(repeatedPage(7, 1)));
++        var field = operator.getClass().getDeclaredField("transformation");
++        field.setAccessible(true);
++        Object transformation = field.get(operator);
++        var builderField = transformation.getClass().getDeclaredField("pageBuilder");
++        builderField.setAccessible(true);
++        retainedBuilder.set((PageBuilder) builderField.get(transformation));
++        try {
++            long outputRows = 0;
++            for (int iteration = 0; !operator.getOutputPages().isFinished(); iteration++) {
++                assertThat(iteration).as("output makes progress").isLessThan(10_000);
++                if (operator.getOutputPages().process() && !operator.getOutputPages().isFinished()) {
++                    outputRows += operator.getOutputPages().getResult().getPositionCount();
++                }
++            }
++            assertThat(outputRows).isEqualTo(20_000);
++            System.out.println("SMJ outputBuilderRetainedBytes=" + peakBuilderBytes.get()
++                    + " taskUserReservationBytes=" + observedReservation.get() + " queryLimitBytes=16384");
++            assertThat(observedReservation.get()).isGreaterThanOrEqualTo(peakBuilderBytes.get());
++        }
++        finally {
++            operator.close();
++            factory.close();
++            buffer.close();
++            bridge.destroy();
++        }
++    }
++
++    @ParameterizedTest
++    @EnumSource(JoinType.class)
++    public void testYieldDuringRejectedGroup(JoinType joinType)
++            throws Exception
++    {
++        MergeJoinBridge bridge = new MergeJoinBridge(ImmutableList.of(BIGINT), ImmutableList.of(0), ImmutableList.of());
++        bridge.addPage(repeatedPage(7, 200_000));
++        bridge.finish();
++        var filterCalls = new AtomicInteger();
++        JoinFilterFunctionFactory filter = (_, _, _) -> (_, _, _) -> {
++            if (filterCalls.incrementAndGet() == 1024) {
++                driverContext.getYieldSignal().forceYieldForTesting();
++            }
++            return false;
++        };
++        var manager = new JoinBridgeManager<>(false, bridge, ImmutableList.of(BIGINT));
++        var factory = probeFactory(manager, Optional.of(filter), joinType);
++        var operator = factory.create(driverContext.addOperatorContext(0, NODE_ID, "probe"), WorkProcessor.of(repeatedPage(7, 1)));
++        driverContext.getYieldSignal().forceYieldForTesting();
++        try {
++            operator.getOutputPages().process();
++            assertThat(filterCalls.get()).isZero();
++            driverContext.getYieldSignal().resetYieldForTesting();
++            assertThat(operator.getOutputPages().process()).isFalse();
++            assertThat(filterCalls.get()).isEqualTo(1024);
++            driverContext.getYieldSignal().resetYieldForTesting();
++            long outputRows = 0;
++            while (!operator.getOutputPages().isFinished()) {
++                if (operator.getOutputPages().process() && !operator.getOutputPages().isFinished()) {
++                    outputRows += operator.getOutputPages().getResult().getPositionCount();
++                }
++            }
++            assertThat(filterCalls.get()).isEqualTo(200_000);
++            long unmatchedBuildRows = (joinType == JoinType.RIGHT || joinType == JoinType.FULL) ? 200_000 : 0;
++            long unmatchedProbeRows = (joinType == JoinType.LEFT || joinType == JoinType.FULL) ? 1 : 0;
++            assertThat(outputRows).isEqualTo(unmatchedBuildRows + unmatchedProbeRows);
++        }
++        finally {
++            operator.close();
++            factory.close();
++            driverContext.getYieldSignal().resetYieldForTesting();
++        }
++    }
++
++    @Test
++    public void testBuildScanYieldsAndResumes()
++            throws Exception
++    {
++        long[] keys = new long[200_000];
++        Arrays.setAll(keys, position -> position);
++        MergeJoinBridge bridge = new MergeJoinBridge(ImmutableList.of(BIGINT), ImmutableList.of(0), ImmutableList.of());
++        bridge.addPage(new Page(new LongArrayBlock(keys.length, Optional.empty(), keys)));
++        bridge.finish();
++        var factory = probeFactory(new JoinBridgeManager<>(false, bridge, ImmutableList.of(BIGINT)), Optional.empty());
++        var operator = factory.create(driverContext.addOperatorContext(0, NODE_ID, "probe"), WorkProcessor.of(repeatedPage(200_001, 1)));
++        try {
++            assertThat(operator.getOutputPages().process()).isFalse();
++            while (!operator.getOutputPages().isFinished()) {
++                if (operator.getOutputPages().process()) {
++                    assertThat(operator.getOutputPages().isFinished()).isTrue();
++                }
++            }
++        }
++        finally {
++            operator.close();
++            factory.close();
++        }
++    }
++
++    @Test
++    public void testGroupDiscoveryYieldsAndCanBeCancelled()
++            throws Exception
++    {
++        MergeJoinBridge bridge = new MergeJoinBridge(ImmutableList.of(BIGINT), ImmutableList.of(0), ImmutableList.of());
++        for (int page = 0; page < 40_000; page++) {
++            bridge.addPage(repeatedPage(7, 8));
++        }
++        bridge.finish();
++        var factory = probeFactory(new JoinBridgeManager<>(false, bridge, ImmutableList.of(BIGINT)), Optional.empty());
++        var operator = factory.create(driverContext.addOperatorContext(0, NODE_ID, "probe"), WorkProcessor.of(repeatedPage(7, 1)));
++        try {
++            assertThat(operator.getOutputPages().process()).isFalse();
++            driverContext.getYieldSignal().forceYieldForTesting();
++            assertThat(operator.getOutputPages().process()).isFalse();
++        }
++        finally {
++            operator.close();
++            factory.close();
++            driverContext.getYieldSignal().resetYieldForTesting();
++        }
++        assertThat(driverContext.getPipelineContext().getTaskContext().aggregateUserMemoryContext().getBytes()).isZero();
++    }
++
++    private MergeJoinOperatorFactory probeFactory(JoinBridgeManager<MergeJoinBridge> manager, Optional<JoinFilterFunctionFactory> filter)
++    {
++        return probeFactory(manager, filter, JoinType.INNER);
++    }
++
++    private MergeJoinOperatorFactory probeFactory(JoinBridgeManager<MergeJoinBridge> manager, Optional<JoinFilterFunctionFactory> filter, JoinType joinType)
++    {
++        return new MergeJoinOperatorFactory(
++                0,
++                NODE_ID,
++                manager,
++                joinType,
++                false,
++                ImmutableList.of(BIGINT),
++                ImmutableList.of(BIGINT),
++                ImmutableList.of(0),
++                ImmutableList.of(0),
++                ImmutableList.of(0),
++                ImmutableList.of(0),
++                filter,
++                SessionTestUtils.TEST_SESSION.toConnectorSession(),
++                blockTypeOperators);
++    }
++
+     private record SpillIo(long replayedPages, long writtenBytes, long readBytes) {}
+ 
+     @Test
+@@ -1305,14 +1530,14 @@ public class TestMergeJoinOperator
+     public void testOuterJoinDoesNotAllocateGlobalBuildIndex()
+     {
+         MergeJoinBridge bridge = new MergeJoinBridge(ImmutableList.of(BIGINT), ImmutableList.of(0), ImmutableList.of());
+-        bridge.addPage(rowPagesBuilder(BIGINT).row(1L).build().get(0));
++        bridge.addPage(repeatedPage(1, 10_000));
+         bridge.finish();
+         JoinBridgeManager<MergeJoinBridge> bridgeManager = new JoinBridgeManager<>(false, bridge, ImmutableList.of(BIGINT));
+         DriverContext smallMemoryDriver = createTaskContext(
+                 executor,
+                 scheduledExecutor,
+                 SessionTestUtils.TEST_SESSION,
+-                DataSize.ofBytes(1))
++                DataSize.ofBytes(2048))
+                 .addPipelineContext(0, true, true, false)
+                 .addDriverContext();
+         MergeJoinOperatorFactory probeFactory = new MergeJoinOperatorFactory(
+@@ -1332,25 +1557,25 @@ public class TestMergeJoinOperator
+                 blockTypeOperators);
+ 
+         OperatorFactory adapterFactory = WorkProcessorOperatorAdapter.createAdapterOperatorFactory(probeFactory);
+-        assertOperatorEquals(
+-                adapterFactory,
+-                smallMemoryDriver,
+-                ImmutableList.of(),
+-                MaterializedResult.resultBuilder(BIGINT, BIGINT).row(null, 1L).build());
++        MaterializedResult.Builder expected = MaterializedResult.resultBuilder(BIGINT, BIGINT);
++        for (int row = 0; row < 10_000; row++) {
++            expected.row(null, 1L);
++        }
++        assertOperatorEquals(adapterFactory, smallMemoryDriver, ImmutableList.of(), expected.build());
+     }
+ 
+     @Test
+     public void testOuterJoinGroupIndexRespectsMemoryLimit()
+     {
+         MergeJoinBridge bridge = new MergeJoinBridge(ImmutableList.of(BIGINT), ImmutableList.of(0), ImmutableList.of());
+-        bridge.addPage(rowPagesBuilder(BIGINT).row(1L).row(1L).build().get(0));
++        bridge.addPage(repeatedPage(1, 16_384));
+         bridge.finish();
+         JoinBridgeManager<MergeJoinBridge> bridgeManager = new JoinBridgeManager<>(false, bridge, ImmutableList.of(BIGINT));
+         DriverContext smallMemoryDriver = createTaskContext(
+                 executor,
+                 scheduledExecutor,
+                 SessionTestUtils.TEST_SESSION,
+-                DataSize.ofBytes(1))
++                DataSize.ofBytes(2048))
+                 .addPipelineContext(0, true, true, false)
+                 .addDriverContext();
+         JoinFilterFunctionFactory acceptAll = (_, addresses, pages) -> new StandardJoinFilterFunction(
+@@ -1386,8 +1611,10 @@ public class TestMergeJoinOperator
+     @Test
+     public void testResidualFilterOnlyIndexesCurrentGroup()
+     {
++        // Borrowed pages isolate probe-state memory here. The spill tests separately
++        // account production build buffers, replay pages and spiller reservations.
+         RowPagesBuilder build = rowPagesBuilder(BIGINT, BIGINT);
+-        for (long key = 0; key < 100; key++) {
++        for (long key = 0; key < 10_000; key++) {
+             build.row(key, key);
+         }
+         MergeJoinBridge bridge = new MergeJoinBridge(ImmutableList.of(BIGINT, BIGINT), ImmutableList.of(0), ImmutableList.of());
+@@ -1398,7 +1625,7 @@ public class TestMergeJoinOperator
+                 executor,
+                 scheduledExecutor,
+                 SessionTestUtils.TEST_SESSION,
+-                DataSize.ofBytes(16))
++                DataSize.ofBytes(2048))
+                 .addPipelineContext(0, true, true, false)
+                 .addDriverContext();
+         MergeJoinOperatorFactory probeFactory = new MergeJoinOperatorFactory(
+@@ -1421,8 +1648,8 @@ public class TestMergeJoinOperator
+         assertOperatorEquals(
+                 adapterFactory,
+                 smallMemoryDriver,
+-                rowPagesBuilder(BIGINT, BIGINT).row(99L, 100L).build(),
+-                MaterializedResult.resultBuilder(BIGINT, BIGINT, BIGINT, BIGINT).row(99L, 100L, 99L, 99L).build());
++                rowPagesBuilder(BIGINT, BIGINT).row(9999L, 100L).build(),
++                MaterializedResult.resultBuilder(BIGINT, BIGINT, BIGINT, BIGINT).row(9999L, 100L, 9999L, 9999L).build());
+     }
+ 
+     private static class ImmediateSpiller
+@@ -1436,7 +1663,7 @@ public class TestMergeJoinOperator
+             List<Page> run = new ArrayList<>();
+             pages.forEachRemaining(run::add);
+             runs.add(run);
+-            return com.google.common.util.concurrent.Futures.immediateFuture(DataSize.ofBytes(0));
++            return immediateFuture(DataSize.ofBytes(0));
+         }
+ 
+         @Override
+@@ -1934,10 +2161,10 @@ public class TestMergeJoinOperator
+ 
+         OperatorFactory adapterFactory = WorkProcessorOperatorAdapter.createAdapterOperatorFactory(probeFactory);
+         assertOperatorEquals(adapterFactory, operatorDriverContext, probePages, expected);
+-        MergeJoinOperatorFactory.MergeJoinStatistics statistics = (MergeJoinOperatorFactory.MergeJoinStatistics) operatorDriverContext.getOperatorContexts().get(0).getOperatorStats().getInfo();
+-        assertThat(statistics.getProbeRows()).isEqualTo(probePages.stream().mapToInt(Page::getPositionCount).sum());
+-        assertThat(statistics.getBuildRows()).isEqualTo(buildPages.stream().mapToInt(Page::getPositionCount).sum());
+-        assertThat(statistics.getOutputRows()).isEqualTo(expected.getRowCount());
++        MergeJoinOperatorInfo statistics = (MergeJoinOperatorInfo) operatorDriverContext.getOperatorContexts().get(0).getOperatorStats().getInfo();
++        assertThat(statistics.probeRows()).isEqualTo(probePages.stream().mapToInt(Page::getPositionCount).sum());
++        assertThat(statistics.buildRows()).isEqualTo(buildPages.stream().mapToInt(Page::getPositionCount).sum());
++        assertThat(statistics.outputRows()).isEqualTo(expected.getRowCount());
+         assertThat(bridge.getPages()).isEmpty();
+     }
+ 
+diff --git a/core/trino-main/src/test/java/io/trino/operator/join/merge/TestMergeJoinOperatorInfo.java b/core/trino-main/src/test/java/io/trino/operator/join/merge/TestMergeJoinOperatorInfo.java
+new file mode 100644
+index 00000000000..c93c16d908b
+--- /dev/null
++++ b/core/trino-main/src/test/java/io/trino/operator/join/merge/TestMergeJoinOperatorInfo.java
+@@ -0,0 +1,41 @@
++/*
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *     http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++package io.trino.operator.join.merge;
++
++import io.airlift.json.JsonCodec;
++import io.trino.operator.OperatorInfo;
++import org.junit.jupiter.api.Test;
++
++import static io.trino.operator.join.JoinType.INNER;
++import static io.trino.operator.join.JoinType.PROBE_OUTER;
++import static org.assertj.core.api.Assertions.assertThat;
++import static org.assertj.core.api.Assertions.assertThatThrownBy;
++
++public class TestMergeJoinOperatorInfo
++{
++    @Test
++    public void testRoundTripAndMerge()
++    {
++        MergeJoinOperatorInfo first = new MergeJoinOperatorInfo(INNER, 10, 15, 20, 5, 7);
++        JsonCodec<OperatorInfo> codec = JsonCodec.jsonCodec(OperatorInfo.class);
++        assertThat(codec.fromJson(codec.toJson(first))).isEqualTo(first);
++        assertThat(first.isFinal()).isTrue();
++        MergeJoinOperatorInfo second = new MergeJoinOperatorInfo(INNER, 1, 2, 3, 4, 9);
++        MergeJoinOperatorInfo merged = first.mergeWith(second);
++        assertThat(merged).isEqualTo(new MergeJoinOperatorInfo(INNER, 11, 17, 23, 9, 9));
++        assertThat(codec.fromJson(codec.toJson(merged))).isEqualTo(merged);
++        assertThatThrownBy(() -> first.mergeWith(new MergeJoinOperatorInfo(PROBE_OUTER, 0, 0, 0, 0, 0)))
++                .isInstanceOf(IllegalArgumentException.class).hasMessage("different join types");
++    }
++}
+diff --git a/core/trino-main/src/test/java/io/trino/spiller/TestFileSingleStreamSpillerFactory.java b/core/trino-main/src/test/java/io/trino/spiller/TestFileSingleStreamSpillerFactory.java
+index 3b191fec75e..eeffb0c27c0 100644
+--- a/core/trino-main/src/test/java/io/trino/spiller/TestFileSingleStreamSpillerFactory.java
++++ b/core/trino-main/src/test/java/io/trino/spiller/TestFileSingleStreamSpillerFactory.java
+@@ -180,19 +180,23 @@ public class TestFileSingleStreamSpillerFactory
+ 
+         Files.createTempFile(spillPath1.toPath(), SPILL_FILE_PREFIX, SPILL_FILE_SUFFIX);
+         Files.createTempFile(spillPath1.toPath(), SPILL_FILE_PREFIX, SPILL_FILE_SUFFIX);
++        Files.createTempFile(spillPath1.toPath(), SPILL_FILE_PREFIX + "-merge-join-matches-", SPILL_FILE_SUFFIX);
++        Files.createTempFile(spillPath1.toPath(), SPILL_FILE_PREFIX + "-replay-index-", SPILL_FILE_SUFFIX);
+         Files.createTempFile(spillPath1.toPath(), SPILL_FILE_PREFIX, "blah");
+         Files.createTempFile(spillPath2.toPath(), SPILL_FILE_PREFIX, SPILL_FILE_SUFFIX);
++        Files.createTempFile(spillPath2.toPath(), "merge-join-matches", SPILL_FILE_SUFFIX);
++        Files.createTempFile(spillPath2.toPath(), "merge-join-matches-not-owned-", SPILL_FILE_SUFFIX);
+         Files.createTempFile(spillPath2.toPath(), "blah", SPILL_FILE_SUFFIX);
+         Files.createTempFile(spillPath2.toPath(), "blah", "blah");
+ 
+-        assertThat(listFiles(spillPath1.toPath())).hasSize(3);
+-        assertThat(listFiles(spillPath2.toPath())).hasSize(3);
++        assertThat(listFiles(spillPath1.toPath())).hasSize(5);
++        assertThat(listFiles(spillPath2.toPath())).hasSize(5);
+ 
+         FileSingleStreamSpillerFactory spillerFactory = spillerFactoryFactory(spillPaths);
+         spillerFactory.cleanupOldSpillFiles();
+ 
+         assertThat(listFiles(spillPath1.toPath())).hasSize(1);
+-        assertThat(listFiles(spillPath2.toPath())).hasSize(2);
++        assertThat(listFiles(spillPath2.toPath())).hasSize(3);
+     }
+ 
+     @Test
+diff --git a/core/trino-main/src/test/java/io/trino/spiller/TestSortingSpiller.java b/core/trino-main/src/test/java/io/trino/spiller/TestSortingSpiller.java
+index afcd82d28c9..fc0b2bb6376 100644
+--- a/core/trino-main/src/test/java/io/trino/spiller/TestSortingSpiller.java
++++ b/core/trino-main/src/test/java/io/trino/spiller/TestSortingSpiller.java
+@@ -21,6 +21,7 @@ import io.trino.RowPagesBuilder;
+ import io.trino.memory.context.AggregatedMemoryContext;
+ import io.trino.memory.context.MemoryReservationHandler;
+ import io.trino.operator.DummySpillerFactory;
++import io.trino.operator.PageWithPositionComparator;
+ import io.trino.spi.Page;
+ import io.trino.spi.type.TypeOperators;
+ import io.trino.sql.gen.OrderingCompiler;
+@@ -243,7 +244,7 @@ public class TestSortingSpiller
+         assertThat(memory.getBytes()).isZero();
+     }
+ 
+-    private static io.trino.operator.PageWithPositionComparator comparator()
++    private static PageWithPositionComparator comparator()
+     {
+         return new OrderingCompiler(new TypeOperators()).compilePageWithPositionComparator(ImmutableList.of(BIGINT), ImmutableList.of(0), ImmutableList.of(ASC_NULLS_LAST));
+     }
+diff --git a/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestMergeJoinExpressionRewrite.java b/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestMergeJoinExpressionRewrite.java
+new file mode 100644
+index 00000000000..56be1e270a2
+--- /dev/null
++++ b/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestMergeJoinExpressionRewrite.java
+@@ -0,0 +1,61 @@
++/*
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *     http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++package io.trino.sql.planner.iterative.rule;
++
++import com.google.common.collect.ImmutableList;
++import com.google.common.collect.ImmutableMap;
++import io.trino.matching.Captures;
++import io.trino.sql.ir.Logical;
++import io.trino.sql.planner.Symbol;
++import io.trino.sql.planner.iterative.Rule;
++import io.trino.sql.planner.plan.JoinNode;
++import io.trino.sql.planner.plan.PlanNodeId;
++import io.trino.sql.planner.plan.ValuesNode;
++import org.junit.jupiter.api.Test;
++
++import java.util.Optional;
++
++import static io.trino.spi.type.BigintType.BIGINT;
++import static io.trino.sql.ir.Booleans.TRUE;
++import static io.trino.sql.planner.plan.JoinType.INNER;
++import static org.assertj.core.api.Assertions.assertThat;
++
++public class TestMergeJoinExpressionRewrite
++{
++    @Test
++    @SuppressWarnings("unchecked")
++    public void testFilterRewritePreservesAlgorithm()
++    {
++        Symbol left = new Symbol(BIGINT, "left");
++        Symbol right = new Symbol(BIGINT, "right");
++        JoinNode join = new JoinNode(
++                new PlanNodeId("join"),
++                INNER,
++                new ValuesNode(new PlanNodeId("left"), ImmutableList.of(left)),
++                new ValuesNode(new PlanNodeId("right"), ImmutableList.of(right)),
++                ImmutableList.of(new JoinNode.EquiJoinClause(left, right)),
++                ImmutableList.of(left),
++                ImmutableList.of(right),
++                false,
++                Optional.of(new Logical(Logical.Operator.AND, ImmutableList.of(TRUE, TRUE))),
++                Optional.of(JoinNode.DistributionType.PARTITIONED),
++                Optional.empty(),
++                Optional.of(JoinNode.JoinAlgorithm.MERGE),
++                ImmutableMap.of(),
++                Optional.empty());
++        Rule<JoinNode> rule = (Rule<JoinNode>) new ExpressionRewriteRuleSet((_, _) -> TRUE).joinExpressionRewrite();
++        JoinNode rewritten = (JoinNode) rule.apply(join, Captures.empty(), null).transformedPlan().orElseThrow();
++        assertThat(rewritten.getAlgorithm()).contains(JoinNode.JoinAlgorithm.MERGE);
++    }
++}
+diff --git a/core/trino-main/src/test/java/io/trino/sql/planner/plan/TestJoinNodeAlgorithm.java b/core/trino-main/src/test/java/io/trino/sql/planner/plan/TestJoinNodeAlgorithm.java
+index 917a4a0328e..9bb4fdf8fff 100644
+--- a/core/trino-main/src/test/java/io/trino/sql/planner/plan/TestJoinNodeAlgorithm.java
++++ b/core/trino-main/src/test/java/io/trino/sql/planner/plan/TestJoinNodeAlgorithm.java
+@@ -11,31 +11,25 @@
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  */
+-/*
+- * Licensed under the Apache License, Version 2.0 (the "License");
+- * you may not use this file except in compliance with the License");
+- * you may obtain a copy of the License at
+- *
+- *     http://www.apache.org/licenses/LICENSE-2.0
+- *
+- * Unless required by applicable law or agreed to in writing, software
+- * distributed under the License is distributed on an "AS IS" BASIS,
+- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+- * See the License for the specific language governing permissions and
+- * limitations under the License.
+- */
+ package io.trino.sql.planner.plan;
+ 
+-import com.fasterxml.jackson.annotation.JsonProperty;
+ import com.google.common.collect.ImmutableList;
+ import com.google.common.collect.ImmutableMap;
++import io.airlift.json.JsonCodec;
++import io.airlift.json.JsonCodecFactory;
++import io.airlift.json.JsonMapperProvider;
++import io.trino.spi.type.Type;
++import io.trino.sql.planner.OrderingScheme;
+ import io.trino.sql.planner.Symbol;
++import io.trino.sql.planner.SymbolKeyDeserializer;
++import io.trino.type.TypeDeserializer;
+ import org.junit.jupiter.api.Test;
+ 
+-import java.lang.reflect.Method;
+ import java.util.Optional;
+ 
++import static io.trino.spi.connector.SortOrder.ASC_NULLS_LAST;
+ import static io.trino.spi.type.BigintType.BIGINT;
++import static io.trino.type.InternalTypeManager.TESTING_TYPE_MANAGER;
+ import static org.assertj.core.api.Assertions.assertThat;
+ import static org.assertj.core.api.Assertions.assertThatThrownBy;
+ 
+@@ -111,7 +105,7 @@ public class TestJoinNodeAlgorithm
+     }
+ 
+     @Test
+-    public void testMergeRequiresInnerOrLeftJoin()
++    public void testMergeSupportsAllJoinTypes()
+     {
+         // RIGHT and FULL are now supported for merge join
+         for (JoinType type : ImmutableList.of(JoinType.RIGHT, JoinType.FULL)) {
+@@ -185,11 +179,28 @@ public class TestJoinNodeAlgorithm
+     }
+ 
+     @Test
+-    public void testAlgorithmPropertyIsSerialized()
+-            throws Exception
++    public void testPlanRoundTrip()
+     {
+-        Method getter = JoinNode.class.getMethod("getAlgorithm");
+-        assertThat(getter.isAnnotationPresent(JsonProperty.class)).isTrue();
+-        assertThat(getter.getAnnotation(JsonProperty.class).value()).isEqualTo("algorithm");
++        JsonCodec<PlanNode> codec = new JsonCodecFactory(new JsonMapperProvider()
++                .withKeyDeserializers(ImmutableMap.of(Symbol.class, new SymbolKeyDeserializer(TESTING_TYPE_MANAGER)))
++                .withJsonDeserializers(ImmutableMap.of(Type.class, new TypeDeserializer(TESTING_TYPE_MANAGER)))
++                .get()).jsonCodec(PlanNode.class);
++        JoinNode original = join(JoinType.FULL, Optional.of(JoinNode.DistributionType.PARTITIONED), Optional.of(JoinNode.JoinAlgorithm.MERGE));
++        JoinNode roundTrip = (JoinNode) codec.fromJson(codec.toJson(original));
++        assertThat(roundTrip.getAlgorithm()).contains(JoinNode.JoinAlgorithm.MERGE);
++        assertThat(roundTrip.getType()).isEqualTo(JoinType.FULL);
++        assertThat(roundTrip.getCriteria()).isEqualTo(original.getCriteria());
++        for (boolean boundedSpill : ImmutableList.of(false, true)) {
++            SortNode sort = new SortNode(
++                    new PlanNodeId("sort"),
++                    LEFT_SOURCE,
++                    new OrderingScheme(ImmutableList.of(LEFT_KEY), ImmutableMap.of(LEFT_KEY, ASC_NULLS_LAST)),
++                    true,
++                    false,
++                    boundedSpill);
++            SortNode deserialized = (SortNode) codec.fromJson(codec.toJson(sort));
++            assertThat(deserialized.isBoundedSpill()).isEqualTo(boundedSpill);
++            assertThat(((SortNode) sort.replaceChildren(ImmutableList.of(LEFT_SOURCE))).isBoundedSpill()).isEqualTo(boundedSpill);
++        }
+     }
+ }
+diff --git a/core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoin.java b/core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoin.java
+index 10deea1c1ab..a4390f4c452 100644
+--- a/core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoin.java
++++ b/core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoin.java
+@@ -27,7 +27,7 @@ import static io.trino.testing.assertions.Assert.assertEqualsIgnoreOrder;
+ import static org.assertj.core.api.Assertions.assertThat;
+ 
+ /**
+- * End-to-end tests for the forced merge join: the planner marks eligible INNER/LEFT
++ * End-to-end tests for the forced merge join: the planner marks eligible INNER/LEFT/RIGHT/FULL
+  * equi-joins with {@code prefer_merge_join=FORCE}, adds canonical sorts on both
+  * sides, and the local execution planner builds the merge join pipelines. Results
+  * must be identical to the standard (hash) evaluation of the same query.
+diff --git a/core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoinRepeatedKeys.java b/core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoinRepeatedKeys.java
+new file mode 100644
+index 00000000000..829ae4e8ee9
+--- /dev/null
++++ b/core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoinRepeatedKeys.java
+@@ -0,0 +1,43 @@
++/*
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *     http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++package io.trino.sql.query;
++
++import io.trino.Session;
++import org.junit.jupiter.api.Test;
++
++import static io.trino.SessionTestUtils.TEST_SESSION;
++import static org.assertj.core.api.Assertions.assertThat;
++
++public class TestMergeJoinRepeatedKeys
++{
++    @Test
++    public void testRepeatedJoinSymbol()
++    {
++        try (QueryAssertions assertions = new QueryAssertions()) {
++            Session merge = Session.builder(TEST_SESSION)
++                    .setSystemProperty("prefer_merge_join", "FORCE")
++                    .setSystemProperty("join_distribution_type", "PARTITIONED")
++                    .setSystemProperty("join_reordering_strategy", "NONE")
++                    .build();
++            for (String join : new String[] {"JOIN", "LEFT JOIN", "RIGHT JOIN", "FULL JOIN"}) {
++                String query = "SELECT l.x, r.x, r.y FROM (VALUES 1, 2, 3) l(x) " + join
++                        + " (VALUES (1, 1), (2, 3), (3, 3)) r(x, y) ON l.x = r.x AND l.x = r.y";
++                assertThat(assertions.query(merge, query)).matches(query);
++                String mirrored = "SELECT l.x, l.y, r.x FROM (VALUES (1, 1), (2, 3), (3, 3)) l(x, y) " + join
++                        + " (VALUES 1, 2, 3) r(x) ON l.x = r.x AND l.y = r.x";
++                assertThat(assertions.query(merge, mirrored)).matches(mirrored);
++            }
++        }
++    }
++}
+diff --git a/docs/src/main/sphinx/admin/properties-optimizer.md b/docs/src/main/sphinx/admin/properties-optimizer.md
+index e6715c26fe1..148ec0fc5bb 100644
+--- a/docs/src/main/sphinx/admin/properties-optimizer.md
++++ b/docs/src/main/sphinx/admin/properties-optimizer.md
+@@ -54,6 +54,69 @@ Single-step strategy is preferred. However, for cases with limited concurrency d
+ a small number of distinct grouping keys, it will choose an alternative strategy
+ based on input data statistics.
+ 
++## `optimizer.merge-join-big-side-threshold`
++
++- **Type:** {ref}`prop-type-double`
++- **Default value:** `1.0`
++- **Minimum value:** `0`
++- **Session property:** `merge_join_big_side_threshold`
++
++Considers both inputs large when each estimated per-task input exceeds this fraction of the model memory allowance.
++Applies only to `COST_BASED` merge join selection. The model reserves half of
++`query_max_memory_per_node` as its per-task allowance; this is an estimate,
++not a runtime reservation. See [](/optimizer/merge-join).
++
++## `optimizer.merge-join-cost-margin`
++
++- **Type:** {ref}`prop-type-double`
++- **Default value:** `0.1`
++- **Minimum value:** `0`
++- **Maximum value:** `1 (exclusive)`
++- **Session property:** `merge_join_cost_margin`
++
++Requires the estimated merge cost, increased by a factor of `1 / (1 - margin)`, to beat hash join.
++Applies only to `COST_BASED` merge join selection. The model reserves half of
++`query_max_memory_per_node` as its per-task allowance; this is an estimate,
++not a runtime reservation. See [](/optimizer/merge-join).
++
++## `optimizer.merge-join-memory-pressure-threshold`
++
++- **Type:** {ref}`prop-type-double`
++- **Default value:** `0.7`
++- **Minimum value:** `0`
++- **Maximum value:** `1`
++- **Session property:** `merge_join_memory_pressure_threshold`
++
++Triggers consideration when the estimated hash-table memory exceeds this fraction of the model memory allowance.
++Applies only to `COST_BASED` merge join selection. The model reserves half of
++`query_max_memory_per_node` as its per-task allowance; this is an estimate,
++not a runtime reservation. See [](/optimizer/merge-join).
++
++## `optimizer.merge-join-small-build-threshold`
++
++- **Type:** {ref}`prop-type-double`
++- **Default value:** `0.3`
++- **Minimum value:** `0`
++- **Maximum value:** `1`
++- **Session property:** `merge_join_small_build_threshold`
++
++Keeps hash join for small estimated build inputs, unless both inputs have compatible partitioning and sortedness.
++Applies only to `COST_BASED` merge join selection. The model reserves half of
++`query_max_memory_per_node` as its per-task allowance; this is an estimate,
++not a runtime reservation. See [](/optimizer/merge-join).
++
++## `optimizer.prefer-merge-join`
++
++- **Type:** {ref}`prop-type-string`
++- **Allowed values:** `OFF`, `PREFER`, `COST_BASED`, `FORCE`
++- **Default value:** `OFF`
++- **Session property:** `prefer_merge_join`
++
++Selects the experimental [](/optimizer/merge-join) strategy. `OFF` retains hash
++join selection. `PREFER` and `FORCE` select every eligible join. `COST_BASED`
++requires statistics, spill support, a resource or ordering trigger, and a cost
++advantage. Ineligible joins retain hash join in every mode.
++
+ ## `optimizer.push-aggregation-through-outer-join`
+ 
+ - **Type:** {ref}`prop-type-boolean`
+diff --git a/docs/src/main/sphinx/connector/iceberg.md b/docs/src/main/sphinx/connector/iceberg.md
+index 5399cc2dea6..1ea3059b5da 100644
+--- a/docs/src/main/sphinx/connector/iceberg.md
++++ b/docs/src/main/sphinx/connector/iceberg.md
+@@ -159,6 +159,14 @@ implementation is used:
+ * - `iceberg.projection-pushdown-enabled`
+   - Enable [projection pushdown](/optimizer/pushdown)
+   - `true`
++* - `iceberg.report-sortedness`
++  - Report verified identity prefixes of the table sort order to the optimizer.
++    Every relevant file must carry the current table sort order ID. Missing,
++    unknown, or mixed IDs disable the hint. This describes file ordering, not
++    task-wide ordering. The equivalent catalog session property is
++    `report_sortedness`. It is independent of merge join selection and also
++    applies when `prefer_merge_join=OFF`. See [](/optimizer/merge-join).
++  - `true`
+ * - `iceberg.hive-catalog-name`
+   - Catalog to redirect to when a Hive table is referenced.
+   -
+diff --git a/docs/src/main/sphinx/optimizer.md b/docs/src/main/sphinx/optimizer.md
+index 3b0f129cdb2..56d838075df 100644
+--- a/docs/src/main/sphinx/optimizer.md
++++ b/docs/src/main/sphinx/optimizer.md
+@@ -6,6 +6,7 @@
+ optimizer/statistics
+ optimizer/cost-in-explain
+ optimizer/cost-based-optimizations
++optimizer/merge-join
+ optimizer/pushdown
+ optimizer/adaptive-plan-optimizations
+ ```
+diff --git a/docs/src/main/sphinx/optimizer/merge-join.md b/docs/src/main/sphinx/optimizer/merge-join.md
+new file mode 100644
+index 00000000000..522337db695
+--- /dev/null
++++ b/docs/src/main/sphinx/optimizer/merge-join.md
+@@ -0,0 +1,96 @@
++# Sorted merge join
++
++Sorted merge join is an experimental execution strategy for partitioned
++equi-joins. It sorts both inputs by the join keys, merges the ordered streams,
++and replays matching groups. Enable it with the `prefer_merge_join` session
++property, described in [](/admin/properties-optimizer). The default is `OFF`.
++
++## Execution and memory
++
++Rows with equal keys are sent to compatible tasks. Each task uses one merge
++driver, regardless of `task_concurrency`. This provides distributed execution,
++but does not parallelize a single hot key across drivers or workers.
++
++The bounded external sorter is enabled for sorts introduced by merge join
++planning. Ordinary `ORDER BY` operators retain their existing spill-run merge.
++
++With `spill_enabled=true` and configured spill paths, the build buffer and sorts
++can use local disk. Large matching groups use replayable spill pages, bounded
++probe chunks, and a disk bitmap when an outer join needs more match state than
++fits in memory. An on-disk page-offset index permits exact replay without
++loading an index proportional to the build size into memory.
++
++Task reservations include the output builder, retained replay pages, probe
++chunks, match state, and spill reservations. A reservation is not a cap on the
++entire JVM heap. Input pages owned by upstream operators, serializer working
++buffers, transient allocations, Java object overhead, and pages already
++transferred downstream also consume memory. A single large row or page can
++still exceed the available allowance. Concurrent joins and sorts share the
++query allowance.
++
++Many-to-many groups can require large output and repeated residual-filter
++evaluation. Spill bounds retained state; it does not eliminate that work or
++guarantee faster execution than hash join. See [](/admin/spill) for spill space,
++compression, and encryption settings.
++
++## Iceberg sortedness
++
++The Iceberg connector can report verified identity prefixes of the table sort
++order with `iceberg.report-sortedness`, or the catalog session property
++`report_sortedness`. Every relevant file must identify the current table sort
++order. Missing, unknown, or mixed file sort orders disable the hint.
++
++The hint describes file ordering, rather than the order of all files or splits
++assigned to a task. Merge-join sorts validate individual pages and construct
++an ordered task stream. Multiple sorted files do not allow the engine to remove
++all ordering work. Reporting sortedness is independently configurable and is
++enabled by default, including when merge join selection is `OFF`.
++
++## Observability
++
++`EXPLAIN` identifies selected joins with `Algorithm: MERGE` and shows the
++canonical sorts and ordered exchanges. Final operator information includes
++`probeRows`, `buildRows`, `outputRows`, `keyGroups`, and `maxBuildGroupRows`.
++Counts from different tasks are summed, except `maxBuildGroupRows`, which uses
++the maximum. Spill read counters measure serialized bytes read by the spiller,
++rather than physical reads from the storage device.
++
++## Selection
++
++`FORCE` and `PREFER` select every eligible join. They retain hash join for
++ineligible plans. `FORCE` does not override execution or type restrictions.
++
++`COST_BASED` compares a local estimate for hash join and merge join after join
++order and distribution have been chosen. It requires known input statistics,
++spill support, a resource or ordering trigger, and a cost advantage. The
++estimate includes sorting, exchanges, build spill, and group replay. It uses
++average group sizes and cannot predict arbitrary hot-key frequencies from
++distinct-value counts. It is an experimental resource heuristic, rather than
++joint enumeration of join order, distribution, and algorithm. Cost values are
++relative estimates, not elapsed-time predictions or memory admission limits.
++
++In particular, Iceberg estimates variable-width data sizes from compressed
++file sizes. Highly compressible strings can occupy substantially more memory
++than these estimates suggest, even after `ANALYZE`. `COST_BASED` can retain hash
++join and exceed the memory limit on such input while `FORCE` succeeds. Use
++`FORCE` for a validated memory-sensitive workload when these estimates are
++unreliable; automatic selection does not guarantee that a query fits in memory.
++
++The general join cost calculators used for `EXPLAIN` totals do not reproduce
++this local strategy-selection model. Identify the algorithm from the plan
++marker and use runtime operator statistics to assess its resource use.
++
++## Supported queries
++
++The strategy supports `INNER`, `LEFT`, `RIGHT`, and `FULL` joins with at least
++one equality criterion. Additional residual predicates are supported. Null
++keys do not match, and outer joins retain unmatched rows.
++
++Keys must have orderable scalar types. `ARRAY`, `ROW`, `DOUBLE`, and `REAL`
++keys are excluded. Non-equality-only joins and dedicated semi-join operators
++are not supported. A query rewritten to an eligible ordinary join can use the
++strategy.
++
++The distribution must be `PARTITIONED`, distributed sorting must be enabled,
++and `retry_policy` must be `NONE`. Broadcast joins, multiple merge drivers per
++task, and fault-tolerant execution with task retries are not supported.
+diff --git a/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergConfig.java b/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergConfig.java
+index ddff077aed2..0d187eae8b8 100644
+--- a/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergConfig.java
++++ b/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergConfig.java
+@@ -125,6 +125,7 @@ public class IcebergConfig
+     }
+ 
+     @Config("iceberg.report-sortedness")
++    @ConfigDescription("Report verified identity sort-order prefixes to the optimizer")
+     public IcebergConfig setReportSortedness(boolean reportSortedness)
+     {
+         this.reportSortedness = reportSortedness;
+diff --git a/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergMetadata.java b/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergMetadata.java
+index a5d03d3b6ee..5766f24f83b 100644
+--- a/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergMetadata.java
++++ b/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergMetadata.java
+@@ -1740,8 +1740,7 @@ public class IcebergMetadata
+     }
+ 
+     /**
+-     * Conservatively reports table sortedness to the engine (see ai-docs/smj-research/risks/
+-     * 04-implementation-plan-with-risk-gates.md, phase 0):
++     * Conservatively reports file-level sortedness to the engine:
+      * <ul>
+      *     <li>every data file of the (pruned) snapshot must carry the current table sort order id
+      *     (file-level {@code sortOrderId}, not the table-level one)</li>
+@@ -1820,7 +1819,8 @@ public class IcebergMetadata
+                 .planWith(icebergPlanningExecutor);
+         try (CloseableIterable<FileScanTask> fileScanTasks = tableScan.planFiles()) {
+             for (FileScanTask fileScanTask : fileScanTasks) {
+-                if (fileScanTask.file().sortOrderId() != sortOrderId) {
++                Integer fileSortOrderId = fileScanTask.file().sortOrderId();
++                if (fileSortOrderId == null || fileSortOrderId != sortOrderId) {
+                     return false;
+                 }
+             }
+diff --git a/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java b/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java
+index 93e3f76487d..66cba987512 100644
+--- a/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java
++++ b/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java
+@@ -54,6 +54,7 @@ public class TestIcebergConfig
+                 .setDeleteAfterCommitEnabled(null)
+                 .setMaxPreviousVersions(null)
+                 .setUseFileSizeFromMetadata(true)
++                .setReportSortedness(true)
+                 .setMaxPartitionsPerWriter(100)
+                 .setUniqueTableLocation(true)
+                 .setCatalogType(HIVE_METASTORE)
+@@ -106,6 +107,7 @@ public class TestIcebergConfig
+                 .put("iceberg.delete-after-commit-enabled", "true")
+                 .put("iceberg.max-previous-versions", "10")
+                 .put("iceberg.use-file-size-from-metadata", "false")
++                .put("iceberg.report-sortedness", "false")
+                 .put("iceberg.max-partitions-per-writer", "222")
+                 .put("iceberg.unique-table-location", "false")
+                 .put("iceberg.catalog.type", "GLUE")
+@@ -154,6 +156,7 @@ public class TestIcebergConfig
+                 .setDeleteAfterCommitEnabled(true)
+                 .setMaxPreviousVersions(10)
+                 .setUseFileSizeFromMetadata(false)
++                .setReportSortedness(false)
+                 .setMaxPartitionsPerWriter(222)
+                 .setUniqueTableLocation(false)
+                 .setCatalogType(GLUE)
+diff --git a/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSortedWriting.java b/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSortedWriting.java
+index 7f270e273f0..5ce47ab704b 100644
+--- a/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSortedWriting.java
++++ b/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSortedWriting.java
+@@ -21,16 +21,26 @@ import io.trino.filesystem.Location;
+ import io.trino.filesystem.TrinoFileSystem;
+ import io.trino.metadata.Metadata;
+ import io.trino.metadata.QualifiedObjectName;
++import io.trino.operator.join.merge.MergeJoinOperatorInfo;
+ import io.trino.plugin.base.metrics.LongCount;
+ import io.trino.spi.connector.ColumnHandle;
+ import io.trino.spi.connector.LocalProperty;
+ import io.trino.testing.AbstractTestQueryFramework;
++import io.trino.testing.QueryFailedException;
+ import io.trino.testing.QueryRunner;
+ import io.trino.testing.sql.TestTable;
+ import io.trino.tpch.TpchTable;
++import org.apache.avro.generic.IndexedRecord;
++import org.apache.iceberg.DataFile;
++import org.apache.iceberg.DataFiles;
+ import org.apache.iceberg.FileFormat;
++import org.apache.iceberg.Table;
++import org.apache.iceberg.expressions.Expressions;
+ import org.junit.jupiter.api.BeforeAll;
+ import org.junit.jupiter.api.Test;
++import org.junit.jupiter.params.ParameterizedTest;
++import org.junit.jupiter.params.provider.NullSource;
++import org.junit.jupiter.params.provider.ValueSource;
+ 
+ import java.nio.file.Path;
+ import java.util.ArrayList;
+@@ -174,7 +184,7 @@ public class TestIcebergSortedWriting
+                                 elapsed.add(nanos);
+                             }
+                         }
+-                        catch (io.trino.testing.QueryFailedException e) {
++                        catch (QueryFailedException e) {
+                             if (!strategy.equals("OFF") || !scenario.equals("full") || !e.getMessage().contains("memory limit")) {
+                                 throw e;
+                             }
+@@ -275,6 +285,13 @@ public class TestIcebergSortedWriting
+                             .contains("MergeSortedPages");
+                     var operators = getDistributedQueryRunner().getCoordinator().getQueryManager()
+                             .getFullQueryInfo(result.queryId()).getQueryStats().getOperatorSummaries();
++                    assertThat(operators.stream().map(operator -> operator.getInfo())
++                            .filter(MergeJoinOperatorInfo.class::isInstance).map(MergeJoinOperatorInfo.class::cast).toList())
++                            .isNotEmpty().allSatisfy(info -> {
++                                assertThat(info.isFinal()).isTrue();
++                                assertThat(info.buildRows()).isGreaterThan(0);
++                                assertThat(info.outputRows()).isGreaterThan(0);
++                            });
+                     long mergedRows = operators.stream()
+                             .map(operator -> operator.getMetrics().getMetrics().get("Merged pre-sorted input rows"))
+                             .filter(metric -> nonNull(metric))
+@@ -290,6 +307,165 @@ public class TestIcebergSortedWriting
+         }
+     }
+ 
++    @ParameterizedTest
++    @NullSource
++    @ValueSource(ints = {0, 1, 999})
++    public void testFileSortOrderCompatibility(Integer sortOrderId)
++            throws Exception
++    {
++        try (TestTable table = new TestTable(getQueryRunner()::execute, "file_sort_order", "(k BIGINT) WITH (sorted_by = ARRAY['k'])")) {
++            assertUpdate("INSERT INTO " + table.getName() + " VALUES 3, 1", 2);
++            assertUpdate("INSERT INTO " + table.getName() + " VALUES 2", 1);
++            Table icebergTable = loadIcebergTable(table.getName());
++            DataFile original;
++            try (var files = icebergTable.newScan().planFiles()) {
++                original = files.iterator().next().file().copy();
++            }
++            DataFile replacement = withFileSortOrder(icebergTable, original, sortOrderId);
++            icebergTable.newOverwrite().deleteFile(original).addFile(replacement).commit();
++            try (var files = icebergTable.newScan().planFiles()) {
++                assertThat(ImmutableList.copyOf(files)).anySatisfy(task -> assertThat(task.file().sortOrderId()).isEqualTo(sortOrderId));
++            }
++            inTransaction(session -> {
++                Metadata metadata = getQueryRunner().getPlannerContext().getMetadata();
++                assertThat(getLocalProperties(metadata, session, table.getName()).isEmpty()).isEqualTo(sortOrderId == null || sortOrderId != icebergTable.sortOrder().orderId());
++            });
++            assertOffQueries(table.getName(), "VALUES 1, 2, 3", "VALUES (1, 1), (2, 2), (3, 3)", "VALUES (6, 3)");
++        }
++    }
++
++    @Test
++    public void testSortOrderEvolutionAndDeletes()
++            throws Exception
++    {
++        try (TestTable table = new TestTable(getQueryRunner()::execute, "sort_order_evolution", "(k BIGINT) WITH (sorted_by = ARRAY['k'])")) {
++            assertUpdate("INSERT INTO " + table.getName() + " VALUES 1, 2", 2);
++            Table icebergTable = loadIcebergTable(table.getName());
++            icebergTable.replaceSortOrder().desc("k").commit();
++            assertUpdate("INSERT INTO " + table.getName() + " VALUES 3", 1);
++            inTransaction(session -> assertThat(getLocalProperties(getQueryRunner().getPlannerContext().getMetadata(), session, table.getName())).isEmpty());
++            assertOffQueries(table.getName(), "VALUES 1, 2, 3", "VALUES (1, 1), (2, 2), (3, 3)", "VALUES (6, 3)");
++            assertUpdate("DELETE FROM " + table.getName() + " WHERE k = 2", 1);
++            assertOffQueries(table.getName(), "VALUES 1, 3", "VALUES (1, 1), (3, 2)", "VALUES (4, 2)");
++        }
++    }
++
++    @Test
++    public void testIdentitySortPrefix()
++            throws Exception
++    {
++        try (TestTable table = new TestTable(getQueryRunner()::execute, "sort_transform_prefix", "(k BIGINT, v BIGINT) WITH (sorted_by = ARRAY['k'])")) {
++            assertUpdate("INSERT INTO " + table.getName() + " VALUES (1, 3), (2, 1), (3, 2)", 3);
++            Table icebergTable = loadIcebergTable(table.getName());
++            icebergTable.replaceSortOrder().asc(Expressions.bucket("v", 2)).asc("k").commit();
++            inTransaction(session -> assertThat(getLocalProperties(getQueryRunner().getPlannerContext().getMetadata(), session, table.getName())).isEmpty());
++            icebergTable.replaceSortOrder().asc("k").asc(Expressions.bucket("v", 2)).commit();
++            // Unique k values mean the existing rows also obey the new secondary sort term.
++            try (var files = icebergTable.newScan().planFiles()) {
++                var overwrite = icebergTable.newOverwrite();
++                for (var file : files) {
++                    overwrite.deleteFile(file.file()).addFile(withFileSortOrder(icebergTable, file.file(), icebergTable.sortOrder().orderId()));
++                }
++                overwrite.commit();
++            }
++            inTransaction(session -> assertThat(getLocalProperties(getQueryRunner().getPlannerContext().getMetadata(), session, table.getName())).hasSize(1));
++            assertOffQueries(table.getName(), "VALUES 1, 2, 3", "VALUES (1, 1), (2, 2), (3, 3)", "VALUES (6, 3)");
++        }
++    }
++
++    private Table loadIcebergTable(String table)
++    {
++        return IcebergTestUtils.loadTable(
++                table,
++                IcebergTestUtils.getHiveMetastore(getQueryRunner()),
++                IcebergTestUtils.getFileSystemFactory(getQueryRunner()),
++                getSession().getCatalog().orElseThrow(),
++                getSession().getSchema().orElseThrow());
++    }
++
++    private static DataFile withFileSortOrder(Table table, DataFile file, Integer sortOrderId)
++    {
++        // Rebuild the full record: planFiles can return a projected Avro record.
++        DataFiles.Builder builder = DataFiles.builder(table.specs().get(file.specId())).copy(file);
++        if (sortOrderId != null) {
++            return builder.withSortOrderId(sortOrderId).build();
++        }
++        DataFile result = builder.build();
++        IndexedRecord record = (IndexedRecord) result;
++        record.put(record.getSchema().getField(DataFile.SORT_ORDER_ID.name()).pos(), sortOrderId);
++        return result;
++    }
++
++    private void assertOffQueries(String table, String expectedRows, String expectedWindow, String expectedAggregation)
++    {
++        Session off = Session.builder(getSession()).setSystemProperty(PREFER_MERGE_JOIN, "OFF").build();
++        assertQuery(off, "SELECT k FROM " + table, expectedRows);
++        assertQuery(off, "SELECT k FROM " + table + " ORDER BY k LIMIT 2", expectedRows + " ORDER BY 1 LIMIT 2");
++        assertQuery(off, "SELECT k, row_number() OVER (ORDER BY k) FROM " + table, expectedWindow);
++        assertQuery(off, "SELECT sum(k), count(DISTINCT k) FROM " + table, expectedAggregation);
++    }
++
++    @Test
++    public void testMergeJoinAcrossFileSplits()
++            throws Exception
++    {
++        try (TestTable table = new TestTable(
++                getQueryRunner()::execute,
++                "sorted_split_join",
++                "(k BIGINT, v VARCHAR) WITH (sorted_by = ARRAY['k'], parquet_writer_row_group_size = '1kB')")) {
++            assertUpdate("INSERT INTO " + table.getName() + " SELECT k, rpad(CAST(k AS VARCHAR), 128, 'x') FROM UNNEST(sequence(1, 10000)) t(k)", 10000);
++            Table icebergTable = loadIcebergTable(table.getName());
++            long fileCount = 0;
++            long splitCount = 0;
++            try (var files = icebergTable.newScan().planFiles()) {
++                for (var file : files) {
++                    fileCount++;
++                    for (var split : file.split(1024)) {
++                        assertThat(split.length()).isPositive();
++                        splitCount++;
++                    }
++                }
++            }
++            assertThat(splitCount).isGreaterThan(fileCount);
++            Session base = Session.builder(getSession())
++                    .setCatalogSessionProperty(getSession().getCatalog().orElseThrow(), "max_split_size", "1kB")
++                    .setSystemProperty(JOIN_DISTRIBUTION_TYPE, "PARTITIONED")
++                    .setSystemProperty(JOIN_REORDERING_STRATEGY, "NONE").build();
++            for (String join : List.of("JOIN", "LEFT JOIN", "RIGHT JOIN", "FULL JOIN")) {
++                String query = "SELECT count(*), checksum(l.v), checksum(r.v) FROM (SELECT * FROM %1$s WHERE k %% 3 <> 0) l %2$s (SELECT * FROM %1$s WHERE k %% 5 <> 0) r ON l.k = r.k".formatted(table.getName(), join);
++                Session hash = Session.builder(base).setSystemProperty(PREFER_MERGE_JOIN, "OFF").build();
++                Session merge = Session.builder(base).setSystemProperty(PREFER_MERGE_JOIN, "FORCE").build();
++                assertThat((String) computeActual(merge, "EXPLAIN " + query).getOnlyValue()).contains("Algorithm: MERGE");
++                assertEqualsIgnoreOrder(computeActual(merge, query).getMaterializedRows(), computeActual(hash, query).getMaterializedRows());
++            }
++        }
++    }
++
++    @Test
++    public void testRightMergeJoinCompletesDynamicFilter()
++    {
++        try (TestTable table = new TestTable(getQueryRunner()::execute, "merge_join_right_df", "(k BIGINT) WITH (sorted_by = ARRAY['k'])")) {
++            assertUpdate("INSERT INTO " + table.getName() + " VALUES 1, 2, 3", 3);
++            Session session = Session.builder(getSession())
++                    .setSystemProperty("prefer_merge_join", "FORCE")
++                    .setSystemProperty("join_distribution_type", "PARTITIONED")
++                    .setSystemProperty("join_reordering_strategy", "NONE")
++                    .setSystemProperty("enable_dynamic_filtering", "true")
++                    .build();
++            for (String join : new String[] {"JOIN", "RIGHT JOIN"}) {
++                String query = "SELECT l.k, r.k FROM " + table.getName() + " l " + join + " " + table.getName() + " r ON l.k = r.k";
++                String explain = (String) getQueryRunner().execute(session, "EXPLAIN " + query).getOnlyValue();
++                assertThat(explain).contains("Algorithm: MERGE");
++                var result = getQueryRunner().executeWithPlan(session, query);
++                assertThat(result.result().getMaterializedRows()).hasSize(3);
++                var stats = getDistributedQueryRunner().getCoordinator().getQueryManager().getFullQueryInfo(result.queryId())
++                        .getQueryStats().getDynamicFiltersStats();
++                assertThat(stats.getTotalDynamicFilters()).isGreaterThan(0);
++                assertThat(stats.getDynamicFiltersCompleted()).isEqualTo(stats.getTotalDynamicFilters());
++            }
++        }
++    }
++
+     private static List<LocalProperty<ColumnHandle>> getLocalProperties(Metadata metadata, Session session, String tableName)
+     {
+         QualifiedObjectName qualifiedObjectName = new QualifiedObjectName(
+diff --git a/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestMergeJoinWorkloads.java b/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestMergeJoinWorkloads.java
+new file mode 100644
+index 00000000000..c6b64d2be6e
+--- /dev/null
++++ b/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestMergeJoinWorkloads.java
+@@ -0,0 +1,243 @@
++/*
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *     http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++package io.trino.plugin.iceberg;
++
++import com.google.common.collect.ImmutableList;
++import com.google.common.collect.ImmutableMap;
++import io.airlift.log.Logger;
++import io.trino.Session;
++import io.trino.cost.MergeJoinCostModel;
++import io.trino.cost.MergeJoinCostModel.Input;
++import io.trino.sql.planner.OptimizerConfig.MergeJoinStrategy;
++import io.trino.testing.AbstractTestQueryFramework;
++import io.trino.testing.MaterializedResult;
++import io.trino.testing.QueryFailedException;
++import io.trino.testing.QueryRunner;
++import io.trino.testing.sql.TestTable;
++import org.junit.jupiter.api.BeforeAll;
++import org.junit.jupiter.api.Test;
++import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
++import org.junit.jupiter.api.parallel.Execution;
++
++import java.nio.file.Path;
++import java.util.List;
++import java.util.concurrent.Future;
++
++import static com.google.common.io.MoreFiles.deleteRecursively;
++import static com.google.common.io.RecursiveDeleteOption.ALLOW_INSECURE;
++import static io.trino.SystemSessionProperties.JOIN_DISTRIBUTION_TYPE;
++import static io.trino.SystemSessionProperties.JOIN_REORDERING_STRATEGY;
++import static io.trino.SystemSessionProperties.PREFER_MERGE_JOIN;
++import static io.trino.testing.assertions.Assert.assertEqualsIgnoreOrder;
++import static java.nio.file.Files.createTempDirectory;
++import static java.util.concurrent.Executors.newFixedThreadPool;
++import static java.util.concurrent.TimeUnit.MINUTES;
++import static org.assertj.core.api.Assertions.assertThat;
++import static org.junit.jupiter.api.parallel.ExecutionMode.SAME_THREAD;
++
++/**
++ * Distributed resource validation, enabled explicitly because it writes wide input tables.
++ */
++@EnabledIfSystemProperty(named = "smj.validation", matches = "true")
++@Execution(SAME_THREAD)
++public class TestMergeJoinWorkloads
++        extends AbstractTestQueryFramework
++{
++    private static final Logger LOG = Logger.get(TestMergeJoinWorkloads.class);
++
++    private TestTable wide;
++    private TestTable skew;
++    private TestTable entropy;
++    private double entropyVarcharBytes;
++    private Session base;
++
++    @Override
++    protected QueryRunner createQueryRunner()
++            throws Exception
++    {
++        Path spillPath = createTempDirectory("merge-join-workloads");
++        closeAfterClass(() -> deleteRecursively(spillPath, ALLOW_INSECURE));
++        return IcebergQueryRunner.builder()
++                .setWorkerCount(2)
++                .addExtraProperty("node-scheduler.include-coordinator", "false")
++                .setInitialTables(ImmutableList.of())
++                .addExtraProperty("spiller-spill-path", spillPath.toString())
++                .addExtraProperty("sink.max-buffer-size", "4MB")
++                .addExtraProperty("sink.max-broadcast-buffer-size", "4MB")
++                .addExtraProperty("task.max-local-exchange-buffer-size", "4MB")
++                .addExtraProperty("exchange.max-response-size", "1MB")
++                .addExtraProperty("memory-revoking-threshold", "0.02")
++                .addExtraProperty("memory-revoking-target", "0")
++                .addIcebergProperty("iceberg.writer-sort-buffer-size", "1MB")
++                .build();
++    }
++
++    @BeforeAll
++    public void prepareInputs()
++    {
++        base = Session.builder(getSession())
++                .setSystemProperty(JOIN_DISTRIBUTION_TYPE, "PARTITIONED")
++                .setSystemProperty(JOIN_REORDERING_STRATEGY, "NONE")
++                .setSystemProperty("spill_enabled", "true")
++                .setSystemProperty("task_concurrency", "4")
++                .setSystemProperty("query_max_memory_per_node", "128MB").build();
++        wide = closeAfterClass(new TestTable(
++                getQueryRunner()::execute,
++                "merge_join_wide",
++                "WITH (sorted_by = ARRAY['k ASC NULLS LAST']) AS SELECT k, rpad(to_hex(md5(to_utf8(CAST(k AS VARCHAR)))), 512, 'x') v FROM (SELECT CAST(a AS BIGINT) * 1000 + b k FROM UNNEST(sequence(0, 749)) t(a) CROSS JOIN UNNEST(sequence(0, 999)) u(b))"));
++        skew = closeAfterClass(new TestTable(
++                getQueryRunner()::execute,
++                "merge_join_skew",
++                "WITH (sorted_by = ARRAY['k ASC NULLS LAST']) AS SELECT k % 64 k, v FROM " + wide.getName() + " WHERE k < 65536"));
++        assertUpdate("ANALYZE " + wide.getName());
++        assertUpdate("ANALYZE " + skew.getName());
++        entropy = closeAfterClass(new TestTable(
++                getQueryRunner()::execute,
++                "merge_join_entropy",
++                "WITH (sorted_by = ARRAY['k ASC NULLS LAST']) AS SELECT k, concat(to_hex(sha512(to_utf8(CAST(k AS VARCHAR)))), to_hex(sha512(to_utf8(CAST(k AS VARCHAR) || 'a'))), to_hex(sha512(to_utf8(CAST(k AS VARCHAR) || 'b'))), to_hex(sha512(to_utf8(CAST(k AS VARCHAR) || 'c')))) v FROM " + wide.getName()));
++        assertUpdate("ANALYZE " + entropy.getName());
++        entropyVarcharBytes = logInputStatistics(entropy.getName());
++    }
++
++    @Test
++    public void testResourceBenefit()
++    {
++        String query = "SELECT count(*), checksum(l.v), checksum(r.v) FROM %1$s l FULL JOIN %1$s r ON l.k = r.k".formatted(entropy.getName());
++        MaterializedResult expected = computeActual(strategy("OFF", "1GB"), query);
++        assertThat(expected.getMaterializedRows().getFirst().getField(0)).isEqualTo(750_000L);
++        for (String strategy : List.of("OFF", "FORCE", "COST_BASED")) {
++            try {
++                runWorkload("wide-full-entropy", strategy(strategy, "128MB"), query, expected);
++            }
++            catch (QueryFailedException failure) {
++                if (!strategy.equals("OFF") || !failure.getMessage().contains("memory limit")) {
++                    throw failure;
++                }
++                LOG.info("SMJ workload scenario=wide-full-entropy strategy=OFF memoryLimitExceeded=true");
++            }
++        }
++        assertThat((String) computeActual(strategy("COST_BASED", "128MB"), "EXPLAIN " + query).getOnlyValue()).contains("Algorithm: MERGE");
++    }
++
++    @Test
++    public void testCompressibleSizeEstimateLimitation()
++    {
++        logInputStatistics(wide.getName());
++        String query = "SELECT count(*), checksum(l.v), checksum(r.v) FROM %1$s l FULL JOIN %1$s r ON l.k = r.k".formatted(wide.getName());
++        MaterializedResult expected = computeActual(strategy("OFF", "1GB"), query);
++        runWorkload("wide-full-compressible", strategy("FORCE", "128MB"), query, expected);
++        Session automatic = strategy("COST_BASED", "128MB");
++        String plan = (String) computeActual(automatic, "EXPLAIN " + query).getOnlyValue();
++        try {
++            runWorkload("wide-full-compressible", automatic, query, expected);
++        }
++        catch (QueryFailedException failure) {
++            // A compressed-size estimate does not bound retained hash memory.
++            // Preserve the observation instead of treating AUTO as memory admission.
++            // A selected MERGE plan must still pass this workload.
++            if (plan.contains("Algorithm: MERGE") || !failure.getMessage().contains("memory limit")) {
++                throw failure;
++            }
++            LOG.info("SMJ workload scenario=wide-full-compressible strategy=COST_BASED merge=false memoryLimitExceeded=true compressedSizeEstimate=true");
++        }
++    }
++
++    private double logInputStatistics(String table)
++    {
++        var statistics = computeActual("SHOW STATS FOR " + table).getMaterializedRows();
++        LOG.info("SMJ workload table=%s statistics=%s logicalVarcharBytes=%s",
++                table,
++                statistics,
++                computeActual("SELECT sum(length(v)) FROM " + table).getOnlyValue());
++        double varcharBytes = statistics.stream()
++                .filter(row -> "v".equals(row.getField(0)))
++                .mapToDouble(row -> ((Number) row.getField(1)).doubleValue())
++                .findFirst()
++                .orElseThrow();
++        assertThat(varcharBytes).isFinite().isPositive();
++        return varcharBytes;
++    }
++
++    @Test
++    public void testThresholdSweeps()
++    {
++        // Size the workloads around the model's actual input estimates, rather
++        // than assuming that compressed statistics report logical VARCHAR bytes.
++        double rows = 750_000;
++        Input input = new Input(rows, entropyVarcharBytes + 14 * rows, 9 * rows, rows, true);
++        double memoryLimit = 128 * 1024 * 1024;
++        var estimate = MergeJoinCostModel.estimate(input, input, 2, memoryLimit, 4, false, false);
++        double hashBytesPerRow = estimate.hashMemoryPerTask() / rows;
++        double inputBytesPerRow = estimate.buildBytesPerTask() / rows;
++        var thresholds = ImmutableMap.of(
++                "small", 0.3 * memoryLimit / 2 / hashBytesPerRow,
++                "pressure", 0.7 * memoryLimit / 2 / hashBytesPerRow,
++                "big", memoryLimit / 2 / inputBytesPerRow);
++        for (var threshold : thresholds.entrySet()) {
++            for (double fraction : List.of(0.9, 1.0, 1.1)) {
++                long selectedRows = Math.round(threshold.getValue() * fraction);
++                assertThat(selectedRows).isBetween(1L, 750_000L);
++                String query = "SELECT count(*), checksum(l.v), checksum(r.v) FROM (SELECT * FROM %1$s WHERE k < %2$s) l FULL JOIN (SELECT * FROM %1$s WHERE k < %2$s) r ON l.k = r.k".formatted(entropy.getName(), selectedRows);
++                MaterializedResult expected = computeActual(strategy("OFF", "1GB"), query);
++                for (String strategy : List.of("OFF", "FORCE", "COST_BASED")) {
++                    runWorkload("threshold-" + threshold.getKey() + "-" + selectedRows, strategy(strategy, "128MB"), query, expected);
++                }
++            }
++        }
++    }
++
++    @Test
++    public void testConcurrentJoinChainsAndSkew()
++            throws Exception
++    {
++        String query = "SELECT count(*), checksum(l.v), checksum(r.v), checksum(s.v) FROM (SELECT * FROM %1$s WHERE k < 65536) l JOIN %2$s r ON l.k = r.k LEFT JOIN (SELECT * FROM %1$s WHERE k < 65536 AND to_hex(sha256(to_utf8(v))) <> '') s ON l.k = s.k".formatted(wide.getName(), skew.getName());
++        MaterializedResult expected = computeActual(strategy("OFF", "1GB"), query);
++        assertThat(expected.getMaterializedRows().getFirst().getField(0)).isEqualTo(65_536L);
++        try (var executor = newFixedThreadPool(2)) {
++            for (int iteration = 0; iteration < 3; iteration++) {
++                Future<?> first = executor.submit(() -> runWorkload("concurrent-chain-skew", strategy("FORCE", "128MB"), query, expected));
++                Future<?> second = executor.submit(() -> runWorkload("concurrent-chain-skew", strategy("FORCE", "128MB"), query, expected));
++                first.get(3, MINUTES);
++                second.get(3, MINUTES);
++            }
++        }
++    }
++
++    private Session strategy(String strategy, String memory)
++    {
++        return Session.builder(base).setSystemProperty(PREFER_MERGE_JOIN, strategy)
++                .setSystemProperty("query_max_memory_per_node", memory).build();
++    }
++
++    private void runWorkload(String scenario, Session session, String query, MaterializedResult expected)
++    {
++        String plan = (String) computeActual(session, "EXPLAIN " + query).getOnlyValue();
++        LOG.info("SMJ workload start scenario=%s strategy=%s merge=%s",
++                scenario,
++                session.getSystemProperty(PREFER_MERGE_JOIN, MergeJoinStrategy.class),
++                plan.contains("Algorithm: MERGE"));
++        long start = System.nanoTime();
++        var result = getQueryRunner().executeWithPlan(session, query);
++        long elapsedNanos = System.nanoTime() - start;
++        assertEqualsIgnoreOrder(result.result().getMaterializedRows(), expected.getMaterializedRows());
++        var stats = getDistributedQueryRunner().getCoordinator().getQueryManager().getFullQueryInfo(result.queryId()).getQueryStats();
++        LOG.info("SMJ workload scenario=%s strategy=%s elapsedMs=%.2f peakBytes=%s spillBytes=%s merge=%s",
++                scenario,
++                session.getSystemProperty(PREFER_MERGE_JOIN, MergeJoinStrategy.class),
++                elapsedNanos / 1_000_000.0,
++                stats.getPeakUserMemoryReservation().toBytes(),
++                stats.getSpilledDataSize().toBytes(),
++                plan.contains("Algorithm: MERGE"));
++    }
++}

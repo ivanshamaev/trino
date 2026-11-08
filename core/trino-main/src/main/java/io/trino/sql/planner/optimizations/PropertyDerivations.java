@@ -601,9 +601,10 @@ public final class PropertyDerivations
             // order (both inputs are pre-sorted by the planner); the order is stable
             // regardless of spilling of the underlying sorts
             if (node.getAlgorithm().isPresent()
-                    && (node.getType() == io.trino.sql.planner.plan.JoinType.INNER || node.getType() == io.trino.sql.planner.plan.JoinType.LEFT)) {
+                    && (node.getType() == JoinType.INNER || node.getType() == JoinType.LEFT)) {
                 List<Symbol> leftKeySymbols = node.getCriteria().stream()
                         .map(JoinNode.EquiJoinClause::getLeft)
+                        .distinct()
                         .collect(toImmutableList());
                 if (node.getOutputSymbols().containsAll(leftKeySymbols)) {
                     Map<Symbol, SortOrder> orderings = leftKeySymbols.stream()

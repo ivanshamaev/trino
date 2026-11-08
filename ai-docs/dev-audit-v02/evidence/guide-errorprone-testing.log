@@ -1,0 +1,93 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] 
+[INFO] ------------------------< io.trino:trino-tests >------------------------
+[INFO] Building trino-tests 485-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.5.0:clean (default-clean) @ trino-tests ---
+[INFO] Deleting /home/ivan/opencode/trino/testing/trino-tests/target
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-tests ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-tests ---
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ trino-tests ---
+[INFO] skip non existing resourceDirectory /home/ivan/opencode/trino/testing/trino-tests/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.16.0:compile (default-compile) @ trino-tests ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 1 source file with javac [forked debug deprecation parameters release 25] to target/classes
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ trino-tests ---
+[INFO] Copying 269 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ trino-tests ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 136 source files with javac [forked debug deprecation parameters release 25] to target/test-classes
+[WARNING] Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+/home/ivan/opencode/trino/testing/trino-tests/src/test/java/io/trino/execution/AbstractTestCoordinatorDynamicFiltering.java:[592,44] [deprecation] createPageSource(ConnectorTransactionHandle,ConnectorSession,ConnectorSplit,ConnectorTableHandle,Optional<ConnectorTableCredentials>,List<ColumnHandle>,DynamicFilter) in ConnectorPageSourceProvider has been deprecated
+[WARNING] /home/ivan/opencode/trino/testing/trino-tests/src/test/java/io/trino/execution/TestBeginQuery.java:[201,44] [deprecation] createPageSource(ConnectorTransactionHandle,ConnectorSession,ConnectorSplit,ConnectorTableHandle,Optional<ConnectorTableCredentials>,List<ColumnHandle>,DynamicFilter) in ConnectorPageSourceProvider has been deprecated
+[WARNING] /home/ivan/opencode/trino/testing/trino-tests/src/test/java/io/trino/execution/TestErrorThrowableInQuery.java:[118,17] [deprecation] nonTrinoExceptionFailure() in QueryAssert has been deprecated
+[WARNING] /home/ivan/opencode/trino/testing/trino-tests/src/test/java/io/trino/connector/TestDynamicCatalogs.java:[167,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'PrepopulatedInMemoryCatalogStoreModule(Map<CatalogName, CatalogProperties> prepopulatedCatalogs)'?
+[WARNING] /home/ivan/opencode/trino/testing/trino-tests/src/test/java/io/trino/connector/TestDynamicCatalogs.java:[190,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'PrepopulatedInMemoryCatalogStoreFactory(Map<CatalogName, CatalogProperties> prepopulatedCatalogs)'?
+[WARNING] /home/ivan/opencode/trino/testing/trino-tests/src/test/java/io/trino/connector/TestDynamicCatalogs.java:[213,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'PrepopulatedInMemoryCatalogStore(Map<CatalogName, CatalogProperties> prepopulatedCatalogs)'?
+[WARNING] /home/ivan/opencode/trino/testing/trino-tests/src/test/java/io/trino/connector/system/runtime/TestSystemRuntimeConnector.java:[62,74] [UnnecessaryLambda] Returning a lambda from a helper method or saving it in a constant is unnecessary; prefer to implement the functional interface method directly and use a method reference instead.
+    (see https://errorprone.info/bugpattern/UnnecessaryLambda)
+  Did you mean 'private static  List<ColumnMetadata> defaultGetColumns(SchemaTableName ){return ImmutableList.of(new ColumnMetadata("c", VARCHAR));}'?
+[WARNING] /home/ivan/opencode/trino/testing/trino-tests/src/test/java/io/trino/execution/AbstractTestCoordinatorDynamicFiltering.java:[480,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'TestingPlugin() {}'?
+[WARNING] /home/ivan/opencode/trino/testing/trino-tests/src/test/java/io/trino/execution/TestBeginQuery.java:[243,21] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'void resetCounters()'?
+[WARNING] /home/ivan/opencode/trino/testing/trino-tests/src/test/java/io/trino/execution/TestEventListenerPlugin.java:[49,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'TestingEventListenerFactory(EventsCollector eventsCollector)'?
+[WARNING] /home/ivan/opencode/trino/testing/trino-tests/src/test/java/io/trino/execution/TestEventListenerBasic.java:[1597,16] [InlineFormatString] Prefer to create format strings inline, instead of extracting them to a single-use constant
+    (see https://errorprone.info/bugpattern/InlineFormatString)
+  Did you mean to remove this line?
+[WARNING] /home/ivan/opencode/trino/testing/trino-tests/src/test/java/io/trino/execution/TestEventListenerBasic.java:[1598,16] [InlineFormatString] Prefer to create format strings inline, instead of extracting them to a single-use constant
+    (see https://errorprone.info/bugpattern/InlineFormatString)
+  Did you mean to remove this line?
+[WARNING] /home/ivan/opencode/trino/testing/trino-tests/src/test/java/io/trino/execution/TestEventListenerBasic.java:[402,35] [FutureReturnValueIgnored] Return value of methods returning Future must be checked. Ignoring returned Futures suppresses exceptions thrown from the code that completes the Future.
+    (see https://errorprone.info/bugpattern/FutureReturnValueIgnored)
+  Did you mean 'var _ = executorService.submit(' or to remove this line?
+[WARNING] /home/ivan/opencode/trino/testing/trino-tests/src/test/java/io/trino/execution/TestEventListenerWithSplits.java:[158,54] [JavaDurationGetSecondsToToSeconds] Prefer duration.toSeconds() over duration.getSeconds()
+    (see https://errorprone.info/bugpattern/JavaDurationGetSecondsToToSeconds)
+  Did you mean 'assertThat(statistics.getCpuTime().toSeconds() >= 0).isTrue();'?
+[WARNING] /home/ivan/opencode/trino/testing/trino-tests/src/test/java/io/trino/execution/TestEventListenerWithSplits.java:[159,55] [JavaDurationGetSecondsToToSeconds] Prefer duration.toSeconds() over duration.getSeconds()
+    (see https://errorprone.info/bugpattern/JavaDurationGetSecondsToToSeconds)
+  Did you mean 'assertThat(statistics.getWallTime().toSeconds() >= 0).isTrue();'?
+[WARNING] /home/ivan/opencode/trino/testing/trino-tests/src/test/java/io/trino/execution/TestExecutionJmxMetrics.java:[81,13] [EmptyCatch] Caught exceptions should not be ignored
+    (see https://google.github.io/styleguide/javaguide.html#s6.2-caught-exceptions)
+[WARNING] /home/ivan/opencode/trino/testing/trino-tests/src/test/java/io/trino/execution/TestQueryTracker.java:[145,19] [TypeParameterUnusedInFormals] Declaring a type parameter that is only used in the return type is a misuse of generics: operations on the type parameter are unchecked, it hides unsafe casts at invocations of the method, and it interacts badly with method overload resolution.
+    (see https://errorprone.info/bugpattern/TypeParameterUnusedInFormals)
+[WARNING] /home/ivan/opencode/trino/testing/trino-tests/src/test/java/io/trino/execution/TestTableRedirection.java:[118,74] [UnnecessaryLambda] Returning a lambda from a helper method or saving it in a constant is unnecessary; prefer to implement the functional interface method directly and use a method reference instead.
+    (see https://errorprone.info/bugpattern/UnnecessaryLambda)
+  Did you mean 'private static  List<ColumnMetadata> columnsGetter(SchemaTableName table){'?
+[WARNING] /home/ivan/opencode/trino/testing/trino-tests/src/test/java/io/trino/execution/resourcegroups/db/H2TestUtil.java:[106,46] [MathAbsoluteNegative] Math.abs() does not always give a non-negative result. Please consider other methods for positive numbers, such as IntMath.saturatedAbs() or Math.floorMod().
+    (see https://errorprone.info/bugpattern/MathAbsoluteNegative)
+[WARNING] /home/ivan/opencode/trino/testing/trino-tests/src/test/java/io/trino/sql/planner/BaseCostBasedPlanTest.java:[295,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'JoinOrderPrinter(Session session)'?
+[WARNING] /home/ivan/opencode/trino/testing/trino-tests/src/test/java/io/trino/sql/planner/BaseCostBasedPlanTest.java:[300,23] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'String result()'?
+[WARNING] /home/ivan/opencode/trino/testing/trino-tests/src/test/java/io/trino/tests/tpch/TestTpchConnectorTest.java:[233,46] [JUnitMethodInvoked] Directly invoking a JUnit test method is discouraged; only the JUnit test runner should call these methods. If you need to share logic between tests, extract a helper method or class.
+    (see https://errorprone.info/bugpattern/JUnitMethodInvoked)
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  29.262 s
+[INFO] Finished at: 2026-11-08T13:52:53+03:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Njord session closed

@@ -125,6 +125,7 @@ public class IcebergConfig
     }
 
     @Config("iceberg.report-sortedness")
+    @ConfigDescription("Report verified identity sort-order prefixes to the optimizer")
     public IcebergConfig setReportSortedness(boolean reportSortedness)
     {
         this.reportSortedness = reportSortedness;

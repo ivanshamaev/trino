@@ -1897,7 +1897,8 @@ public class LocalExecutionPlanner
                     spillEnabled,
                     Optional.of(spillerFactory),
                     orderingCompiler,
-                    node.isInputPagesPreSorted());
+                    node.isInputPagesPreSorted(),
+                    node.isBoundedSpill());
 
             return new PhysicalOperation(operator, source.getLayout(), source);
         }
@@ -2933,10 +2934,10 @@ public class LocalExecutionPlanner
             // The merge operator drains unmatched build rows itself; it has no outer operator.
             JoinBridgeManager<MergeJoinBridge> bridgeManager = new JoinBridgeManager<>(false, bridge, buildOutputTypes);
 
-            // dynamic filtering: collect domains on the build side (INNER only, same as hash join)
+            // INNER and RIGHT joins can filter the probe using the complete build-side domain.
             boolean partitioned = !isBuildSideReplicated(node);
             Optional<LocalDynamicFilterConsumer> localDynamicFilter = createDynamicFilter(buildSource, node, context, localDynamicFilters, partitioned);
-            if (localDynamicFilter.isPresent() && node.getType() == INNER) {
+            if (localDynamicFilter.isPresent()) {
                 buildSource = createDynamicFilterSourceOperatorFactory(
                         buildContext.getNextOperatorId(),
                         localDynamicFilter.get(),

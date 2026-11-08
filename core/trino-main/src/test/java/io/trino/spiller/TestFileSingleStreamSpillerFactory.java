@@ -180,19 +180,23 @@ public class TestFileSingleStreamSpillerFactory
 
         Files.createTempFile(spillPath1.toPath(), SPILL_FILE_PREFIX, SPILL_FILE_SUFFIX);
         Files.createTempFile(spillPath1.toPath(), SPILL_FILE_PREFIX, SPILL_FILE_SUFFIX);
+        Files.createTempFile(spillPath1.toPath(), SPILL_FILE_PREFIX + "-merge-join-matches-", SPILL_FILE_SUFFIX);
+        Files.createTempFile(spillPath1.toPath(), SPILL_FILE_PREFIX + "-replay-index-", SPILL_FILE_SUFFIX);
         Files.createTempFile(spillPath1.toPath(), SPILL_FILE_PREFIX, "blah");
         Files.createTempFile(spillPath2.toPath(), SPILL_FILE_PREFIX, SPILL_FILE_SUFFIX);
+        Files.createTempFile(spillPath2.toPath(), "merge-join-matches", SPILL_FILE_SUFFIX);
+        Files.createTempFile(spillPath2.toPath(), "merge-join-matches-not-owned-", SPILL_FILE_SUFFIX);
         Files.createTempFile(spillPath2.toPath(), "blah", SPILL_FILE_SUFFIX);
         Files.createTempFile(spillPath2.toPath(), "blah", "blah");
 
-        assertThat(listFiles(spillPath1.toPath())).hasSize(3);
-        assertThat(listFiles(spillPath2.toPath())).hasSize(3);
+        assertThat(listFiles(spillPath1.toPath())).hasSize(5);
+        assertThat(listFiles(spillPath2.toPath())).hasSize(5);
 
         FileSingleStreamSpillerFactory spillerFactory = spillerFactoryFactory(spillPaths);
         spillerFactory.cleanupOldSpillFiles();
 
         assertThat(listFiles(spillPath1.toPath())).hasSize(1);
-        assertThat(listFiles(spillPath2.toPath())).hasSize(2);
+        assertThat(listFiles(spillPath2.toPath())).hasSize(3);
     }
 
     @Test

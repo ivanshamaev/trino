@@ -1,0 +1,101 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] 
+[INFO] ------------------------< io.trino:trino-main >-------------------------
+[INFO] Building trino-main 485-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-main ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-main ---
+[INFO] 
+[INFO] --- antlr4:4.13.2:antlr4 (default) @ trino-main ---
+[INFO] No grammars to process
+[INFO] ANTLR 4: Processing source directory /home/ivan/opencode/trino/core/trino-main/src/main/antlr4
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ trino-main ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 0 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.16.0:compile (default-compile) @ trino-main ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ trino-main ---
+[INFO] Copying 32 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ trino-main ---
+[INFO] Compiling 1 source file with javac [debug deprecation parameters release 25] to target/test-classes
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer) @ trino-main ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer-production-code) @ trino-main ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-only (default) @ trino-main ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-duplicate (default) @ trino-main ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-exclusions (default) @ trino-main ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-test) @ trino-main ---
+[INFO] Tests will run in random order. To reproduce ordering use flag -Dsurefire.runOrder.random.seed=14701229345970
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[WARNING] System property [junit.jupiter.execution.parallel.enabled] overwritten by user properties from Maven session
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+WARNING: Using incubator modules: jdk.incubator.vector
+[INFO] Running io.trino.cost.TestMergeJoinCostModel
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.102 s -- in io.trino.cost.TestMergeJoinCostModel
+[INFO] Running io.trino.sql.planner.optimizations.TestColocatedJoin
+2026-11-08T04:14:28.895-0600	INFO	main	io.trino.simd.BlockEncodingSimdSupport	Detected SIMD Support for architecture=amd64, vectorBitWidth=128: SimdSupport[capabilities=[]]
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.322 s -- in io.trino.sql.planner.optimizations.TestColocatedJoin
+[INFO] Running io.trino.spiller.TestFileSingleStreamSpiller
+WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.airlift.compress.v3.internal.NativeLoader in an unnamed module (file:/home/ivan/.m2/repository/io/airlift/aircompressor-v3/3.14/aircompressor-v3-3.14.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.160 s -- in io.trino.spiller.TestFileSingleStreamSpiller
+[INFO] Running io.trino.operator.join.merge.TestMergeJoinOperator
+[WARNING] Tests run: 54, Failures: 0, Errors: 0, Skipped: 6, Time elapsed: 9.556 s -- in io.trino.operator.join.merge.TestMergeJoinOperator
+[INFO] Running io.trino.cost.TestOptimizerConfig
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.739 s -- in io.trino.cost.TestOptimizerConfig
+[INFO] Running io.trino.operator.TestOrderByOperator
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.577 s -- in io.trino.operator.TestOrderByOperator
+[INFO] Running io.trino.operator.join.merge.TestAppendingSpiller
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.035 s -- in io.trino.operator.join.merge.TestAppendingSpiller
+[INFO] Running io.trino.operator.join.merge.TestDiskBackedMatchBitmap
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 s -- in io.trino.operator.join.merge.TestDiskBackedMatchBitmap
+[INFO] Running io.trino.spiller.TestSortingSpiller
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.277 s -- in io.trino.spiller.TestSortingSpiller
+[INFO] Running io.trino.sql.query.TestMergeJoin
+2026-11-08T04:14:49.222-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 252.00ms: 682.15MB -> 201.76MB
+2026-11-08T04:14:51.414-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.00s, stopped 199.00ms: 510.50MB -> 241.13MB
+2026-11-08T04:14:53.708-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.07s, stopped 220.00ms: 627.87MB -> 252.94MB
+[INFO] Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.545 s -- in io.trino.sql.query.TestMergeJoin
+[INFO] Running io.trino.sql.planner.iterative.rule.TestDetermineJoinAlgorithm
+[INFO] Tests run: 17, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.979 s -- in io.trino.sql.planner.iterative.rule.TestDetermineJoinAlgorithm
+[INFO] Running io.trino.sql.planner.plan.TestJoinNodeAlgorithm
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.021 s -- in io.trino.sql.planner.plan.TestJoinNodeAlgorithm
+[INFO] Running io.trino.operator.TestPagesIndex
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.086 s -- in io.trino.operator.TestPagesIndex
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 134, Failures: 0, Errors: 0, Skipped: 6
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  35.647 s
+[INFO] Finished at: 2026-11-08T13:14:54+03:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Njord session closed

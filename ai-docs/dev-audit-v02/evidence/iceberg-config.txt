@@ -1,0 +1,16 @@
+-------------------------------------------------------------------------------
+Test set: io.trino.plugin.iceberg.TestIcebergConfig
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.702 s <<< FAILURE! -- in io.trino.plugin.iceberg.TestIcebergConfig
+io.trino.plugin.iceberg.TestIcebergConfig.testDefaults -- Time elapsed: 0.314 s <<< FAILURE!
+java.lang.AssertionError: Untested attributes: [ReportSortedness]
+	at io.airlift.configuration.testing.ConfigAssertions.assertDefaults(ConfigAssertions.java:83)
+	at io.airlift.configuration.testing.ConfigAssertions.assertRecordedDefaults(ConfigAssertions.java:296)
+	at io.trino.plugin.iceberg.TestIcebergConfig.testDefaults(TestIcebergConfig.java:50)
+
+io.trino.plugin.iceberg.TestIcebergConfig.testExplicitPropertyMappings -- Time elapsed: 0.015 s <<< FAILURE!
+java.lang.AssertionError: Untested properties [iceberg.report-sortedness]
+	at io.airlift.configuration.testing.ConfigAssertions.assertFullMapping(ConfigAssertions.java:139)
+	at io.airlift.configuration.testing.ConfigAssertions.assertFullMapping(ConfigAssertions.java:106)
+	at io.trino.plugin.iceberg.TestIcebergConfig.testExplicitPropertyMappings(TestIcebergConfig.java:198)
+

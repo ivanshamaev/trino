@@ -1,0 +1,137 @@
+[
+  {
+    "phase": "checkout-stage-4",
+    "command": [
+      "git",
+      "checkout",
+      "--detach",
+      "a0a11bff2fa450885f748da16549e4f8a9c202a7"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T13:05:55.093412+00:00",
+    "elapsed_seconds": 0.067,
+    "exit_code": 0,
+    "log": "implementation-evidence/review-stage-4-checkout.log"
+  },
+  {
+    "phase": "review-stage-4-build",
+    "command": [
+      "./mvnw",
+      "package",
+      "-DskipTests",
+      "-Dair.check.skip-all=true",
+      "-Dmaven.javadoc.skip=true",
+      "-pl",
+      "plugin/trino-iceberg,testing/trino-tests"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T13:05:55.161040+00:00",
+    "elapsed_seconds": 36.173,
+    "exit_code": 0,
+    "log": "implementation-evidence/review-stage-4-build.log"
+  },
+  {
+    "phase": "review-iceberg-regressions-and-workloads",
+    "command": [
+      "./mvnw",
+      "initialize",
+      "surefire:test",
+      "-Dair.check.skip-all=true",
+      "-Dsmj.validation=true",
+      "-pl",
+      "plugin/trino-iceberg",
+      "-Dtest=TestIcebergConfig,TestIcebergSortedWriting,TestMergeJoinWorkloads"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T13:06:31.335350+00:00",
+    "elapsed_seconds": 176.791,
+    "exit_code": 0,
+    "log": "implementation-evidence/review-iceberg-tests-workloads.log"
+  },
+  {
+    "phase": "review-tpcds-plans",
+    "command": [
+      "./mvnw",
+      "initialize",
+      "surefire:test",
+      "-Dair.check.skip-all=true",
+      "-pl",
+      "testing/trino-tests",
+      "-Dtest=TestPartitionedTpcdsCostBasedPlan"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T13:09:28.127534+00:00",
+    "elapsed_seconds": 99.454,
+    "exit_code": 0,
+    "log": "implementation-evidence/review-tpcds-plans.log"
+  },
+  {
+    "phase": "review-ci-verify",
+    "command": [
+      "./mvnw",
+      "verify",
+      "-DskipTests",
+      "-Pci",
+      "-pl",
+      "core/trino-main,plugin/trino-iceberg,testing/trino-tests"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T13:11:07.581600+00:00",
+    "elapsed_seconds": 409.904,
+    "exit_code": 0,
+    "log": "implementation-evidence/review-ci-verify.log"
+  },
+  {
+    "phase": "review-errorprone",
+    "command": [
+      "./mvnw",
+      "clean",
+      "test-compile",
+      "-Dair.check.skip-all=true",
+      "-Perrorprone-compiler",
+      "-pl",
+      "core/trino-main,plugin/trino-iceberg,testing/trino-tests"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T13:17:57.486031+00:00",
+    "elapsed_seconds": 658.012,
+    "exit_code": 0,
+    "log": "implementation-evidence/review-errorprone.log"
+  },
+  {
+    "phase": "review-sphinx",
+    "command": [
+      "docker",
+      "run",
+      "--security-opt",
+      "label:disable",
+      "--rm",
+      "--cpus=2",
+      "--memory=3g",
+      "-e",
+      "TRINO_VERSION=485-SNAPSHOT",
+      "-u",
+      "1000:1000",
+      "-v",
+      "/tmp/trino-smj-upstream-v02-check/docs:/docs",
+      "ghcr.io/trinodb/build/sphinx:114",
+      "sphinx-build",
+      "-q",
+      "-j",
+      "2",
+      "-b",
+      "html",
+      "-W",
+      "--keep-going",
+      "-d",
+      "target/doctrees",
+      "src/main/sphinx",
+      "target/html"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T13:28:55.498474+00:00",
+    "elapsed_seconds": 121.287,
+    "exit_code": 0,
+    "log": "implementation-evidence/review-docs-build.log"
+  }
+]

@@ -31,6 +31,7 @@ public class SortNode
     private final OrderingScheme orderingScheme;
     private final boolean partial;
     private final boolean inputPagesPreSorted;
+    private final boolean boundedSpill;
 
     public SortNode(
             PlanNodeId id,
@@ -41,13 +42,19 @@ public class SortNode
         this(id, source, orderingScheme, partial, false);
     }
 
+    public SortNode(PlanNodeId id, PlanNode source, OrderingScheme orderingScheme, boolean partial, boolean inputPagesPreSorted)
+    {
+        this(id, source, orderingScheme, partial, inputPagesPreSorted, false);
+    }
+
     @JsonCreator
     public SortNode(
             @JsonProperty("id") PlanNodeId id,
             @JsonProperty("source") PlanNode source,
             @JsonProperty("orderingScheme") OrderingScheme orderingScheme,
             @JsonProperty("partial") boolean partial,
-            @JsonProperty("inputPagesPreSorted") boolean inputPagesPreSorted)
+            @JsonProperty("inputPagesPreSorted") boolean inputPagesPreSorted,
+            @JsonProperty("boundedSpill") boolean boundedSpill)
     {
         super(id);
 
@@ -58,6 +65,7 @@ public class SortNode
         this.orderingScheme = orderingScheme;
         this.partial = partial;
         this.inputPagesPreSorted = inputPagesPreSorted;
+        this.boundedSpill = boundedSpill;
     }
 
     @Override
@@ -90,6 +98,12 @@ public class SortNode
         return inputPagesPreSorted;
     }
 
+    @JsonProperty
+    public boolean isBoundedSpill()
+    {
+        return boundedSpill;
+    }
+
     @JsonProperty("orderingScheme")
     public OrderingScheme getOrderingScheme()
     {
@@ -105,6 +119,6 @@ public class SortNode
     @Override
     public PlanNode replaceChildren(List<PlanNode> newChildren)
     {
-        return new SortNode(getId(), Iterables.getOnlyElement(newChildren), orderingScheme, partial, inputPagesPreSorted);
+        return new SortNode(getId(), Iterables.getOnlyElement(newChildren), orderingScheme, partial, inputPagesPreSorted, boundedSpill);
     }
 }

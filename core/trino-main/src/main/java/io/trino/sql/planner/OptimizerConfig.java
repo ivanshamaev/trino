@@ -227,7 +227,7 @@ public class OptimizerConfig
     }
 
     @Config("optimizer.merge-join-memory-pressure-threshold")
-    @ConfigDescription("Fraction of task memory above which the merge join is preferred over hash join (COST_BASED mode)")
+    @ConfigDescription("Fraction of model memory allowance that triggers cost-based consideration of merge join")
     public OptimizerConfig setMergeJoinMemoryPressureThreshold(double threshold)
     {
         this.mergeJoinMemoryPressureThreshold = threshold;
@@ -242,7 +242,7 @@ public class OptimizerConfig
     }
 
     @Config("optimizer.merge-join-small-build-threshold")
-    @ConfigDescription("Fraction of task memory below which hash join is always preferred (COST_BASED mode)")
+    @ConfigDescription("Small-build fraction of model memory allowance, unless both inputs are compatibly partitioned and sorted")
     public OptimizerConfig setMergeJoinSmallBuildThreshold(double threshold)
     {
         this.mergeJoinSmallBuildThreshold = threshold;
@@ -256,7 +256,7 @@ public class OptimizerConfig
     }
 
     @Config("optimizer.merge-join-big-side-threshold")
-    @ConfigDescription("Fraction of task memory above which both sides are considered big (COST_BASED mode)")
+    @ConfigDescription("Fraction of model memory allowance above which both inputs are considered large")
     public OptimizerConfig setMergeJoinBigSideThreshold(double threshold)
     {
         this.mergeJoinBigSideThreshold = threshold;

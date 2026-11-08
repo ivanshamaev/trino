@@ -54,6 +54,69 @@ Single-step strategy is preferred. However, for cases with limited concurrency d
 a small number of distinct grouping keys, it will choose an alternative strategy
 based on input data statistics.
 
+## `optimizer.merge-join-big-side-threshold`
+
+- **Type:** {ref}`prop-type-double`
+- **Default value:** `1.0`
+- **Minimum value:** `0`
+- **Session property:** `merge_join_big_side_threshold`
+
+Considers both inputs large when each estimated per-task input exceeds this fraction of the model memory allowance.
+Applies only to `COST_BASED` merge join selection. The model reserves half of
+`query_max_memory_per_node` as its per-task allowance; this is an estimate,
+not a runtime reservation. See [](/optimizer/merge-join).
+
+## `optimizer.merge-join-cost-margin`
+
+- **Type:** {ref}`prop-type-double`
+- **Default value:** `0.1`
+- **Minimum value:** `0`
+- **Maximum value:** `1 (exclusive)`
+- **Session property:** `merge_join_cost_margin`
+
+Requires the estimated merge cost, increased by a factor of `1 / (1 - margin)`, to beat hash join.
+Applies only to `COST_BASED` merge join selection. The model reserves half of
+`query_max_memory_per_node` as its per-task allowance; this is an estimate,
+not a runtime reservation. See [](/optimizer/merge-join).
+
+## `optimizer.merge-join-memory-pressure-threshold`
+
+- **Type:** {ref}`prop-type-double`
+- **Default value:** `0.7`
+- **Minimum value:** `0`
+- **Maximum value:** `1`
+- **Session property:** `merge_join_memory_pressure_threshold`
+
+Triggers consideration when the estimated hash-table memory exceeds this fraction of the model memory allowance.
+Applies only to `COST_BASED` merge join selection. The model reserves half of
+`query_max_memory_per_node` as its per-task allowance; this is an estimate,
+not a runtime reservation. See [](/optimizer/merge-join).
+
+## `optimizer.merge-join-small-build-threshold`
+
+- **Type:** {ref}`prop-type-double`
+- **Default value:** `0.3`
+- **Minimum value:** `0`
+- **Maximum value:** `1`
+- **Session property:** `merge_join_small_build_threshold`
+
+Keeps hash join for small estimated build inputs, unless both inputs have compatible partitioning and sortedness.
+Applies only to `COST_BASED` merge join selection. The model reserves half of
+`query_max_memory_per_node` as its per-task allowance; this is an estimate,
+not a runtime reservation. See [](/optimizer/merge-join).
+
+## `optimizer.prefer-merge-join`
+
+- **Type:** {ref}`prop-type-string`
+- **Allowed values:** `OFF`, `PREFER`, `COST_BASED`, `FORCE`
+- **Default value:** `OFF`
+- **Session property:** `prefer_merge_join`
+
+Selects the experimental [](/optimizer/merge-join) strategy. `OFF` retains hash
+join selection. `PREFER` and `FORCE` select every eligible join. `COST_BASED`
+requires statistics, spill support, a resource or ordering trigger, and a cost
+advantage. Ineligible joins retain hash join in every mode.
+
 ## `optimizer.push-aggregation-through-outer-join`
 
 - **Type:** {ref}`prop-type-boolean`

@@ -1,0 +1,117 @@
+{
+  "head": "773afdee3bd26dc1a59eb0524a3445657fc1b0d7",
+  "base": "e112ffdf7304333b50bfdff50dda4229c897896d",
+  "changed_files": 172,
+  "software_files": 93,
+  "research_and_audit_files": 79,
+  "new_java_headers": [
+    {
+      "path": "core/trino-main/src/main/java/io/trino/cost/MergeJoinCostModel.java",
+      "apache_header_count_before_package": 1
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/operator/join/NonCopyingPageList.java",
+      "apache_header_count_before_package": 1
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/operator/join/merge/AppendingSpiller.java",
+      "apache_header_count_before_package": 1
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/operator/join/merge/DiskBackedMatchBitmap.java",
+      "apache_header_count_before_package": 1
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinBridge.java",
+      "apache_header_count_before_package": 1
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinBufferOperatorFactory.java",
+      "apache_header_count_before_package": 1
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java",
+      "apache_header_count_before_package": 1
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/spiller/SortingSpiller.java",
+      "apache_header_count_before_package": 1
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/DetermineJoinAlgorithm.java",
+      "apache_header_count_before_package": 1
+    },
+    {
+      "path": "core/trino-main/src/test/java/io/trino/cost/TestMergeJoinCostModel.java",
+      "apache_header_count_before_package": 1
+    },
+    {
+      "path": "core/trino-main/src/test/java/io/trino/operator/join/merge/TestAppendingSpiller.java",
+      "apache_header_count_before_package": 1
+    },
+    {
+      "path": "core/trino-main/src/test/java/io/trino/operator/join/merge/TestDiskBackedMatchBitmap.java",
+      "apache_header_count_before_package": 1
+    },
+    {
+      "path": "core/trino-main/src/test/java/io/trino/operator/join/merge/TestMergeJoinOperator.java",
+      "apache_header_count_before_package": 1
+    },
+    {
+      "path": "core/trino-main/src/test/java/io/trino/spiller/TestSortingSpiller.java",
+      "apache_header_count_before_package": 1
+    },
+    {
+      "path": "core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestDetermineJoinAlgorithm.java",
+      "apache_header_count_before_package": 1
+    },
+    {
+      "path": "core/trino-main/src/test/java/io/trino/sql/planner/plan/TestJoinNodeAlgorithm.java",
+      "apache_header_count_before_package": 2
+    },
+    {
+      "path": "core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoin.java",
+      "apache_header_count_before_package": 1
+    }
+  ],
+  "new_configs": [
+    {
+      "path": "core/trino-main/src/main/java/io/trino/sql/planner/OptimizerConfig.java",
+      "line": 214,
+      "name": "optimizer.prefer-merge-join",
+      "has_config_description": true
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/sql/planner/OptimizerConfig.java",
+      "line": 229,
+      "name": "optimizer.merge-join-memory-pressure-threshold",
+      "has_config_description": true
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/sql/planner/OptimizerConfig.java",
+      "line": 244,
+      "name": "optimizer.merge-join-small-build-threshold",
+      "has_config_description": true
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/sql/planner/OptimizerConfig.java",
+      "line": 258,
+      "name": "optimizer.merge-join-big-side-threshold",
+      "has_config_description": true
+    },
+    {
+      "path": "core/trino-main/src/main/java/io/trino/sql/planner/OptimizerConfig.java",
+      "line": 273,
+      "name": "optimizer.merge-join-cost-margin",
+      "has_config_description": true
+    },
+    {
+      "path": "plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergConfig.java",
+      "line": 127,
+      "name": "iceberg.report-sortedness",
+      "has_config_description": false
+    }
+  ],
+  "official_docs_paths_changed": [],
+  "pom_paths_changed": []
+}

@@ -1,0 +1,8 @@
+Report verified Iceberg file ordering
+
+Fall back conservatively for missing and mixed file sort orders.
+Cover metadata evolution, split ordering and distributed integration.
+Document the experimental execution scope and selection properties.
+
+
+

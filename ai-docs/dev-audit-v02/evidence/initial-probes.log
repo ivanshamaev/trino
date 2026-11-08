@@ -1,0 +1,218 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] 
+[INFO] ------------------------< io.trino:trino-main >-------------------------
+[INFO] Building trino-main 485-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-main ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-main ---
+[INFO] 
+[INFO] --- antlr4:4.13.2:antlr4 (default) @ trino-main ---
+[INFO] No grammars to process
+[INFO] ANTLR 4: Processing source directory /home/ivan/opencode/trino/core/trino-main/src/main/antlr4
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ trino-main ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 0 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.16.0:compile (default-compile) @ trino-main ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ trino-main ---
+[INFO] Copying 32 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ trino-main ---
+[INFO] Compiling 2 source files with javac [debug deprecation parameters release 25] to target/test-classes
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer) @ trino-main ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer-production-code) @ trino-main ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-only (default) @ trino-main ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-duplicate (default) @ trino-main ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-exclusions (default) @ trino-main ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-test) @ trino-main ---
+[INFO] Tests will run in random order. To reproduce ordering use flag -Dsurefire.runOrder.random.seed=14225826335883
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[WARNING] System property [junit.jupiter.execution.parallel.enabled] overwritten by user properties from Maven session
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+WARNING: Using incubator modules: jdk.incubator.vector
+[INFO] Running io.trino.operator.join.merge.TestMergeJoinOperator
+2026-11-08T04:06:33.532-0600	INFO	main	io.trino.simd.BlockEncodingSimdSupport	Detected SIMD Support for architecture=amd64, vectorBitWidth=128: SimdSupport[capabilities=[]]
+2026-11-08T04:06:34.008-0600	INFO	main	stdout	AUDIT_V02 pages=
+2026-11-08T04:06:34.011-0600	INFO	main	stdout	768
+2026-11-08T04:06:34.013-0600	INFO	main	stdout	 replayedPages=
+2026-11-08T04:06:34.014-0600	INFO	main	stdout	1993
+2026-11-08T04:06:34.015-0600	INFO	main	stdout	 writtenBytes=
+2026-11-08T04:06:34.016-0600	INFO	main	stdout	74052
+2026-11-08T04:06:34.017-0600	INFO	main	stdout	 readBytes=
+2026-11-08T04:06:34.017-0600	INFO	main	stdout	455103
+2026-11-08T04:06:34.018-0600	INFO	main	stdout	 readWriteRatio=
+2026-11-08T04:06:34.019-0600	INFO	main	stdout	6.1457
+2026-11-08T04:06:34.581-0600	INFO	main	stdout	AUDIT_V02 pages=
+2026-11-08T04:06:34.582-0600	INFO	main	stdout	3072
+2026-11-08T04:06:34.583-0600	INFO	main	stdout	 replayedPages=
+2026-11-08T04:06:34.583-0600	INFO	main	stdout	8153
+2026-11-08T04:06:34.584-0600	INFO	main	stdout	 writtenBytes=
+2026-11-08T04:06:34.584-0600	INFO	main	stdout	302742
+2026-11-08T04:06:34.585-0600	INFO	main	stdout	 readBytes=
+2026-11-08T04:06:34.585-0600	INFO	main	stdout	5486382
+2026-11-08T04:06:34.586-0600	INFO	main	stdout	 readWriteRatio=
+2026-11-08T04:06:34.587-0600	INFO	main	stdout	18.1223
+2026-11-08T04:06:41.614-0600	INFO	main	stdout	AUDIT_V02 pages=
+2026-11-08T04:06:41.615-0600	INFO	main	stdout	12288
+2026-11-08T04:06:41.616-0600	INFO	main	stdout	 replayedPages=
+2026-11-08T04:06:41.616-0600	INFO	main	stdout	32735
+2026-11-08T04:06:41.617-0600	INFO	main	stdout	 writtenBytes=
+2026-11-08T04:06:41.617-0600	INFO	main	stdout	1215324
+2026-11-08T04:06:41.618-0600	INFO	main	stdout	 readBytes=
+2026-11-08T04:06:41.619-0600	INFO	main	stdout	80345628
+2026-11-08T04:06:41.619-0600	INFO	main	stdout	 readWriteRatio=
+2026-11-08T04:06:41.620-0600	INFO	main	stdout	66.1105
+[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 8.660 s <<< FAILURE! -- in io.trino.operator.join.merge.TestMergeJoinOperator
+[ERROR] io.trino.operator.join.merge.TestMergeJoinOperator.testAuditV02ReplayAmplification(Path) -- Time elapsed: 8.607 s <<< FAILURE!
+java.lang.AssertionError: 
+[Linear replay IO for groups spanning three pages] 
+Expecting actual:
+  66.11045943304008
+to be less than or equal to:
+  4.0 
+	at io.trino.operator.join.merge.TestMergeJoinOperator.testAuditV02ReplayAmplification(TestMergeJoinOperator.java:1249)
+
+[INFO] Running io.trino.sql.query.TestMergeJoinAuditV02
+2026-11-08T04:06:41.717-0600	INFO	main	stdout	AUDIT_V02 statisticsJson={
+  "@type" : "MergeJoinOperatorFactory$MergeJoinStatistics"
+}
+2026-11-08T04:06:41.854-0600	INFO	main	org.hibernate.validator.internal.util.Version	HV000001: Hibernate Validator 9.1.5.Final
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::loadLibrary has been called by com.aayushatharva.brotli4j.Brotli4jLoader in an unnamed module (file:/home/ivan/.m2/repository/com/aayushatharva/brotli4j/brotli4j/1.23.0/brotli4j-1.23.0.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+2026-11-08T04:06:44.322-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 111.00ms: 530.68MB -> 122.90MB
+2026-11-08T04:06:47.046-0600	INFO	main	stdout	AUDIT_V02 repeatedSymbolQuery=SELECT l.x, r.x, r.y FROM (VALUES 1, 2, 3) l(x) JOIN (VALUES (1, 1), (2, 3), (3, 3)) r(x, y) ON l.x = r.x AND l.x = r.y
+2026-11-08T04:06:48.435-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.79s, stopped 329.00ms: 964.74MB -> 202.15MB
+2026-11-08T04:06:48.817-0600	INFO	main	stdout	AUDIT_V02 repeatedSymbolQuery=SELECT l.x, r.x, r.y FROM (VALUES 1, 2, 3) l(x) LEFT JOIN (VALUES (1, 1), (2, 3), (3, 3)) r(x, y) ON l.x = r.x AND l.x = r.y
+2026-11-08T04:06:49.193-0600	INFO	main	stdout	AUDIT_V02 repeatedSymbolQuery=SELECT l.x, r.x, r.y FROM (VALUES 1, 2, 3) l(x) RIGHT JOIN (VALUES (1, 1), (2, 3), (3, 3)) r(x, y) ON l.x = r.x AND l.x = r.y
+2026-11-08T04:06:49.624-0600	INFO	main	stdout	AUDIT_V02 repeatedSymbolQuery=SELECT l.x, r.x, r.y FROM (VALUES 1, 2, 3) l(x) FULL JOIN (VALUES (1, 1), (2, 3), (3, 3)) r(x, y) ON l.x = r.x AND l.x = r.y
+[ERROR] Tests run: 2, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 8.037 s <<< FAILURE! -- in io.trino.sql.query.TestMergeJoinAuditV02
+[ERROR] io.trino.sql.query.TestMergeJoinAuditV02.testStatisticsRoundTrip -- Time elapsed: 0.076 s <<< ERROR!
+java.lang.IllegalArgumentException: Invalid JSON string for [simple type, class io.trino.operator.OperatorInfo]
+	at io.airlift.json.JsonCodec.mapException(JsonCodec.java:291)
+	at io.airlift.json.JsonCodec.fromJson(JsonCodec.java:151)
+	at io.trino.sql.query.TestMergeJoinAuditV02.testStatisticsRoundTrip(TestMergeJoinAuditV02.java:39)
+Caused by: com.fasterxml.jackson.databind.exc.InvalidTypeIdException: Could not resolve type id 'MergeJoinOperatorFactory$MergeJoinStatistics' as a subtype of `io.trino.operator.OperatorInfo`: known type ids = [directExchangeClientStatus, joinOperatorInfo, localExchangeBuffer, outputSpooling, partitionedOutput, tableFinish, tableWriter, windowInfo]
+ at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 2, column: 13]
+	at com.fasterxml.jackson.databind.exc.InvalidTypeIdException.from(InvalidTypeIdException.java:43)
+	at com.fasterxml.jackson.databind.DeserializationContext.invalidTypeIdException(DeserializationContext.java:2088)
+	at com.fasterxml.jackson.databind.DeserializationContext.handleUnknownTypeId(DeserializationContext.java:1637)
+	at com.fasterxml.jackson.databind.jsontype.impl.TypeDeserializerBase._handleUnknownTypeId(TypeDeserializerBase.java:341)
+	at com.fasterxml.jackson.databind.jsontype.impl.TypeDeserializerBase._findDeserializer(TypeDeserializerBase.java:180)
+	at com.fasterxml.jackson.databind.jsontype.impl.AsPropertyTypeDeserializer._deserializeTypedForId(AsPropertyTypeDeserializer.java:150)
+	at com.fasterxml.jackson.databind.jsontype.impl.AsPropertyTypeDeserializer.deserializeTypedFromObject(AsPropertyTypeDeserializer.java:135)
+	at com.fasterxml.jackson.databind.deser.AbstractDeserializer.deserializeWithType(AbstractDeserializer.java:262)
+	at com.fasterxml.jackson.databind.deser.impl.TypeWrappedDeserializer.deserialize(TypeWrappedDeserializer.java:74)
+	at com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:342)
+	at com.fasterxml.jackson.databind.ObjectReader._bindAndClose(ObjectReader.java:2148)
+	at com.fasterxml.jackson.databind.ObjectReader.readValue(ObjectReader.java:1569)
+	at io.airlift.json.JsonCodec.fromJson(JsonCodec.java:148)
+	... 1 more
+
+[ERROR] io.trino.sql.query.TestMergeJoinAuditV02.testRepeatedJoinSymbol -- Time elapsed: 7.959 s <<< ERROR!
+io.trino.testing.QueryFailedException: Multiple entries with same key: field::[integer]=ASC NULLS LAST and field::[integer]=ASC NULLS LAST
+	at io.trino.testing.TestingDirectTrinoClient.toMaterializedRows(TestingDirectTrinoClient.java:80)
+	at io.trino.testing.TestingDirectTrinoClient.lambda$execute$0(TestingDirectTrinoClient.java:68)
+	at io.trino.testing.StandaloneQueryRunner.execute(StandaloneQueryRunner.java:119)
+	at io.trino.sql.query.QueryAssertions$QueryAssert.lambda$new$1(QueryAssertions.java:298)
+	at com.google.common.base.Suppliers$NonSerializableMemoizingSupplier.get(Suppliers.java:196)
+	at io.trino.sql.query.QueryAssertions$QueryAssert.result(QueryAssertions.java:423)
+	at io.trino.sql.query.QueryAssertions$QueryAssert.matches(QueryAssertions.java:344)
+	at io.trino.sql.query.QueryAssertions$QueryAssert.matches(QueryAssertions.java:338)
+	at io.trino.sql.query.TestMergeJoinAuditV02.testRepeatedJoinSymbol(TestMergeJoinAuditV02.java:55)
+Caused by: java.lang.IllegalArgumentException: Multiple entries with same key: field::[integer]=ASC NULLS LAST and field::[integer]=ASC NULLS LAST
+	at com.google.common.collect.ImmutableMap.conflictException(ImmutableMap.java:384)
+	at com.google.common.collect.ImmutableMap.checkNoConflict(ImmutableMap.java:378)
+	at com.google.common.collect.RegularImmutableMap.checkNoConflictInKeyBucket(RegularImmutableMap.java:245)
+	at com.google.common.collect.RegularImmutableMap.fromEntryArrayCheckingBucketOverflow(RegularImmutableMap.java:134)
+	at com.google.common.collect.RegularImmutableMap.fromEntryArray(RegularImmutableMap.java:97)
+	at com.google.common.collect.ImmutableMap$Builder.build(ImmutableMap.java:581)
+	at com.google.common.collect.ImmutableMap$Builder.buildOrThrow(ImmutableMap.java:609)
+	at java.base/java.util.stream.ReferencePipeline.collect(ReferencePipeline.java:727)
+	at io.trino.sql.planner.optimizations.AddExchanges$Rewriter.withCanonicalSort(AddExchanges.java:1041)
+	at io.trino.sql.planner.optimizations.AddExchanges$Rewriter.planPartitionedJoin(AddExchanges.java:1031)
+	at io.trino.sql.planner.optimizations.AddExchanges$Rewriter.planPartitionedJoin(AddExchanges.java:976)
+	at io.trino.sql.planner.optimizations.AddExchanges$Rewriter.visitJoin(AddExchanges.java:971)
+	at io.trino.sql.planner.optimizations.AddExchanges$Rewriter.visitJoin(AddExchanges.java:176)
+	at io.trino.sql.planner.plan.JoinNode.accept(JoinNode.java:357)
+	at io.trino.sql.planner.optimizations.AddExchanges$Rewriter.planChild(AddExchanges.java:1557)
+	at io.trino.sql.planner.optimizations.AddExchanges$Rewriter.visitOutput(AddExchanges.java:215)
+	at io.trino.sql.planner.optimizations.AddExchanges$Rewriter.visitOutput(AddExchanges.java:176)
+	at io.trino.sql.planner.plan.OutputNode.accept(OutputNode.java:83)
+	at io.trino.sql.planner.optimizations.AddExchanges.optimize(AddExchanges.java:170)
+	at io.trino.sql.planner.optimizations.StatsRecordingPlanOptimizer.optimize(StatsRecordingPlanOptimizer.java:41)
+	at io.trino.sql.planner.LogicalPlanner.runOptimizer(LogicalPlanner.java:317)
+	at io.trino.sql.planner.LogicalPlanner.plan(LogicalPlanner.java:281)
+	at io.trino.sql.planner.LogicalPlanner.plan(LogicalPlanner.java:253)
+	at io.trino.sql.planner.LogicalPlanner.plan(LogicalPlanner.java:248)
+	at io.trino.execution.SqlQueryExecution.doPlanQuery(SqlQueryExecution.java:503)
+	at io.trino.execution.SqlQueryExecution.planQuery(SqlQueryExecution.java:482)
+	at io.trino.execution.SqlQueryExecution.start(SqlQueryExecution.java:420)
+	at io.trino.execution.QueryManager.createQuery(QueryManager.java:333)
+	at io.trino.dispatcher.LocalDispatchQuery.startExecution(LocalDispatchQuery.java:151)
+	at io.trino.dispatcher.LocalDispatchQuery.lambda$waitForMinimumWorkers$1(LocalDispatchQuery.java:135)
+	at io.airlift.concurrent.MoreFutures.lambda$addSuccessCallback$0(MoreFutures.java:570)
+	at io.airlift.concurrent.MoreFutures$3.onSuccess(MoreFutures.java:545)
+	at com.google.common.util.concurrent.Futures$CallbackListener.run(Futures.java:1128)
+	at io.trino.$gen.Trino_testversion___Runnable.run(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base/java.lang.Thread.run(Thread.java:1474)
+
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Failures: 
+[ERROR]   TestMergeJoinOperator.testAuditV02ReplayAmplification:1249 [Linear replay IO for groups spanning three pages] 
+Expecting actual:
+  66.11045943304008
+to be less than or equal to:
+  4.0 
+[ERROR] Errors: 
+[ERROR]   TestMergeJoinAuditV02.testRepeatedJoinSymbol:55 » QueryFailed Multiple entries with same key: field::[integer]=ASC NULLS LAST and field::[integer]=ASC NULLS LAST
+[ERROR]   TestMergeJoinAuditV02.testStatisticsRoundTrip:39 » IllegalArgument Invalid JSON string for [simple type, class io.trino.operator.OperatorInfo]
+[INFO] 
+[ERROR] Tests run: 3, Failures: 1, Errors: 2, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  26.270 s
+[INFO] Finished at: 2026-11-08T13:06:49+03:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Njord session closed
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.6.1:test (default-test) on project trino-main: There are test failures.
+[ERROR] 
+[ERROR] See /home/ivan/opencode/trino/core/trino-main/target/surefire-reports for the individual test results.
+[ERROR] See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

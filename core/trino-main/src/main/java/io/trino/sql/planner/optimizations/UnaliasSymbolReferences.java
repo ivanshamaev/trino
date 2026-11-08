@@ -802,7 +802,7 @@ public class UnaliasSymbolReferences
             OrderingScheme newOrderingScheme = mapper.map(node.getOrderingScheme());
 
             return new PlanAndMappings(
-                    new SortNode(node.getId(), rewrittenSource.getRoot(), newOrderingScheme, node.isPartial(), node.isInputPagesPreSorted()),
+                    new SortNode(node.getId(), rewrittenSource.getRoot(), newOrderingScheme, node.isPartial(), node.isInputPagesPreSorted(), node.isBoundedSpill()),
                     mapping);
         }
 

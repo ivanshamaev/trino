@@ -37,6 +37,8 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -54,6 +56,8 @@ import static com.google.common.util.concurrent.Futures.immediateFuture;
 import static io.trino.spi.StandardErrorCode.GENERIC_INTERNAL_ERROR;
 import static io.trino.spiller.FileSingleStreamSpillerFactory.SPILL_FILE_PREFIX;
 import static io.trino.spiller.FileSingleStreamSpillerFactory.SPILL_FILE_SUFFIX;
+import static java.nio.file.StandardOpenOption.READ;
+import static java.nio.file.StandardOpenOption.WRITE;
 import static java.util.Objects.requireNonNull;
 
 @NotThreadSafe
@@ -85,6 +89,9 @@ public class FileSingleStreamSpiller
     private final AtomicLong spilledPagesInMemorySize = new AtomicLong();
     private ListenableFuture<DataSize> spillInProgress = immediateFuture(DataSize.ofBytes(0L));
     private InputStream replayInput;
+    private FileChannel replayIndex;
+    private final ByteBuffer indexWriteBuffer = ByteBuffer.allocate(Long.BYTES);
+    private final ByteBuffer indexReadBuffer = ByteBuffer.allocate(Long.BYTES);
 
     private final Runnable fileSystemErrorHandler;
 
@@ -141,6 +148,27 @@ public class FileSingleStreamSpiller
         checkNoSpillInProgress();
         spillInProgress = Futures.submit(() -> writePages(pageIterator), executor);
         return spillInProgress;
+    }
+
+    /**
+     * Opt in before writing the first page. An on-disk offset per page permits exact
+     * group replay without an index that grows in memory or reads from sparse checkpoints.
+     * Ordinary hash/sort spillers keep their existing file layout.
+     */
+    public void enableIndexedReplay()
+    {
+        checkNoSpillInProgress();
+        checkState(spilledPageCount == 0 && replayIndex == null, "Replay must be enabled before spilling");
+        checkState(spillFiles.size() == 1, "Indexed replay requires a single spill file");
+        try {
+            Path indexPath = Files.createTempFile(spillDirectory, SPILL_FILE_PREFIX + "-replay-index-", SPILL_FILE_SUFFIX);
+            closer.register(() -> Files.deleteIfExists(indexPath));
+            replayIndex = closer.register(FileChannel.open(indexPath, READ, WRITE));
+        }
+        catch (IOException e) {
+            fileSystemErrorHandler.run();
+            throw new TrinoException(GENERIC_INTERNAL_ERROR, "Failed to create spill replay index", e);
+        }
     }
 
     @Override
@@ -210,6 +238,10 @@ public class FileSingleStreamSpiller
         try {
             if (replayInput != null) {
                 replayInput.close();
+                replayInput = null;
+            }
+            if (pageIndex == pageCount) {
+                return ImmutableList.<Page>of().iterator();
             }
             InputStream input = spillFiles.get(0).newInputStream();
             replayInput = input;
@@ -330,8 +362,19 @@ public class FileSingleStreamSpiller
     }
 
     private synchronized void recordReplayCheckpoint(long serializedPageSize)
+            throws IOException
     {
-        if (spilledPageCount % replayCheckpointInterval == 0) {
+        if (replayIndex != null) {
+            indexWriteBuffer.clear();
+            indexWriteBuffer.putLong(spillFileOffset).flip();
+            long offset = (long) spilledPageCount * Long.BYTES;
+            while (indexWriteBuffer.hasRemaining()) {
+                offset += replayIndex.write(indexWriteBuffer, offset);
+            }
+            localSpillContext.updateBytes(Long.BYTES);
+            spillerStats.addToTotalSpilledBytes(Long.BYTES);
+        }
+        else if (spilledPageCount % replayCheckpointInterval == 0) {
             if (replayCheckpoints.size() == MAX_REPLAY_CHECKPOINTS) {
                 for (int i = replayCheckpoints.size() - 1; i > 0; i -= 2) {
                     replayCheckpoints.remove(i);
@@ -347,7 +390,20 @@ public class FileSingleStreamSpiller
     }
 
     private synchronized ReplayCheckpoint replayCheckpointFor(int pageIndex)
+            throws IOException
     {
+        if (replayIndex != null && pageIndex < completedSpilledPageCount) {
+            indexReadBuffer.clear();
+            long offset = (long) pageIndex * Long.BYTES;
+            while (indexReadBuffer.hasRemaining()) {
+                int bytes = replayIndex.read(indexReadBuffer, offset);
+                checkState(bytes > 0, "Missing replay index entry for page %s", pageIndex);
+                offset += bytes;
+            }
+            indexReadBuffer.flip();
+            spillerStats.addToTotalSpillReadBytes(Long.BYTES);
+            return new ReplayCheckpoint(pageIndex, indexReadBuffer.getLong());
+        }
         ReplayCheckpoint checkpoint = new ReplayCheckpoint(0, 0);
         for (ReplayCheckpoint candidate : replayCheckpoints) {
             if (candidate.pageIndex() > pageIndex) {
@@ -363,7 +419,7 @@ public class FileSingleStreamSpiller
     public Path createTemporaryFile()
     {
         try {
-            return Files.createTempFile(spillDirectory, "merge-join-matches", ".bin");
+            return Files.createTempFile(spillDirectory, SPILL_FILE_PREFIX + "-merge-join-matches-", SPILL_FILE_SUFFIX);
         }
         catch (IOException e) {
             fileSystemErrorHandler.run();

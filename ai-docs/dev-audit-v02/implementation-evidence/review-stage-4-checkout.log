@@ -1,0 +1,12 @@
+Warning: you are leaving 2 commits behind, not connected to
+any of your branches:
+
+  b94d66d5b11 Report verified Iceberg file ordering
+  556416d93b5 Add experimental partitioned sorted merge joins
+
+If you want to keep them by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> b94d66d5b11
+
+HEAD is now at a0a11bff2fa Report verified Iceberg file ordering

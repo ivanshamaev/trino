@@ -289,6 +289,7 @@ public class ExpressionRewriteRuleSet
         {
             Optional<Expression> filter = joinNode.getFilter().map(x -> rewriter.rewrite(x, context));
             if (!joinNode.getFilter().equals(filter)) {
+                // A residual-only rewrite preserves keys, distribution and input ordering.
                 return Result.ofPlanNode(new JoinNode(
                         joinNode.getId(),
                         joinNode.getType(),
@@ -301,7 +302,7 @@ public class ExpressionRewriteRuleSet
                         filter,
                         joinNode.getDistributionType(),
                         joinNode.isSpillable(),
-                        Optional.empty(),
+                        joinNode.getAlgorithm(),
                         joinNode.getDynamicFilters(),
                         joinNode.getReorderJoinStatsAndCost()));
             }

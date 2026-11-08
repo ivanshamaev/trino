@@ -1,0 +1,30 @@
+{
+  "build_rows_per_page": 8,
+  "build_pages_per_group": 3,
+  "probe_rows_per_group": 1,
+  "query_memory_limit_bytes": 16384,
+  "compression": "NONE",
+  "results": [
+    {
+      "pages": 768,
+      "replayed_pages": 1993,
+      "written_bytes": 74052,
+      "read_bytes": 455103,
+      "read_write_ratio": 6.14572192513369
+    },
+    {
+      "pages": 3072,
+      "replayed_pages": 8153,
+      "written_bytes": 302742,
+      "read_bytes": 5486382,
+      "read_write_ratio": 18.12230215827338
+    },
+    {
+      "pages": 12288,
+      "replayed_pages": 32735,
+      "written_bytes": 1215324,
+      "read_bytes": 80345628,
+      "read_write_ratio": 66.11045943304008
+    }
+  ]
+}

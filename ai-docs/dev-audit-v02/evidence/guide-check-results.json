@@ -1,0 +1,79 @@
+{
+  "date": "2026-11-08",
+  "head": "773afdee3bd26dc1a59eb0524a3445657fc1b0d7",
+  "base": "e112ffdf7304333b50bfdff50dda4229c897896d",
+  "environment": {
+    "JAVA_HOME": "/home/ivan/tools/smj-oracle-jdk25",
+    "MAVEN_OPTS": "-Xmx3g",
+    "JAVA_TOOL_OPTIONS": "-XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops"
+  },
+  "checks": [
+    {
+      "command": "./mvnw verify -DskipTests -Pci -pl core/trino-main,plugin/trino-iceberg,testing/trino-tests",
+      "exit_code": 0,
+      "log": "evidence/guide-ci-verify.log",
+      "modules": {
+        "trino-main": "SUCCESS",
+        "trino-iceberg": "SUCCESS",
+        "trino-tests": "SUCCESS"
+      },
+      "junit_tests": "SKIPPED",
+      "spotbugs": "SKIPPED",
+      "pmd": "SKIPPED"
+    },
+    {
+      "command": "./mvnw clean test-compile -Dair.check.skip-all=true -Perrorprone-compiler -pl core/trino-main,plugin/trino-iceberg,testing/trino-tests",
+      "exit_code": 1,
+      "log": "evidence/guide-errorprone.log",
+      "modules": {
+        "trino-main": "FAILURE at main compilation; test compilation not reached",
+        "trino-iceberg": "SKIPPED",
+        "trino-tests": "SKIPPED"
+      },
+      "compiler_reported_errors": 21,
+      "unique_source_error_diagnostics": 20
+    },
+    {
+      "command": "./mvnw clean test-compile -Dair.check.skip-all=true -Perrorprone-compiler -pl plugin/trino-iceberg,testing/trino-tests",
+      "exit_code": 1,
+      "log": "evidence/guide-errorprone-remaining-incomplete.log",
+      "note": "Initial independent attempt after failed core clean; incomplete core artifacts caused missing-class errors; not classified as SMJ source defects."
+    },
+    {
+      "command": "./mvnw package -DskipTests -Dair.check.skip-all=true -Dmaven.compiler.useIncrementalCompilation=false -pl core/trino-main",
+      "exit_code": 0,
+      "log": "evidence/guide-restore-core.log",
+      "purpose": "Restore complete normal core production and test artifacts without modifying sources."
+    },
+    {
+      "command": "./mvnw clean test-compile -Dair.check.skip-all=true -Perrorprone-compiler -pl plugin/trino-iceberg,testing/trino-tests",
+      "exit_code": 1,
+      "log": "evidence/guide-errorprone-remaining.log",
+      "modules": {
+        "trino-iceberg": "FAILURE at test compilation; main compilation succeeded",
+        "trino-tests": "SKIPPED"
+      },
+      "unique_source_error_diagnostics": 1
+    },
+    {
+      "command": "./mvnw clean test-compile -Dair.check.skip-all=true -Perrorprone-compiler -pl testing/trino-tests",
+      "exit_code": 0,
+      "log": "evidence/guide-errorprone-testing.log",
+      "main_compile": "SUCCESS",
+      "test_compile": "SUCCESS",
+      "warnings_present": true
+    },
+    {
+      "command": "python3 /tmp/smj-guide-check-commits.py origin/master..HEAD",
+      "exit_code": 1,
+      "log": "evidence/guide-commit-check.log",
+      "commit_count": 30,
+      "rejected_commit_count": 17,
+      "checker_provenance": "evidence/guide-policy-provenance.json"
+    }
+  ],
+  "total_unique_error_prone_source_error_diagnostics": 21,
+  "production_and_test_sources_modified_during_guide_audit": false,
+  "core_test_error_prone_compilation_verified": false,
+  "full_github_ci_verified": false
+}

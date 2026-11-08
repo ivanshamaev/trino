@@ -1,0 +1,11 @@
+-------------------------------------------------------------------------------
+Test set: io.trino.plugin.iceberg.TestMergeJoinDynamicFilterAuditV02
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 26.79 s <<< FAILURE! -- in io.trino.plugin.iceberg.TestMergeJoinDynamicFilterAuditV02
+io.trino.plugin.iceberg.TestMergeJoinDynamicFilterAuditV02.testRightMergeJoinCompletesDynamicFilter -- Time elapsed: 3.020 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 1
+ but was: 0
+	at io.trino.plugin.iceberg.TestMergeJoinDynamicFilterAuditV02.testRightMergeJoinCompletesDynamicFilter(TestMergeJoinDynamicFilterAuditV02.java:48)
+

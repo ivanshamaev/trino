@@ -25,12 +25,14 @@ import io.trino.operator.Operator;
 import io.trino.operator.OperatorContext;
 import io.trino.operator.OperatorFactory;
 import io.trino.operator.TaskContext;
+import io.trino.operator.WorkProcessor;
 import io.trino.operator.WorkProcessorOperatorAdapter;
 import io.trino.operator.join.JoinBridgeManager;
 import io.trino.operator.join.JoinFilterFunction;
 import io.trino.operator.join.NonCopyingPageList;
 import io.trino.operator.join.StandardJoinFilterFunction;
 import io.trino.spi.Page;
+import io.trino.spi.PageBuilder;
 import io.trino.spi.TrinoException;
 import io.trino.spi.block.LongArrayBlock;
 import io.trino.spi.block.RunLengthEncodedBlock;
@@ -52,6 +54,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -62,9 +66,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
+import static com.google.common.util.concurrent.Futures.immediateFuture;
 import static com.google.common.util.concurrent.MoreExecutors.listeningDecorator;
 import static io.trino.RowPagesBuilder.rowPagesBuilder;
 import static io.trino.execution.buffer.CompressionCodec.NONE;
@@ -738,8 +746,8 @@ public class TestMergeJoinOperator
                 driverContext,
                 rowPagesBuilder(BIGINT).row(7L).build(),
                 MaterializedResult.resultBuilder(BIGINT, BIGINT).row(7L, 7L).build());
-        MergeJoinOperatorFactory.MergeJoinStatistics statistics = (MergeJoinOperatorFactory.MergeJoinStatistics) driverContext.getOperatorContexts().get(0).getOperatorStats().getInfo();
-        assertThat(statistics.getMaxBuildGroupRows()).isEqualTo(2L * rowsPerPage);
+        MergeJoinOperatorInfo statistics = (MergeJoinOperatorInfo) driverContext.getOperatorContexts().get(0).getOperatorStats().getInfo();
+        assertThat(statistics.maxBuildGroupRows()).isEqualTo(2L * rowsPerPage);
     }
 
     @Test
@@ -789,8 +797,8 @@ public class TestMergeJoinOperator
             }
             assertThat(outputRows).isEqualTo(2L * rowsPerPage);
             assertThat(taskContext.getPeakMemoryReservation().toBytes()).isLessThanOrEqualTo(memoryLimit);
-            MergeJoinOperatorFactory.MergeJoinStatistics statistics = (MergeJoinOperatorFactory.MergeJoinStatistics) probeDriver.getOperatorContexts().get(0).getOperatorStats().getInfo();
-            assertThat(statistics.getMaxBuildGroupRows()).isEqualTo(outputRows);
+            MergeJoinOperatorInfo statistics = (MergeJoinOperatorInfo) probeDriver.getOperatorContexts().get(0).getOperatorStats().getInfo();
+            assertThat(statistics.maxBuildGroupRows()).isEqualTo(outputRows);
         }
         finally {
             probe.close();
@@ -1024,7 +1032,8 @@ public class TestMergeJoinOperator
                 ImmutableList.of(largeBuildPage, largeBuildPage),
                 probePages.build(),
                 MaterializedResult.resultBuilder(BIGINT, BIGINT).build(),
-                Optional.of(filterFactory));
+                Optional.of(filterFactory),
+                20 * 1024);
     }
 
     @Test
@@ -1156,9 +1165,15 @@ public class TestMergeJoinOperator
     private SpillIo assertSpilledJoin(Path spillPath, JoinType joinType, List<Page> pages, List<Page> probePages, MaterializedResult expected, Optional<JoinFilterFunctionFactory> filterFactory)
             throws Exception
     {
-        assertThat(pages.stream().mapToLong(Page::getRetainedSizeInBytes).sum()).isGreaterThan(16 * 1024);
+        return assertSpilledJoin(spillPath, joinType, pages, probePages, expected, filterFactory, 16 * 1024);
+    }
+
+    private SpillIo assertSpilledJoin(Path spillPath, JoinType joinType, List<Page> pages, List<Page> probePages, MaterializedResult expected, Optional<JoinFilterFunctionFactory> filterFactory, long memoryLimit)
+            throws Exception
+    {
+        assertThat(pages.stream().mapToLong(Page::getRetainedSizeInBytes).sum()).isGreaterThan(memoryLimit);
         TaskContext taskContext = TestingTaskContext.builder(executor, scheduledExecutor, SessionTestUtils.TEST_SESSION)
-                .setQueryMaxMemory(DataSize.ofBytes(16 * 1024))
+                .setQueryMaxMemory(DataSize.ofBytes(memoryLimit))
                 .build();
         DriverContext buildDriver = taskContext.addPipelineContext(0, true, true, false).addDriverContext();
         OperatorContext context = buildDriver.addOperatorContext(0, NODE_ID, "MergeJoinBufferOperator");
@@ -1215,6 +1230,216 @@ public class TestMergeJoinOperator
             singleStreamSpillerFactory.destroy();
             spillExecutor.shutdownNow();
         }
+    }
+
+    @Test
+    public void testLinearReplayForSmallGroups(@TempDir Path spillPath)
+            throws Exception
+    {
+        for (int pagesPerGroup : List.of(2, 3, 4)) {
+            for (int pageCount : List.of(768, 3072, 12288)) {
+                List<Page> pages = new ArrayList<>();
+                RowPagesBuilder probe = rowPagesBuilder(BIGINT);
+                MaterializedResult.Builder expected = MaterializedResult.resultBuilder(BIGINT, BIGINT);
+                for (int page = 0; page < pageCount; page++) {
+                    long key = page / pagesPerGroup;
+                    pages.add(repeatedPage(key, 8));
+                    if (page % pagesPerGroup == 0) {
+                        probe.row(key);
+                    }
+                    for (int position = 0; position < 8; position++) {
+                        expected.row(key, key);
+                    }
+                }
+                SpillIo io = assertSpilledJoin(spillPath, JoinType.INNER, pages, probe.build(), expected.build(), Optional.empty());
+                double ratio = (double) io.readBytes() / io.writtenBytes();
+                System.out.printf(
+                        "SMJ replay groupPages=%s pages=%s replayedPages=%s writtenBytes=%s readBytes=%s readWriteRatio=%.4f%n",
+                        pagesPerGroup,
+                        pageCount,
+                        io.replayedPages(),
+                        io.writtenBytes(),
+                        io.readBytes(),
+                        ratio);
+                assertThat(ratio).as("Replay IO for %s pages in %s-page groups", pageCount, pagesPerGroup).isLessThanOrEqualTo(4);
+            }
+        }
+    }
+
+    @Test
+    public void testOutputMemoryAccounting()
+            throws Exception
+    {
+        TaskContext task = TestingTaskContext.builder(executor, scheduledExecutor, SessionTestUtils.TEST_SESSION)
+                .setQueryMaxMemory(DataSize.ofBytes(16 * 1024))
+                .build();
+        DriverContext buildDriver = task.addPipelineContext(0, true, true, false).addDriverContext();
+        MergeJoinBridge bridge = new MergeJoinBridge(ImmutableList.of(BIGINT), ImmutableList.of(0), ImmutableList.of());
+        var buffer = new MergeJoinBufferOperatorFactory.MergeJoinBufferOperator(
+                buildDriver.addOperatorContext(0, NODE_ID, "build"),
+                bridge,
+                ImmutableList.of(BIGINT),
+                SessionTestUtils.TEST_SESSION.toConnectorSession(),
+                Optional.empty());
+        buffer.addInput(new Page(RunLengthEncodedBlock.create(BIGINT, 7L, 20_000)));
+        buffer.finish();
+        var retainedBuilder = new AtomicReference<PageBuilder>();
+        var peakBuilderBytes = new AtomicLong();
+        var observedReservation = new AtomicLong();
+        JoinFilterFunctionFactory filter = (_, _, _) -> (_, _, _) -> {
+            long bytes = retainedBuilder.get().getRetainedSizeInBytes();
+            if (bytes > peakBuilderBytes.get()) {
+                peakBuilderBytes.set(bytes);
+                observedReservation.set(task.aggregateUserMemoryContext().getBytes());
+            }
+            return true;
+        };
+        var manager = new JoinBridgeManager<>(false, bridge, ImmutableList.of(BIGINT));
+        var factory = probeFactory(manager, Optional.of(filter));
+        DriverContext probeDriver = task.addPipelineContext(1, true, true, false).addDriverContext();
+        var operator = factory.create(probeDriver.addOperatorContext(0, NODE_ID, "probe"), WorkProcessor.of(repeatedPage(7, 1)));
+        var field = operator.getClass().getDeclaredField("transformation");
+        field.setAccessible(true);
+        Object transformation = field.get(operator);
+        var builderField = transformation.getClass().getDeclaredField("pageBuilder");
+        builderField.setAccessible(true);
+        retainedBuilder.set((PageBuilder) builderField.get(transformation));
+        try {
+            long outputRows = 0;
+            for (int iteration = 0; !operator.getOutputPages().isFinished(); iteration++) {
+                assertThat(iteration).as("output makes progress").isLessThan(10_000);
+                if (operator.getOutputPages().process() && !operator.getOutputPages().isFinished()) {
+                    outputRows += operator.getOutputPages().getResult().getPositionCount();
+                }
+            }
+            assertThat(outputRows).isEqualTo(20_000);
+            System.out.println("SMJ outputBuilderRetainedBytes=" + peakBuilderBytes.get()
+                    + " taskUserReservationBytes=" + observedReservation.get() + " queryLimitBytes=16384");
+            assertThat(observedReservation.get()).isGreaterThanOrEqualTo(peakBuilderBytes.get());
+        }
+        finally {
+            operator.close();
+            factory.close();
+            buffer.close();
+            bridge.destroy();
+        }
+    }
+
+    @ParameterizedTest
+    @EnumSource(JoinType.class)
+    public void testYieldDuringRejectedGroup(JoinType joinType)
+            throws Exception
+    {
+        MergeJoinBridge bridge = new MergeJoinBridge(ImmutableList.of(BIGINT), ImmutableList.of(0), ImmutableList.of());
+        bridge.addPage(repeatedPage(7, 200_000));
+        bridge.finish();
+        var filterCalls = new AtomicInteger();
+        JoinFilterFunctionFactory filter = (_, _, _) -> (_, _, _) -> {
+            if (filterCalls.incrementAndGet() == 1024) {
+                driverContext.getYieldSignal().forceYieldForTesting();
+            }
+            return false;
+        };
+        var manager = new JoinBridgeManager<>(false, bridge, ImmutableList.of(BIGINT));
+        var factory = probeFactory(manager, Optional.of(filter), joinType);
+        var operator = factory.create(driverContext.addOperatorContext(0, NODE_ID, "probe"), WorkProcessor.of(repeatedPage(7, 1)));
+        driverContext.getYieldSignal().forceYieldForTesting();
+        try {
+            operator.getOutputPages().process();
+            assertThat(filterCalls.get()).isZero();
+            driverContext.getYieldSignal().resetYieldForTesting();
+            assertThat(operator.getOutputPages().process()).isFalse();
+            assertThat(filterCalls.get()).isEqualTo(1024);
+            driverContext.getYieldSignal().resetYieldForTesting();
+            long outputRows = 0;
+            while (!operator.getOutputPages().isFinished()) {
+                if (operator.getOutputPages().process() && !operator.getOutputPages().isFinished()) {
+                    outputRows += operator.getOutputPages().getResult().getPositionCount();
+                }
+            }
+            assertThat(filterCalls.get()).isEqualTo(200_000);
+            long unmatchedBuildRows = (joinType == JoinType.RIGHT || joinType == JoinType.FULL) ? 200_000 : 0;
+            long unmatchedProbeRows = (joinType == JoinType.LEFT || joinType == JoinType.FULL) ? 1 : 0;
+            assertThat(outputRows).isEqualTo(unmatchedBuildRows + unmatchedProbeRows);
+        }
+        finally {
+            operator.close();
+            factory.close();
+            driverContext.getYieldSignal().resetYieldForTesting();
+        }
+    }
+
+    @Test
+    public void testBuildScanYieldsAndResumes()
+            throws Exception
+    {
+        long[] keys = new long[200_000];
+        Arrays.setAll(keys, position -> position);
+        MergeJoinBridge bridge = new MergeJoinBridge(ImmutableList.of(BIGINT), ImmutableList.of(0), ImmutableList.of());
+        bridge.addPage(new Page(new LongArrayBlock(keys.length, Optional.empty(), keys)));
+        bridge.finish();
+        var factory = probeFactory(new JoinBridgeManager<>(false, bridge, ImmutableList.of(BIGINT)), Optional.empty());
+        var operator = factory.create(driverContext.addOperatorContext(0, NODE_ID, "probe"), WorkProcessor.of(repeatedPage(200_001, 1)));
+        try {
+            assertThat(operator.getOutputPages().process()).isFalse();
+            while (!operator.getOutputPages().isFinished()) {
+                if (operator.getOutputPages().process()) {
+                    assertThat(operator.getOutputPages().isFinished()).isTrue();
+                }
+            }
+        }
+        finally {
+            operator.close();
+            factory.close();
+        }
+    }
+
+    @Test
+    public void testGroupDiscoveryYieldsAndCanBeCancelled()
+            throws Exception
+    {
+        MergeJoinBridge bridge = new MergeJoinBridge(ImmutableList.of(BIGINT), ImmutableList.of(0), ImmutableList.of());
+        for (int page = 0; page < 40_000; page++) {
+            bridge.addPage(repeatedPage(7, 8));
+        }
+        bridge.finish();
+        var factory = probeFactory(new JoinBridgeManager<>(false, bridge, ImmutableList.of(BIGINT)), Optional.empty());
+        var operator = factory.create(driverContext.addOperatorContext(0, NODE_ID, "probe"), WorkProcessor.of(repeatedPage(7, 1)));
+        try {
+            assertThat(operator.getOutputPages().process()).isFalse();
+            driverContext.getYieldSignal().forceYieldForTesting();
+            assertThat(operator.getOutputPages().process()).isFalse();
+        }
+        finally {
+            operator.close();
+            factory.close();
+            driverContext.getYieldSignal().resetYieldForTesting();
+        }
+        assertThat(driverContext.getPipelineContext().getTaskContext().aggregateUserMemoryContext().getBytes()).isZero();
+    }
+
+    private MergeJoinOperatorFactory probeFactory(JoinBridgeManager<MergeJoinBridge> manager, Optional<JoinFilterFunctionFactory> filter)
+    {
+        return probeFactory(manager, filter, JoinType.INNER);
+    }
+
+    private MergeJoinOperatorFactory probeFactory(JoinBridgeManager<MergeJoinBridge> manager, Optional<JoinFilterFunctionFactory> filter, JoinType joinType)
+    {
+        return new MergeJoinOperatorFactory(
+                0,
+                NODE_ID,
+                manager,
+                joinType,
+                false,
+                ImmutableList.of(BIGINT),
+                ImmutableList.of(BIGINT),
+                ImmutableList.of(0),
+                ImmutableList.of(0),
+                ImmutableList.of(0),
+                ImmutableList.of(0),
+                filter,
+                SessionTestUtils.TEST_SESSION.toConnectorSession(),
+                blockTypeOperators);
     }
 
     private record SpillIo(long replayedPages, long writtenBytes, long readBytes) {}
@@ -1305,14 +1530,14 @@ public class TestMergeJoinOperator
     public void testOuterJoinDoesNotAllocateGlobalBuildIndex()
     {
         MergeJoinBridge bridge = new MergeJoinBridge(ImmutableList.of(BIGINT), ImmutableList.of(0), ImmutableList.of());
-        bridge.addPage(rowPagesBuilder(BIGINT).row(1L).build().get(0));
+        bridge.addPage(repeatedPage(1, 10_000));
         bridge.finish();
         JoinBridgeManager<MergeJoinBridge> bridgeManager = new JoinBridgeManager<>(false, bridge, ImmutableList.of(BIGINT));
         DriverContext smallMemoryDriver = createTaskContext(
                 executor,
                 scheduledExecutor,
                 SessionTestUtils.TEST_SESSION,
-                DataSize.ofBytes(1))
+                DataSize.ofBytes(2048))
                 .addPipelineContext(0, true, true, false)
                 .addDriverContext();
         MergeJoinOperatorFactory probeFactory = new MergeJoinOperatorFactory(
@@ -1332,25 +1557,25 @@ public class TestMergeJoinOperator
                 blockTypeOperators);
 
         OperatorFactory adapterFactory = WorkProcessorOperatorAdapter.createAdapterOperatorFactory(probeFactory);
-        assertOperatorEquals(
-                adapterFactory,
-                smallMemoryDriver,
-                ImmutableList.of(),
-                MaterializedResult.resultBuilder(BIGINT, BIGINT).row(null, 1L).build());
+        MaterializedResult.Builder expected = MaterializedResult.resultBuilder(BIGINT, BIGINT);
+        for (int row = 0; row < 10_000; row++) {
+            expected.row(null, 1L);
+        }
+        assertOperatorEquals(adapterFactory, smallMemoryDriver, ImmutableList.of(), expected.build());
     }
 
     @Test
     public void testOuterJoinGroupIndexRespectsMemoryLimit()
     {
         MergeJoinBridge bridge = new MergeJoinBridge(ImmutableList.of(BIGINT), ImmutableList.of(0), ImmutableList.of());
-        bridge.addPage(rowPagesBuilder(BIGINT).row(1L).row(1L).build().get(0));
+        bridge.addPage(repeatedPage(1, 16_384));
         bridge.finish();
         JoinBridgeManager<MergeJoinBridge> bridgeManager = new JoinBridgeManager<>(false, bridge, ImmutableList.of(BIGINT));
         DriverContext smallMemoryDriver = createTaskContext(
                 executor,
                 scheduledExecutor,
                 SessionTestUtils.TEST_SESSION,
-                DataSize.ofBytes(1))
+                DataSize.ofBytes(2048))
                 .addPipelineContext(0, true, true, false)
                 .addDriverContext();
         JoinFilterFunctionFactory acceptAll = (_, addresses, pages) -> new StandardJoinFilterFunction(
@@ -1386,8 +1611,10 @@ public class TestMergeJoinOperator
     @Test
     public void testResidualFilterOnlyIndexesCurrentGroup()
     {
+        // Borrowed pages isolate probe-state memory here. The spill tests separately
+        // account production build buffers, replay pages and spiller reservations.
         RowPagesBuilder build = rowPagesBuilder(BIGINT, BIGINT);
-        for (long key = 0; key < 100; key++) {
+        for (long key = 0; key < 10_000; key++) {
             build.row(key, key);
         }
         MergeJoinBridge bridge = new MergeJoinBridge(ImmutableList.of(BIGINT, BIGINT), ImmutableList.of(0), ImmutableList.of());
@@ -1398,7 +1625,7 @@ public class TestMergeJoinOperator
                 executor,
                 scheduledExecutor,
                 SessionTestUtils.TEST_SESSION,
-                DataSize.ofBytes(16))
+                DataSize.ofBytes(2048))
                 .addPipelineContext(0, true, true, false)
                 .addDriverContext();
         MergeJoinOperatorFactory probeFactory = new MergeJoinOperatorFactory(
@@ -1421,8 +1648,8 @@ public class TestMergeJoinOperator
         assertOperatorEquals(
                 adapterFactory,
                 smallMemoryDriver,
-                rowPagesBuilder(BIGINT, BIGINT).row(99L, 100L).build(),
-                MaterializedResult.resultBuilder(BIGINT, BIGINT, BIGINT, BIGINT).row(99L, 100L, 99L, 99L).build());
+                rowPagesBuilder(BIGINT, BIGINT).row(9999L, 100L).build(),
+                MaterializedResult.resultBuilder(BIGINT, BIGINT, BIGINT, BIGINT).row(9999L, 100L, 9999L, 9999L).build());
     }
 
     private static class ImmediateSpiller
@@ -1436,7 +1663,7 @@ public class TestMergeJoinOperator
             List<Page> run = new ArrayList<>();
             pages.forEachRemaining(run::add);
             runs.add(run);
-            return com.google.common.util.concurrent.Futures.immediateFuture(DataSize.ofBytes(0));
+            return immediateFuture(DataSize.ofBytes(0));
         }
 
         @Override
@@ -1934,10 +2161,10 @@ public class TestMergeJoinOperator
 
         OperatorFactory adapterFactory = WorkProcessorOperatorAdapter.createAdapterOperatorFactory(probeFactory);
         assertOperatorEquals(adapterFactory, operatorDriverContext, probePages, expected);
-        MergeJoinOperatorFactory.MergeJoinStatistics statistics = (MergeJoinOperatorFactory.MergeJoinStatistics) operatorDriverContext.getOperatorContexts().get(0).getOperatorStats().getInfo();
-        assertThat(statistics.getProbeRows()).isEqualTo(probePages.stream().mapToInt(Page::getPositionCount).sum());
-        assertThat(statistics.getBuildRows()).isEqualTo(buildPages.stream().mapToInt(Page::getPositionCount).sum());
-        assertThat(statistics.getOutputRows()).isEqualTo(expected.getRowCount());
+        MergeJoinOperatorInfo statistics = (MergeJoinOperatorInfo) operatorDriverContext.getOperatorContexts().get(0).getOperatorStats().getInfo();
+        assertThat(statistics.probeRows()).isEqualTo(probePages.stream().mapToInt(Page::getPositionCount).sum());
+        assertThat(statistics.buildRows()).isEqualTo(buildPages.stream().mapToInt(Page::getPositionCount).sum());
+        assertThat(statistics.outputRows()).isEqualTo(expected.getRowCount());
         assertThat(bridge.getPages()).isEmpty();
     }
 

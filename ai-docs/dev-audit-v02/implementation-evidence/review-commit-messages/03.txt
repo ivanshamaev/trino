@@ -1,0 +1,8 @@
+Add experimental partitioned sorted merge joins
+
+Support four equi-join types with bounded spill-backed group replay.
+Preserve scheduler yield, output reservations and operator statistics.
+Keep automatic selection a local, default-off resource heuristic.
+
+
+

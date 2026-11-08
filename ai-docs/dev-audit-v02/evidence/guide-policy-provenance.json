@@ -1,0 +1,7 @@
+{
+  ".github/CONTRIBUTING.md": "abd0689879d454d84ab6d22e0c5870ccc38f1d930b0e3e2bc7be31f6bef0a691",
+  ".github/DEVELOPMENT.md": "2f2ff2c59aef2efe97db3ef5b69650016721dd80393f0ece94bed397a40346a6",
+  ".github/pull_request_template.md": "5496ff56b66cd7ef9ee8777e5c733d0bf16ac36584f986d6c45ebd64e04c1e73",
+  "checker_source": "https://raw.githubusercontent.com/airlift/github-actions/1652e24519f5c7cec59d841070bf9beffadabdf9/check-commit-messages/check.py",
+  "checker_sha256": "0b735a9f8b10ab9f3b929354ffd105bc70f9d8c854ee316545aa499fbe93cb99"
+}

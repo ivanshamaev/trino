@@ -1,0 +1,7 @@
+Commit descriptions should wrap at 72 characters; this check fails ordinary text over 79 characters.
+Long URLs, trailers, quoted text, code blocks, and long unwrappable tokens are allowed.
+
+55dd98e3a3ea Bump the web-ui-dependencies group
+  line 3: 100 characters
+  Bumps the web-ui-dependencies group in /core/trino-web-ui/src/main/resources/webapp with 19 updates:
+

@@ -159,6 +159,14 @@ implementation is used:
 * - `iceberg.projection-pushdown-enabled`
   - Enable [projection pushdown](/optimizer/pushdown)
   - `true`
+* - `iceberg.report-sortedness`
+  - Report verified identity prefixes of the table sort order to the optimizer.
+    Every relevant file must carry the current table sort order ID. Missing,
+    unknown, or mixed IDs disable the hint. This describes file ordering, not
+    task-wide ordering. The equivalent catalog session property is
+    `report_sortedness`. It is independent of merge join selection and also
+    applies when `prefer_merge_join=OFF`. See [](/optimizer/merge-join).
+  - `true`
 * - `iceberg.hive-catalog-name`
   - Catalog to redirect to when a Hive table is referenced.
   -

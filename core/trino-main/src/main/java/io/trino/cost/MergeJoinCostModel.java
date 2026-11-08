@@ -70,7 +70,10 @@ public final class MergeJoinCostModel
         // be divided between these local partitions.
         double unspillFraction = max(1.0 / tasks / hashPartitions, 1.0 / max(1, build.distinctKeys()));
         double unspillMemory = (2 * build.bytes() + HASH_ROW_OVERHEAD * build.rows()) * unspillFraction;
-        double hashPeak = hashSpills ? max(min(hashMemory, memoryPerTask), unspillMemory) : hashMemory;
+        double hashPeak = hashMemory;
+        if (hashSpills) {
+            hashPeak = max(min(hashMemory, memoryPerTask), unspillMemory);
+        }
         PlanCostEstimate hash = new PlanCostEstimate(hashCpu, hashPeak * tasks, hashPeak * tasks, network);
         if ((!hashSpillable && hashMemory > memoryLimit) || (hashSpills && unspillMemory > memoryLimit)) {
             hash = PlanCostEstimate.infinite();
@@ -86,7 +89,10 @@ public final class MergeJoinCostModel
         double probeGroupBytes = probe.bytes() / max(1, min(probe.distinctKeys(), build.distinctKeys()));
         double replayPasses = max(1, ceil(probeGroupBytes / min(MAX_PROBE_BLOCK_BYTES, memoryPerTask / 4)));
         if (buildBytes > memoryPerTask / 4) {
-            mergeCpu += (2 + replayPasses) * build.bytes();
+            // Indexed replay adds one eight-byte disk offset per build page. No
+            // seek scans grow with the total file length; passes depend on chunks.
+            double indexedBuildBytes = build.bytes() + ceil(build.rows() / PAGE_ROWS) * Long.BYTES;
+            mergeCpu += (2 + replayPasses) * indexedBuildBytes;
         }
         double mergeMemory = min(memoryPerTask, probeBytes + buildBytes + min(MAX_PROBE_BLOCK_BYTES, probeBytes));
         PlanCostEstimate merge = new PlanCostEstimate(mergeCpu, mergeMemory * tasks, mergeMemory * tasks, network);

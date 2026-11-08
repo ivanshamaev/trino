@@ -21,16 +21,26 @@ import io.trino.filesystem.Location;
 import io.trino.filesystem.TrinoFileSystem;
 import io.trino.metadata.Metadata;
 import io.trino.metadata.QualifiedObjectName;
+import io.trino.operator.join.merge.MergeJoinOperatorInfo;
 import io.trino.plugin.base.metrics.LongCount;
 import io.trino.spi.connector.ColumnHandle;
 import io.trino.spi.connector.LocalProperty;
 import io.trino.testing.AbstractTestQueryFramework;
+import io.trino.testing.QueryFailedException;
 import io.trino.testing.QueryRunner;
 import io.trino.testing.sql.TestTable;
 import io.trino.tpch.TpchTable;
+import org.apache.avro.generic.IndexedRecord;
+import org.apache.iceberg.DataFile;
+import org.apache.iceberg.DataFiles;
 import org.apache.iceberg.FileFormat;
+import org.apache.iceberg.Table;
+import org.apache.iceberg.expressions.Expressions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -174,7 +184,7 @@ public class TestIcebergSortedWriting
                                 elapsed.add(nanos);
                             }
                         }
-                        catch (io.trino.testing.QueryFailedException e) {
+                        catch (QueryFailedException e) {
                             if (!strategy.equals("OFF") || !scenario.equals("full") || !e.getMessage().contains("memory limit")) {
                                 throw e;
                             }
@@ -275,6 +285,13 @@ public class TestIcebergSortedWriting
                             .contains("MergeSortedPages");
                     var operators = getDistributedQueryRunner().getCoordinator().getQueryManager()
                             .getFullQueryInfo(result.queryId()).getQueryStats().getOperatorSummaries();
+                    assertThat(operators.stream().map(operator -> operator.getInfo())
+                            .filter(MergeJoinOperatorInfo.class::isInstance).map(MergeJoinOperatorInfo.class::cast).toList())
+                            .isNotEmpty().allSatisfy(info -> {
+                                assertThat(info.isFinal()).isTrue();
+                                assertThat(info.buildRows()).isGreaterThan(0);
+                                assertThat(info.outputRows()).isGreaterThan(0);
+                            });
                     long mergedRows = operators.stream()
                             .map(operator -> operator.getMetrics().getMetrics().get("Merged pre-sorted input rows"))
                             .filter(metric -> nonNull(metric))
@@ -286,6 +303,165 @@ public class TestIcebergSortedWriting
                     assertThat(mergedRows).isGreaterThan(0);
                     assertThat(fallbackRows).isZero();
                 }
+            }
+        }
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(ints = {0, 1, 999})
+    public void testFileSortOrderCompatibility(Integer sortOrderId)
+            throws Exception
+    {
+        try (TestTable table = new TestTable(getQueryRunner()::execute, "file_sort_order", "(k BIGINT) WITH (sorted_by = ARRAY['k'])")) {
+            assertUpdate("INSERT INTO " + table.getName() + " VALUES 3, 1", 2);
+            assertUpdate("INSERT INTO " + table.getName() + " VALUES 2", 1);
+            Table icebergTable = loadIcebergTable(table.getName());
+            DataFile original;
+            try (var files = icebergTable.newScan().planFiles()) {
+                original = files.iterator().next().file().copy();
+            }
+            DataFile replacement = withFileSortOrder(icebergTable, original, sortOrderId);
+            icebergTable.newOverwrite().deleteFile(original).addFile(replacement).commit();
+            try (var files = icebergTable.newScan().planFiles()) {
+                assertThat(ImmutableList.copyOf(files)).anySatisfy(task -> assertThat(task.file().sortOrderId()).isEqualTo(sortOrderId));
+            }
+            inTransaction(session -> {
+                Metadata metadata = getQueryRunner().getPlannerContext().getMetadata();
+                assertThat(getLocalProperties(metadata, session, table.getName()).isEmpty()).isEqualTo(sortOrderId == null || sortOrderId != icebergTable.sortOrder().orderId());
+            });
+            assertOffQueries(table.getName(), "VALUES 1, 2, 3", "VALUES (1, 1), (2, 2), (3, 3)", "VALUES (6, 3)");
+        }
+    }
+
+    @Test
+    public void testSortOrderEvolutionAndDeletes()
+            throws Exception
+    {
+        try (TestTable table = new TestTable(getQueryRunner()::execute, "sort_order_evolution", "(k BIGINT) WITH (sorted_by = ARRAY['k'])")) {
+            assertUpdate("INSERT INTO " + table.getName() + " VALUES 1, 2", 2);
+            Table icebergTable = loadIcebergTable(table.getName());
+            icebergTable.replaceSortOrder().desc("k").commit();
+            assertUpdate("INSERT INTO " + table.getName() + " VALUES 3", 1);
+            inTransaction(session -> assertThat(getLocalProperties(getQueryRunner().getPlannerContext().getMetadata(), session, table.getName())).isEmpty());
+            assertOffQueries(table.getName(), "VALUES 1, 2, 3", "VALUES (1, 1), (2, 2), (3, 3)", "VALUES (6, 3)");
+            assertUpdate("DELETE FROM " + table.getName() + " WHERE k = 2", 1);
+            assertOffQueries(table.getName(), "VALUES 1, 3", "VALUES (1, 1), (3, 2)", "VALUES (4, 2)");
+        }
+    }
+
+    @Test
+    public void testIdentitySortPrefix()
+            throws Exception
+    {
+        try (TestTable table = new TestTable(getQueryRunner()::execute, "sort_transform_prefix", "(k BIGINT, v BIGINT) WITH (sorted_by = ARRAY['k'])")) {
+            assertUpdate("INSERT INTO " + table.getName() + " VALUES (1, 3), (2, 1), (3, 2)", 3);
+            Table icebergTable = loadIcebergTable(table.getName());
+            icebergTable.replaceSortOrder().asc(Expressions.bucket("v", 2)).asc("k").commit();
+            inTransaction(session -> assertThat(getLocalProperties(getQueryRunner().getPlannerContext().getMetadata(), session, table.getName())).isEmpty());
+            icebergTable.replaceSortOrder().asc("k").asc(Expressions.bucket("v", 2)).commit();
+            // Unique k values mean the existing rows also obey the new secondary sort term.
+            try (var files = icebergTable.newScan().planFiles()) {
+                var overwrite = icebergTable.newOverwrite();
+                for (var file : files) {
+                    overwrite.deleteFile(file.file()).addFile(withFileSortOrder(icebergTable, file.file(), icebergTable.sortOrder().orderId()));
+                }
+                overwrite.commit();
+            }
+            inTransaction(session -> assertThat(getLocalProperties(getQueryRunner().getPlannerContext().getMetadata(), session, table.getName())).hasSize(1));
+            assertOffQueries(table.getName(), "VALUES 1, 2, 3", "VALUES (1, 1), (2, 2), (3, 3)", "VALUES (6, 3)");
+        }
+    }
+
+    private Table loadIcebergTable(String table)
+    {
+        return IcebergTestUtils.loadTable(
+                table,
+                IcebergTestUtils.getHiveMetastore(getQueryRunner()),
+                IcebergTestUtils.getFileSystemFactory(getQueryRunner()),
+                getSession().getCatalog().orElseThrow(),
+                getSession().getSchema().orElseThrow());
+    }
+
+    private static DataFile withFileSortOrder(Table table, DataFile file, Integer sortOrderId)
+    {
+        // Rebuild the full record: planFiles can return a projected Avro record.
+        DataFiles.Builder builder = DataFiles.builder(table.specs().get(file.specId())).copy(file);
+        if (sortOrderId != null) {
+            return builder.withSortOrderId(sortOrderId).build();
+        }
+        DataFile result = builder.build();
+        IndexedRecord record = (IndexedRecord) result;
+        record.put(record.getSchema().getField(DataFile.SORT_ORDER_ID.name()).pos(), sortOrderId);
+        return result;
+    }
+
+    private void assertOffQueries(String table, String expectedRows, String expectedWindow, String expectedAggregation)
+    {
+        Session off = Session.builder(getSession()).setSystemProperty(PREFER_MERGE_JOIN, "OFF").build();
+        assertQuery(off, "SELECT k FROM " + table, expectedRows);
+        assertQuery(off, "SELECT k FROM " + table + " ORDER BY k LIMIT 2", expectedRows + " ORDER BY 1 LIMIT 2");
+        assertQuery(off, "SELECT k, row_number() OVER (ORDER BY k) FROM " + table, expectedWindow);
+        assertQuery(off, "SELECT sum(k), count(DISTINCT k) FROM " + table, expectedAggregation);
+    }
+
+    @Test
+    public void testMergeJoinAcrossFileSplits()
+            throws Exception
+    {
+        try (TestTable table = new TestTable(
+                getQueryRunner()::execute,
+                "sorted_split_join",
+                "(k BIGINT, v VARCHAR) WITH (sorted_by = ARRAY['k'], parquet_writer_row_group_size = '1kB')")) {
+            assertUpdate("INSERT INTO " + table.getName() + " SELECT k, rpad(CAST(k AS VARCHAR), 128, 'x') FROM UNNEST(sequence(1, 10000)) t(k)", 10000);
+            Table icebergTable = loadIcebergTable(table.getName());
+            long fileCount = 0;
+            long splitCount = 0;
+            try (var files = icebergTable.newScan().planFiles()) {
+                for (var file : files) {
+                    fileCount++;
+                    for (var split : file.split(1024)) {
+                        assertThat(split.length()).isPositive();
+                        splitCount++;
+                    }
+                }
+            }
+            assertThat(splitCount).isGreaterThan(fileCount);
+            Session base = Session.builder(getSession())
+                    .setCatalogSessionProperty(getSession().getCatalog().orElseThrow(), "max_split_size", "1kB")
+                    .setSystemProperty(JOIN_DISTRIBUTION_TYPE, "PARTITIONED")
+                    .setSystemProperty(JOIN_REORDERING_STRATEGY, "NONE").build();
+            for (String join : List.of("JOIN", "LEFT JOIN", "RIGHT JOIN", "FULL JOIN")) {
+                String query = "SELECT count(*), checksum(l.v), checksum(r.v) FROM (SELECT * FROM %1$s WHERE k %% 3 <> 0) l %2$s (SELECT * FROM %1$s WHERE k %% 5 <> 0) r ON l.k = r.k".formatted(table.getName(), join);
+                Session hash = Session.builder(base).setSystemProperty(PREFER_MERGE_JOIN, "OFF").build();
+                Session merge = Session.builder(base).setSystemProperty(PREFER_MERGE_JOIN, "FORCE").build();
+                assertThat((String) computeActual(merge, "EXPLAIN " + query).getOnlyValue()).contains("Algorithm: MERGE");
+                assertEqualsIgnoreOrder(computeActual(merge, query).getMaterializedRows(), computeActual(hash, query).getMaterializedRows());
+            }
+        }
+    }
+
+    @Test
+    public void testRightMergeJoinCompletesDynamicFilter()
+    {
+        try (TestTable table = new TestTable(getQueryRunner()::execute, "merge_join_right_df", "(k BIGINT) WITH (sorted_by = ARRAY['k'])")) {
+            assertUpdate("INSERT INTO " + table.getName() + " VALUES 1, 2, 3", 3);
+            Session session = Session.builder(getSession())
+                    .setSystemProperty("prefer_merge_join", "FORCE")
+                    .setSystemProperty("join_distribution_type", "PARTITIONED")
+                    .setSystemProperty("join_reordering_strategy", "NONE")
+                    .setSystemProperty("enable_dynamic_filtering", "true")
+                    .build();
+            for (String join : new String[] {"JOIN", "RIGHT JOIN"}) {
+                String query = "SELECT l.k, r.k FROM " + table.getName() + " l " + join + " " + table.getName() + " r ON l.k = r.k";
+                String explain = (String) getQueryRunner().execute(session, "EXPLAIN " + query).getOnlyValue();
+                assertThat(explain).contains("Algorithm: MERGE");
+                var result = getQueryRunner().executeWithPlan(session, query);
+                assertThat(result.result().getMaterializedRows()).hasSize(3);
+                var stats = getDistributedQueryRunner().getCoordinator().getQueryManager().getFullQueryInfo(result.queryId())
+                        .getQueryStats().getDynamicFiltersStats();
+                assertThat(stats.getTotalDynamicFilters()).isGreaterThan(0);
+                assertThat(stats.getDynamicFiltersCompleted()).isEqualTo(stats.getTotalDynamicFilters());
             }
         }
     }

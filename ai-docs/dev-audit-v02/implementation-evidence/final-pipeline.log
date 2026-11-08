@@ -1,0 +1,15 @@
+START checkout-stage-4
+END checkout-stage-4 exit=0
+START review-stage-4-build
+END review-stage-4-build exit=0
+START review-iceberg-regressions-and-workloads
+END review-iceberg-regressions-and-workloads exit=0
+START review-tpcds-plans
+END review-tpcds-plans exit=0
+START review-ci-verify
+END review-ci-verify exit=0
+START review-errorprone
+END review-errorprone exit=0
+START review-sphinx
+END review-sphinx exit=0
+ALL PHASES SUCCEEDED

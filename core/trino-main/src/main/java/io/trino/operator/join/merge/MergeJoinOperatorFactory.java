@@ -17,8 +17,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.ListenableFuture;
 import io.trino.memory.QueryContext;
 import io.trino.memory.context.LocalMemoryContext;
+import io.trino.operator.DriverYieldSignal;
 import io.trino.operator.JoinOperatorType;
 import io.trino.operator.OperatorContext;
+import io.trino.operator.OperatorInfo;
 import io.trino.operator.WorkProcessor;
 import io.trino.operator.WorkProcessorOperator;
 import io.trino.operator.WorkProcessorOperatorFactory;
@@ -41,11 +43,13 @@ import it.unimi.dsi.fastutil.longs.LongArrayList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.util.concurrent.Futures.getUnchecked;
 import static io.trino.spi.StandardErrorCode.EXCEEDED_LOCAL_MEMORY_LIMIT;
+import static io.trino.spi.block.PageBuilderStatus.DEFAULT_MAX_PAGE_SIZE_IN_BYTES;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -132,8 +136,15 @@ public class MergeJoinOperatorFactory
     public WorkProcessorOperator create(OperatorContext operatorContext, WorkProcessor<Page> sourcePages)
     {
         checkState(!closed, "Factory is already closed");
+        requireNonNull(sourcePages, "sourcePages is null");
         bridgeManager.probeOperatorCreated();
-        return new MergeJoinOperator(operatorContext, sourcePages, this, bridgeManager::probeOperatorClosed);
+        try {
+            return new MergeJoinOperator(operatorContext, sourcePages, this, bridgeManager::probeOperatorClosed);
+        }
+        catch (RuntimeException | Error failure) {
+            bridgeManager.probeOperatorClosed();
+            throw failure;
+        }
     }
 
     @Override
@@ -177,6 +188,7 @@ public class MergeJoinOperatorFactory
         private final MergeJoinStatistics statistics;
         private final LocalMemoryContext userMemoryContext;
         private final LocalMemoryContext probeChunkMemoryContext;
+        private final LocalMemoryContext outputMemoryContext;
         private final MergeJoinTransformation transformation;
 
         private MergeJoinOperator(OperatorContext operatorContext, WorkProcessor<Page> sourcePages, MergeJoinOperatorFactory factory, Runnable closeCallback)
@@ -184,10 +196,19 @@ public class MergeJoinOperatorFactory
             this.statistics = new MergeJoinStatistics(factory.joinOperatorType);
             this.userMemoryContext = operatorContext.newLocalUserMemoryContext(MergeJoinOperator.class.getSimpleName());
             this.probeChunkMemoryContext = operatorContext.newLocalUserMemoryContext("MergeJoinProbeChunk");
+            this.outputMemoryContext = operatorContext.newLocalUserMemoryContext("MergeJoinOutput");
             QueryContext queryContext = operatorContext.getDriverContext().getPipelineContext().getTaskContext().getQueryContext();
             long queryMemoryLimit = queryContext.getMaxUserMemory();
             long maxProbeChunkBytes = Math.min(MAX_PROBE_CHUNK_BYTES, Math.max(1, queryMemoryLimit / 4));
-            this.transformation = new MergeJoinTransformation(factory, statistics, userMemoryContext, probeChunkMemoryContext, queryContext, queryMemoryLimit, maxProbeChunkBytes);
+            try {
+                this.transformation = new MergeJoinTransformation(factory, statistics, userMemoryContext, probeChunkMemoryContext, outputMemoryContext, queryContext, queryMemoryLimit, maxProbeChunkBytes, operatorContext.getDriverContext().getYieldSignal());
+            }
+            catch (RuntimeException | Error failure) {
+                userMemoryContext.close();
+                probeChunkMemoryContext.close();
+                outputMemoryContext.close();
+                throw failure;
+            }
             this.pages = sourcePages.transform(transformation);
             this.closeCallback = requireNonNull(closeCallback, "closeCallback is null");
         }
@@ -199,9 +220,9 @@ public class MergeJoinOperatorFactory
         }
 
         @Override
-        public java.util.Optional<io.trino.operator.OperatorInfo> getOperatorInfo()
+        public Optional<OperatorInfo> getOperatorInfo()
         {
-            return java.util.Optional.of(statistics);
+            return Optional.of(statistics.snapshot());
         }
 
         @Override
@@ -219,7 +240,12 @@ public class MergeJoinOperatorFactory
                         probeChunkMemoryContext.close();
                     }
                     finally {
-                        closeCallback.run();
+                        try {
+                            outputMemoryContext.close();
+                        }
+                        finally {
+                            closeCallback.run();
+                        }
                     }
                 }
             }
@@ -227,18 +253,17 @@ public class MergeJoinOperatorFactory
     }
 
     /**
-     * Basic merge join statistics for the WebUI. Tracks probe rows, output rows,
+     * Driver-local counters used to create immutable operator-info snapshots. Tracks probe rows, output rows,
      * build rows, and the number of distinct key groups encountered.
      */
-    public static class MergeJoinStatistics
-            implements io.trino.operator.OperatorInfo
+    private static class MergeJoinStatistics
     {
         private final JoinOperatorType joinOperatorType;
-        private final java.util.concurrent.atomic.AtomicLong probeRows = new java.util.concurrent.atomic.AtomicLong();
-        private final java.util.concurrent.atomic.AtomicLong outputRows = new java.util.concurrent.atomic.AtomicLong();
-        private final java.util.concurrent.atomic.AtomicLong buildRows = new java.util.concurrent.atomic.AtomicLong();
-        private final java.util.concurrent.atomic.AtomicLong keyGroups = new java.util.concurrent.atomic.AtomicLong();
-        private final java.util.concurrent.atomic.AtomicLong maxBuildGroupRows = new java.util.concurrent.atomic.AtomicLong();
+        private final AtomicLong probeRows = new AtomicLong();
+        private final AtomicLong outputRows = new AtomicLong();
+        private final AtomicLong buildRows = new AtomicLong();
+        private final AtomicLong keyGroups = new AtomicLong();
+        private final AtomicLong maxBuildGroupRows = new AtomicLong();
 
         private MergeJoinStatistics(JoinOperatorType joinOperatorType)
         {
@@ -270,40 +295,14 @@ public class MergeJoinOperatorFactory
             maxBuildGroupRows.accumulateAndGet(rows, Math::max);
         }
 
-        public long getProbeRows()
+        void recordProbeRows(long count)
         {
-            return probeRows.get();
+            probeRows.addAndGet(count);
         }
 
-        public long getOutputRows()
+        MergeJoinOperatorInfo snapshot()
         {
-            return outputRows.get();
-        }
-
-        public long getBuildRows()
-        {
-            return buildRows.get();
-        }
-
-        public long getKeyGroups()
-        {
-            return keyGroups.get();
-        }
-
-        public long getMaxBuildGroupRows()
-        {
-            return maxBuildGroupRows.get();
-        }
-
-        @Override
-        public String toString()
-        {
-            return "MergeJoinStatistics{joinType=" + joinOperatorType.getType()
-                    + ", probeRows=" + probeRows
-                    + ", outputRows=" + outputRows
-                    + ", buildRows=" + buildRows
-                    + ", keyGroups=" + keyGroups
-                    + ", maxBuildGroupRows=" + maxBuildGroupRows + "}";
+            return new MergeJoinOperatorInfo(joinOperatorType.getType(), probeRows.get(), outputRows.get(), buildRows.get(), keyGroups.get(), maxBuildGroupRows.get());
         }
     }
 
@@ -314,11 +313,15 @@ public class MergeJoinOperatorFactory
         private final MergeJoinStatistics statistics;
         private final LocalMemoryContext userMemoryContext;
         private final LocalMemoryContext probeChunkMemoryContext;
+        private final LocalMemoryContext outputMemoryContext;
         private final QueryContext queryContext;
         private final long queryMemoryLimit;
         private final long maxProbeChunkBytes;
         private final PageBuilder pageBuilder;
         private final int outputChannelCount;
+        private final DriverYieldSignal yieldSignal;
+        private static final int MAX_PROCESS_POSITIONS = 65_536;
+        private int processedPositions;
 
         private final KeyAccessor probeKeys;
         private final KeyAccessor buildKeys;
@@ -374,12 +377,14 @@ public class MergeJoinOperatorFactory
         private int chunkProbePage;
         private int chunkProbePos;
 
-        private MergeJoinTransformation(MergeJoinOperatorFactory factory, MergeJoinStatistics statistics, LocalMemoryContext userMemoryContext, LocalMemoryContext probeChunkMemoryContext, QueryContext queryContext, long queryMemoryLimit, long maxProbeChunkBytes)
+        private MergeJoinTransformation(MergeJoinOperatorFactory factory, MergeJoinStatistics statistics, LocalMemoryContext userMemoryContext, LocalMemoryContext probeChunkMemoryContext, LocalMemoryContext outputMemoryContext, QueryContext queryContext, long queryMemoryLimit, long maxProbeChunkBytes, DriverYieldSignal yieldSignal)
         {
             this.factory = requireNonNull(factory, "factory is null");
             this.statistics = requireNonNull(statistics, "statistics is null");
             this.userMemoryContext = requireNonNull(userMemoryContext, "userMemoryContext is null");
             this.probeChunkMemoryContext = requireNonNull(probeChunkMemoryContext, "probeChunkMemoryContext is null");
+            this.outputMemoryContext = requireNonNull(outputMemoryContext, "outputMemoryContext is null");
+            this.yieldSignal = requireNonNull(yieldSignal, "yieldSignal is null");
             this.queryContext = requireNonNull(queryContext, "queryContext is null");
             this.queryMemoryLimit = queryMemoryLimit;
             this.maxProbeChunkBytes = maxProbeChunkBytes;
@@ -391,7 +396,9 @@ public class MergeJoinOperatorFactory
             for (int channel : factory.buildOutputChannels) {
                 outputTypes.add(factory.buildTypes.get(channel));
             }
-            this.pageBuilder = new PageBuilder(outputTypes.build());
+            int maxOutputBytes = (int) Math.min(DEFAULT_MAX_PAGE_SIZE_IN_BYTES, Math.max(1, queryMemoryLimit / 8));
+            this.pageBuilder = PageBuilder.withMaxPageSize(maxOutputBytes, outputTypes.build());
+            outputMemoryContext.setBytes(pageBuilder.getRetainedSizeInBytes());
             this.outputChannelCount = factory.probeOutputChannels.size() + factory.buildOutputChannels.size();
 
             this.probeKeys = new KeyAccessor(factory.probeTypes, factory.probeKeyChannels);
@@ -407,6 +414,10 @@ public class MergeJoinOperatorFactory
         @Override
         public WorkProcessor.TransformationState<Page> process(Page inputPage)
         {
+            processedPositions = 0;
+            if (yieldSignal.isSet()) {
+                return WorkProcessor.TransformationState.yielded();
+            }
             // A completed spill batch is enough to begin the merge.
             if (bridge == null) {
                 MergeJoinBridge joinBridge = factory.bridgeManager.getJoinBridge();
@@ -432,6 +443,9 @@ public class MergeJoinOperatorFactory
             if (!probeChunk.isEmpty() && (probeChunkActive || currentInput == null || !canAddToProbeChunk(currentInput)
                     || probeChunkMemoryContext.getBytes() + currentInput.getRetainedSizeInBytes() > maxProbeChunkBytes)) {
                 processProbeChunk();
+                if (shouldYield()) {
+                    return yieldProbeChunk();
+                }
                 if (pageBuilder.isFull()) {
                     return outputPage(false);
                 }
@@ -453,6 +467,9 @@ public class MergeJoinOperatorFactory
                 }
                 if (!probeChunk.isEmpty()) {
                     processProbeChunk();
+                    if (shouldYield()) {
+                        return yieldProbeChunk();
+                    }
                     if (pageBuilder.isFull()) {
                         return outputPage(false);
                     }
@@ -488,6 +505,9 @@ public class MergeJoinOperatorFactory
                     // null element; on the next call the drain is complete and finished() is returned
                     return outputPage(false);
                 }
+                if (shouldYield()) {
+                    return WorkProcessor.TransformationState.yielded();
+                }
                 return WorkProcessor.TransformationState.finished();
             }
 
@@ -496,7 +516,7 @@ public class MergeJoinOperatorFactory
                 probePos = 0;
             }
 
-            while (!pageBuilder.isFull() && probePos < probePage.getPositionCount()) {
+            while (!pageBuilder.isFull() && probePos < probePage.getPositionCount() && !shouldYield()) {
                 processProbeRow();
                 if (waitingForBuild != null) {
                     return waitForBuild();
@@ -515,6 +535,11 @@ public class MergeJoinOperatorFactory
             return inputConsumed ? WorkProcessor.TransformationState.needsMoreData() : WorkProcessor.TransformationState.yielded();
         }
 
+        private boolean shouldYield()
+        {
+            return yieldSignal.isSet() || processedPositions++ >= MAX_PROCESS_POSITIONS;
+        }
+
         private Page currentInputRegion(Page source)
         {
             if (inputSourcePage != source) {
@@ -525,16 +550,16 @@ public class MergeJoinOperatorFactory
             if (inputRegion != null) {
                 return inputRegion;
             }
-            int end = source.getPositionCount();
+            int end = nextInputRegionStart + Math.min(source.getPositionCount() - nextInputRegionStart, MAX_PROCESS_POSITIONS);
             if (bridge.canCreateMatchFile() && !factory.outputSingleMatch) {
                 int position = nextInputRegionStart;
-                while (position < end) {
+                while (position < end && !yieldSignal.isSet()) {
                     if (probeKeys.isUnmatchable(source, position)) {
                         position++;
                         continue;
                     }
                     int runEnd = position + 1;
-                    while (runEnd < end && !probeKeys.isUnmatchable(source, runEnd)
+                    while (runEnd < end && !yieldSignal.isSet() && !probeKeys.isUnmatchable(source, runEnd)
                             && compareProbeKeys(source, position, source, runEnd) == 0) {
                         runEnd++;
                     }
@@ -580,6 +605,7 @@ public class MergeJoinOperatorFactory
         {
             Page output = pageBuilder.build();
             pageBuilder.reset();
+            reserveOutputMemory();
             return WorkProcessor.TransformationState.ofResult(output, needsMoreData);
         }
 
@@ -602,6 +628,9 @@ public class MergeJoinOperatorFactory
                 return false;
             }
             for (int position = 1; position < page.getPositionCount(); position++) {
+                if (yieldSignal.isSet()) {
+                    return false;
+                }
                 if (probeKeys.isUnmatchable(page, position) || compareProbeKeys(page, position, page, 0) != 0) {
                     return false;
                 }
@@ -624,9 +653,7 @@ public class MergeJoinOperatorFactory
             if (isProbeOuter()) {
                 probeChunkMatched.add(new boolean[page.getPositionCount()]);
             }
-            for (int position = 0; position < page.getPositionCount(); position++) {
-                statistics.recordProbeRow();
-            }
+            statistics.recordProbeRows(page.getPositionCount());
             return true;
         }
 
@@ -667,12 +694,12 @@ public class MergeJoinOperatorFactory
             }
 
             int processedRows = 0;
-            while (isInGroup(chunkBuildPage, chunkBuildPos) && !pageBuilder.isFull() && processedRows < 65_536) {
+            while (isInGroup(chunkBuildPage, chunkBuildPos) && !pageBuilder.isFull() && processedRows < 65_536 && !shouldYield()) {
                 Page buildPage = buildPages.get(chunkBuildPage);
                 if (filterAddress != null) {
                     filterAddress.set(chunkBuildPage, chunkBuildPos);
                 }
-                while (chunkProbePage < probeChunk.size() && !pageBuilder.isFull() && processedRows < 65_536) {
+                while (chunkProbePage < probeChunk.size() && !pageBuilder.isFull() && processedRows < 65_536 && !shouldYield()) {
                     probePage = probeChunk.get(chunkProbePage);
                     probePos = chunkProbePos;
                     if (filterFunction == null || filterFunction.filter(0, probePos, probePage)) {
@@ -731,7 +758,7 @@ public class MergeJoinOperatorFactory
         private void drainUnmatchedProbeChunk()
         {
             int scannedRows = 0;
-            while (chunkProbePage < probeChunk.size() && !pageBuilder.isFull() && scannedRows < 65_536) {
+            while (chunkProbePage < probeChunk.size() && !pageBuilder.isFull() && scannedRows < 65_536 && !shouldYield()) {
                 probePage = probeChunk.get(chunkProbePage);
                 probePos = chunkProbePos;
                 if (!probeChunkMatched.get(chunkProbePage)[chunkProbePos]) {
@@ -825,7 +852,7 @@ public class MergeJoinOperatorFactory
                 currentProbeMatched = false;
                 probeRowInProgress = true;
             }
-            while (isInGroup(iterationPage, iterationPos) && !pageBuilder.isFull()) {
+            while (isInGroup(iterationPage, iterationPos) && !pageBuilder.isFull() && !shouldYield()) {
                 if (filterAddress != null) {
                     filterAddress.set(iterationPage, iterationPos);
                 }
@@ -852,7 +879,7 @@ public class MergeJoinOperatorFactory
                     iterationPos = 0;
                 }
             }
-            if (pageBuilder.isFull() && !factory.outputSingleMatch && isInGroup(iterationPage, iterationPos)) {
+            if (isInGroup(iterationPage, iterationPos) && !(factory.outputSingleMatch && currentProbeMatched)) {
                 // Keep the current probe row and its position within the build group.
                 return;
             }
@@ -885,7 +912,7 @@ public class MergeJoinOperatorFactory
             }
             int page = scanPage;
             int pos = scanPos;
-            while (page < buildPages.size()) {
+            while (page < buildPages.size() && !shouldYield()) {
                 Page buildPage = buildPages.get(page);
                 if (pos >= buildPage.getPositionCount()) {
                     page++;
@@ -917,6 +944,9 @@ public class MergeJoinOperatorFactory
             }
             scanPage = page;
             scanPos = pos;
+            if (shouldYield()) {
+                return false;
+            }
 
             if (page >= buildPages.size()) {
                 if (!bridge.isFinished()) {
@@ -949,7 +979,7 @@ public class MergeJoinOperatorFactory
 
         private boolean finishGroupScan()
         {
-            while (groupScanPage < buildPages.size()) {
+            while (groupScanPage < buildPages.size() && !shouldYield()) {
                 Page buildPage = buildPages.get(groupScanPage);
                 if (groupScanPos >= buildPage.getPositionCount()) {
                     groupScanPage++;
@@ -972,6 +1002,9 @@ public class MergeJoinOperatorFactory
                 }
                 groupScanRows++;
                 groupScanPos++;
+            }
+            if (shouldYield()) {
+                return false;
             }
             if (groupScanPage >= buildPages.size() && !bridge.isFinished()) {
                 waitingForBuild = bridge.whenPagesAvailable(groupScanPage);
@@ -1024,7 +1057,7 @@ public class MergeJoinOperatorFactory
             if (buildRowMatched == null && diskRowMatched == null) {
                 return true;
             }
-            while ((drainPage < scanPage || (drainPage == scanPage && drainPos < scanPos)) && !pageBuilder.isFull()) {
+            while ((drainPage < scanPage || (drainPage == scanPage && drainPos < scanPos)) && !pageBuilder.isFull() && !shouldYield()) {
                 Page buildPage = buildPages.get(drainPage);
                 if (drainPos == buildPage.getPositionCount()) {
                     drainPage++;
@@ -1073,7 +1106,7 @@ public class MergeJoinOperatorFactory
 
         private void drainRemainingBuildRows()
         {
-            while (drainPage < buildPages.size() && !pageBuilder.isFull()) {
+            while (drainPage < buildPages.size() && !pageBuilder.isFull() && !shouldYield()) {
                 Page buildPage = buildPages.get(drainPage);
                 if (drainPos == buildPage.getPositionCount()) {
                     drainPage++;
@@ -1177,6 +1210,7 @@ public class MergeJoinOperatorFactory
                 pageBuilder.getBlockBuilder(channel).append(block.getUnderlyingValueBlock(), block.getUnderlyingValuePosition(position));
                 channel++;
             }
+            reserveOutputMemory();
         }
 
         private void appendNullBuildRow()
@@ -1185,6 +1219,21 @@ public class MergeJoinOperatorFactory
             while (channel < outputChannelCount) {
                 pageBuilder.getBlockBuilder(channel).appendNull();
                 channel++;
+            }
+            reserveOutputMemory();
+        }
+
+        private void reserveOutputMemory()
+        {
+            long retainedBytes = pageBuilder.getRetainedSizeInBytes();
+            if (retainedBytes == outputMemoryContext.getBytes()) {
+                return;
+            }
+            if (!outputMemoryContext.trySetBytes(retainedBytes)) {
+                // The second replay page is an optional cache. Prefer the output
+                // buffer over retaining it when a block builder grows.
+                bridge.releasePreviousReplayPage();
+                outputMemoryContext.setBytes(retainedBytes);
             }
         }
 

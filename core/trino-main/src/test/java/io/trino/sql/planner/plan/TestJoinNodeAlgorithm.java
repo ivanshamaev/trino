@@ -11,31 +11,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License");
- * you may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.trino.sql.planner.plan;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import io.airlift.json.JsonCodec;
+import io.airlift.json.JsonCodecFactory;
+import io.airlift.json.JsonMapperProvider;
+import io.trino.spi.type.Type;
+import io.trino.sql.planner.OrderingScheme;
 import io.trino.sql.planner.Symbol;
+import io.trino.sql.planner.SymbolKeyDeserializer;
+import io.trino.type.TypeDeserializer;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Method;
 import java.util.Optional;
 
+import static io.trino.spi.connector.SortOrder.ASC_NULLS_LAST;
 import static io.trino.spi.type.BigintType.BIGINT;
+import static io.trino.type.InternalTypeManager.TESTING_TYPE_MANAGER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -111,7 +105,7 @@ public class TestJoinNodeAlgorithm
     }
 
     @Test
-    public void testMergeRequiresInnerOrLeftJoin()
+    public void testMergeSupportsAllJoinTypes()
     {
         // RIGHT and FULL are now supported for merge join
         for (JoinType type : ImmutableList.of(JoinType.RIGHT, JoinType.FULL)) {
@@ -185,11 +179,28 @@ public class TestJoinNodeAlgorithm
     }
 
     @Test
-    public void testAlgorithmPropertyIsSerialized()
-            throws Exception
+    public void testPlanRoundTrip()
     {
-        Method getter = JoinNode.class.getMethod("getAlgorithm");
-        assertThat(getter.isAnnotationPresent(JsonProperty.class)).isTrue();
-        assertThat(getter.getAnnotation(JsonProperty.class).value()).isEqualTo("algorithm");
+        JsonCodec<PlanNode> codec = new JsonCodecFactory(new JsonMapperProvider()
+                .withKeyDeserializers(ImmutableMap.of(Symbol.class, new SymbolKeyDeserializer(TESTING_TYPE_MANAGER)))
+                .withJsonDeserializers(ImmutableMap.of(Type.class, new TypeDeserializer(TESTING_TYPE_MANAGER)))
+                .get()).jsonCodec(PlanNode.class);
+        JoinNode original = join(JoinType.FULL, Optional.of(JoinNode.DistributionType.PARTITIONED), Optional.of(JoinNode.JoinAlgorithm.MERGE));
+        JoinNode roundTrip = (JoinNode) codec.fromJson(codec.toJson(original));
+        assertThat(roundTrip.getAlgorithm()).contains(JoinNode.JoinAlgorithm.MERGE);
+        assertThat(roundTrip.getType()).isEqualTo(JoinType.FULL);
+        assertThat(roundTrip.getCriteria()).isEqualTo(original.getCriteria());
+        for (boolean boundedSpill : ImmutableList.of(false, true)) {
+            SortNode sort = new SortNode(
+                    new PlanNodeId("sort"),
+                    LEFT_SOURCE,
+                    new OrderingScheme(ImmutableList.of(LEFT_KEY), ImmutableMap.of(LEFT_KEY, ASC_NULLS_LAST)),
+                    true,
+                    false,
+                    boundedSpill);
+            SortNode deserialized = (SortNode) codec.fromJson(codec.toJson(sort));
+            assertThat(deserialized.isBoundedSpill()).isEqualTo(boundedSpill);
+            assertThat(((SortNode) sort.replaceChildren(ImmutableList.of(LEFT_SOURCE))).isBoundedSpill()).isEqualTo(boundedSpill);
+        }
     }
 }

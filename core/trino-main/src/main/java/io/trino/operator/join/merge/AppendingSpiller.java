@@ -45,6 +45,20 @@ public final class AppendingSpiller
     {
         this.delegate = requireNonNull(delegate, "delegate is null");
         this.memoryContext = requireNonNull(memoryContext, "memoryContext is null");
+        if (delegate instanceof FileSingleStreamSpiller fileSpiller) {
+            try {
+                fileSpiller.enableIndexedReplay();
+            }
+            catch (RuntimeException | Error failure) {
+                try {
+                    delegate.close();
+                }
+                catch (RuntimeException | Error closeFailure) {
+                    failure.addSuppressed(closeFailure);
+                }
+                throw failure;
+            }
+        }
     }
 
     public static SpillerFactory factory(SingleStreamSpillerFactory singleStreamSpillerFactory)
@@ -55,7 +69,7 @@ public final class AppendingSpiller
             try {
                 return new AppendingSpiller(singleStreamSpillerFactory.create(types, spillContext, localMemoryContext, false), localMemoryContext);
             }
-            catch (RuntimeException e) {
+            catch (RuntimeException | Error e) {
                 localMemoryContext.close();
                 throw e;
             }

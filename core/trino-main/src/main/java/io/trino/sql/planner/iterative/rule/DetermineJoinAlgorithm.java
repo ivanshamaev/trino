@@ -53,6 +53,7 @@ import io.trino.sql.planner.plan.SetOperationNode;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
@@ -67,7 +68,6 @@ import static io.trino.SystemSessionProperties.isSpillEnabled;
 import static io.trino.sql.ir.IrUtils.combineConjuncts;
 import static io.trino.sql.planner.plan.Patterns.join;
 import static java.lang.Double.isFinite;
-import static java.lang.Math.max;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -241,7 +241,7 @@ public class DetermineJoinAlgorithm
     private static boolean sortedPages(ActualProperties properties, List<Symbol> keys)
     {
         return LocalProperties.match(properties.getLocalProperties(), keys.stream().map(symbol -> new SortingProperty<>(symbol, SortOrder.ASC_NULLS_LAST)).collect(toImmutableList()))
-                .stream().allMatch(java.util.Optional::isEmpty);
+                .stream().allMatch(Optional::isEmpty);
     }
 
     private JoinNode addNotNullFilters(JoinNode joinNode, Session session, Context context)
@@ -295,7 +295,7 @@ public class DetermineJoinAlgorithm
             return false;
         }
         // Dynamic filters are supported: the merge join build side collects them via the
-        // DynamicFilterSourceOperator wrapper in LocalExecutionPlanner.createMergeJoin (INNER only)
+        // DynamicFilterSourceOperator wrapper in LocalExecutionPlanner.createMergeJoin (INNER and RIGHT)
         if (getRetryPolicy(session) != RetryPolicy.NONE) {
             return false;
         }

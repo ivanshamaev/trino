@@ -42,6 +42,7 @@ import static com.google.common.collect.Iterators.transform;
 import static com.google.common.util.concurrent.Futures.immediateVoidFuture;
 import static io.airlift.concurrent.MoreFutures.asVoid;
 import static io.airlift.concurrent.MoreFutures.checkSuccess;
+import static io.trino.util.MergeSortedPages.mergeSortedPages;
 import static java.util.Objects.requireNonNull;
 
 public class OrderByOperator
@@ -62,6 +63,7 @@ public class OrderByOperator
         private final Optional<SpillerFactory> spillerFactory;
         private final OrderingCompiler orderingCompiler;
         private final boolean inputPagesPreSorted;
+        private final boolean boundedSpill;
 
         private boolean closed;
 
@@ -95,6 +97,24 @@ public class OrderByOperator
                 OrderingCompiler orderingCompiler,
                 boolean inputPagesPreSorted)
         {
+            this(operatorId, planNodeId, sourceTypes, outputChannels, expectedPositions, sortChannels, sortOrder, pagesIndexFactory, spillEnabled, spillerFactory, orderingCompiler, inputPagesPreSorted, inputPagesPreSorted);
+        }
+
+        public OrderByOperatorFactory(
+                int operatorId,
+                PlanNodeId planNodeId,
+                List<? extends Type> sourceTypes,
+                List<Integer> outputChannels,
+                int expectedPositions,
+                List<Integer> sortChannels,
+                List<SortOrder> sortOrder,
+                PagesIndex.Factory pagesIndexFactory,
+                boolean spillEnabled,
+                Optional<SpillerFactory> spillerFactory,
+                OrderingCompiler orderingCompiler,
+                boolean inputPagesPreSorted,
+                boolean boundedSpill)
+        {
             this.operatorId = operatorId;
             this.planNodeId = requireNonNull(planNodeId, "planNodeId is null");
             this.sourceTypes = ImmutableList.copyOf(requireNonNull(sourceTypes, "sourceTypes is null"));
@@ -108,6 +128,7 @@ public class OrderByOperator
             this.spillerFactory = requireNonNull(spillerFactory, "spillerFactory is null");
             this.orderingCompiler = requireNonNull(orderingCompiler, "orderingCompiler is null");
             this.inputPagesPreSorted = inputPagesPreSorted;
+            this.boundedSpill = boundedSpill;
             checkArgument(!spillEnabled || spillerFactory.isPresent(), "Spiller Factory is not present when spill is enabled");
         }
 
@@ -128,7 +149,8 @@ public class OrderByOperator
                     spillEnabled,
                     spillerFactory,
                     orderingCompiler,
-                    inputPagesPreSorted);
+                    inputPagesPreSorted,
+                    boundedSpill);
         }
 
         @Override
@@ -152,7 +174,8 @@ public class OrderByOperator
                     spillEnabled,
                     spillerFactory,
                     orderingCompiler,
-                    inputPagesPreSorted);
+                    inputPagesPreSorted,
+                    boundedSpill);
         }
     }
 
@@ -179,6 +202,7 @@ public class OrderByOperator
     private final Optional<SpillerFactory> spillerFactory;
     private final OrderingCompiler orderingCompiler;
     private final boolean inputPagesPreSorted;
+    private final boolean boundedSpill;
     private final Optional<PageWithPositionComparator> pageComparator;
     private final LocalMemoryContext mergeMemoryContext;
     private final LocalMemoryContext spillOutputMemoryContext;
@@ -226,6 +250,23 @@ public class OrderByOperator
             OrderingCompiler orderingCompiler,
             boolean inputPagesPreSorted)
     {
+        this(operatorContext, sourceTypes, outputChannels, expectedPositions, sortChannels, sortOrder, pagesIndexFactory, spillEnabled, spillerFactory, orderingCompiler, inputPagesPreSorted, inputPagesPreSorted);
+    }
+
+    public OrderByOperator(
+            OperatorContext operatorContext,
+            List<Type> sourceTypes,
+            List<Integer> outputChannels,
+            int expectedPositions,
+            List<Integer> sortChannels,
+            List<SortOrder> sortOrder,
+            PagesIndex.Factory pagesIndexFactory,
+            boolean spillEnabled,
+            Optional<SpillerFactory> spillerFactory,
+            OrderingCompiler orderingCompiler,
+            boolean inputPagesPreSorted,
+            boolean boundedSpill)
+    {
         requireNonNull(pagesIndexFactory, "pagesIndexFactory is null");
 
         this.operatorContext = requireNonNull(operatorContext, "operatorContext is null");
@@ -242,6 +283,7 @@ public class OrderByOperator
         this.spillerFactory = requireNonNull(spillerFactory, "spillerFactory is null");
         this.orderingCompiler = requireNonNull(orderingCompiler, "orderingCompiler is null");
         this.inputPagesPreSorted = inputPagesPreSorted;
+        this.boundedSpill = boundedSpill;
         this.inputPagesSorted = inputPagesPreSorted;
         if (inputPagesPreSorted) {
             this.pageComparator = Optional.of(orderingCompiler.compilePageWithPositionComparator(
@@ -286,7 +328,7 @@ public class OrderByOperator
             return;
         }
 
-        if (spiller.isPresent() && !finalMergeReady) {
+        if (boundedSpill && spiller.isPresent() && !finalMergeReady) {
             if (pageIndex.getPositionCount() > 0) {
                 spillToDisk();
                 finishingSpill = true;
@@ -321,7 +363,7 @@ public class OrderByOperator
         if (spilledPages.isEmpty()) {
             sortedPages = transform(sortedPagesIndex, Optional::of);
         }
-        else {
+        else if (boundedSpill) {
             // SortingSpiller produces one final run. Reading it directly avoids
             // allocating another merge page and retaining one head per old run.
             verify(spilledPages.size() == 1 && pageIndex.getPositionCount() == 0, "Unexpected sort spill state");
@@ -329,6 +371,19 @@ public class OrderByOperator
                 spillOutputMemoryContext.setBytes(page.getRetainedSizeInBytes());
                 return page;
             }).yieldingIterator();
+        }
+        else {
+            List<WorkProcessor<Page>> sortedStreams = ImmutableList.<WorkProcessor<Page>>builder()
+                    .addAll(spilledPages)
+                    .add(WorkProcessor.fromIterator(sortedPagesIndex))
+                    .build();
+            List<Type> sortTypes = sortChannels.stream().map(sourceTypes::get).collect(toImmutableList());
+            sortedPages = mergeSortedPages(
+                    sortedStreams,
+                    orderingCompiler.compilePageWithPositionComparator(sortTypes, sortChannels, sortOrder),
+                    sourceTypes,
+                    operatorContext.aggregateUserMemoryContext(),
+                    operatorContext.getDriverContext().getYieldSignal()).yieldingIterator();
         }
     }
 
@@ -417,12 +472,20 @@ public class OrderByOperator
 
         if (spiller.isEmpty()) {
             List<Type> sortTypes = sortChannels.stream().map(sourceTypes::get).collect(toImmutableList());
-            spiller = Optional.of(new SortingSpiller(
-                    sourceTypes,
-                    orderingCompiler.compilePageWithPositionComparator(sortTypes, sortChannels, sortOrder),
-                    spillerFactory.orElseThrow(),
-                    operatorContext.getSpillContext(),
-                    operatorContext.newAggregateUserMemoryContext()));
+            if (boundedSpill) {
+                spiller = Optional.of(new SortingSpiller(
+                        sourceTypes,
+                        orderingCompiler.compilePageWithPositionComparator(sortTypes, sortChannels, sortOrder),
+                        spillerFactory.orElseThrow(),
+                        operatorContext.getSpillContext(),
+                        operatorContext.newAggregateUserMemoryContext()));
+            }
+            else {
+                spiller = Optional.of(spillerFactory.orElseThrow().create(
+                        sourceTypes,
+                        operatorContext.getSpillContext(),
+                        operatorContext.newAggregateUserMemoryContext()));
+            }
         }
 
         sortPages();

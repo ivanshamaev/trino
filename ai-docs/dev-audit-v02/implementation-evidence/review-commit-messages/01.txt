@@ -1,0 +1,5 @@
+Add indexed replay for append-only spill streams
+
+Keep replay offsets on disk for explicitly replayable streams.
+Account index I/O and clean auxiliary files with other spill files.
+

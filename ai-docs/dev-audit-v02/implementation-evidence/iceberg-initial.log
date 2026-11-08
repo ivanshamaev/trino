@@ -1,0 +1,212 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] 
+[INFO] -----------------------< io.trino:trino-iceberg >-----------------------
+[INFO] Building trino-iceberg 485-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] ----------------------------[ trino-plugin ]----------------------------
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-iceberg ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-iceberg ---
+[INFO] 
+[INFO] --- antlr4:4.13.2:antlr4 (default) @ trino-iceberg ---
+[INFO] No ANTLR 4 grammars to compile in /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/antlr4
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ trino-iceberg ---
+[INFO] skip non existing resourceDirectory /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.16.0:compile (default-compile) @ trino-iceberg ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 277 source files with javac [debug deprecation parameters release 25] to target/classes
+[WARNING] unknown enum constant org.eclipse.microprofile.openapi.annotations.enums.SchemaType.OBJECT
+  reason: class file for org.eclipse.microprofile.openapi.annotations.enums.SchemaType not found
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergMaterializedViewProperties.java:[39,38] getMaterializedViewsStorageSchema() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergSessionProperties.java:[135,38] isUseFileSizeFromMetadata() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergSessionProperties.java:[175,40] isLazyReadSmallRanges() in io.trino.plugin.hive.orc.OrcReaderConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergSessionProperties.java:[180,40] isNestedLazy() in io.trino.plugin.hive.orc.OrcReaderConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergMetadata.java:[3780,17] createView(io.trino.spi.connector.ConnectorSession,io.trino.spi.connector.SchemaTableName,io.trino.spi.connector.ConnectorViewDefinition,java.util.Map<java.lang.String,java.lang.Object>,boolean) in io.trino.spi.connector.ConnectorMetadata has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergMetadata.java:[1279,43] streamTableColumns(io.trino.spi.connector.ConnectorSession,io.trino.spi.connector.SchemaTablePrefix) in io.trino.spi.connector.ConnectorMetadata has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergMetadata.java:[1273,55] listTableColumns(io.trino.spi.connector.ConnectorSession,io.trino.spi.connector.SchemaTablePrefix) in io.trino.spi.connector.ConnectorMetadata has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergFileWriterFactory.java:[125,39] isUseLegacyVersion() in io.trino.plugin.hive.orc.OrcWriterConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergModule.java:[126,44] io.trino.plugin.iceberg.procedure.RollbackToSnapshotProcedure in io.trino.plugin.iceberg.procedure has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergPageSourceProvider.java:[679,29] withLazyReadSmallRanges(boolean) in io.trino.orc.OrcReaderOptions has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergPageSourceProvider.java:[680,29] withNestedLazy(boolean) in io.trino.orc.OrcReaderOptions has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/catalog/glue/TrinoGlueCatalog.java:[950,32] appendPath(java.lang.String,java.lang.String) in io.trino.filesystem.Locations has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/catalog/glue/TrinoGlueCatalog.java:[953,16] appendPath(java.lang.String,java.lang.String) in io.trino.filesystem.Locations has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/catalog/glue/TrinoGlueCatalogFactory.java:[90,62] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/catalog/hms/TrinoHiveCatalog.java:[534,16] appendPath(java.lang.String,java.lang.String) in io.trino.filesystem.Locations has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/catalog/hms/TrinoHiveCatalogFactory.java:[85,55] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/catalog/jdbc/TrinoJdbcCatalog.java:[481,17] appendPath(java.lang.String,java.lang.String) in io.trino.filesystem.Locations has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/catalog/jdbc/TrinoJdbcCatalog.java:[483,16] appendPath(java.lang.String,java.lang.String) in io.trino.filesystem.Locations has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/catalog/nessie/IcebergNessieTableOperations.java: unknown enum constant org.eclipse.microprofile.openapi.annotations.enums.SchemaType.OBJECT
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/catalog/nessie/IcebergNessieTableOperations.java: unknown enum constant org.eclipse.microprofile.openapi.annotations.enums.SchemaType.OBJECT
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/catalog/nessie/TrinoNessieCatalog.java:[343,17] appendPath(java.lang.String,java.lang.String) in io.trino.filesystem.Locations has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/catalog/nessie/TrinoNessieCatalog.java:[345,16] appendPath(java.lang.String,java.lang.String) in io.trino.filesystem.Locations has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/catalog/rest/TrinoRestCatalog.java:[731,16] appendPath(java.lang.String,java.lang.String) in io.trino.filesystem.Locations has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/system/IcebergSystemTablePageSource.java:[122,17] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/system/files/FilesTablePageSource.java:[296,17] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[INFO] /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergTableProperties.java: Some input files use unchecked or unsafe operations.
+[INFO] /home/ivan/opencode/trino/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergTableProperties.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- trino:26:generate-service-descriptor (default-generate-service-descriptor) @ trino-iceberg ---
+[INFO] Wrote io.trino.plugin.iceberg.IcebergPlugin to /home/ivan/opencode/trino/plugin/trino-iceberg/target/trino-iceberg-485-SNAPSHOT-services.jar
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ trino-iceberg ---
+[INFO] Copying 98 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ trino-iceberg ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 218 source files with javac [debug deprecation parameters release 25] to target/test-classes
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/BaseIcebergConnectorTest.java:[1956,21] nonTrinoExceptionFailure() in io.trino.sql.query.QueryAssertions.QueryAssert has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/IcebergTestUtils.java:[349,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/BaseIcebergSystemTables.java:[835,48] non-varargs call of varargs method with inexact argument type for last parameter;
+  cast to java.lang.Object for a varargs call
+  cast to java.lang.Object[] for a non-varargs call and to suppress this warning
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[56,17] setUseFileSizeFromMetadata(boolean) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[74,17] setHideMaterializedViewStorageTable(boolean) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[75,17] setMaterializedViewsStorageSchema(java.lang.String) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[158,17] setUseFileSizeFromMetadata(boolean) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[176,17] setHideMaterializedViewStorageTable(boolean) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[177,17] setMaterializedViewsStorageSchema(java.lang.String) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[209,25] setHideMaterializedViewStorageTable(boolean) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[210,25] setMaterializedViewsStorageSchema(java.lang.String) in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergMaterializedViewSummary.java:[239,35] removedDataFiles(org.apache.iceberg.io.FileIO) in org.apache.iceberg.Snapshot has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergMaterializedViewSummary.java:[233,35] addedDataFiles(org.apache.iceberg.io.FileIO) in org.apache.iceberg.Snapshot has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergMergeAppend.java:[68,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergOrcMetricsCollection.java:[108,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergPageSourceProvider.java:[280,34] getMemoryUsage() in io.trino.spi.connector.ConnectorPageSource has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergRegisterTableProcedure.java:[103,35] TestingIcebergPlugin(java.nio.file.Path,java.util.function.Supplier<java.util.Optional<com.google.inject.Module>>) in io.trino.plugin.iceberg.TestingIcebergPlugin has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSplitSource.java:[170,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSplitSource.java:[394,31] rewriteFiles(java.util.Set<org.apache.iceberg.DataFile>,java.util.Set<org.apache.iceberg.DataFile>) in org.apache.iceberg.RewriteFiles has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergStatistics.java:[686,17] nonTrinoExceptionFailure() in io.trino.sql.query.QueryAssertions.QueryAssert has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergStatistics.java:[689,17] nonTrinoExceptionFailure() in io.trino.sql.query.QueryAssertions.QueryAssert has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/file/TestIcebergFileMetastoreCreateTableFailure.java:[156,35] TestingIcebergPlugin(java.nio.file.Path,java.util.function.Supplier<java.util.Optional<com.google.inject.Module>>) in io.trino.plugin.iceberg.TestingIcebergPlugin has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/file/TestTrinoHiveCatalogWithFileMetastore.java:[122,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestIcebergGlueAccessDeniedException.java:[68,35] TestingIcebergPlugin(java.nio.file.Path,java.util.function.Supplier<java.util.Optional<com.google.inject.Module>>) in io.trino.plugin.iceberg.TestingIcebergPlugin has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestIcebergGlueTableOperationsCreateTableFailure.java:[128,35] TestingIcebergPlugin(java.nio.file.Path,java.util.function.Supplier<java.util.Optional<com.google.inject.Module>>) in io.trino.plugin.iceberg.TestingIcebergPlugin has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestIcebergGlueTableOperationsInsertFailure.java:[99,35] TestingIcebergPlugin(java.nio.file.Path,java.util.function.Supplier<java.util.Optional<com.google.inject.Module>>) in io.trino.plugin.iceberg.TestingIcebergPlugin has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestTrinoGlueCatalog.java:[131,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[WARNING] /home/ivan/opencode/trino/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestTrinoGlueCatalog.java:[279,36] isHideMaterializedViewStorageTable() in io.trino.plugin.iceberg.IcebergConfig has been deprecated
+[INFO] 
+[INFO] --- duplicate-finder:2.0.1:check (default) @ trino-iceberg ---
+[INFO] Skipping duplicate-finder execution!
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer) @ trino-iceberg ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- modernizer:3.5.0:modernizer (modernizer-production-code) @ trino-iceberg ---
+[INFO] Skipping modernizer execution!
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-only (default) @ trino-iceberg ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-duplicate (default) @ trino-iceberg ---
+[INFO] Skipping plugin execution
+[INFO] 
+[INFO] --- dependency:3.11.0:analyze-exclusions (default) @ trino-iceberg ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-test) @ trino-iceberg ---
+[INFO] Tests will run in random order. To reproduce ordering use flag -Dsurefire.runOrder.random.seed=17412279541106
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+WARNING: Using incubator modules: jdk.incubator.vector
+[INFO] Running io.trino.plugin.iceberg.TestIcebergSortedWriting
+[INFO] Running io.trino.plugin.iceberg.TestIcebergConfig
+2026-11-08T04:59:39.600-0600	INFO	ForkJoinPool-1-worker-2	org.hibernate.validator.internal.util.Version	HV000001: Hibernate Validator 9.1.5.Final
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.834 s -- in io.trino.plugin.iceberg.TestIcebergConfig
+2026-11-08T04:59:41.657-0600	INFO	ForkJoinPool-1-worker-1	io.trino.simd.BlockEncodingSimdSupport	Detected SIMD Support for architecture=amd64, vectorBitWidth=128: SimdSupport[capabilities=[]]
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::loadLibrary has been called by com.aayushatharva.brotli4j.Brotli4jLoader in an unnamed module (file:/home/ivan/.m2/repository/com/aayushatharva/brotli4j/brotli4j/1.23.0/brotli4j-1.23.0.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+2026-11-08T04:59:47.609-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 233.00ms: 544.64MB -> 210.29MB
+2026-11-08T04:59:47.611-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 233.00ms: 544.64MB -> 210.29MB
+2026-11-08T04:59:47.612-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 233.00ms: 544.64MB -> 210.29MB
+2026-11-08T04:59:48.041-0600	INFO	ForkJoinPool-1-worker-1	io.trino.testing.DistributedQueryRunner	Created DistributedQueryRunner in 7.66s (unclosed instances = 1)
+2026-11-08T04:59:48.128-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T04:59:48.146-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T04:59:48.147-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T04:59:48.157-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T04:59:48.157-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T04:59:48.167-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T04:59:48.298-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	Usage filesystem.metadata of catalog iceberg requires [LOW_LATENCY], selected blob cache manager memory
+2026-11-08T04:59:54.506-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.48s, stopped 406.00ms: 700.86MB -> 565.88MB
+2026-11-08T04:59:54.526-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.48s, stopped 406.00ms: 700.86MB -> 565.88MB
+2026-11-08T04:59:54.526-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.48s, stopped 406.00ms: 700.86MB -> 565.88MB
+2026-11-08T04:59:58.217-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.39s, stopped 341.00ms: 1.36GB -> 618.04MB
+2026-11-08T04:59:58.218-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.39s, stopped 341.00ms: 1.36GB -> 618.04MB
+2026-11-08T04:59:58.223-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.39s, stopped 341.00ms: 1.36GB -> 618.04MB
+[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 22.45 s <<< FAILURE! -- in io.trino.plugin.iceberg.TestIcebergSortedWriting
+[ERROR] io.trino.plugin.iceberg.TestIcebergSortedWriting.testNullFileSortOrderId -- Time elapsed: 0.642 s <<< FAILURE!
+java.lang.AssertionError: Execution of 'expected' query failed: VALUES BIGINT '1'
+	at io.trino.testing.QueryAssertions.assertDistributedQuery(QueryAssertions.java:321)
+	at io.trino.testing.QueryAssertions.assertQuery(QueryAssertions.java:186)
+	at io.trino.testing.QueryAssertions.assertQuery(QueryAssertions.java:159)
+	at io.trino.testing.AbstractTestQueryFramework.assertQuery(AbstractTestQueryFramework.java:361)
+	at io.trino.plugin.iceberg.TestIcebergSortedWriting.testNullFileSortOrderId(TestIcebergSortedWriting.java:320)
+Caused by: org.jdbi.v3.core.statement.UnableToCreateStatementException: org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "VALUES BIGINT [*]'1'"; SQL statement:
+VALUES BIGINT '1' [42000-240] [statement:"VALUES BIGINT '1'", arguments:{}]
+	at org.jdbi.v3.core.statement.SqlStatement.internalExecute(SqlStatement.java:1817)
+	at org.jdbi.v3.core.result.ResultProducers.lambda$createResultBearing$0(ResultProducers.java:110)
+	at org.jdbi.v3.core.result.internal.ResultSetSupplier.get(ResultSetSupplier.java:55)
+	at org.jdbi.v3.core.result.internal.ResultSetResultIterator.<init>(ResultSetResultIterator.java:53)
+	at org.jdbi.v3.core.result.internal.ResultSetResultIterable.iterator(ResultSetResultIterable.java:50)
+	at org.jdbi.v3.core.result.ResultIterable.stream(ResultIterable.java:266)
+	at org.jdbi.v3.core.result.ResultIterable.collect(ResultIterable.java:340)
+	at org.jdbi.v3.core.result.ResultIterable.list(ResultIterable.java:315)
+	at io.trino.testing.H2QueryRunner.execute(H2QueryRunner.java:218)
+	at io.trino.testing.QueryAssertions.assertDistributedQuery(QueryAssertions.java:318)
+	... 4 more
+Caused by: org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "VALUES BIGINT [*]'1'"; SQL statement:
+VALUES BIGINT '1' [42000-240]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:514)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
+	at org.h2.message.DbException.get(DbException.java:223)
+	at org.h2.message.DbException.get(DbException.java:199)
+	at org.h2.message.DbException.getSyntaxError(DbException.java:247)
+	at org.h2.command.ParserBase.getSyntaxError(ParserBase.java:760)
+	at org.h2.command.Parser.prepareCommand(Parser.java:490)
+	at org.h2.engine.SessionLocal.prepareLocal(SessionLocal.java:647)
+	at org.h2.engine.SessionLocal.prepareCommand(SessionLocal.java:563)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1160)
+	at org.h2.jdbc.JdbcPreparedStatement.<init>(JdbcPreparedStatement.java:93)
+	at org.h2.jdbc.JdbcConnection.prepareStatement(JdbcConnection.java:686)
+	at org.jdbi.v3.core.statement.DefaultStatementBuilder.create(DefaultStatementBuilder.java:57)
+	at org.jdbi.v3.core.statement.SqlStatement.createStatement(SqlStatement.java:1850)
+	at org.jdbi.v3.core.statement.SqlStatement.internalExecute(SqlStatement.java:1811)
+	... 13 more
+
+2026-11-08T05:00:01.852-0600	INFO	main	io.trino.testing.containers.junit.ReportLeakedContainers	DockerClientFactory not initialized, so there should be no leaked containers, skipping the check
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Failures: 
+[ERROR]   TestIcebergSortedWriting.testNullFileSortOrderId:320->AbstractTestQueryFramework.assertQuery:361 Execution of 'expected' query failed: VALUES BIGINT '1'
+[INFO] 
+[ERROR] Tests run: 4, Failures: 1, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  56.339 s
+[INFO] Finished at: 2026-11-08T14:00:01+03:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Njord session closed
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.6.1:test (default-test) on project trino-iceberg: There are test failures.
+[ERROR] 
+[ERROR] See /home/ivan/opencode/trino/plugin/trino-iceberg/target/surefire-reports for the individual test results.
+[ERROR] See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
