@@ -116,7 +116,9 @@ public class PushPartialAggregationThroughExchange
         private static final Pattern<AggregationNode> PATTERN_WITH_PROJECTION = aggregation()
                 .with(source().matching(project()
                         .matching(project -> !isSymbolToSymbolProjection(project))
-                        .with(source().matching(exchange().capturedAs(CHILD)))));
+                        .with(source().matching(exchange()
+                                .matching(node -> node.getOrderingScheme().isEmpty())
+                                .capturedAs(CHILD)))));
 
         @Override
         public Pattern<AggregationNode> getPattern()

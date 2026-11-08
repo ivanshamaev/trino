@@ -1,0 +1,54 @@
+{
+  "completed_at_utc": "2026-11-08T14:57:53.414909+00:00",
+  "head": "0393e45fcf954473db34a33ecebe587c8cfff94d",
+  "branch": "smj-plan",
+  "root_tracked_diff_paths": [],
+  "root_status": [
+    "?? ai-docs/dev-audit-v03/"
+  ],
+  "audit_worktree": "/tmp/trino-smj-audit-v03-check",
+  "worktree_head": "0393e45fcf954473db34a33ecebe587c8cfff94d",
+  "worktree_changed_paths": [
+    "core/trino-main/src/test/java/io/trino/operator/join/merge/TestAppendingSpiller.java",
+    "core/trino-main/src/test/java/io/trino/operator/join/merge/TestMergeJoinOperator.java",
+    "core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoinPostSelectionAudit.java",
+    "core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoinTypeAudit.java",
+    "plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSortedWriting.java",
+    "plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestMergeJoinExchangeAudit.java"
+  ],
+  "worktree_changes_only_test_sources": true,
+  "review_candidate_head": "a0a11bff2fa450885f748da16549e4f8a9c202a7",
+  "production_and_public_docs_hashes_checked": 68,
+  "source_hash_mismatches": [],
+  "json_files_parsed": [
+    "evidence/replay-sweep.json",
+    "evidence/probe-results.json",
+    "evidence/controls-results.json",
+    "evidence/commit-policy.json",
+    "evidence/baseline-selection.json",
+    "evidence/probe-second-results.json",
+    "evidence/final-test-results.json",
+    "evidence/junit-results.json",
+    "evidence/scope.json",
+    "evidence/additional-test-results.json",
+    "evidence/controls-results.json.initial-compile-failure",
+    "evidence/build-environment.json"
+  ],
+  "markdown_files_checked": 9,
+  "missing_local_links": [],
+  "checks": {
+    "patch_applies": {
+      "exit_code": 0,
+      "output": ""
+    },
+    "worktree_diff_whitespace": {
+      "exit_code": 0,
+      "output": ""
+    },
+    "root_diff_whitespace": {
+      "exit_code": 0,
+      "output": ""
+    }
+  },
+  "excluded": "hs_err_pid*.log never read or hashed"
+}

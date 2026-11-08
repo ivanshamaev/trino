@@ -1,0 +1,78 @@
+{
+  "source_log": "initialization-core-large.log",
+  "scope": "Serialized data/index and reservation counters; not physical disk IO.",
+  "samples": [
+    {
+      "group_pages": 2,
+      "build_pages": 768,
+      "replayed_pages": 2240,
+      "written_bytes": 80036,
+      "read_bytes": 230720,
+      "read_write_ratio": 2.8827
+    },
+    {
+      "group_pages": 2,
+      "build_pages": 3072,
+      "replayed_pages": 9170,
+      "written_bytes": 327206,
+      "read_bytes": 944510,
+      "read_write_ratio": 2.8866
+    },
+    {
+      "group_pages": 2,
+      "build_pages": 12288,
+      "replayed_pages": 36824,
+      "written_bytes": 1313532,
+      "read_bytes": 3792872,
+      "read_write_ratio": 2.8875
+    },
+    {
+      "group_pages": 3,
+      "build_pages": 768,
+      "replayed_pages": 2006,
+      "written_bytes": 80036,
+      "read_bytes": 204778,
+      "read_write_ratio": 2.5586
+    },
+    {
+      "group_pages": 3,
+      "build_pages": 3072,
+      "replayed_pages": 8207,
+      "written_bytes": 327206,
+      "read_bytes": 837813,
+      "read_write_ratio": 2.5605
+    },
+    {
+      "group_pages": 3,
+      "build_pages": 12288,
+      "replayed_pages": 32951,
+      "written_bytes": 1313532,
+      "read_bytes": 3363813,
+      "read_write_ratio": 2.5609
+    },
+    {
+      "group_pages": 4,
+      "build_pages": 768,
+      "replayed_pages": 1895,
+      "written_bytes": 80036,
+      "read_bytes": 192509,
+      "read_write_ratio": 2.4053
+    },
+    {
+      "group_pages": 4,
+      "build_pages": 3072,
+      "replayed_pages": 7749,
+      "written_bytes": 327206,
+      "read_bytes": 787207,
+      "read_write_ratio": 2.4058
+    },
+    {
+      "group_pages": 4,
+      "build_pages": 12288,
+      "replayed_pages": 31120,
+      "written_bytes": 1313532,
+      "read_bytes": 3161432,
+      "read_write_ratio": 2.4068
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+START probe-format
+END probe-format 0
+START probe-compile
+END probe-compile 0
+START differential-fuzz
+END differential-fuzz 1

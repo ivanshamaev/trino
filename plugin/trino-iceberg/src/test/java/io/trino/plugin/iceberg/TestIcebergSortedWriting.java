@@ -126,6 +126,54 @@ public class TestIcebergSortedWriting
     }
 
     @Test
+    public void testMergeJoinWithPartialAggregationAndProjection()
+    {
+        try (TestTable fact = new TestTable(getQueryRunner()::execute, "audit_v03_fact", "WITH (sorted_by = ARRAY['k']) AS SELECT CAST(n % 16 AS BIGINT) k, CAST(n AS BIGINT) v FROM UNNEST(sequence(1, 640)) t(n)");
+                TestTable dimension = new TestTable(getQueryRunner()::execute, "audit_v03_dim", "WITH (sorted_by = ARRAY['k']) AS SELECT CAST(n AS BIGINT) k, CAST(n % 2 AS BIGINT) g FROM UNNEST(sequence(0, 15)) t(n)")) {
+            assertUpdate("ANALYZE " + fact.getName());
+            assertUpdate("ANALYZE " + dimension.getName());
+            Session forced = Session.builder(getSession()).setSystemProperty(PREFER_MERGE_JOIN, "FORCE")
+                    .setSystemProperty(JOIN_DISTRIBUTION_TYPE, "PARTITIONED")
+                    .setSystemProperty(JOIN_REORDERING_STRATEGY, "NONE")
+                    .setSystemProperty("spill_enabled", "true")
+                    .setSystemProperty("push_partial_aggregation_through_join", "true").build();
+            Session hash = Session.builder(forced).setSystemProperty(PREFER_MERGE_JOIN, "OFF").build();
+            for (String expression : List.of("l.v", "l.v + 1")) {
+                String sql = "SELECT r.k, r.g, sum(" + expression + ") FROM " + fact.getName() + " l JOIN " + dimension.getName() + " r ON l.k = r.k GROUP BY r.k, r.g";
+                assertThat((String) computeActual(forced, "EXPLAIN " + sql).getOnlyValue()).contains("Algorithm: MERGE");
+                var expected = computeActual(hash, sql).getMaterializedRows();
+                Session noPushdown = Session.builder(forced).setSystemProperty("push_partial_aggregation_through_join", "false").build();
+                var control = computeActual(noPushdown, sql).getMaterializedRows();
+                assertEqualsIgnoreOrder(control, expected);
+                assertEqualsIgnoreOrder(computeActual(forced, sql).getMaterializedRows(), expected);
+            }
+        }
+    }
+
+    @Test
+    public void testMultipleSortedFilesWithMergeJoinDisabled()
+    {
+        try (TestTable table = new TestTable(getQueryRunner()::execute, "audit_v03_sorted", "(k BIGINT, v BIGINT) WITH (sorted_by = ARRAY['k', 'v'])")) {
+            for (int insert = 0; insert < 5; insert++) {
+                assertUpdate("INSERT INTO " + table.getName() + " SELECT k, 10 * k + " + insert + " FROM UNNEST(sequence(1, 50)) t(k)", 50);
+            }
+            for (String concurrency : List.of("1", "4")) {
+                Session enabled = Session.builder(getSession()).setSystemProperty(PREFER_MERGE_JOIN, "OFF")
+                        .setSystemProperty("task_concurrency", concurrency).build();
+                Session disabled = Session.builder(enabled).setCatalogSessionProperty("iceberg", "report_sortedness", "false").build();
+                for (String query : List.of(
+                        "SELECT k, v, row_number() OVER (ORDER BY k, v) FROM %s",
+                        "SELECT k, v, sum(v) OVER (PARTITION BY k ORDER BY v ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) FROM %s",
+                        "SELECT k, sum(v), count(*) FROM %s GROUP BY k",
+                        "SELECT k, v FROM %s ORDER BY k, v FETCH FIRST 30 ROWS WITH TIES")) {
+                    String sql = query.formatted(table.getName());
+                    assertEqualsIgnoreOrder(computeActual(enabled, sql).getMaterializedRows(), computeActual(disabled, sql).getMaterializedRows());
+                }
+            }
+        }
+    }
+
+    @Test
     public void testMergeJoinCostCalibration()
     {
         assumeTrue(Boolean.getBoolean("smj.calibration"), "Enable with -Dsmj.calibration=true");

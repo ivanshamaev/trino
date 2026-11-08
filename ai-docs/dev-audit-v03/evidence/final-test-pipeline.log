@@ -1,0 +1,13 @@
+Original selection type: <class 'list'>
+START probe-format-final
+END probe-format-final 0
+START probe-compile-final
+END probe-compile-final 0
+START core-probes-final
+END core-probes-final 1
+START distributed-aggregation
+END distributed-aggregation 1
+START core-regressions-large
+END core-regressions-large 0
+START iceberg-regressions
+END iceberg-regressions 0

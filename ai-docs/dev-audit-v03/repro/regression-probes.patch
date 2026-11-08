@@ -1,0 +1,574 @@
+diff --git a/core/trino-main/src/test/java/io/trino/operator/join/merge/TestAppendingSpiller.java b/core/trino-main/src/test/java/io/trino/operator/join/merge/TestAppendingSpiller.java
+index 174c8bfbc5e..2cfedf754dd 100644
+--- a/core/trino-main/src/test/java/io/trino/operator/join/merge/TestAppendingSpiller.java
++++ b/core/trino-main/src/test/java/io/trino/operator/join/merge/TestAppendingSpiller.java
+@@ -23,7 +23,9 @@ import io.trino.spiller.SpillerStats;
+ import org.junit.jupiter.api.Test;
+ import org.junit.jupiter.api.io.TempDir;
+ 
++import java.nio.file.Files;
+ import java.nio.file.Path;
++import java.util.Arrays;
+ import java.util.Iterator;
+ import java.util.List;
+ import java.util.concurrent.ExecutorService;
+@@ -39,6 +41,42 @@ import static org.assertj.core.api.Assertions.assertThat;
+ 
+ public class TestAppendingSpiller
+ {
++    @Test
++    public void testAuditV03EncryptedMatchBitmap(@TempDir Path spillPath)
++            throws Exception
++    {
++        ExecutorService executor = newSingleThreadExecutor();
++        FileSingleStreamSpillerFactory files = new FileSingleStreamSpillerFactory(
++                listeningDecorator(executor),
++                TESTING_BLOCK_ENCODING_SERDE,
++                new SpillerStats(),
++                ImmutableList.of(spillPath),
++                1,
++                1.0,
++                NONE,
++                true);
++        AggregatedMemoryContext memory = newSimpleAggregatedMemoryContext();
++        try (AppendingSpiller spiller = (AppendingSpiller) AppendingSpiller.factory(files).create(ImmutableList.of(BIGINT), _ -> {}, memory)) {
++            Path bitmapPath = spiller.createMatchFile();
++            try (DiskBackedMatchBitmap bitmap = new DiskBackedMatchBitmap(bitmapPath, 9000, spiller::updateMatchFileBytes)) {
++                for (int position = 0; position < 8192; position += 2) {
++                    bitmap.mark(position);
++                }
++                bitmap.mark(8192);
++                byte[] content = Files.readAllBytes(bitmapPath);
++                byte[] plaintext = new byte[1024];
++                Arrays.fill(plaintext, (byte) 0x55);
++                System.out.println("AUDIT encrypted bitmap bytes=" + content.length + " firstBlockPlaintext=" + Arrays.equals(Arrays.copyOf(content, 1024), plaintext));
++                assertThat(Arrays.copyOf(content, 1024)).isNotEqualTo(plaintext);
++            }
++        }
++        finally {
++            files.destroy();
++            executor.shutdownNow();
++            memory.close();
++        }
++    }
++
+     @Test
+     public void testBatchesAppendToOneSpillStream(@TempDir Path spillPath)
+             throws Exception
+diff --git a/core/trino-main/src/test/java/io/trino/operator/join/merge/TestMergeJoinOperator.java b/core/trino-main/src/test/java/io/trino/operator/join/merge/TestMergeJoinOperator.java
+index ffdbaab8701..a0aff1aa243 100644
+--- a/core/trino-main/src/test/java/io/trino/operator/join/merge/TestMergeJoinOperator.java
++++ b/core/trino-main/src/test/java/io/trino/operator/join/merge/TestMergeJoinOperator.java
+@@ -61,9 +61,11 @@ import java.nio.file.Files;
+ import java.nio.file.Path;
+ import java.util.ArrayList;
+ import java.util.Arrays;
++import java.util.Comparator;
+ import java.util.Iterator;
+ import java.util.List;
+ import java.util.Optional;
++import java.util.Random;
+ import java.util.concurrent.ExecutorService;
+ import java.util.concurrent.ScheduledExecutorService;
+ import java.util.concurrent.atomic.AtomicInteger;
+@@ -78,6 +80,7 @@ import static io.trino.RowPagesBuilder.rowPagesBuilder;
+ import static io.trino.execution.buffer.CompressionCodec.NONE;
+ import static io.trino.metadata.InternalBlockEncodingSerde.TESTING_BLOCK_ENCODING_SERDE;
+ import static io.trino.operator.OperatorAssertion.assertOperatorEquals;
++import static io.trino.operator.OperatorAssertion.assertOperatorEqualsIgnoreOrder;
+ import static io.trino.spi.type.BigintType.BIGINT;
+ import static io.trino.spi.type.DoubleType.DOUBLE;
+ import static io.trino.spi.type.VarcharType.VARCHAR;
+@@ -2109,6 +2112,194 @@ public class TestMergeJoinOperator
+         assertMergeJoin(JoinType.INNER, false, build, probe, ImmutableList.of(BIGINT, BIGINT), expected, Optional.of(filterFactory));
+     }
+ 
++    @Test
++    public void testAuditV03DifferentialFuzz(@TempDir Path spillPath)
++            throws Exception
++    {
++        for (int seed = 0; seed < 40; seed++) {
++            Random random = new Random(seed);
++            boolean composite = seed % 2 == 0;
++            List<Type> types = composite ? ImmutableList.of(BIGINT, BIGINT, BIGINT) : ImmutableList.of(BIGINT, BIGINT);
++            List<Integer> keys = composite ? ImmutableList.of(0, 1) : ImmutableList.of(0);
++            List<Long[]> left = auditRows(random, composite, random.nextInt(200));
++            List<Long[]> right = auditRows(random, composite, random.nextInt(250));
++            for (JoinType joinType : JoinType.values()) {
++                System.out.println("AUDIT fuzz seed=" + seed + " type=" + joinType + " left=" + left.size() + " right=" + right.size());
++                boolean[] matchedRight = new boolean[right.size()];
++                MaterializedResult.Builder expected = MaterializedResult.resultBuilder(ImmutableList.<Type>builder().addAll(types).addAll(types).build());
++                for (Long[] l : left) {
++                    boolean matched = false;
++                    for (int index = 0; index < right.size(); index++) {
++                        Long[] r = right.get(index);
++                        boolean equal = l[0] != null && l[0].equals(r[0]) && (!composite || l[1] != null && l[1].equals(r[1]));
++                        if (equal && (l[l.length - 1] + r[r.length - 1]) % 7 < 3) {
++                            expected.row(auditOutput(l, r));
++                            matched = true;
++                            matchedRight[index] = true;
++                        }
++                    }
++                    if (!matched && (joinType == JoinType.LEFT || joinType == JoinType.FULL)) {
++                        expected.row(auditOutput(l, new Long[types.size()]));
++                    }
++                }
++                if (joinType == JoinType.RIGHT || joinType == JoinType.FULL) {
++                    for (int index = 0; index < right.size(); index++) {
++                        if (!matchedRight[index]) {
++                            expected.row(auditOutput(new Long[types.size()], right.get(index)));
++                        }
++                    }
++                }
++                MaterializedResult oracle = expected.build();
++                List<Page> probePages = auditPages(types, left, random);
++                List<Page> buildPages = auditPages(types, right, random);
++                JoinFilterFunctionFactory filter = stubFilter((b, bp, a, ap) ->
++                        (BIGINT.getLong(b.getBlock(types.size() - 1), bp) + BIGINT.getLong(a.getBlock(types.size() - 1), ap)) % 7 < 3);
++                auditUnspilledJoin(joinType, types, keys, buildPages, probePages, oracle, filter);
++                auditSpilledJoin(spillPath, joinType, types, keys, buildPages, probePages, oracle, filter, seed);
++            }
++        }
++    }
++
++    private static List<Long[]> auditRows(Random random, boolean composite, int count)
++    {
++        List<Long[]> rows = new ArrayList<>();
++        for (int index = 0; index < count; index++) {
++            Long key = random.nextInt(12) == 0 ? null : random.nextInt(4) == 0 ? (long) random.nextInt(8) : 2L;
++            if (composite) {
++                rows.add(new Long[] {key, random.nextInt(8) == 0 ? null : (long) random.nextInt(3), (long) index});
++            }
++            else {
++                rows.add(new Long[] {key, (long) index});
++            }
++        }
++        Comparator<Long> comparator = Comparator.nullsLast(Long::compareTo);
++        rows.sort((a, b) -> {
++            int order = comparator.compare(a[0], b[0]);
++            return order != 0 || !composite ? order : comparator.compare(a[1], b[1]);
++        });
++        return rows;
++    }
++
++    private static List<Page> auditPages(List<Type> types, List<Long[]> rows, Random random)
++    {
++        RowPagesBuilder builder = rowPagesBuilder(types);
++        for (Long[] row : rows) {
++            builder.row((Object[]) row);
++            if (random.nextInt(11) == 0) {
++                builder.pageBreak();
++            }
++        }
++        return builder.build();
++    }
++
++    private static Object[] auditOutput(Long[] probe, Long[] build)
++    {
++        Object[] output = new Object[probe.length + build.length];
++        System.arraycopy(probe, 0, output, 0, probe.length);
++        System.arraycopy(build, 0, output, probe.length, build.length);
++        return output;
++    }
++
++    private void auditUnspilledJoin(
++            JoinType joinType,
++            List<Type> types,
++            List<Integer> keys,
++            List<Page> buildPages,
++            List<Page> probePages,
++            MaterializedResult expected,
++            JoinFilterFunctionFactory filter)
++    {
++        MergeJoinBridge bridge = new MergeJoinBridge(types, keys, ImmutableList.of());
++        buildPages.forEach(bridge::addPage);
++        bridge.finish();
++        JoinBridgeManager<MergeJoinBridge> manager = new JoinBridgeManager<>(false, bridge, types);
++        MergeJoinOperatorFactory factory = new MergeJoinOperatorFactory(
++                0,
++                NODE_ID,
++                manager,
++                joinType,
++                false,
++                types,
++                types,
++                keys,
++                keys,
++                allChannels(types),
++                allChannels(types),
++                Optional.of(filter),
++                SessionTestUtils.TEST_SESSION.toConnectorSession(),
++                blockTypeOperators);
++        DriverContext context = createTaskContext(executor, scheduledExecutor, SessionTestUtils.TEST_SESSION)
++                .addPipelineContext(0, true, true, false).addDriverContext();
++        assertOperatorEqualsIgnoreOrder(WorkProcessorOperatorAdapter.createAdapterOperatorFactory(factory), context, probePages, expected);
++    }
++
++    private void auditSpilledJoin(
++            Path spillPath,
++            JoinType joinType,
++            List<Type> types,
++            List<Integer> keys,
++            List<Page> buildPages,
++            List<Page> probePages,
++            MaterializedResult expected,
++            JoinFilterFunctionFactory filter,
++            int seed)
++            throws Exception
++    {
++        TaskContext task = TestingTaskContext.builder(executor, scheduledExecutor, SessionTestUtils.TEST_SESSION)
++                .setQueryMaxMemory(DataSize.ofBytes(128 * 1024)).build();
++        MergeJoinBridge bridge = new MergeJoinBridge(types, keys, ImmutableList.of());
++        ExecutorService spillExecutor = newSingleThreadExecutor();
++        FileSingleStreamSpillerFactory files = new FileSingleStreamSpillerFactory(
++                listeningDecorator(spillExecutor),
++                TESTING_BLOCK_ENCODING_SERDE,
++                new SpillerStats(),
++                ImmutableList.of(spillPath),
++                1,
++                1.0,
++                io.trino.execution.buffer.CompressionCodec.values()[seed % io.trino.execution.buffer.CompressionCodec.values().length],
++                seed % 4 < 2);
++        DriverContext buildDriver = task.addPipelineContext(0, true, true, false).addDriverContext();
++        var build = new MergeJoinBufferOperatorFactory.MergeJoinBufferOperator(
++                buildDriver.addOperatorContext(0, NODE_ID, "AuditBuild"),
++                bridge,
++                types,
++                SessionTestUtils.TEST_SESSION.toConnectorSession(),
++                Optional.of(AppendingSpiller.factory(files)),
++                1);
++        try {
++            for (Page page : buildPages) {
++                build.addInput(page);
++                build.isBlocked().get();
++                assertThat(build.needsInput()).isTrue();
++            }
++            build.finish();
++            JoinBridgeManager<MergeJoinBridge> manager = new JoinBridgeManager<>(false, bridge, types);
++            MergeJoinOperatorFactory factory = new MergeJoinOperatorFactory(
++                    0,
++                    NODE_ID,
++                    manager,
++                    joinType,
++                    false,
++                    types,
++                    types,
++                    keys,
++                    keys,
++                    allChannels(types),
++                    allChannels(types),
++                    Optional.of(filter),
++                    SessionTestUtils.TEST_SESSION.toConnectorSession(),
++                    blockTypeOperators);
++            DriverContext probeDriver = task.addPipelineContext(1, true, true, false).addDriverContext();
++            assertOperatorEqualsIgnoreOrder(WorkProcessorOperatorAdapter.createAdapterOperatorFactory(factory), probeDriver, probePages, expected);
++        }
++        finally {
++            build.close();
++            bridge.destroy();
++            files.destroy();
++            spillExecutor.shutdownNow();
++        }
++    }
++
+     private void assertMergeJoin(
+             JoinType joinType,
+             boolean outputSingleMatch,
+diff --git a/core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoinPostSelectionAudit.java b/core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoinPostSelectionAudit.java
+new file mode 100644
+index 00000000000..5b2e30f0969
+--- /dev/null
++++ b/core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoinPostSelectionAudit.java
+@@ -0,0 +1,76 @@
++/*
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *     http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++package io.trino.sql.query;
++
++import io.trino.Session;
++import org.junit.jupiter.api.AfterAll;
++import org.junit.jupiter.api.Test;
++import org.junit.jupiter.api.TestInstance;
++
++import java.util.stream.Collectors;
++import java.util.stream.IntStream;
++
++import static io.trino.SessionTestUtils.TEST_SESSION;
++import static io.trino.testing.assertions.Assert.assertEqualsIgnoreOrder;
++import static org.assertj.core.api.Assertions.assertThat;
++
++@TestInstance(TestInstance.Lifecycle.PER_CLASS)
++public class TestMergeJoinPostSelectionAudit
++{
++    private final QueryAssertions assertions = new QueryAssertions();
++
++    @AfterAll
++    public void close()
++    {
++        assertions.close();
++    }
++
++    @Test
++    public void testPostSelectionAggregationOrdering()
++    {
++        check(false);
++    }
++
++    @Test
++    public void testProjectionPreservesSpillability()
++    {
++        check(true);
++    }
++
++    private void check(boolean spilling)
++    {
++        Session forced = Session.builder(TEST_SESSION)
++                .setSystemProperty("prefer_merge_join", "FORCE")
++                .setSystemProperty("join_distribution_type", "PARTITIONED")
++                .setSystemProperty("join_reordering_strategy", "NONE")
++                .setSystemProperty("spill_enabled", Boolean.toString(spilling))
++                .setSystemProperty("push_partial_aggregation_through_join", "true")
++                .build();
++        Session hash = Session.builder(forced).setSystemProperty("prefer_merge_join", "OFF").build();
++        String fact = IntStream.range(0, 640).mapToObj(i -> "(" + i % 16 + ", BIGINT '" + i + "')").collect(Collectors.joining(","));
++        String dimension = IntStream.range(0, 16).mapToObj(i -> "(" + i + "," + i % 2 + ")").collect(Collectors.joining(","));
++        for (String value : new String[] {"l.v", "l.v + 1"}) {
++            String sql = "SELECT r.k, r.g, sum(" + value + ") FROM (VALUES " + fact + ") l(k,v) JOIN (VALUES " + dimension + ") r(k,g) ON l.k=r.k GROUP BY r.k, r.g";
++            String plan = (String) assertions.execute(forced, "EXPLAIN " + sql).getOnlyValue();
++            System.out.println("AUDIT V03 spill=" + spilling + " value=" + value + " plan=\n" + plan);
++            var expected = assertions.execute(hash, sql).getMaterializedRows();
++            Session noPushdown = Session.builder(forced).setSystemProperty("push_partial_aggregation_through_join", "false").build();
++            var control = assertions.execute(noPushdown, sql).getMaterializedRows();
++            assertEqualsIgnoreOrder(control, expected);
++            System.out.println("AUDIT controls spill=" + spilling + " value=" + value + " hashRows=" + expected.size() + " forcedNoPushdownRows=" + control.size());
++            assertEqualsIgnoreOrder(assertions.execute(forced, sql).getMaterializedRows(), expected);
++            assertThat(plan).contains("Algorithm: MERGE");
++        }
++    }
++}
+diff --git a/core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoinTypeAudit.java b/core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoinTypeAudit.java
+new file mode 100644
+index 00000000000..ca93f42f512
+--- /dev/null
++++ b/core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoinTypeAudit.java
+@@ -0,0 +1,77 @@
++/*
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *     http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++package io.trino.sql.query;
++
++import io.trino.Session;
++import org.junit.jupiter.api.AfterAll;
++import org.junit.jupiter.api.Test;
++import org.junit.jupiter.api.TestInstance;
++
++import java.time.DateTimeException;
++import java.util.List;
++
++import static io.trino.SessionTestUtils.TEST_SESSION;
++import static io.trino.testing.assertions.Assert.assertEqualsIgnoreOrder;
++import static org.assertj.core.api.Assertions.assertThat;
++import static org.assertj.core.api.Assertions.assertThatThrownBy;
++
++@TestInstance(TestInstance.Lifecycle.PER_CLASS)
++public class TestMergeJoinTypeAudit
++{
++    private final QueryAssertions assertions = new QueryAssertions();
++
++    @AfterAll
++    public void close()
++    {
++        assertions.close();
++    }
++
++    @Test
++    public void testTimestampBoundaryWithoutJoin()
++    {
++        Session hash = Session.builder(TEST_SESSION).setSystemProperty("prefer_merge_join", "OFF").build();
++        assertThatThrownBy(() -> assertions.execute(hash, "SELECT CAST('1969-12-31 23:59:59.999999999999' AS TIMESTAMP(12))"))
++                .isInstanceOf(DateTimeException.class);
++        System.out.println("AUDIT timestamp boundary fails with SMJ OFF and without JOIN; excluded from SMJ findings");
++    }
++
++    @Test
++    public void testSupportedScalarFamilies()
++    {
++        Session forced = Session.builder(TEST_SESSION).setSystemProperty("prefer_merge_join", "FORCE")
++                .setSystemProperty("join_distribution_type", "PARTITIONED").setSystemProperty("join_reordering_strategy", "NONE").build();
++        Session hash = Session.builder(forced).setSystemProperty("prefer_merge_join", "OFF").build();
++        List<String> inputs = List.of(
++                "FALSE, TRUE, TRUE, CAST(NULL AS BOOLEAN)",
++                "BIGINT '-9223372036854775808', BIGINT '0', BIGINT '9223372036854775807', CAST(NULL AS BIGINT)",
++                "CAST('12345678901234567890.123456' AS DECIMAL(38,6)), CAST('-12345678901234567890.123456' AS DECIMAL(38,6)), CAST('12345678901234567890.123456' AS DECIMAL(38,6)), CAST(NULL AS DECIMAL(38,6))",
++                "CAST('a' AS CHAR(5)), CAST('a ' AS CHAR(5)), CAST('b' AS CHAR(5)), CAST(NULL AS CHAR(5))",
++                "X'FF', X'00', X'FF', CAST(NULL AS VARBINARY)",
++                "DATE '2020-01-02', DATE '1969-12-31', DATE '2020-01-02', CAST(NULL AS DATE)",
++                "CAST('2020-01-01 00:00:00.123456789012' AS TIMESTAMP(12)), CAST('1969-12-31 23:59:59.987654321012' AS TIMESTAMP(12)), CAST('2020-01-01 00:00:00.123456789012' AS TIMESTAMP(12)), CAST(NULL AS TIMESTAMP(12))",
++                "CAST('2020-01-01 00:00:00.123456789012 UTC' AS TIMESTAMP(12) WITH TIME ZONE), CAST('2020-01-01 01:00:00.123456789012 +01:00' AS TIMESTAMP(12) WITH TIME ZONE), CAST('2019-12-31 23:59:59 UTC' AS TIMESTAMP(12) WITH TIME ZONE), CAST(NULL AS TIMESTAMP(12) WITH TIME ZONE)",
++                "UUID '00000000-0000-0000-0000-000000000001', UUID 'ffffffff-ffff-ffff-ffff-ffffffffffff', UUID '00000000-0000-0000-0000-000000000001', CAST(NULL AS UUID)",
++                "IPADDRESS '::1', IPADDRESS '1.2.3.4', IPADDRESS '::ffff:1.2.3.4', CAST(NULL AS IPADDRESS)");
++        for (int type = 0; type < inputs.size(); type++) {
++            for (String join : List.of("INNER", "LEFT", "RIGHT", "FULL")) {
++                String sql = "SELECT l.k, r.k FROM (VALUES " + inputs.get(type) + ") l(k) " + join + " JOIN (VALUES " + inputs.get(type) + ") r(k) ON l.k=r.k";
++                var expected = assertions.execute(hash, sql).getMaterializedRows();
++                String plan = (String) assertions.execute(forced, "EXPLAIN " + sql).getOnlyValue();
++                assertThat(plan).contains("Algorithm: MERGE");
++                assertEqualsIgnoreOrder(assertions.execute(forced, sql).getMaterializedRows(), expected);
++                System.out.println("AUDIT scalar family=" + type + " join=" + join + " matchedHash=true");
++            }
++        }
++    }
++}
+diff --git a/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSortedWriting.java b/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSortedWriting.java
+index 5ce47ab704b..0622c68d3a7 100644
+--- a/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSortedWriting.java
++++ b/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSortedWriting.java
+@@ -125,6 +125,55 @@ public class TestIcebergSortedWriting
+         });
+     }
+ 
++    @Test
++    public void testAuditV03PostSelectionAggregation()
++    {
++        try (TestTable fact = new TestTable(getQueryRunner()::execute, "audit_v03_fact", "WITH (sorted_by = ARRAY['k']) AS SELECT CAST(n % 16 AS BIGINT) k, CAST(n AS BIGINT) v FROM UNNEST(sequence(1, 640)) t(n)");
++                TestTable dimension = new TestTable(getQueryRunner()::execute, "audit_v03_dim", "WITH (sorted_by = ARRAY['k']) AS SELECT CAST(n AS BIGINT) k, CAST(n % 2 AS BIGINT) g FROM UNNEST(sequence(0, 15)) t(n)")) {
++            assertUpdate("ANALYZE " + fact.getName());
++            assertUpdate("ANALYZE " + dimension.getName());
++            Session forced = Session.builder(getSession()).setSystemProperty(PREFER_MERGE_JOIN, "FORCE")
++                    .setSystemProperty(JOIN_DISTRIBUTION_TYPE, "PARTITIONED")
++                    .setSystemProperty(JOIN_REORDERING_STRATEGY, "NONE")
++                    .setSystemProperty("spill_enabled", "true")
++                    .setSystemProperty("push_partial_aggregation_through_join", "true").build();
++            Session hash = Session.builder(forced).setSystemProperty(PREFER_MERGE_JOIN, "OFF").build();
++            for (String expression : List.of("l.v", "l.v + 1")) {
++                String sql = "SELECT r.k, r.g, sum(" + expression + ") FROM " + fact.getName() + " l JOIN " + dimension.getName() + " r ON l.k = r.k GROUP BY r.k, r.g";
++                System.out.println("AUDIT V03 distributed expr=" + expression + " plan=\n" + computeActual(forced, "EXPLAIN " + sql).getOnlyValue());
++                var expected = computeActual(hash, sql).getMaterializedRows();
++                Session noPushdown = Session.builder(forced).setSystemProperty("push_partial_aggregation_through_join", "false").build();
++                var control = computeActual(noPushdown, sql).getMaterializedRows();
++                assertEqualsIgnoreOrder(control, expected);
++                System.out.println("AUDIT distributed controls expr=" + expression + " hashRows=" + expected.size() + " forcedNoPushdownRows=" + control.size());
++                assertEqualsIgnoreOrder(computeActual(forced, sql).getMaterializedRows(), expected);
++            }
++        }
++    }
++
++    @Test
++    public void testAuditV03MultipleFilesOffWindows()
++    {
++        try (TestTable table = new TestTable(getQueryRunner()::execute, "audit_v03_sorted", "(k BIGINT, v BIGINT) WITH (sorted_by = ARRAY['k', 'v'])")) {
++            for (int insert = 0; insert < 5; insert++) {
++                assertUpdate("INSERT INTO " + table.getName() + " SELECT k, 10 * k + " + insert + " FROM UNNEST(sequence(1, 50)) t(k)", 50);
++            }
++            for (String concurrency : List.of("1", "4")) {
++                Session enabled = Session.builder(getSession()).setSystemProperty(PREFER_MERGE_JOIN, "OFF")
++                        .setSystemProperty("task_concurrency", concurrency).build();
++                Session disabled = Session.builder(enabled).setCatalogSessionProperty("iceberg", "report_sortedness", "false").build();
++                for (String query : List.of(
++                        "SELECT k, v, row_number() OVER (ORDER BY k, v) FROM %s",
++                        "SELECT k, v, sum(v) OVER (PARTITION BY k ORDER BY v ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) FROM %s",
++                        "SELECT k, sum(v), count(*) FROM %s GROUP BY k",
++                        "SELECT k, v FROM %s ORDER BY k, v FETCH FIRST 30 ROWS WITH TIES")) {
++                    String sql = query.formatted(table.getName());
++                    assertEqualsIgnoreOrder(computeActual(enabled, sql).getMaterializedRows(), computeActual(disabled, sql).getMaterializedRows());
++                }
++            }
++        }
++    }
++
+     @Test
+     public void testMergeJoinCostCalibration()
+     {
+diff --git a/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestMergeJoinExchangeAudit.java b/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestMergeJoinExchangeAudit.java
+new file mode 100644
+index 00000000000..92f4bca8f2b
+--- /dev/null
++++ b/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestMergeJoinExchangeAudit.java
+@@ -0,0 +1,67 @@
++/*
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *     http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++package io.trino.plugin.iceberg;
++
++import com.google.common.collect.ImmutableList;
++import io.trino.Session;
++import io.trino.testing.AbstractTestQueryFramework;
++import io.trino.testing.QueryRunner;
++import io.trino.testing.sql.TestTable;
++import org.junit.jupiter.api.Test;
++
++import static io.trino.testing.assertions.Assert.assertEqualsIgnoreOrder;
++
++public class TestMergeJoinExchangeAudit
++        extends AbstractTestQueryFramework
++{
++    @Override
++    protected QueryRunner createQueryRunner()
++            throws Exception
++    {
++        return IcebergQueryRunner.builder().setWorkerCount(2).setInitialTables(ImmutableList.of()).build();
++    }
++
++    @Test
++    public void testOrderedExchangeAfterAggregation()
++    {
++        try (TestTable fact = new TestTable(
++                getQueryRunner()::execute,
++                "audit_exchange_fact",
++                "WITH (sorted_by = ARRAY['k']) AS SELECT CAST(n % 32 AS BIGINT) k, CAST(n % 7 AS BIGINT) v FROM UNNEST(sequence(1, 6400)) t(n)");
++                TestTable dimension = new TestTable(
++                        getQueryRunner()::execute,
++                        "audit_exchange_dim",
++                        "WITH (sorted_by = ARRAY['k']) AS SELECT CAST(n AS BIGINT) k, CAST(n % 3 AS BIGINT) g, CAST(n % 2 AS BIGINT) cutoff FROM UNNEST(sequence(0, 31)) t(n)")) {
++            assertUpdate("ANALYZE " + fact.getName());
++            assertUpdate("ANALYZE " + dimension.getName());
++            Session forced = Session.builder(getSession())
++                    .setSystemProperty("prefer_merge_join", "FORCE")
++                    .setSystemProperty("join_distribution_type", "PARTITIONED")
++                    .setSystemProperty("join_reordering_strategy", "NONE")
++                    .setSystemProperty("push_partial_aggregation_through_join", "true").build();
++            Session hash = Session.builder(forced).setSystemProperty("prefer_merge_join", "OFF").build();
++            Session noPushdown = Session.builder(forced).setSystemProperty("push_partial_aggregation_through_join", "false").build();
++            String sql = "SELECT l.k, l.g, l.cutoff, sum(r.v) FROM " + dimension.getName() + " l JOIN " + fact.getName()
++                    + " r ON l.k=r.k AND l.cutoff < r.v + 1 GROUP BY l.k, l.g, l.cutoff";
++            var expected = computeActual(hash, sql).getMaterializedRows();
++            assertEqualsIgnoreOrder(computeActual(noPushdown, sql).getMaterializedRows(), expected);
++            System.out.println("AUDIT V03 ordered exchange plan=\n" + computeActual(forced, "EXPLAIN " + sql).getOnlyValue());
++            for (int run = 0; run < 5; run++) {
++                var actual = computeActual(forced, sql).getMaterializedRows();
++                System.out.println("AUDIT V03 ordered exchange run=" + run + " actual=" + actual + " expected=" + expected);
++                assertEqualsIgnoreOrder(actual, expected);
++            }
++        }
++    }
++}

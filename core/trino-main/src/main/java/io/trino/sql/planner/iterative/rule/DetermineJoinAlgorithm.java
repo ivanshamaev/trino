@@ -76,7 +76,7 @@ import static java.util.Objects.requireNonNull;
  * distribution must already be decided) and before {@code AddExchanges}, so the
  * exchange planner can build sorted streams for both join sides.
  *
- * <p>Eligibility (MUST gates, see ai-docs/smj-research/15-smj-selection-policy.md):
+ * <p>Eligibility (see the merge join optimizer documentation):
  * <ul>
  *     <li>INNER, LEFT, RIGHT or FULL join with non-empty equi-criteria</li>
  *     <li>PARTITIONED distribution</li>
@@ -280,7 +280,7 @@ public class DetermineJoinAlgorithm
                 new IsNull(symbol.toSymbolReference()));
     }
 
-    private static boolean isEligible(JoinNode joinNode, Session session)
+    public static boolean isEligible(JoinNode joinNode, Session session)
     {
         if (joinNode.getType() != JoinType.INNER
                 && joinNode.getType() != JoinType.LEFT

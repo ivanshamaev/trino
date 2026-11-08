@@ -1,0 +1,165 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] 
+[INFO] -----------------------< io.trino:trino-iceberg >-----------------------
+[INFO] Building trino-iceberg 485-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] ----------------------------[ trino-plugin ]----------------------------
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-iceberg ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-iceberg ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-cli) @ trino-iceberg ---
+[INFO] Tests will run in random order. To reproduce ordering use flag -Dsurefire.runOrder.random.seed=34494797978058
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+WARNING: Using incubator modules: jdk.incubator.vector
+[INFO] Running io.trino.plugin.iceberg.TestIcebergSortedWriting
+[INFO] Running io.trino.plugin.iceberg.TestMergeJoinAggregationExchange
+2026-11-08T09:44:26.241-0600	INFO	ForkJoinPool-1-worker-1	io.trino.simd.BlockEncodingSimdSupport	Detected SIMD Support for architecture=amd64, vectorBitWidth=128: SimdSupport[capabilities=[]]
+2026-11-08T09:44:27.636-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 117.00ms: 602.10MB -> 138.18MB
+2026-11-08T09:44:27.638-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 117.00ms: 602.10MB -> 138.18MB
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::loadLibrary has been called by com.aayushatharva.brotli4j.Brotli4jLoader in an unnamed module (file:/home/ivan/.m2/repository/com/aayushatharva/brotli4j/brotli4j/1.23.0/brotli4j-1.23.0.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+2026-11-08T09:44:32.796-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 4.81s, stopped 350.00ms: 831.96MB -> 223.95MB
+2026-11-08T09:44:32.807-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 4.81s, stopped 350.00ms: 831.96MB -> 223.95MB
+2026-11-08T09:44:32.808-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 350.00ms: 831.96MB -> 223.95MB
+2026-11-08T09:44:32.808-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 350.00ms: 831.96MB -> 223.95MB
+2026-11-08T09:44:33.975-0600	INFO	ForkJoinPool-1-worker-2	io.trino.testing.DistributedQueryRunner	Created DistributedQueryRunner in 9.67s (unclosed instances = 1)
+2026-11-08T09:44:33.975-0600	INFO	ForkJoinPool-1-worker-1	io.trino.testing.DistributedQueryRunner	Created DistributedQueryRunner in 9.67s (unclosed instances = 2)
+2026-11-08T09:44:34.087-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T09:44:34.087-0600	INFO	ForkJoinPool-1-worker-2	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T09:44:34.122-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T09:44:34.122-0600	INFO	ForkJoinPool-1-worker-2	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T09:44:34.123-0600	INFO	ForkJoinPool-1-worker-2	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T09:44:34.123-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T09:44:34.134-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T09:44:34.135-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T09:44:34.147-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T09:44:34.151-0600	INFO	ForkJoinPool-1-worker-2	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T09:44:34.152-0600	INFO	ForkJoinPool-1-worker-2	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T09:44:34.161-0600	INFO	ForkJoinPool-1-worker-2	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T09:44:34.313-0600	INFO	ForkJoinPool-1-worker-2	io.trino.cache.CacheManagerRegistry	Usage filesystem.metadata of catalog iceberg requires [LOW_LATENCY], selected blob cache manager memory
+2026-11-08T09:44:34.313-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	Usage filesystem.metadata of catalog iceberg requires [LOW_LATENCY], selected blob cache manager memory
+2026-11-08T09:44:37.692-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 4.32s, stopped 572.00ms: 842.19MB -> 617.79MB
+2026-11-08T09:44:37.693-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 4.32s, stopped 572.00ms: 842.19MB -> 617.79MB
+2026-11-08T09:44:37.693-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 4.32s, stopped 572.00ms: 842.19MB -> 617.79MB
+2026-11-08T09:44:37.694-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 4.32s, stopped 572.00ms: 842.19MB -> 617.79MB
+2026-11-08T09:44:37.705-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 572.00ms: 842.19MB -> 617.79MB
+2026-11-08T09:44:37.705-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 572.00ms: 842.19MB -> 617.79MB
+2026-11-08T09:44:44.921-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.68s, stopped 557.00ms: 1.33GB -> 678.21MB
+2026-11-08T09:44:44.937-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.68s, stopped 557.00ms: 1.33GB -> 678.21MB
+2026-11-08T09:44:44.937-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.68s, stopped 557.00ms: 1.33GB -> 678.21MB
+2026-11-08T09:44:44.938-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.68s, stopped 557.00ms: 1.33GB -> 678.21MB
+2026-11-08T09:44:44.938-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.68s, stopped 557.00ms: 1.33GB -> 678.21MB
+2026-11-08T09:44:44.939-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.68s, stopped 557.00ms: 1.33GB -> 678.21MB
+2026-11-08T09:44:48.994-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.29s, stopped 783.00ms: 1.42GB -> 755.18MB
+2026-11-08T09:44:48.995-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.29s, stopped 783.00ms: 1.42GB -> 755.18MB
+2026-11-08T09:44:49.002-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.29s, stopped 783.00ms: 1.42GB -> 755.18MB
+2026-11-08T09:44:49.002-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.29s, stopped 783.00ms: 1.42GB -> 755.18MB
+2026-11-08T09:44:49.003-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.29s, stopped 783.00ms: 1.42GB -> 755.18MB
+2026-11-08T09:44:49.005-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.29s, stopped 783.00ms: 1.42GB -> 755.18MB
+2026-11-08T09:44:51.920-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.09s, stopped 829.00ms: 1.45GB -> 775.84MB
+2026-11-08T09:44:51.965-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.09s, stopped 829.00ms: 1.45GB -> 775.84MB
+2026-11-08T09:44:51.974-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.09s, stopped 829.00ms: 1.45GB -> 775.84MB
+2026-11-08T09:44:51.975-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.09s, stopped 829.00ms: 1.45GB -> 775.84MB
+2026-11-08T09:44:51.979-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.09s, stopped 829.00ms: 1.45GB -> 775.84MB
+2026-11-08T09:44:51.980-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.09s, stopped 829.00ms: 1.45GB -> 775.84MB
+2026-11-08T09:44:54.272-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 1.74s, stopped 618.00ms: 1.11GB -> 803.86MB
+2026-11-08T09:44:54.273-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 1.74s, stopped 618.00ms: 1.11GB -> 803.86MB
+2026-11-08T09:44:54.273-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 1.74s, stopped 618.00ms: 1.11GB -> 803.86MB
+2026-11-08T09:44:54.274-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 1.74s, stopped 618.00ms: 1.11GB -> 803.86MB
+2026-11-08T09:44:54.274-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 1.74s, stopped 618.00ms: 1.11GB -> 803.86MB
+2026-11-08T09:44:54.275-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 1.74s, stopped 618.00ms: 1.11GB -> 803.86MB
+2026-11-08T09:44:56.901-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.03s, stopped 601.00ms: 1.31GB -> 817.96MB
+2026-11-08T09:44:56.902-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.03s, stopped 601.00ms: 1.31GB -> 817.96MB
+2026-11-08T09:44:56.902-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.03s, stopped 601.00ms: 1.31GB -> 817.96MB
+2026-11-08T09:44:56.902-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.03s, stopped 601.00ms: 1.31GB -> 817.96MB
+2026-11-08T09:44:56.903-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.03s, stopped 601.00ms: 1.31GB -> 817.96MB
+2026-11-08T09:44:56.911-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.03s, stopped 601.00ms: 1.31GB -> 817.96MB
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 34.95 s -- in io.trino.plugin.iceberg.TestMergeJoinAggregationExchange
+2026-11-08T09:44:58.791-0600	WARN	ForkJoinPool-1-worker-2	io.trino.blob.cache.memory.InMemoryBlobCacheManager	Failed to unregister MemoryBlobCacheStats MBean for catalog iceberg
+org.weakref.jmx.JmxException: io.trino.blob.cache.memory:type=MemoryBlobCacheStats,name=iceberg
+	at org.weakref.jmx.MBeanExporter.unexport(MBeanExporter.java:230)
+	at org.weakref.jmx.MBeanExporter.unexport(MBeanExporter.java:213)
+	at io.trino.blob.cache.memory.InMemoryBlobCacheManager.drop(InMemoryBlobCacheManager.java:84)
+	at java.base/java.util.ImmutableCollections$Set12.forEach(ImmutableCollections.java:1120)
+	at io.trino.blob.cache.memory.InMemoryBlobCacheManager.shutdown(InMemoryBlobCacheManager.java:96)
+	at io.trino.cache.CacheManagerRegistry.shutdown(CacheManagerRegistry.java:179)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at io.airlift.bootstrap.LifeCycleManager.stopInstance(LifeCycleManager.java:257)
+	at io.airlift.bootstrap.LifeCycleManager.stop(LifeCycleManager.java:226)
+	at io.airlift.bootstrap.LifeCycleManager.stop(LifeCycleManager.java:193)
+	at io.airlift.bootstrap.LifeCycleManager.stop(LifeCycleManager.java:177)
+	at io.trino.server.testing.TestingTrinoServer.lambda$close$1(TestingTrinoServer.java:486)
+	at com.google.common.io.Closer.close(Closer.java:203)
+	at io.trino.server.testing.TestingTrinoServer.close(TestingTrinoServer.java:489)
+	at com.google.common.io.Closer.close(Closer.java:203)
+	at io.trino.testing.DistributedQueryRunner.close(DistributedQueryRunner.java:702)
+	at io.trino.plugin.base.util.AutoCloseableCloser.close(AutoCloseableCloser.java:80)
+	at io.trino.testing.AbstractTestQueryFramework.close(AbstractTestQueryFramework.java:135)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:700)
+	at org.junit.platform.commons.support.ReflectionSupport.invokeMethod(ReflectionSupport.java:528)
+	at org.junit.jupiter.engine.support.MethodReflectionUtils.invoke(MethodReflectionUtils.java:53)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:61)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:124)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:163)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptLifecycleMethod(TimeoutExtension.java:128)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptAfterAllMethod(TimeoutExtension.java:118)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:124)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:105)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:99)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:66)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:47)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:39)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:104)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:98)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invokeVoid(InterceptingExecutableInvoker.java:71)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeAfterAllMethods$1(ClassBasedTestDescriptor.java:476)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeAfterAllMethods$0(ClassBasedTestDescriptor.java:474)
+	at java.base/java.lang.Iterable.forEach(Iterable.java:75)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.invokeAfterAllMethods(ClassBasedTestDescriptor.java:474)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.after(ClassBasedTestDescriptor.java:267)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.after(ClassBasedTestDescriptor.java:88)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$5(NodeTestTask.java:186)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$1(NodeTestTask.java:186)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:139)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$0(NodeTestTask.java:164)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:163)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:116)
+	at org.junit.platform.engine.support.hierarchical.ForkJoinPoolHierarchicalTestExecutorService$ExclusiveTask.exec(ForkJoinPoolHierarchicalTestExecutorService.java:266)
+	at java.base/java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:511)
+	at java.base/java.util.concurrent.ForkJoinPool$WorkQueue.topLevelExec(ForkJoinPool.java:1450)
+	at java.base/java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:2019)
+	at java.base/java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:187)
+
+
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 35.97 s -- in io.trino.plugin.iceberg.TestIcebergSortedWriting
+2026-11-08T09:44:58.821-0600	INFO	main	io.trino.testing.containers.junit.ReportLeakedContainers	DockerClientFactory not initialized, so there should be no leaked containers, skipping the check
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  45.139 s
+[INFO] Finished at: 2026-11-08T18:44:58+03:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Njord session closed

@@ -1,0 +1,227 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] 
+[INFO] ------------------------< io.trino:trino-main >-------------------------
+[INFO] Building trino-main 485-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-main ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-main ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-cli) @ trino-main ---
+[INFO] Tests will run in random order. To reproduce ordering use flag -Dsurefire.runOrder.random.seed=29457482484893
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+WARNING: Using incubator modules: jdk.incubator.vector
+[INFO] Running io.trino.execution.scheduler.TestMultiSourcePartitionedScheduler
+[INFO] Running io.trino.sql.planner.TestEffectivePredicateExtractor
+[INFO] Running io.trino.server.TestDynamicFilterService
+[INFO] Running io.trino.sql.planner.TestTopologicalOrderSubPlanVisitor
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.253 s -- in io.trino.sql.planner.TestTopologicalOrderSubPlanVisitor
+[INFO] Running io.trino.cost.TestMergeJoinCostModel
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.026 s -- in io.trino.cost.TestMergeJoinCostModel
+[INFO] Running io.trino.sql.query.TestMergeJoinRepeatedKeys
+2026-11-08T08:20:26.144-0600	INFO	ForkJoinPool-1-worker-4	org.hibernate.validator.internal.util.Version	HV000001: Hibernate Validator 9.1.5.Final
+2026-11-08T08:20:27.643-0600	INFO	ForkJoinPool-1-worker-3	io.trino.simd.BlockEncodingSimdSupport	Detected SIMD Support for architecture=amd64, vectorBitWidth=128: SimdSupport[capabilities=[]]
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::loadLibrary has been called by com.aayushatharva.brotli4j.Brotli4jLoader in an unnamed module (file:/home/ivan/.m2/repository/com/aayushatharva/brotli4j/brotli4j/1.23.0/brotli4j-1.23.0.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+2026-11-08T08:20:32.465-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 344.00ms: 992.99MB -> 183.29MB
+[INFO] Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.154 s -- in io.trino.server.TestDynamicFilterService
+[INFO] Running io.trino.sql.planner.plan.TestJoinNodeAlgorithm
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.351 s -- in io.trino.sql.planner.plan.TestJoinNodeAlgorithm
+[INFO] Running io.trino.cost.TestCostCalculator
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.114 s -- in io.trino.cost.TestCostCalculator
+[INFO] Running io.trino.operator.join.merge.TestMergeJoinOperator
+2026-11-08T08:20:35.339-0600	INFO	ForkJoinPool-1-worker-2	stdout	SMJ replay groupPages=
+2026-11-08T08:20:35.340-0600	INFO	ForkJoinPool-1-worker-2	stdout	2
+2026-11-08T08:20:35.341-0600	INFO	ForkJoinPool-1-worker-2	stdout	 pages=
+2026-11-08T08:20:35.342-0600	INFO	ForkJoinPool-1-worker-2	stdout	768
+2026-11-08T08:20:35.348-0600	INFO	ForkJoinPool-1-worker-2	stdout	 replayedPages=
+2026-11-08T08:20:35.351-0600	INFO	ForkJoinPool-1-worker-2	stdout	2240
+2026-11-08T08:20:35.354-0600	INFO	ForkJoinPool-1-worker-2	stdout	 writtenBytes=
+2026-11-08T08:20:35.357-0600	INFO	ForkJoinPool-1-worker-2	stdout	80036
+2026-11-08T08:20:35.358-0600	INFO	ForkJoinPool-1-worker-2	stdout	 readBytes=
+2026-11-08T08:20:35.360-0600	INFO	ForkJoinPool-1-worker-2	stdout	230720
+2026-11-08T08:20:35.360-0600	INFO	ForkJoinPool-1-worker-2	stdout	 readWriteRatio=
+2026-11-08T08:20:35.361-0600	INFO	ForkJoinPool-1-worker-2	stdout	2.8827
+2026-11-08T08:20:36.491-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.75s, stopped 267.00ms: 589.18MB -> 243.70MB
+2026-11-08T08:20:36.517-0600	INFO	ForkJoinPool-1-worker-2	stdout	SMJ replay groupPages=
+2026-11-08T08:20:36.518-0600	INFO	ForkJoinPool-1-worker-2	stdout	2
+2026-11-08T08:20:36.518-0600	INFO	ForkJoinPool-1-worker-2	stdout	 pages=
+2026-11-08T08:20:36.519-0600	INFO	ForkJoinPool-1-worker-2	stdout	3072
+2026-11-08T08:20:36.521-0600	INFO	ForkJoinPool-1-worker-2	stdout	 replayedPages=
+2026-11-08T08:20:36.521-0600	INFO	ForkJoinPool-1-worker-2	stdout	9170
+2026-11-08T08:20:36.522-0600	INFO	ForkJoinPool-1-worker-2	stdout	 writtenBytes=
+2026-11-08T08:20:36.522-0600	INFO	ForkJoinPool-1-worker-2	stdout	327206
+2026-11-08T08:20:36.523-0600	INFO	ForkJoinPool-1-worker-2	stdout	 readBytes=
+2026-11-08T08:20:36.523-0600	INFO	ForkJoinPool-1-worker-2	stdout	944510
+2026-11-08T08:20:36.524-0600	INFO	ForkJoinPool-1-worker-2	stdout	 readWriteRatio=
+2026-11-08T08:20:36.524-0600	INFO	ForkJoinPool-1-worker-2	stdout	2.8866
+2026-11-08T08:20:38.809-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.01s, stopped 320.00ms: 566.56MB -> 302.49MB
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 13.69 s -- in io.trino.execution.scheduler.TestMultiSourcePartitionedScheduler
+[INFO] Running io.trino.cost.TestOptimizerConfig
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.596 s -- in io.trino.cost.TestOptimizerConfig
+[INFO] Running io.trino.sql.planner.TestIncrementalRefreshVisitor
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 s -- in io.trino.sql.planner.TestIncrementalRefreshVisitor
+[INFO] Running io.trino.sql.query.TestMergeJoin
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 14.28 s -- in io.trino.sql.query.TestMergeJoinRepeatedKeys
+[INFO] Running io.trino.sql.planner.iterative.rule.TestPushPartialAggregationThroughJoin
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.169 s -- in io.trino.sql.planner.iterative.rule.TestPushPartialAggregationThroughJoin
+[INFO] Running io.trino.sql.planner.iterative.rule.TestMergeJoinExpressionRewrite
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in io.trino.sql.planner.iterative.rule.TestMergeJoinExpressionRewrite
+[INFO] Running io.trino.execution.scheduler.TestSourcePartitionedScheduler
+2026-11-08T08:20:43.246-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 366.00ms: 805.60MB -> 353.05MB
+2026-11-08T08:20:43.590-0600	INFO	ForkJoinPool-1-worker-2	stdout	SMJ replay groupPages=
+2026-11-08T08:20:43.590-0600	INFO	ForkJoinPool-1-worker-2	stdout	2
+2026-11-08T08:20:43.591-0600	INFO	ForkJoinPool-1-worker-2	stdout	 pages=
+2026-11-08T08:20:43.591-0600	INFO	ForkJoinPool-1-worker-2	stdout	12288
+2026-11-08T08:20:43.592-0600	INFO	ForkJoinPool-1-worker-2	stdout	 replayedPages=
+2026-11-08T08:20:43.594-0600	INFO	ForkJoinPool-1-worker-2	stdout	36824
+2026-11-08T08:20:43.595-0600	INFO	ForkJoinPool-1-worker-2	stdout	 writtenBytes=
+2026-11-08T08:20:43.596-0600	INFO	ForkJoinPool-1-worker-2	stdout	1313532
+2026-11-08T08:20:43.596-0600	INFO	ForkJoinPool-1-worker-2	stdout	 readBytes=
+2026-11-08T08:20:43.597-0600	INFO	ForkJoinPool-1-worker-2	stdout	3792872
+2026-11-08T08:20:43.597-0600	INFO	ForkJoinPool-1-worker-2	stdout	 readWriteRatio=
+2026-11-08T08:20:43.598-0600	INFO	ForkJoinPool-1-worker-2	stdout	2.8875
+2026-11-08T08:20:43.719-0600	INFO	ForkJoinPool-1-worker-2	stdout	SMJ replay groupPages=
+2026-11-08T08:20:43.720-0600	INFO	ForkJoinPool-1-worker-2	stdout	3
+2026-11-08T08:20:43.721-0600	INFO	ForkJoinPool-1-worker-2	stdout	 pages=
+2026-11-08T08:20:43.721-0600	INFO	ForkJoinPool-1-worker-2	stdout	768
+2026-11-08T08:20:43.721-0600	INFO	ForkJoinPool-1-worker-2	stdout	 replayedPages=
+2026-11-08T08:20:43.727-0600	INFO	ForkJoinPool-1-worker-2	stdout	2006
+2026-11-08T08:20:43.727-0600	INFO	ForkJoinPool-1-worker-2	stdout	 writtenBytes=
+2026-11-08T08:20:43.728-0600	INFO	ForkJoinPool-1-worker-2	stdout	80036
+2026-11-08T08:20:43.728-0600	INFO	ForkJoinPool-1-worker-2	stdout	 readBytes=
+2026-11-08T08:20:43.728-0600	INFO	ForkJoinPool-1-worker-2	stdout	204778
+2026-11-08T08:20:43.729-0600	INFO	ForkJoinPool-1-worker-2	stdout	 readWriteRatio=
+2026-11-08T08:20:43.732-0600	INFO	ForkJoinPool-1-worker-2	stdout	2.5586
+2026-11-08T08:20:44.333-0600	INFO	ForkJoinPool-1-worker-2	stdout	SMJ replay groupPages=
+2026-11-08T08:20:44.334-0600	INFO	ForkJoinPool-1-worker-2	stdout	3
+2026-11-08T08:20:44.334-0600	INFO	ForkJoinPool-1-worker-2	stdout	 pages=
+2026-11-08T08:20:44.335-0600	INFO	ForkJoinPool-1-worker-2	stdout	3072
+2026-11-08T08:20:44.335-0600	INFO	ForkJoinPool-1-worker-2	stdout	 replayedPages=
+2026-11-08T08:20:44.335-0600	INFO	ForkJoinPool-1-worker-2	stdout	8207
+2026-11-08T08:20:44.336-0600	INFO	ForkJoinPool-1-worker-2	stdout	 writtenBytes=
+2026-11-08T08:20:44.336-0600	INFO	ForkJoinPool-1-worker-2	stdout	327206
+2026-11-08T08:20:44.337-0600	INFO	ForkJoinPool-1-worker-2	stdout	 readBytes=
+2026-11-08T08:20:44.337-0600	INFO	ForkJoinPool-1-worker-2	stdout	837813
+2026-11-08T08:20:44.339-0600	INFO	ForkJoinPool-1-worker-2	stdout	 readWriteRatio=
+2026-11-08T08:20:44.339-0600	INFO	ForkJoinPool-1-worker-2	stdout	2.5605
+2026-11-08T08:20:44.959-0600	ERROR	FinalizerService	io.trino.execution.NodeTaskMap	BUG! io.trino.execution.NodeTaskMap$NodeTasks$TaskPartitionedSplitCountTracker for query.0.3.0 leaked with 256 partitioned splits (weight: 25600). Cleaning up so server can continue to function.
+2026-11-08T08:20:44.960-0600	ERROR	FinalizerService	io.trino.execution.NodeTaskMap	BUG! io.trino.execution.NodeTaskMap$NodeTasks$TaskPartitionedSplitCountTracker for query.0.0.0 leaked with 256 partitioned splits (weight: 25600). Cleaning up so server can continue to function.
+2026-11-08T08:20:44.960-0600	ERROR	FinalizerService	io.trino.execution.NodeTaskMap	BUG! io.trino.execution.NodeTaskMap$NodeTasks$TaskPartitionedSplitCountTracker for query.0.1.0 leaked with 256 partitioned splits (weight: 25600). Cleaning up so server can continue to function.
+2026-11-08T08:20:44.961-0600	ERROR	FinalizerService	io.trino.execution.NodeTaskMap	BUG! io.trino.execution.NodeTaskMap$NodeTasks$TaskPartitionedSplitCountTracker for query.0.2.0 leaked with 256 partitioned splits (weight: 25600). Cleaning up so server can continue to function.
+[INFO] Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.620 s -- in io.trino.sql.query.TestMergeJoin
+2026-11-08T08:20:48.279-0600	ERROR	FinalizerService	io.trino.execution.NodeTaskMap	BUG! io.trino.execution.NodeTaskMap$NodeTasks$TaskPartitionedSplitCountTracker for query.0.1.0 leaked with 256 partitioned splits (weight: 25600). Cleaning up so server can continue to function.
+2026-11-08T08:20:48.279-0600	ERROR	FinalizerService	io.trino.execution.NodeTaskMap	BUG! io.trino.execution.NodeTaskMap$NodeTasks$TaskPartitionedSplitCountTracker for query.0.2.0 leaked with 256 partitioned splits (weight: 25600). Cleaning up so server can continue to function.
+2026-11-08T08:20:48.280-0600	ERROR	FinalizerService	io.trino.execution.NodeTaskMap	BUG! io.trino.execution.NodeTaskMap$NodeTasks$TaskPartitionedSplitCountTracker for query.0.0.0 leaked with 256 partitioned splits (weight: 25600). Cleaning up so server can continue to function.
+[INFO] Running io.trino.operator.join.merge.TestDiskBackedMatchBitmap
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.009 s -- in io.trino.operator.join.merge.TestDiskBackedMatchBitmap
+[INFO] Running io.trino.operator.join.merge.TestAppendingSpiller
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.448 s -- in io.trino.operator.join.merge.TestAppendingSpiller
+[INFO] Running io.trino.operator.TestOrderByOperator
+[INFO] Running io.trino.cost.TestJoinStatsRule
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.330 s -- in io.trino.execution.scheduler.TestSourcePartitionedScheduler
+[INFO] Running io.trino.sql.planner.optimizations.TestEliminateCrossJoins
+2026-11-08T08:20:51.433-0600	INFO	ForkJoinPool-1-worker-2	stdout	SMJ replay groupPages=
+2026-11-08T08:20:51.433-0600	INFO	ForkJoinPool-1-worker-2	stdout	3
+2026-11-08T08:20:51.434-0600	INFO	ForkJoinPool-1-worker-2	stdout	 pages=
+2026-11-08T08:20:51.434-0600	INFO	ForkJoinPool-1-worker-2	stdout	12288
+2026-11-08T08:20:51.434-0600	INFO	ForkJoinPool-1-worker-2	stdout	 replayedPages=
+2026-11-08T08:20:51.435-0600	INFO	ForkJoinPool-1-worker-2	stdout	32951
+2026-11-08T08:20:51.435-0600	INFO	ForkJoinPool-1-worker-2	stdout	 writtenBytes=
+2026-11-08T08:20:51.435-0600	INFO	ForkJoinPool-1-worker-2	stdout	1313532
+2026-11-08T08:20:51.436-0600	INFO	ForkJoinPool-1-worker-2	stdout	 readBytes=
+2026-11-08T08:20:51.436-0600	INFO	ForkJoinPool-1-worker-2	stdout	3363813
+2026-11-08T08:20:51.437-0600	INFO	ForkJoinPool-1-worker-2	stdout	 readWriteRatio=
+2026-11-08T08:20:51.437-0600	INFO	ForkJoinPool-1-worker-2	stdout	2.5609
+2026-11-08T08:20:51.510-0600	INFO	ForkJoinPool-1-worker-2	stdout	SMJ replay groupPages=
+2026-11-08T08:20:51.511-0600	INFO	ForkJoinPool-1-worker-2	stdout	4
+2026-11-08T08:20:51.511-0600	INFO	ForkJoinPool-1-worker-2	stdout	 pages=
+2026-11-08T08:20:51.512-0600	INFO	ForkJoinPool-1-worker-2	stdout	768
+2026-11-08T08:20:51.512-0600	INFO	ForkJoinPool-1-worker-2	stdout	 replayedPages=
+2026-11-08T08:20:51.513-0600	INFO	ForkJoinPool-1-worker-2	stdout	1895
+2026-11-08T08:20:51.513-0600	INFO	ForkJoinPool-1-worker-2	stdout	 writtenBytes=
+2026-11-08T08:20:51.514-0600	INFO	ForkJoinPool-1-worker-2	stdout	80036
+2026-11-08T08:20:51.514-0600	INFO	ForkJoinPool-1-worker-2	stdout	 readBytes=
+2026-11-08T08:20:51.514-0600	INFO	ForkJoinPool-1-worker-2	stdout	192509
+2026-11-08T08:20:51.515-0600	INFO	ForkJoinPool-1-worker-2	stdout	 readWriteRatio=
+2026-11-08T08:20:51.515-0600	INFO	ForkJoinPool-1-worker-2	stdout	2.4053
+2026-11-08T08:20:52.062-0600	INFO	ForkJoinPool-1-worker-2	stdout	SMJ replay groupPages=
+2026-11-08T08:20:52.063-0600	INFO	ForkJoinPool-1-worker-2	stdout	4
+2026-11-08T08:20:52.063-0600	INFO	ForkJoinPool-1-worker-2	stdout	 pages=
+2026-11-08T08:20:52.064-0600	INFO	ForkJoinPool-1-worker-2	stdout	3072
+2026-11-08T08:20:52.064-0600	INFO	ForkJoinPool-1-worker-2	stdout	 replayedPages=
+2026-11-08T08:20:52.064-0600	INFO	ForkJoinPool-1-worker-2	stdout	7749
+2026-11-08T08:20:52.065-0600	INFO	ForkJoinPool-1-worker-2	stdout	 writtenBytes=
+2026-11-08T08:20:52.065-0600	INFO	ForkJoinPool-1-worker-2	stdout	327206
+2026-11-08T08:20:52.065-0600	INFO	ForkJoinPool-1-worker-2	stdout	 readBytes=
+2026-11-08T08:20:52.066-0600	INFO	ForkJoinPool-1-worker-2	stdout	787207
+2026-11-08T08:20:52.066-0600	INFO	ForkJoinPool-1-worker-2	stdout	 readWriteRatio=
+2026-11-08T08:20:52.066-0600	INFO	ForkJoinPool-1-worker-2	stdout	2.4058
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.468 s -- in io.trino.operator.TestOrderByOperator
+[INFO] Running io.trino.sql.planner.iterative.rule.TestDetermineJoinAlgorithm
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.631 s -- in io.trino.sql.planner.optimizations.TestEliminateCrossJoins
+[INFO] Running io.trino.operator.join.merge.TestMergeJoinOperatorInfo
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in io.trino.operator.join.merge.TestMergeJoinOperatorInfo
+[INFO] Running io.trino.spiller.TestFileSingleStreamSpiller
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.183 s -- in io.trino.spiller.TestFileSingleStreamSpiller
+[INFO] Running io.trino.execution.scheduler.TestSchedulingUtils
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.045 s -- in io.trino.execution.scheduler.TestSchedulingUtils
+[INFO] Running io.trino.cost.TestCachingStatsProvider
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 s -- in io.trino.cost.TestCachingStatsProvider
+[INFO] Running io.trino.spiller.TestSortingSpiller
+[INFO] Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.126 s -- in io.trino.cost.TestJoinStatsRule
+[INFO] Running io.trino.operator.TestPagesIndex
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.143 s -- in io.trino.operator.TestPagesIndex
+[INFO] Running io.trino.sql.planner.iterative.rule.TestEliminateCrossJoins
+[INFO] Tests run: 17, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.877 s -- in io.trino.sql.planner.iterative.rule.TestDetermineJoinAlgorithm
+[INFO] Running io.trino.spiller.TestFileSingleStreamSpillerFactory
+[INFO] Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 27.49 s -- in io.trino.sql.planner.TestEffectivePredicateExtractor
+[INFO] Running io.trino.sql.planner.optimizations.TestColocatedJoin
+2026-11-08T08:20:53.080-0600	INFO	ForkJoinPool-1-worker-3	io.trino.spiller.FileSingleStreamSpillerFactory	Deleting old spill file: /tmp/tmp_spill_path14556827385046116311/spill-replay-index-3477455143655193616.bin
+2026-11-08T08:20:53.081-0600	INFO	ForkJoinPool-1-worker-3	io.trino.spiller.FileSingleStreamSpillerFactory	Deleting old spill file: /tmp/tmp_spill_path14556827385046116311/spill-merge-join-matches-14619909853679975543.bin
+2026-11-08T08:20:53.081-0600	INFO	ForkJoinPool-1-worker-3	io.trino.spiller.FileSingleStreamSpillerFactory	Deleting old spill file: /tmp/tmp_spill_path14556827385046116311/spill8000059558365720919.bin
+2026-11-08T08:20:53.082-0600	INFO	ForkJoinPool-1-worker-3	io.trino.spiller.FileSingleStreamSpillerFactory	Deleting old spill file: /tmp/tmp_spill_path14556827385046116311/spill11627212442993238539.bin
+2026-11-08T08:20:53.085-0600	INFO	ForkJoinPool-1-worker-3	io.trino.spiller.FileSingleStreamSpillerFactory	Deleting old spill file: /tmp/tmp_spill_path29152986102912777019/merge-join-matches16953566458434111052.bin
+2026-11-08T08:20:53.086-0600	INFO	ForkJoinPool-1-worker-3	io.trino.spiller.FileSingleStreamSpillerFactory	Deleting old spill file: /tmp/tmp_spill_path29152986102912777019/spill11500592757263897464.bin
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.097 s -- in io.trino.spiller.TestFileSingleStreamSpillerFactory
+[INFO] Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.990 s -- in io.trino.sql.planner.iterative.rule.TestEliminateCrossJoins
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.993 s -- in io.trino.sql.planner.optimizations.TestColocatedJoin
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.153 s -- in io.trino.spiller.TestSortingSpiller
+2026-11-08T08:20:57.143-0600	INFO	ForkJoinPool-1-worker-2	stdout	SMJ replay groupPages=
+2026-11-08T08:20:57.144-0600	INFO	ForkJoinPool-1-worker-2	stdout	4
+2026-11-08T08:20:57.144-0600	INFO	ForkJoinPool-1-worker-2	stdout	 pages=
+2026-11-08T08:20:57.145-0600	INFO	ForkJoinPool-1-worker-2	stdout	12288
+2026-11-08T08:20:57.145-0600	INFO	ForkJoinPool-1-worker-2	stdout	 replayedPages=
+2026-11-08T08:20:57.146-0600	INFO	ForkJoinPool-1-worker-2	stdout	31120
+2026-11-08T08:20:57.146-0600	INFO	ForkJoinPool-1-worker-2	stdout	 writtenBytes=
+2026-11-08T08:20:57.146-0600	INFO	ForkJoinPool-1-worker-2	stdout	1313532
+2026-11-08T08:20:57.147-0600	INFO	ForkJoinPool-1-worker-2	stdout	 readBytes=
+2026-11-08T08:20:57.147-0600	INFO	ForkJoinPool-1-worker-2	stdout	3161432
+2026-11-08T08:20:57.147-0600	INFO	ForkJoinPool-1-worker-2	stdout	 readWriteRatio=
+2026-11-08T08:20:57.148-0600	INFO	ForkJoinPool-1-worker-2	stdout	2.4068
+2026-11-08T08:21:25.081-0600	INFO	ForkJoinPool-1-worker-2	stdout	SMJ outputBuilderRetainedBytes=2592 taskUserReservationBytes=2752 queryLimitBytes=16384
+[WARNING] Tests run: 62, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 133.6 s -- in io.trino.operator.join.merge.TestMergeJoinOperator
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 279, Failures: 0, Errors: 0, Skipped: 1
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  02:30 min
+[INFO] Finished at: 2026-11-08T17:22:48+03:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Njord session closed

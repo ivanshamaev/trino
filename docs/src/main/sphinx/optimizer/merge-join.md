@@ -33,6 +33,17 @@ evaluation. Spill bounds retained state; it does not eliminate that work or
 guarantee faster execution than hash join. See [](/admin/spill) for spill space,
 compression, and encryption settings.
 
+When spill encryption is enabled, it also protects the outer join match bitmap.
+The bitmap uses independently encrypted blocks with a temporary key and a new
+initialization vector for every write, including updates to an existing block.
+Zero blocks are encrypted in bounded initialization steps before matching starts.
+Spill reservations include the encrypted block overhead. File sizes and the
+page-offset index remain storage metadata.
+
+Late aggregation pushdown retains the selected physical join contract. Hash
+partial aggregations are not pushed below a merge join or through an ordered
+exchange, since their output does not preserve the required input ordering.
+
 ## Iceberg sortedness
 
 The Iceberg connector can report verified identity prefixes of the table sort

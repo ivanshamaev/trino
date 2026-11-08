@@ -51,6 +51,7 @@ public final class PlanSanityChecker
                         new VerifyUseConnectorNodePartitioningSet(),
                         new ValidateAggregationsWithDefaultValues(forceSingleNode),
                         new ValidateScaledWritersUsage(),
+                        new ValidateJoinAlgorithms(),
                         new ValidateStreamingAggregations(),
                         new DynamicFiltersChecker(),
                         new TableScanValidator(),
@@ -64,6 +65,7 @@ public final class PlanSanityChecker
                         new VerifyNoFilteredAggregations(),
                         new VerifyUseConnectorNodePartitioningSet(),
                         new ValidateScaledWritersUsage(),
+                        new ValidateJoinAlgorithms(),
                         new TableScanValidator(),
                         new TableExecuteStructureValidator())
                 .build();

@@ -1,0 +1,847 @@
+diff --git a/core/trino-main/src/main/java/io/trino/operator/join/merge/AppendingSpiller.java b/core/trino-main/src/main/java/io/trino/operator/join/merge/AppendingSpiller.java
+index 5d8effcd6b7..2f03a0e0c9f 100644
+--- a/core/trino-main/src/main/java/io/trino/operator/join/merge/AppendingSpiller.java
++++ b/core/trino-main/src/main/java/io/trino/operator/join/merge/AppendingSpiller.java
+@@ -24,7 +24,6 @@ import io.trino.spiller.SingleStreamSpillerFactory;
+ import io.trino.spiller.Spiller;
+ import io.trino.spiller.SpillerFactory;
+ 
+-import java.nio.file.Path;
+ import java.util.Iterator;
+ import java.util.List;
+ 
+@@ -99,10 +98,17 @@ public final class AppendingSpiller
+         return ((FileSingleStreamSpiller) delegate).getSpilledPagesFrom(pageIndex, pageCount);
+     }
+ 
+-    public Path createMatchFile()
++    public DiskBackedMatchBitmap createMatchBitmap(long positions)
+     {
+         checkState(delegate instanceof FileSingleStreamSpiller, "Match files require a file spiller");
+-        return ((FileSingleStreamSpiller) delegate).createTemporaryFile();
++        FileSingleStreamSpiller fileSpiller = (FileSingleStreamSpiller) delegate;
++        return new DiskBackedMatchBitmap(fileSpiller.createTemporaryFile(), positions, this::updateMatchFileBytes, fileSpiller.isEncrypted());
++    }
++
++    public long matchBitmapRetainedSize()
++    {
++        checkState(delegate instanceof FileSingleStreamSpiller, "Match files require a file spiller");
++        return DiskBackedMatchBitmap.retainedSize(((FileSingleStreamSpiller) delegate).isEncrypted());
+     }
+ 
+     public void updateMatchFileBytes(long bytes)
+diff --git a/core/trino-main/src/main/java/io/trino/operator/join/merge/DiskBackedMatchBitmap.java b/core/trino-main/src/main/java/io/trino/operator/join/merge/DiskBackedMatchBitmap.java
+index e18a05abf6c..af422bc5747 100644
+--- a/core/trino-main/src/main/java/io/trino/operator/join/merge/DiskBackedMatchBitmap.java
++++ b/core/trino-main/src/main/java/io/trino/operator/join/merge/DiskBackedMatchBitmap.java
+@@ -15,49 +15,72 @@ package io.trino.operator.join.merge;
+ 
+ import io.trino.spi.TrinoException;
+ 
++import javax.crypto.Cipher;
++import javax.crypto.SecretKey;
++import javax.crypto.spec.GCMParameterSpec;
++
+ import java.io.IOException;
+ import java.io.RandomAccessFile;
++import java.nio.ByteBuffer;
+ import java.nio.file.Files;
+ import java.nio.file.Path;
++import java.security.GeneralSecurityException;
++import java.util.Arrays;
++import java.util.Optional;
+ import java.util.function.LongConsumer;
+ 
++import static com.google.common.base.Preconditions.checkArgument;
++import static io.airlift.slice.SizeOf.instanceSize;
++import static io.airlift.slice.SizeOf.sizeOfByteArray;
+ import static io.trino.spi.StandardErrorCode.GENERIC_INTERNAL_ERROR;
++import static io.trino.util.Ciphers.createRandomAesEncryptionKey;
+ import static java.util.Objects.requireNonNull;
+ 
+ /**
+- * A group-local match bitmap. One block is cached so forward scans and repeated
+- * passes over a large group need bounded memory and sequential file I/O.
++ * A group-local match bitmap with one cached block. Encrypted blocks use a private
++ * ephemeral key and a new IV on every write, including rewrites of the same block.
+  */
+ final class DiskBackedMatchBitmap
+         implements AutoCloseable
+ {
+     static final int BUFFER_SIZE = 1024;
++    private static final int INSTANCE_SIZE = instanceSize(DiskBackedMatchBitmap.class);
+ 
+     private final Path path;
+     private final RandomAccessFile file;
+     private final byte[] buffer = new byte[BUFFER_SIZE];
+     private final long byteCount;
++    private final long fileSize;
+     private final LongConsumer spillBytes;
++    private final Optional<Encryption> encryption;
+     private long blockOffset = -1;
+     private int blockLength;
+     private boolean dirty;
+     private boolean closed;
+ 
+     public DiskBackedMatchBitmap(Path path, long positions, LongConsumer spillBytes)
++    {
++        this(path, positions, spillBytes, false);
++    }
++
++    public DiskBackedMatchBitmap(Path path, long positions, LongConsumer spillBytes, boolean encrypted)
+     {
+         this.path = requireNonNull(path, "path is null");
+         this.spillBytes = requireNonNull(spillBytes, "spillBytes is null");
+-        byteCount = (positions + 7) / 8;
++        checkArgument(positions >= 0, "positions is negative");
++        byteCount = Math.ceilDiv(positions, Byte.SIZE);
++        fileSize = encrypted ? Math.multiplyExact(Math.ceilDiv(byteCount, BUFFER_SIZE), Encryption.BLOCK_SIZE) : byteCount;
+         RandomAccessFile opened = null;
+         boolean reserved = false;
+         try {
+-            spillBytes.accept(byteCount);
++            spillBytes.accept(fileSize);
+             reserved = true;
++            encryption = encrypted ? Optional.of(new Encryption()) : Optional.empty();
+             opened = new RandomAccessFile(path.toFile(), "rw");
+-            opened.setLength(byteCount);
++            opened.setLength(fileSize);
+             file = opened;
+         }
+-        catch (IOException | RuntimeException e) {
++        catch (IOException | GeneralSecurityException | RuntimeException e) {
+             try {
+                 if (opened != null) {
+                     opened.close();
+@@ -69,7 +92,7 @@ final class DiskBackedMatchBitmap
+             }
+             if (reserved) {
+                 try {
+-                    spillBytes.accept(-byteCount);
++                    spillBytes.accept(-fileSize);
+                 }
+                 catch (RuntimeException cleanupFailure) {
+                     e.addSuppressed(cleanupFailure);
+@@ -82,6 +105,12 @@ final class DiskBackedMatchBitmap
+         }
+     }
+ 
++    public static long retainedSize(boolean encrypted)
++    {
++        // Include the bounded cipher/record state using a conservative estimate for JCE objects.
++        return INSTANCE_SIZE + sizeOfByteArray(BUFFER_SIZE) + (encrypted ? 4096 : 0);
++    }
++
+     public void mark(long position)
+     {
+         long byteIndex = position >>> 3;
+@@ -99,7 +128,7 @@ final class DiskBackedMatchBitmap
+ 
+     private void loadBlock(long byteIndex)
+     {
+-        long offset = ((long) byteIndex / BUFFER_SIZE) * BUFFER_SIZE;
++        long offset = (byteIndex / BUFFER_SIZE) * BUFFER_SIZE;
+         if (offset == blockOffset) {
+             return;
+         }
+@@ -107,20 +136,30 @@ final class DiskBackedMatchBitmap
+             flush();
+             blockOffset = offset;
+             blockLength = (int) Math.min(BUFFER_SIZE, byteCount - offset);
+-            file.seek(offset);
+-            file.readFully(buffer, 0, blockLength);
++            if (encryption.isPresent()) {
++                encryption.orElseThrow().read(file, blockOffset, buffer);
++            }
++            else {
++                file.seek(offset);
++                file.readFully(buffer, 0, blockLength);
++            }
+         }
+-        catch (IOException e) {
++        catch (IOException | GeneralSecurityException e) {
+             throw new TrinoException(GENERIC_INTERNAL_ERROR, "Failed to read merge join match file", e);
+         }
+     }
+ 
+     private void flush()
+-            throws IOException
++            throws IOException, GeneralSecurityException
+     {
+         if (dirty) {
+-            file.seek(blockOffset);
+-            file.write(buffer, 0, blockLength);
++            if (encryption.isPresent()) {
++                encryption.orElseThrow().write(file, blockOffset, buffer);
++            }
++            else {
++                file.seek(blockOffset);
++                file.write(buffer, 0, blockLength);
++            }
+             dirty = false;
+         }
+     }
+@@ -133,14 +172,71 @@ final class DiskBackedMatchBitmap
+         }
+         closed = true;
+         try {
+-            file.close();
+-            Files.deleteIfExists(path);
++            try {
++                file.close();
++            }
++            finally {
++                Files.deleteIfExists(path);
++            }
+         }
+         catch (IOException e) {
+             throw new TrinoException(GENERIC_INTERNAL_ERROR, "Failed to delete merge join match file", e);
+         }
+         finally {
+-            spillBytes.accept(-byteCount);
++            spillBytes.accept(-fileSize);
++        }
++    }
++
++    private static final class Encryption
++    {
++        private static final int IV_SIZE = 12;
++        private static final int TAG_BITS = 128;
++        private static final int BLOCK_SIZE = IV_SIZE + BUFFER_SIZE + TAG_BITS / Byte.SIZE;
++
++        private final SecretKey key = createRandomAesEncryptionKey();
++        private final Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
++        private final byte[] record = new byte[BLOCK_SIZE];
++        private final ByteBuffer associatedData = ByteBuffer.allocate(Long.BYTES);
++        private long sequence;
++
++        private Encryption()
++                throws GeneralSecurityException
++        {}
++
++        public void read(RandomAccessFile file, long offset, byte[] buffer)
++                throws IOException, GeneralSecurityException
++        {
++            file.seek(Math.multiplyExact(offset / BUFFER_SIZE, BLOCK_SIZE));
++            file.readFully(record);
++            // Sparse blocks have never been written. Sequence zero is never used for encryption.
++            if (ByteBuffer.wrap(record).getLong(Integer.BYTES) == 0) {
++                Arrays.fill(buffer, (byte) 0);
++                return;
++            }
++            initialize(Cipher.DECRYPT_MODE, offset);
++            cipher.doFinal(record, IV_SIZE, BLOCK_SIZE - IV_SIZE, buffer, 0);
++        }
++
++        public void write(RandomAccessFile file, long offset, byte[] buffer)
++                throws IOException, GeneralSecurityException
++        {
++            // The key belongs only to this bitmap. The counter guarantees unique IVs even
++            // when repeated probes revisit and modify an earlier block. Never wrap the counter.
++            sequence = Math.incrementExact(sequence);
++            ByteBuffer.wrap(record).putInt(0).putLong(sequence);
++            initialize(Cipher.ENCRYPT_MODE, offset);
++            cipher.doFinal(buffer, 0, BUFFER_SIZE, record, IV_SIZE);
++            file.seek(Math.multiplyExact(offset / BUFFER_SIZE, BLOCK_SIZE));
++            file.write(record);
++        }
++
++        private void initialize(int mode, long offset)
++                throws GeneralSecurityException
++        {
++            cipher.init(mode, key, new GCMParameterSpec(TAG_BITS, record, 0, IV_SIZE));
++            // Bind ciphertext to the logical block, so moving it to another offset is rejected.
++            associatedData.clear().putLong(offset).flip();
++            cipher.updateAAD(associatedData);
+         }
+     }
+ }
+diff --git a/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinBridge.java b/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinBridge.java
+index 8c94e7d6601..d21d7b9a498 100644
+--- a/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinBridge.java
++++ b/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinBridge.java
+@@ -26,7 +26,6 @@ import io.trino.spi.connector.SortOrder;
+ import io.trino.spi.type.Type;
+ import io.trino.spiller.Spiller;
+ 
+-import java.nio.file.Path;
+ import java.util.AbstractList;
+ import java.util.ArrayList;
+ import java.util.Iterator;
+@@ -208,10 +207,16 @@ public class MergeJoinBridge
+         }
+     }
+ 
+-    public Path createMatchFile()
++    public DiskBackedMatchBitmap createMatchBitmap(long positions)
+     {
+         checkState(spiller instanceof AppendingSpiller, "Large build groups require a replayable spiller");
+-        return ((AppendingSpiller) spiller).createMatchFile();
++        return ((AppendingSpiller) spiller).createMatchBitmap(positions);
++    }
++
++    public long matchBitmapRetainedSize()
++    {
++        checkState(spiller instanceof AppendingSpiller, "Large build groups require a replayable spiller");
++        return ((AppendingSpiller) spiller).matchBitmapRetainedSize();
+     }
+ 
+     public boolean canCreateMatchFile()
+diff --git a/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java b/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java
+index 201cda453e1..2d01f6c935a 100644
+--- a/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java
++++ b/core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java
+@@ -1024,10 +1024,10 @@ public class MergeJoinOperatorFactory
+                 }
+                 else {
+                     if (!bridge.canCreateMatchFile()
+-                            || !userMemoryContext.trySetBytes(DiskBackedMatchBitmap.BUFFER_SIZE)) {
++                            || !userMemoryContext.trySetBytes(bridge.matchBitmapRetainedSize())) {
+                         throw new TrinoException(EXCEEDED_LOCAL_MEMORY_LIMIT, "Merge join key group does not fit in memory");
+                     }
+-                    diskRowMatched = new DiskBackedMatchBitmap(bridge.createMatchFile(), groupScanRows, bridge::updateMatchFileBytes);
++                    diskRowMatched = bridge.createMatchBitmap(groupScanRows);
+                 }
+                 drainPage = groupStartPage;
+                 drainPos = groupStartPos;
+diff --git a/core/trino-main/src/main/java/io/trino/spiller/FileSingleStreamSpiller.java b/core/trino-main/src/main/java/io/trino/spiller/FileSingleStreamSpiller.java
+index 685e4ccc529..74a477c13c1 100644
+--- a/core/trino-main/src/main/java/io/trino/spiller/FileSingleStreamSpiller.java
++++ b/core/trino-main/src/main/java/io/trino/spiller/FileSingleStreamSpiller.java
+@@ -416,6 +416,11 @@ public class FileSingleStreamSpiller
+ 
+     private record ReplayCheckpoint(int pageIndex, long byteOffset) {}
+ 
++    public boolean isEncrypted()
++    {
++        return encrypted;
++    }
++
+     public Path createTemporaryFile()
+     {
+         try {
+diff --git a/core/trino-main/src/test/java/io/trino/operator/join/merge/TestAppendingSpiller.java b/core/trino-main/src/test/java/io/trino/operator/join/merge/TestAppendingSpiller.java
+index 174c8bfbc5e..e26da6a2fb4 100644
+--- a/core/trino-main/src/test/java/io/trino/operator/join/merge/TestAppendingSpiller.java
++++ b/core/trino-main/src/test/java/io/trino/operator/join/merge/TestAppendingSpiller.java
+@@ -23,11 +23,14 @@ import io.trino.spiller.SpillerStats;
+ import org.junit.jupiter.api.Test;
+ import org.junit.jupiter.api.io.TempDir;
+ 
++import java.nio.file.Files;
+ import java.nio.file.Path;
++import java.util.Arrays;
+ import java.util.Iterator;
+ import java.util.List;
+ import java.util.concurrent.ExecutorService;
+ 
++import static com.google.common.primitives.Bytes.indexOf;
+ import static com.google.common.util.concurrent.MoreExecutors.listeningDecorator;
+ import static io.trino.execution.buffer.CompressionCodec.NONE;
+ import static io.trino.memory.context.AggregatedMemoryContext.newSimpleAggregatedMemoryContext;
+@@ -39,6 +42,47 @@ import static org.assertj.core.api.Assertions.assertThat;
+ 
+ public class TestAppendingSpiller
+ {
++    @Test
++    public void testMatchBitmapInheritsSpillEncryption(@TempDir Path spillPath)
++            throws Exception
++    {
++        ExecutorService executor = newSingleThreadExecutor();
++        FileSingleStreamSpillerFactory files = new FileSingleStreamSpillerFactory(
++                listeningDecorator(executor), TESTING_BLOCK_ENCODING_SERDE, new SpillerStats(), ImmutableList.of(spillPath), 1, 1.0, NONE, true);
++        AggregatedMemoryContext memory = newSimpleAggregatedMemoryContext();
++        try (AppendingSpiller spiller = (AppendingSpiller) AppendingSpiller.factory(files).create(ImmutableList.of(BIGINT), _ -> {}, memory)) {
++            // Exercise the encrypted data stream and the auxiliary storage from the same owner.
++            spiller.spill(RowPagesBuilder.rowPagesBuilder(BIGINT).row(7L).build().iterator()).get();
++            try (DiskBackedMatchBitmap bitmap = spiller.createMatchBitmap(9000)) {
++                for (int position = 0; position < 8192; position += 2) {
++                    bitmap.mark(position);
++                }
++                bitmap.mark(8192);
++                byte[] plaintext = new byte[1024];
++                Arrays.fill(plaintext, (byte) 0x55);
++                try (var paths = Files.list(spillPath)) {
++                    for (Path path : paths.toList()) {
++                        byte[] content = Files.readAllBytes(path);
++                        if (content.length >= plaintext.length) {
++                            assertThat(indexOf(content, plaintext)).isEqualTo(-1);
++                        }
++                    }
++                }
++                assertThat(bitmap.isMarked(0)).isTrue();
++                assertThat(bitmap.isMarked(1)).isFalse();
++            }
++            assertThat(spiller.getSpilledPagesFrom(0).next().getPositionCount()).isEqualTo(1);
++        }
++        finally {
++            files.destroy();
++            executor.shutdownNow();
++            memory.close();
++        }
++        try (var paths = Files.list(spillPath)) {
++            assertThat(paths.toList()).isEmpty();
++        }
++    }
++
+     @Test
+     public void testBatchesAppendToOneSpillStream(@TempDir Path spillPath)
+             throws Exception
+diff --git a/core/trino-main/src/test/java/io/trino/operator/join/merge/TestDiskBackedMatchBitmap.java b/core/trino-main/src/test/java/io/trino/operator/join/merge/TestDiskBackedMatchBitmap.java
+index 7fe535fb4d3..f4f21728592 100644
+--- a/core/trino-main/src/test/java/io/trino/operator/join/merge/TestDiskBackedMatchBitmap.java
++++ b/core/trino-main/src/test/java/io/trino/operator/join/merge/TestDiskBackedMatchBitmap.java
+@@ -16,15 +16,103 @@ package io.trino.operator.join.merge;
+ import org.junit.jupiter.api.Test;
+ import org.junit.jupiter.api.io.TempDir;
+ 
++import javax.crypto.AEADBadTagException;
++
++import java.io.RandomAccessFile;
+ import java.nio.file.Files;
+ import java.nio.file.Path;
++import java.util.Arrays;
+ import java.util.concurrent.atomic.AtomicLong;
+ 
++import static com.google.common.primitives.Bytes.indexOf;
+ import static org.assertj.core.api.Assertions.assertThat;
+ import static org.assertj.core.api.Assertions.assertThatThrownBy;
+ 
+ public class TestDiskBackedMatchBitmap
+ {
++    @Test
++    public void testEncryptedPositionsBeyondIntegerLimit(@TempDir Path directory)
++            throws Exception
++    {
++        Path path = Files.createTempFile(directory, "large-encrypted-matches", ".bin");
++        long positions = (long) Integer.MAX_VALUE + 128;
++        AtomicLong reserved = new AtomicLong();
++        try (DiskBackedMatchBitmap bitmap = new DiskBackedMatchBitmap(path, positions, reserved::addAndGet, true)) {
++            assertThat(reserved.get()).isEqualTo(Files.size(path));
++            bitmap.mark(Integer.MAX_VALUE);
++            bitmap.mark(positions - 1);
++            assertThat(bitmap.isMarked(Integer.MAX_VALUE)).isTrue();
++            assertThat(bitmap.isMarked(positions - 1)).isTrue();
++            assertThat(bitmap.isMarked(Integer.MAX_VALUE - 1L)).isFalse();
++        }
++        assertThat(reserved.get()).isZero();
++        assertThat(Files.exists(path)).isFalse();
++    }
++
++    @Test
++    public void testEncryptedBlocksRewrittenWithNewIv(@TempDir Path directory)
++            throws Exception
++    {
++        Path path = Files.createTempFile(directory, "encrypted-matches", ".bin");
++        AtomicLong reserved = new AtomicLong();
++        try (DiskBackedMatchBitmap bitmap = new DiskBackedMatchBitmap(path, 9000, reserved::addAndGet, true)) {
++            assertThat(reserved.get()).isEqualTo(Files.size(path)).isGreaterThan(1125);
++            for (int position = 0; position < 8192; position += 2) {
++                bitmap.mark(position);
++            }
++            bitmap.mark(8192);
++            byte[] first = Files.readAllBytes(path);
++            byte[] plaintext = new byte[1024];
++            Arrays.fill(plaintext, (byte) 0x55);
++            assertThat(indexOf(first, plaintext)).isEqualTo(-1);
++            bitmap.mark(1);
++            bitmap.mark(8193);
++            byte[] rewritten = Files.readAllBytes(path);
++            assertThat(Arrays.copyOf(rewritten, 12)).isNotEqualTo(Arrays.copyOf(first, 12));
++            for (int position = 0; position < 9000; position++) {
++                assertThat(bitmap.isMarked(position)).as("position %s", position)
++                        .isEqualTo(position == 1 || position < 8192 && position % 2 == 0 || position == 8192 || position == 8193);
++            }
++            assertThat(bitmap.isMarked(0)).isTrue();
++        }
++        assertThat(reserved.get()).isZero();
++        assertThat(Files.exists(path)).isFalse();
++    }
++
++    @Test
++    public void testEncryptedBlockCorruptionIsRejected(@TempDir Path directory)
++            throws Exception
++    {
++        Path path = Files.createTempFile(directory, "encrypted-matches", ".bin");
++        AtomicLong reserved = new AtomicLong();
++        try (DiskBackedMatchBitmap bitmap = new DiskBackedMatchBitmap(path, 9000, reserved::addAndGet, true)) {
++            bitmap.mark(0);
++            bitmap.mark(8192);
++            try (RandomAccessFile file = new RandomAccessFile(path.toFile(), "rw")) {
++                file.seek(40);
++                int value = file.readUnsignedByte();
++                file.seek(40);
++                file.write(value ^ 1);
++            }
++            assertThatThrownBy(() -> bitmap.isMarked(0))
++                    .hasMessage("Failed to read merge join match file")
++                    .hasRootCauseInstanceOf(AEADBadTagException.class);
++        }
++        assertThat(reserved.get()).isZero();
++        assertThat(Files.exists(path)).isFalse();
++    }
++
++    @Test
++    public void testEncryptedReservationFailureRemovesFile(@TempDir Path directory)
++            throws Exception
++    {
++        Path path = Files.createTempFile(directory, "encrypted-matches", ".bin");
++        assertThatThrownBy(() -> new DiskBackedMatchBitmap(path, 9000, _ -> {
++            throw new IllegalStateException("spill limit reached");
++        }, true)).isInstanceOf(IllegalStateException.class).hasMessage("spill limit reached");
++        assertThat(Files.exists(path)).isFalse();
++    }
++
+     @Test
+     public void testMarksAcrossBlocksAndReleasesSpillReservation(@TempDir Path directory)
+             throws Exception
+diff --git a/core/trino-main/src/test/java/io/trino/operator/join/merge/TestMergeJoinOperator.java b/core/trino-main/src/test/java/io/trino/operator/join/merge/TestMergeJoinOperator.java
+index ffdbaab8701..2da9ea10f5a 100644
+--- a/core/trino-main/src/test/java/io/trino/operator/join/merge/TestMergeJoinOperator.java
++++ b/core/trino-main/src/test/java/io/trino/operator/join/merge/TestMergeJoinOperator.java
+@@ -19,6 +19,7 @@ import com.google.common.util.concurrent.SettableFuture;
+ import io.airlift.units.DataSize;
+ import io.trino.RowPagesBuilder;
+ import io.trino.SessionTestUtils;
++import io.trino.execution.buffer.CompressionCodec;
+ import io.trino.memory.context.LocalMemoryContext;
+ import io.trino.operator.DriverContext;
+ import io.trino.operator.Operator;
+@@ -61,9 +62,11 @@ import java.nio.file.Files;
+ import java.nio.file.Path;
+ import java.util.ArrayList;
+ import java.util.Arrays;
++import java.util.Comparator;
+ import java.util.Iterator;
+ import java.util.List;
+ import java.util.Optional;
++import java.util.Random;
+ import java.util.concurrent.ExecutorService;
+ import java.util.concurrent.ScheduledExecutorService;
+ import java.util.concurrent.atomic.AtomicInteger;
+@@ -78,6 +81,10 @@ import static io.trino.RowPagesBuilder.rowPagesBuilder;
+ import static io.trino.execution.buffer.CompressionCodec.NONE;
+ import static io.trino.metadata.InternalBlockEncodingSerde.TESTING_BLOCK_ENCODING_SERDE;
+ import static io.trino.operator.OperatorAssertion.assertOperatorEquals;
++import static io.trino.operator.OperatorAssertion.assertOperatorEqualsIgnoreOrder;
++import static io.trino.operator.OperatorAssertion.assertPagesEqualIgnoreOrder;
++import static io.trino.operator.OperatorAssertion.toMaterializedResult;
++import static io.trino.operator.OperatorAssertion.toPages;
+ import static io.trino.spi.type.BigintType.BIGINT;
+ import static io.trino.spi.type.DoubleType.DOUBLE;
+ import static io.trino.spi.type.VarcharType.VARCHAR;
+@@ -1109,6 +1116,37 @@ public class TestMergeJoinOperator
+         }
+     }
+ 
++    @ParameterizedTest
++    @EnumSource(CompressionCodec.class)
++    public void testEncryptedOuterJoinWithDiskMatchBitmap(CompressionCodec codec, @TempDir Path spillPath)
++            throws Exception
++    {
++        for (JoinType joinType : List.of(JoinType.RIGHT, JoinType.FULL)) {
++            RowPagesBuilder build = rowPagesBuilder(BIGINT);
++            MaterializedResult.Builder expected = MaterializedResult.resultBuilder(BIGINT, BIGINT);
++            for (int page = 0; page < 40; page++) {
++                for (int position = 0; position < 1000; position++) {
++                    build.row(7L);
++                    expected.row(7L, 7L);
++                    if (position % 2 != 0) {
++                        expected.row(null, 7L);
++                    }
++                }
++                build.pageBreak();
++            }
++            // 40,000 boolean entries cannot fit in a 32KiB query: the production bitmap must spill.
++            JoinFilterFunctionFactory filter = stubFilter((_, position, _, _) -> position % 2 == 0);
++            List<Page> buildPages = build.build();
++            List<Page> probePages = rowPagesBuilder(BIGINT).row(7L).pageBreak().row(7L).build();
++            MaterializedResult result = expected.build();
++            assertSpilledJoin(spillPath, joinType, buildPages, probePages, result, Optional.of(filter), 32 * 1024, codec, true);
++            assertSpilledJoin(spillPath, joinType, buildPages, probePages, result, Optional.of(filter), 32 * 1024, codec, true, true);
++            try (var files = Files.list(spillPath)) {
++                assertThat(files.toList()).isEmpty();
++            }
++        }
++    }
++
+     private void assertSpilledKeyGroupLargerThanMemoryLimit(Path spillPath, JoinType joinType)
+             throws Exception
+     {
+@@ -1170,6 +1208,18 @@ public class TestMergeJoinOperator
+ 
+     private SpillIo assertSpilledJoin(Path spillPath, JoinType joinType, List<Page> pages, List<Page> probePages, MaterializedResult expected, Optional<JoinFilterFunctionFactory> filterFactory, long memoryLimit)
+             throws Exception
++    {
++        return assertSpilledJoin(spillPath, joinType, pages, probePages, expected, filterFactory, memoryLimit, NONE, false);
++    }
++
++    private SpillIo assertSpilledJoin(Path spillPath, JoinType joinType, List<Page> pages, List<Page> probePages, MaterializedResult expected, Optional<JoinFilterFunctionFactory> filterFactory, long memoryLimit, CompressionCodec codec, boolean encrypted)
++            throws Exception
++    {
++        return assertSpilledJoin(spillPath, joinType, pages, probePages, expected, filterFactory, memoryLimit, codec, encrypted, false);
++    }
++
++    private SpillIo assertSpilledJoin(Path spillPath, JoinType joinType, List<Page> pages, List<Page> probePages, MaterializedResult expected, Optional<JoinFilterFunctionFactory> filterFactory, long memoryLimit, CompressionCodec codec, boolean encrypted, boolean cancel)
++            throws Exception
+     {
+         assertThat(pages.stream().mapToLong(Page::getRetainedSizeInBytes).sum()).isGreaterThan(memoryLimit);
+         TaskContext taskContext = TestingTaskContext.builder(executor, scheduledExecutor, SessionTestUtils.TEST_SESSION)
+@@ -1187,8 +1237,8 @@ public class TestMergeJoinOperator
+                 ImmutableList.of(spillPath),
+                 1,
+                 1.0,
+-                NONE,
+-                false);
++                codec,
++                encrypted);
+         try {
+             MergeJoinBufferOperatorFactory.MergeJoinBufferOperator buffer = new MergeJoinBufferOperatorFactory.MergeJoinBufferOperator(
+                     context,
+@@ -1221,7 +1271,30 @@ public class TestMergeJoinOperator
+                     SessionTestUtils.TEST_SESSION.toConnectorSession(),
+                     blockTypeOperators);
+             DriverContext probeDriver = taskContext.addPipelineContext(1, true, true, false).addDriverContext();
+-            assertOperatorEquals(WorkProcessorOperatorAdapter.createAdapterOperatorFactory(probeFactory), probeDriver, probePages, expected);
++            if (cancel) {
++                OperatorFactory adapter = WorkProcessorOperatorAdapter.createAdapterOperatorFactory(probeFactory);
++                try (Operator probe = adapter.createOperator(probeDriver)) {
++                    adapter.noMoreOperators();
++                    probe.addInput(probePages.getFirst());
++                    probe.finish();
++                    Page first = null;
++                    while (first == null && !probe.isFinished()) {
++                        first = probe.getOutput();
++                        probe.isBlocked().get();
++                    }
++                    assertThat(first).isNotNull();
++                    // Close with live match state and unmatched rows still pending.
++                    try (var files = Files.list(spillPath)) {
++                        assertThat(files.filter(path -> path.getFileName().toString().contains("merge-join-matches")).toList()).hasSize(1);
++                    }
++                }
++            }
++            else if (encrypted) {
++                assertOperatorEqualsIgnoreOrder(WorkProcessorOperatorAdapter.createAdapterOperatorFactory(probeFactory), probeDriver, probePages, expected);
++            }
++            else {
++                assertOperatorEquals(WorkProcessorOperatorAdapter.createAdapterOperatorFactory(probeFactory), probeDriver, probePages, expected);
++            }
+             assertThat(taskContext.aggregateUserMemoryContext().getBytes()).isZero();
+             return new SpillIo(spilledPages.getReplayedPageCount(), spillerStats.getTotalSpilledBytes(), spillerStats.getTotalSpillReadBytes());
+         }
+@@ -2109,6 +2182,214 @@ public class TestMergeJoinOperator
+         assertMergeJoin(JoinType.INNER, false, build, probe, ImmutableList.of(BIGINT, BIGINT), expected, Optional.of(filterFactory));
+     }
+ 
++    @Test
++    public void testDifferentialJoinWithCompressedEncryptedSpill(@TempDir Path spillPath)
++            throws Exception
++    {
++        for (int seed = 0; seed < 40; seed++) {
++            Random random = new Random(seed);
++            boolean composite = seed % 2 == 0;
++            List<Type> types = composite ? ImmutableList.of(BIGINT, BIGINT, BIGINT) : ImmutableList.of(BIGINT, BIGINT);
++            List<Integer> keys = composite ? ImmutableList.of(0, 1) : ImmutableList.of(0);
++            List<Long[]> left = randomRows(random, composite, random.nextInt(200));
++            List<Long[]> right = randomRows(random, composite, random.nextInt(250));
++            for (JoinType joinType : JoinType.values()) {
++                boolean[] matchedRight = new boolean[right.size()];
++                MaterializedResult.Builder expected = MaterializedResult.resultBuilder(ImmutableList.<Type>builder().addAll(types).addAll(types).build());
++                for (Long[] l : left) {
++                    boolean matched = false;
++                    for (int index = 0; index < right.size(); index++) {
++                        Long[] r = right.get(index);
++                        boolean equal = l[0] != null && l[0].equals(r[0]) && (!composite || l[1] != null && l[1].equals(r[1]));
++                        if (equal && (l[l.length - 1] + r[r.length - 1]) % 7 < 3) {
++                            expected.row(joinOutput(l, r));
++                            matched = true;
++                            matchedRight[index] = true;
++                        }
++                    }
++                    if (!matched && (joinType == JoinType.LEFT || joinType == JoinType.FULL)) {
++                        expected.row(joinOutput(l, new Long[types.size()]));
++                    }
++                }
++                if (joinType == JoinType.RIGHT || joinType == JoinType.FULL) {
++                    for (int index = 0; index < right.size(); index++) {
++                        if (!matchedRight[index]) {
++                            expected.row(joinOutput(new Long[types.size()], right.get(index)));
++                        }
++                    }
++                }
++                MaterializedResult oracle = expected.build();
++                List<Page> probePages = randomPages(types, left, random);
++                List<Page> buildPages = randomPages(types, right, random);
++                JoinFilterFunctionFactory filter = stubFilter((b, bp, a, ap) ->
++                        (BIGINT.getLong(b.getBlock(types.size() - 1), bp) + BIGINT.getLong(a.getBlock(types.size() - 1), ap)) % 7 < 3);
++                assertUnspilledJoinIgnoreOrder(joinType, types, keys, buildPages, probePages, oracle, filter);
++                assertSpilledJoinIgnoreOrder(spillPath, joinType, types, keys, buildPages, probePages, oracle, filter, seed);
++            }
++        }
++    }
++
++    private static void assertJoinOutput(JoinType joinType, List<Integer> keys, OperatorFactory factory, DriverContext context, List<Page> input, MaterializedResult expected)
++    {
++        List<Page> output = toPages(factory, context, input);
++        assertPagesEqualIgnoreOrder(context, output, expected);
++        if (joinType != JoinType.INNER && joinType != JoinType.LEFT) {
++            return;
++        }
++        // Only key order is promised; equal-key payloads may be emitted in any order.
++        var rows = toMaterializedResult(expected.getTypes(), output).getMaterializedRows();
++        Comparator<Long> comparator = Comparator.nullsLast(Long::compareTo);
++        for (int row = 1; row < rows.size(); row++) {
++            for (int key : keys) {
++                int order = comparator.compare((Long) rows.get(row - 1).getField(key), (Long) rows.get(row).getField(key));
++                assertThat(order).as("join=%s row=%s key=%s", joinType, row, key).isLessThanOrEqualTo(0);
++                if (order < 0) {
++                    break;
++                }
++            }
++        }
++    }
++
++    private static List<Long[]> randomRows(Random random, boolean composite, int count)
++    {
++        List<Long[]> rows = new ArrayList<>();
++        for (int index = 0; index < count; index++) {
++            Long key = random.nextInt(12) == 0 ? null : random.nextInt(4) == 0 ? (long) random.nextInt(8) : 2L;
++            if (composite) {
++                rows.add(new Long[] {key, random.nextInt(8) == 0 ? null : (long) random.nextInt(3), (long) index});
++            }
++            else {
++                rows.add(new Long[] {key, (long) index});
++            }
++        }
++        Comparator<Long> comparator = Comparator.nullsLast(Long::compareTo);
++        rows.sort((a, b) -> {
++            int order = comparator.compare(a[0], b[0]);
++            return order != 0 || !composite ? order : comparator.compare(a[1], b[1]);
++        });
++        return rows;
++    }
++
++    private static List<Page> randomPages(List<Type> types, List<Long[]> rows, Random random)
++    {
++        RowPagesBuilder builder = rowPagesBuilder(types);
++        for (Long[] row : rows) {
++            builder.row((Object[]) row);
++            if (random.nextInt(11) == 0) {
++                builder.pageBreak();
++            }
++        }
++        return builder.build();
++    }
++
++    private static Object[] joinOutput(Long[] probe, Long[] build)
++    {
++        Object[] output = new Object[probe.length + build.length];
++        System.arraycopy(probe, 0, output, 0, probe.length);
++        System.arraycopy(build, 0, output, probe.length, build.length);
++        return output;
++    }
++
++    private void assertUnspilledJoinIgnoreOrder(
++            JoinType joinType,
++            List<Type> types,
++            List<Integer> keys,
++            List<Page> buildPages,
++            List<Page> probePages,
++            MaterializedResult expected,
++            JoinFilterFunctionFactory filter)
++    {
++        MergeJoinBridge bridge = new MergeJoinBridge(types, keys, ImmutableList.of());
++        buildPages.forEach(bridge::addPage);
++        bridge.finish();
++        JoinBridgeManager<MergeJoinBridge> manager = new JoinBridgeManager<>(false, bridge, types);
++        MergeJoinOperatorFactory factory = new MergeJoinOperatorFactory(
++                0,
++                NODE_ID,
++                manager,
++                joinType,
++                false,
++                types,
++                types,
++                keys,
++                keys,
++                allChannels(types),
++                allChannels(types),
++                Optional.of(filter),
++                SessionTestUtils.TEST_SESSION.toConnectorSession(),
++                blockTypeOperators);
++        DriverContext context = createTaskContext(executor, scheduledExecutor, SessionTestUtils.TEST_SESSION)
++                .addPipelineContext(0, true, true, false).addDriverContext();
++        assertJoinOutput(joinType, keys, WorkProcessorOperatorAdapter.createAdapterOperatorFactory(factory), context, probePages, expected);
++    }
++
++    private void assertSpilledJoinIgnoreOrder(
++            Path spillPath,
++            JoinType joinType,
++            List<Type> types,
++            List<Integer> keys,
++            List<Page> buildPages,
++            List<Page> probePages,
++            MaterializedResult expected,
++            JoinFilterFunctionFactory filter,
++            int seed)
++            throws Exception
++    {
++        TaskContext task = TestingTaskContext.builder(executor, scheduledExecutor, SessionTestUtils.TEST_SESSION)
++                .setQueryMaxMemory(DataSize.ofBytes(128 * 1024)).build();
++        MergeJoinBridge bridge = new MergeJoinBridge(types, keys, ImmutableList.of());
++        ExecutorService spillExecutor = newSingleThreadExecutor();
++        FileSingleStreamSpillerFactory files = new FileSingleStreamSpillerFactory(
++                listeningDecorator(spillExecutor),
++                TESTING_BLOCK_ENCODING_SERDE,
++                new SpillerStats(),
++                ImmutableList.of(spillPath),
++                1,
++                1.0,
++                CompressionCodec.values()[seed % CompressionCodec.values().length],
++                seed % 4 < 2);
++        DriverContext buildDriver = task.addPipelineContext(0, true, true, false).addDriverContext();
++        var build = new MergeJoinBufferOperatorFactory.MergeJoinBufferOperator(
++                buildDriver.addOperatorContext(0, NODE_ID, "AuditBuild"),
++                bridge,
++                types,
++                SessionTestUtils.TEST_SESSION.toConnectorSession(),
++                Optional.of(AppendingSpiller.factory(files)),
++                1);
++        try {
++            for (Page page : buildPages) {
++                build.addInput(page);
++                build.isBlocked().get();
++                assertThat(build.needsInput()).isTrue();
++            }
++            build.finish();
++            JoinBridgeManager<MergeJoinBridge> manager = new JoinBridgeManager<>(false, bridge, types);
++            MergeJoinOperatorFactory factory = new MergeJoinOperatorFactory(
++                    0,
++                    NODE_ID,
++                    manager,
++                    joinType,
++                    false,
++                    types,
++                    types,
++                    keys,
++                    keys,
++                    allChannels(types),
++                    allChannels(types),
++                    Optional.of(filter),
++                    SessionTestUtils.TEST_SESSION.toConnectorSession(),
++                    blockTypeOperators);
++            DriverContext probeDriver = task.addPipelineContext(1, true, true, false).addDriverContext();
++            assertJoinOutput(joinType, keys, WorkProcessorOperatorAdapter.createAdapterOperatorFactory(factory), probeDriver, probePages, expected);
++        }
++        finally {
++            build.close();
++            bridge.destroy();
++            files.destroy();
++            spillExecutor.shutdownNow();
++        }
++    }
++
+     private void assertMergeJoin(
+             JoinType joinType,
+             boolean outputSingleMatch,

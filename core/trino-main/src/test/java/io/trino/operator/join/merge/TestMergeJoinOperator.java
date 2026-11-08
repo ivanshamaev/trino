@@ -19,6 +19,7 @@ import com.google.common.util.concurrent.SettableFuture;
 import io.airlift.units.DataSize;
 import io.trino.RowPagesBuilder;
 import io.trino.SessionTestUtils;
+import io.trino.execution.buffer.CompressionCodec;
 import io.trino.memory.context.LocalMemoryContext;
 import io.trino.operator.DriverContext;
 import io.trino.operator.Operator;
@@ -61,9 +62,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -78,6 +81,10 @@ import static io.trino.RowPagesBuilder.rowPagesBuilder;
 import static io.trino.execution.buffer.CompressionCodec.NONE;
 import static io.trino.metadata.InternalBlockEncodingSerde.TESTING_BLOCK_ENCODING_SERDE;
 import static io.trino.operator.OperatorAssertion.assertOperatorEquals;
+import static io.trino.operator.OperatorAssertion.assertOperatorEqualsIgnoreOrder;
+import static io.trino.operator.OperatorAssertion.assertPagesEqualIgnoreOrder;
+import static io.trino.operator.OperatorAssertion.toMaterializedResult;
+import static io.trino.operator.OperatorAssertion.toPages;
 import static io.trino.spi.type.BigintType.BIGINT;
 import static io.trino.spi.type.DoubleType.DOUBLE;
 import static io.trino.spi.type.VarcharType.VARCHAR;
@@ -1109,6 +1116,37 @@ public class TestMergeJoinOperator
         }
     }
 
+    @ParameterizedTest
+    @EnumSource(CompressionCodec.class)
+    public void testEncryptedOuterJoinWithDiskMatchBitmap(CompressionCodec codec, @TempDir Path spillPath)
+            throws Exception
+    {
+        for (JoinType joinType : List.of(JoinType.RIGHT, JoinType.FULL)) {
+            RowPagesBuilder build = rowPagesBuilder(BIGINT);
+            MaterializedResult.Builder expected = MaterializedResult.resultBuilder(BIGINT, BIGINT);
+            for (int page = 0; page < 160; page++) {
+                for (int position = 0; position < 1000; position++) {
+                    build.row(7L);
+                    expected.row(7L, 7L);
+                    if (position % 2 != 0) {
+                        expected.row(null, 7L);
+                    }
+                }
+                build.pageBreak();
+            }
+            // 160,000 boolean entries cannot fit in a 32KiB query: the production bitmap must spill.
+            JoinFilterFunctionFactory filter = stubFilter((_, position, _, _) -> position % 2 == 0);
+            List<Page> buildPages = build.build();
+            List<Page> probePages = rowPagesBuilder(BIGINT).row(7L).pageBreak().row(7L).build();
+            MaterializedResult result = expected.build();
+            assertSpilledJoin(spillPath, joinType, buildPages, probePages, result, Optional.of(filter), 32 * 1024, codec, true);
+            assertSpilledJoin(spillPath, joinType, buildPages, probePages, result, Optional.of(filter), 32 * 1024, codec, true, true);
+            try (var files = Files.list(spillPath)) {
+                assertThat(files.toList()).isEmpty();
+            }
+        }
+    }
+
     private void assertSpilledKeyGroupLargerThanMemoryLimit(Path spillPath, JoinType joinType)
             throws Exception
     {
@@ -1171,6 +1209,18 @@ public class TestMergeJoinOperator
     private SpillIo assertSpilledJoin(Path spillPath, JoinType joinType, List<Page> pages, List<Page> probePages, MaterializedResult expected, Optional<JoinFilterFunctionFactory> filterFactory, long memoryLimit)
             throws Exception
     {
+        return assertSpilledJoin(spillPath, joinType, pages, probePages, expected, filterFactory, memoryLimit, NONE, false);
+    }
+
+    private SpillIo assertSpilledJoin(Path spillPath, JoinType joinType, List<Page> pages, List<Page> probePages, MaterializedResult expected, Optional<JoinFilterFunctionFactory> filterFactory, long memoryLimit, CompressionCodec codec, boolean encrypted)
+            throws Exception
+    {
+        return assertSpilledJoin(spillPath, joinType, pages, probePages, expected, filterFactory, memoryLimit, codec, encrypted, false);
+    }
+
+    private SpillIo assertSpilledJoin(Path spillPath, JoinType joinType, List<Page> pages, List<Page> probePages, MaterializedResult expected, Optional<JoinFilterFunctionFactory> filterFactory, long memoryLimit, CompressionCodec codec, boolean encrypted, boolean cancel)
+            throws Exception
+    {
         assertThat(pages.stream().mapToLong(Page::getRetainedSizeInBytes).sum()).isGreaterThan(memoryLimit);
         TaskContext taskContext = TestingTaskContext.builder(executor, scheduledExecutor, SessionTestUtils.TEST_SESSION)
                 .setQueryMaxMemory(DataSize.ofBytes(memoryLimit))
@@ -1187,8 +1237,8 @@ public class TestMergeJoinOperator
                 ImmutableList.of(spillPath),
                 1,
                 1.0,
-                NONE,
-                false);
+                codec,
+                encrypted);
         try {
             MergeJoinBufferOperatorFactory.MergeJoinBufferOperator buffer = new MergeJoinBufferOperatorFactory.MergeJoinBufferOperator(
                     context,
@@ -1221,7 +1271,30 @@ public class TestMergeJoinOperator
                     SessionTestUtils.TEST_SESSION.toConnectorSession(),
                     blockTypeOperators);
             DriverContext probeDriver = taskContext.addPipelineContext(1, true, true, false).addDriverContext();
-            assertOperatorEquals(WorkProcessorOperatorAdapter.createAdapterOperatorFactory(probeFactory), probeDriver, probePages, expected);
+            if (cancel) {
+                OperatorFactory adapter = WorkProcessorOperatorAdapter.createAdapterOperatorFactory(probeFactory);
+                try (Operator probe = adapter.createOperator(probeDriver)) {
+                    adapter.noMoreOperators();
+                    probe.addInput(probePages.getFirst());
+                    probe.finish();
+                    Page first = null;
+                    while (first == null && !probe.isFinished()) {
+                        first = probe.getOutput();
+                        probe.isBlocked().get();
+                    }
+                    assertThat(first).isNotNull();
+                    // Close with live match state and unmatched rows still pending.
+                    try (var files = Files.list(spillPath)) {
+                        assertThat(files.filter(path -> path.getFileName().toString().contains("merge-join-matches")).toList()).hasSize(1);
+                    }
+                }
+            }
+            else if (encrypted) {
+                assertOperatorEqualsIgnoreOrder(WorkProcessorOperatorAdapter.createAdapterOperatorFactory(probeFactory), probeDriver, probePages, expected);
+            }
+            else {
+                assertOperatorEquals(WorkProcessorOperatorAdapter.createAdapterOperatorFactory(probeFactory), probeDriver, probePages, expected);
+            }
             assertThat(taskContext.aggregateUserMemoryContext().getBytes()).isZero();
             return new SpillIo(spilledPages.getReplayedPageCount(), spillerStats.getTotalSpilledBytes(), spillerStats.getTotalSpillReadBytes());
         }
@@ -2107,6 +2180,214 @@ public class TestMergeJoinOperator
                 .build();
 
         assertMergeJoin(JoinType.INNER, false, build, probe, ImmutableList.of(BIGINT, BIGINT), expected, Optional.of(filterFactory));
+    }
+
+    @Test
+    public void testDifferentialJoinWithCompressedEncryptedSpill(@TempDir Path spillPath)
+            throws Exception
+    {
+        for (int seed = 0; seed < 40; seed++) {
+            Random random = new Random(seed);
+            boolean composite = seed % 2 == 0;
+            List<Type> types = composite ? ImmutableList.of(BIGINT, BIGINT, BIGINT) : ImmutableList.of(BIGINT, BIGINT);
+            List<Integer> keys = composite ? ImmutableList.of(0, 1) : ImmutableList.of(0);
+            List<Long[]> left = randomRows(random, composite, random.nextInt(200));
+            List<Long[]> right = randomRows(random, composite, random.nextInt(250));
+            for (JoinType joinType : JoinType.values()) {
+                boolean[] matchedRight = new boolean[right.size()];
+                MaterializedResult.Builder expected = MaterializedResult.resultBuilder(ImmutableList.<Type>builder().addAll(types).addAll(types).build());
+                for (Long[] l : left) {
+                    boolean matched = false;
+                    for (int index = 0; index < right.size(); index++) {
+                        Long[] r = right.get(index);
+                        boolean equal = l[0] != null && l[0].equals(r[0]) && (!composite || l[1] != null && l[1].equals(r[1]));
+                        if (equal && (l[l.length - 1] + r[r.length - 1]) % 7 < 3) {
+                            expected.row(joinOutput(l, r));
+                            matched = true;
+                            matchedRight[index] = true;
+                        }
+                    }
+                    if (!matched && (joinType == JoinType.LEFT || joinType == JoinType.FULL)) {
+                        expected.row(joinOutput(l, new Long[types.size()]));
+                    }
+                }
+                if (joinType == JoinType.RIGHT || joinType == JoinType.FULL) {
+                    for (int index = 0; index < right.size(); index++) {
+                        if (!matchedRight[index]) {
+                            expected.row(joinOutput(new Long[types.size()], right.get(index)));
+                        }
+                    }
+                }
+                MaterializedResult oracle = expected.build();
+                List<Page> probePages = randomPages(types, left, random);
+                List<Page> buildPages = randomPages(types, right, random);
+                JoinFilterFunctionFactory filter = stubFilter((b, bp, a, ap) ->
+                        (BIGINT.getLong(b.getBlock(types.size() - 1), bp) + BIGINT.getLong(a.getBlock(types.size() - 1), ap)) % 7 < 3);
+                assertUnspilledJoinIgnoreOrder(joinType, types, keys, buildPages, probePages, oracle, filter);
+                assertSpilledJoinIgnoreOrder(spillPath, joinType, types, keys, buildPages, probePages, oracle, filter, seed);
+            }
+        }
+    }
+
+    private static void assertJoinOutput(JoinType joinType, List<Integer> keys, OperatorFactory factory, DriverContext context, List<Page> input, MaterializedResult expected)
+    {
+        List<Page> output = toPages(factory, context, input);
+        assertPagesEqualIgnoreOrder(context, output, expected);
+        if (joinType != JoinType.INNER && joinType != JoinType.LEFT) {
+            return;
+        }
+        // Only key order is promised; equal-key payloads may be emitted in any order.
+        var rows = toMaterializedResult(expected.getTypes(), output).getMaterializedRows();
+        Comparator<Long> comparator = Comparator.nullsLast(Long::compareTo);
+        for (int row = 1; row < rows.size(); row++) {
+            for (int key : keys) {
+                int order = comparator.compare((Long) rows.get(row - 1).getField(key), (Long) rows.get(row).getField(key));
+                assertThat(order).as("join=%s row=%s key=%s", joinType, row, key).isLessThanOrEqualTo(0);
+                if (order < 0) {
+                    break;
+                }
+            }
+        }
+    }
+
+    private static List<Long[]> randomRows(Random random, boolean composite, int count)
+    {
+        List<Long[]> rows = new ArrayList<>();
+        for (int index = 0; index < count; index++) {
+            Long key = random.nextInt(12) == 0 ? null : random.nextInt(4) == 0 ? (long) random.nextInt(8) : 2L;
+            if (composite) {
+                rows.add(new Long[] {key, random.nextInt(8) == 0 ? null : (long) random.nextInt(3), (long) index});
+            }
+            else {
+                rows.add(new Long[] {key, (long) index});
+            }
+        }
+        Comparator<Long> comparator = Comparator.nullsLast(Long::compareTo);
+        rows.sort((a, b) -> {
+            int order = comparator.compare(a[0], b[0]);
+            return order != 0 || !composite ? order : comparator.compare(a[1], b[1]);
+        });
+        return rows;
+    }
+
+    private static List<Page> randomPages(List<Type> types, List<Long[]> rows, Random random)
+    {
+        RowPagesBuilder builder = rowPagesBuilder(types);
+        for (Long[] row : rows) {
+            builder.row((Object[]) row);
+            if (random.nextInt(11) == 0) {
+                builder.pageBreak();
+            }
+        }
+        return builder.build();
+    }
+
+    private static Object[] joinOutput(Long[] probe, Long[] build)
+    {
+        Object[] output = new Object[probe.length + build.length];
+        System.arraycopy(probe, 0, output, 0, probe.length);
+        System.arraycopy(build, 0, output, probe.length, build.length);
+        return output;
+    }
+
+    private void assertUnspilledJoinIgnoreOrder(
+            JoinType joinType,
+            List<Type> types,
+            List<Integer> keys,
+            List<Page> buildPages,
+            List<Page> probePages,
+            MaterializedResult expected,
+            JoinFilterFunctionFactory filter)
+    {
+        MergeJoinBridge bridge = new MergeJoinBridge(types, keys, ImmutableList.of());
+        buildPages.forEach(bridge::addPage);
+        bridge.finish();
+        JoinBridgeManager<MergeJoinBridge> manager = new JoinBridgeManager<>(false, bridge, types);
+        MergeJoinOperatorFactory factory = new MergeJoinOperatorFactory(
+                0,
+                NODE_ID,
+                manager,
+                joinType,
+                false,
+                types,
+                types,
+                keys,
+                keys,
+                allChannels(types),
+                allChannels(types),
+                Optional.of(filter),
+                SessionTestUtils.TEST_SESSION.toConnectorSession(),
+                blockTypeOperators);
+        DriverContext context = createTaskContext(executor, scheduledExecutor, SessionTestUtils.TEST_SESSION)
+                .addPipelineContext(0, true, true, false).addDriverContext();
+        assertJoinOutput(joinType, keys, WorkProcessorOperatorAdapter.createAdapterOperatorFactory(factory), context, probePages, expected);
+    }
+
+    private void assertSpilledJoinIgnoreOrder(
+            Path spillPath,
+            JoinType joinType,
+            List<Type> types,
+            List<Integer> keys,
+            List<Page> buildPages,
+            List<Page> probePages,
+            MaterializedResult expected,
+            JoinFilterFunctionFactory filter,
+            int seed)
+            throws Exception
+    {
+        TaskContext task = TestingTaskContext.builder(executor, scheduledExecutor, SessionTestUtils.TEST_SESSION)
+                .setQueryMaxMemory(DataSize.ofBytes(128 * 1024)).build();
+        MergeJoinBridge bridge = new MergeJoinBridge(types, keys, ImmutableList.of());
+        ExecutorService spillExecutor = newSingleThreadExecutor();
+        FileSingleStreamSpillerFactory files = new FileSingleStreamSpillerFactory(
+                listeningDecorator(spillExecutor),
+                TESTING_BLOCK_ENCODING_SERDE,
+                new SpillerStats(),
+                ImmutableList.of(spillPath),
+                1,
+                1.0,
+                CompressionCodec.values()[seed % CompressionCodec.values().length],
+                seed % 4 < 2);
+        DriverContext buildDriver = task.addPipelineContext(0, true, true, false).addDriverContext();
+        var build = new MergeJoinBufferOperatorFactory.MergeJoinBufferOperator(
+                buildDriver.addOperatorContext(0, NODE_ID, "AuditBuild"),
+                bridge,
+                types,
+                SessionTestUtils.TEST_SESSION.toConnectorSession(),
+                Optional.of(AppendingSpiller.factory(files)),
+                1);
+        try {
+            for (Page page : buildPages) {
+                build.addInput(page);
+                build.isBlocked().get();
+                assertThat(build.needsInput()).isTrue();
+            }
+            build.finish();
+            JoinBridgeManager<MergeJoinBridge> manager = new JoinBridgeManager<>(false, bridge, types);
+            MergeJoinOperatorFactory factory = new MergeJoinOperatorFactory(
+                    0,
+                    NODE_ID,
+                    manager,
+                    joinType,
+                    false,
+                    types,
+                    types,
+                    keys,
+                    keys,
+                    allChannels(types),
+                    allChannels(types),
+                    Optional.of(filter),
+                    SessionTestUtils.TEST_SESSION.toConnectorSession(),
+                    blockTypeOperators);
+            DriverContext probeDriver = task.addPipelineContext(1, true, true, false).addDriverContext();
+            assertJoinOutput(joinType, keys, WorkProcessorOperatorAdapter.createAdapterOperatorFactory(factory), probeDriver, probePages, expected);
+        }
+        finally {
+            build.close();
+            bridge.destroy();
+            files.destroy();
+            spillExecutor.shutdownNow();
+        }
     }
 
     private void assertMergeJoin(

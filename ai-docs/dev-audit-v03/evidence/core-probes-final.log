@@ -1,0 +1,775 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] 
+[INFO] ------------------------< io.trino:trino-main >-------------------------
+[INFO] Building trino-main 485-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-main ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-main ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-cli) @ trino-main ---
+[INFO] Tests will run in random order. To reproduce ordering use flag -Dsurefire.runOrder.random.seed=29400601187046
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+WARNING: Using incubator modules: jdk.incubator.vector
+[INFO] Running io.trino.sql.query.TestMergeJoinPostSelectionAudit
+[INFO] Running io.trino.operator.join.merge.TestAppendingSpiller
+[INFO] Running io.trino.operator.join.merge.TestMergeJoinOperator
+2026-11-08T08:19:27.910-0600	INFO	ForkJoinPool-1-worker-2	io.trino.simd.BlockEncodingSimdSupport	Detected SIMD Support for architecture=amd64, vectorBitWidth=128: SimdSupport[capabilities=[]]
+2026-11-08T08:19:28.192-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=0 type=INNER left=160 right=113
+2026-11-08T08:19:28.194-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT encrypted bitmap bytes=1125 firstBlockPlaintext=true
+2026-11-08T08:19:28.286-0600	INFO	ForkJoinPool-1-worker-1	org.hibernate.validator.internal.util.Version	HV000001: Hibernate Validator 9.1.5.Final
+[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.484 s <<< FAILURE! -- in io.trino.operator.join.merge.TestAppendingSpiller
+[ERROR] io.trino.operator.join.merge.TestAppendingSpiller.testAuditV03EncryptedMatchBitmap(Path) -- Time elapsed: 0.457 s <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting actual:
+  [85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, ... 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85]
+not to be equal to:
+  [85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, ... 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85]
+
+	at io.trino.operator.join.merge.TestAppendingSpiller.testAuditV03EncryptedMatchBitmap(TestAppendingSpiller.java:70)
+
+2026-11-08T08:19:28.418-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=0 type=LEFT left=160 right=113
+2026-11-08T08:19:28.499-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=0 type=RIGHT left=160 right=113
+2026-11-08T08:19:28.553-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=0 type=FULL left=160 right=113
+2026-11-08T08:19:28.603-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=1 type=INNER left=185 right=154
+2026-11-08T08:19:28.680-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=1 type=LEFT left=185 right=154
+2026-11-08T08:19:28.753-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=1 type=RIGHT left=185 right=154
+2026-11-08T08:19:28.886-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=1 type=FULL left=185 right=154
+2026-11-08T08:19:28.965-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=2 type=INNER left=108 right=176
+2026-11-08T08:19:28.992-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=2 type=LEFT left=108 right=176
+2026-11-08T08:19:29.017-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=2 type=RIGHT left=108 right=176
+2026-11-08T08:19:29.047-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=2 type=FULL left=108 right=176
+2026-11-08T08:19:29.070-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=3 type=INNER left=134 right=111
+2026-11-08T08:19:29.115-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=3 type=LEFT left=134 right=111
+2026-11-08T08:19:29.149-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=3 type=RIGHT left=134 right=111
+2026-11-08T08:19:29.188-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=3 type=FULL left=134 right=111
+2026-11-08T08:19:29.231-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=4 type=INNER left=62 right=2
+2026-11-08T08:19:29.237-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=4 type=LEFT left=62 right=2
+2026-11-08T08:19:29.243-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=4 type=RIGHT left=62 right=2
+2026-11-08T08:19:29.248-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=4 type=FULL left=62 right=2
+2026-11-08T08:19:29.255-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=5 type=INNER left=87 right=98
+2026-11-08T08:19:29.280-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=5 type=LEFT left=87 right=98
+2026-11-08T08:19:29.309-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=5 type=RIGHT left=87 right=98
+2026-11-08T08:19:29.342-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=5 type=FULL left=87 right=98
+2026-11-08T08:19:29.378-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=6 type=INNER left=11 right=196
+2026-11-08T08:19:29.393-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=6 type=LEFT left=11 right=196
+2026-11-08T08:19:29.410-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=6 type=RIGHT left=11 right=196
+2026-11-08T08:19:29.423-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=6 type=FULL left=11 right=196
+2026-11-08T08:19:29.434-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=7 type=INNER left=36 right=221
+2026-11-08T08:19:29.471-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=7 type=LEFT left=36 right=221
+2026-11-08T08:19:29.496-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=7 type=RIGHT left=36 right=221
+2026-11-08T08:19:29.521-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=7 type=FULL left=36 right=221
+2026-11-08T08:19:29.549-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=8 type=INNER left=164 right=201
+2026-11-08T08:19:29.579-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=8 type=LEFT left=164 right=201
+2026-11-08T08:19:29.605-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=8 type=RIGHT left=164 right=201
+2026-11-08T08:19:29.633-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=8 type=FULL left=164 right=201
+2026-11-08T08:19:29.661-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=9 type=INNER left=189 right=165
+2026-11-08T08:19:29.738-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=9 type=LEFT left=189 right=165
+2026-11-08T08:19:29.808-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=9 type=RIGHT left=189 right=165
+2026-11-08T08:19:29.880-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=9 type=FULL left=189 right=165
+2026-11-08T08:19:29.947-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=10 type=INNER left=113 right=193
+2026-11-08T08:19:29.970-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=10 type=LEFT left=113 right=193
+2026-11-08T08:19:29.991-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=10 type=RIGHT left=113 right=193
+2026-11-08T08:19:30.013-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=10 type=FULL left=113 right=193
+2026-11-08T08:19:30.047-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=11 type=INNER left=138 right=134
+2026-11-08T08:19:30.099-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=11 type=LEFT left=138 right=134
+2026-11-08T08:19:30.149-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=11 type=RIGHT left=138 right=134
+2026-11-08T08:19:30.206-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=11 type=FULL left=138 right=134
+2026-11-08T08:19:30.250-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=12 type=INNER left=66 right=135
+2026-11-08T08:19:30.267-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=12 type=LEFT left=66 right=135
+2026-11-08T08:19:30.286-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=12 type=RIGHT left=66 right=135
+2026-11-08T08:19:30.304-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=12 type=FULL left=66 right=135
+2026-11-08T08:19:30.321-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=13 type=INNER left=92 right=174
+2026-11-08T08:19:30.360-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=13 type=LEFT left=92 right=174
+2026-11-08T08:19:30.404-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=13 type=RIGHT left=92 right=174
+2026-11-08T08:19:30.445-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=13 type=FULL left=92 right=174
+2026-11-08T08:19:30.519-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=14 type=INNER left=15 right=209
+2026-11-08T08:19:30.528-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=14 type=LEFT left=15 right=209
+2026-11-08T08:19:30.535-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=14 type=RIGHT left=15 right=209
+2026-11-08T08:19:30.542-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=14 type=FULL left=15 right=209
+2026-11-08T08:19:30.549-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=15 type=INNER left=41 right=90
+2026-11-08T08:19:30.566-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=15 type=LEFT left=41 right=90
+2026-11-08T08:19:30.578-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=15 type=RIGHT left=41 right=90
+2026-11-08T08:19:30.588-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=15 type=FULL left=41 right=90
+2026-11-08T08:19:30.608-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=16 type=INNER left=151 right=7
+2026-11-08T08:19:30.614-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=16 type=LEFT left=151 right=7
+2026-11-08T08:19:30.620-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=16 type=RIGHT left=151 right=7
+2026-11-08T08:19:30.625-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=16 type=FULL left=151 right=7
+2026-11-08T08:19:30.631-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=17 type=INNER left=176 right=107
+2026-11-08T08:19:30.669-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=17 type=LEFT left=176 right=107
+2026-11-08T08:19:30.706-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=17 type=RIGHT left=176 right=107
+2026-11-08T08:19:30.740-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=17 type=FULL left=176 right=107
+2026-11-08T08:19:30.774-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=18 type=INNER left=100 right=5
+2026-11-08T08:19:30.778-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=18 type=LEFT left=100 right=5
+2026-11-08T08:19:30.782-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=18 type=RIGHT left=100 right=5
+2026-11-08T08:19:30.786-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=18 type=FULL left=100 right=5
+2026-11-08T08:19:30.791-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=19 type=INNER left=125 right=82
+2026-11-08T08:19:30.810-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=19 type=LEFT left=125 right=82
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::loadLibrary has been called by com.aayushatharva.brotli4j.Brotli4jLoader in an unnamed module (file:/home/ivan/.m2/repository/com/aayushatharva/brotli4j/brotli4j/1.23.0/brotli4j-1.23.0.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+2026-11-08T08:19:30.937-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 110.00ms: 375.16MB -> 124.50MB
+2026-11-08T08:19:30.948-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=19 type=RIGHT left=125 right=82
+2026-11-08T08:19:30.972-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=19 type=FULL left=125 right=82
+2026-11-08T08:19:30.998-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=20 type=INNER left=53 right=109
+2026-11-08T08:19:31.008-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=20 type=LEFT left=53 right=109
+2026-11-08T08:19:31.017-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=20 type=RIGHT left=53 right=109
+2026-11-08T08:19:31.031-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=20 type=FULL left=53 right=109
+2026-11-08T08:19:31.046-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=21 type=INNER left=78 right=42
+2026-11-08T08:19:31.059-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=21 type=LEFT left=78 right=42
+2026-11-08T08:19:31.072-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=21 type=RIGHT left=78 right=42
+2026-11-08T08:19:31.082-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=21 type=FULL left=78 right=42
+2026-11-08T08:19:31.093-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=22 type=INNER left=2 right=201
+2026-11-08T08:19:31.097-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=22 type=LEFT left=2 right=201
+2026-11-08T08:19:31.102-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=22 type=RIGHT left=2 right=201
+2026-11-08T08:19:31.107-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=22 type=FULL left=2 right=201
+2026-11-08T08:19:31.112-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=23 type=INNER left=27 right=172
+2026-11-08T08:19:31.125-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=23 type=LEFT left=27 right=172
+2026-11-08T08:19:31.139-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=23 type=RIGHT left=27 right=172
+2026-11-08T08:19:31.154-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=23 type=FULL left=27 right=172
+2026-11-08T08:19:31.167-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=24 type=INNER left=155 right=1
+2026-11-08T08:19:31.170-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=24 type=LEFT left=155 right=1
+2026-11-08T08:19:31.174-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=24 type=RIGHT left=155 right=1
+2026-11-08T08:19:31.178-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=24 type=FULL left=155 right=1
+2026-11-08T08:19:31.182-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=25 type=INNER left=181 right=110
+2026-11-08T08:19:31.218-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=25 type=LEFT left=181 right=110
+2026-11-08T08:19:31.256-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=25 type=RIGHT left=181 right=110
+2026-11-08T08:19:31.296-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=25 type=FULL left=181 right=110
+2026-11-08T08:19:31.343-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=26 type=INNER left=104 right=183
+2026-11-08T08:19:31.366-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=26 type=LEFT left=104 right=183
+2026-11-08T08:19:31.383-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=26 type=RIGHT left=104 right=183
+2026-11-08T08:19:31.406-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=26 type=FULL left=104 right=183
+2026-11-08T08:19:31.424-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=27 type=INNER left=130 right=82
+2026-11-08T08:19:31.451-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=27 type=LEFT left=130 right=82
+2026-11-08T08:19:31.477-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=27 type=RIGHT left=130 right=82
+2026-11-08T08:19:31.502-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=27 type=FULL left=130 right=82
+2026-11-08T08:19:31.525-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=28 type=INNER left=57 right=94
+2026-11-08T08:19:31.533-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=28 type=LEFT left=57 right=94
+2026-11-08T08:19:31.543-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=28 type=RIGHT left=57 right=94
+2026-11-08T08:19:31.552-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=28 type=FULL left=57 right=94
+2026-11-08T08:19:31.564-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=29 type=INNER left=83 right=247
+2026-11-08T08:19:31.602-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=29 type=LEFT left=83 right=247
+2026-11-08T08:19:31.647-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=29 type=RIGHT left=83 right=247
+2026-11-08T08:19:31.689-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=29 type=FULL left=83 right=247
+2026-11-08T08:19:31.730-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=30 type=INNER left=6 right=21
+2026-11-08T08:19:31.734-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=30 type=LEFT left=6 right=21
+2026-11-08T08:19:31.741-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=30 type=RIGHT left=6 right=21
+2026-11-08T08:19:31.748-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=30 type=FULL left=6 right=21
+2026-11-08T08:19:31.755-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=31 type=INNER left=32 right=218
+2026-11-08T08:19:31.774-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=31 type=LEFT left=32 right=218
+2026-11-08T08:19:31.794-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=31 type=RIGHT left=32 right=218
+2026-11-08T08:19:31.812-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=31 type=FULL left=32 right=218
+2026-11-08T08:19:31.839-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=32 type=INNER left=177 right=6
+2026-11-08T08:19:31.846-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=32 type=LEFT left=177 right=6
+2026-11-08T08:19:31.851-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=32 type=RIGHT left=177 right=6
+2026-11-08T08:19:31.855-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=32 type=FULL left=177 right=6
+2026-11-08T08:19:31.860-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=33 type=INNER left=3 right=136
+2026-11-08T08:19:31.866-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=33 type=LEFT left=3 right=136
+2026-11-08T08:19:31.874-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=33 type=RIGHT left=3 right=136
+2026-11-08T08:19:31.881-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=33 type=FULL left=3 right=136
+2026-11-08T08:19:31.888-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=34 type=INNER left=126 right=82
+2026-11-08T08:19:31.896-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=34 type=LEFT left=126 right=82
+2026-11-08T08:19:31.907-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=34 type=RIGHT left=126 right=82
+2026-11-08T08:19:31.916-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=34 type=FULL left=126 right=82
+2026-11-08T08:19:31.928-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=35 type=INNER left=152 right=74
+2026-11-08T08:19:31.949-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=35 type=LEFT left=152 right=74
+2026-11-08T08:19:31.972-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=35 type=RIGHT left=152 right=74
+2026-11-08T08:19:31.991-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=35 type=FULL left=152 right=74
+2026-11-08T08:19:32.010-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=36 type=INNER left=79 right=1
+2026-11-08T08:19:32.014-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=36 type=LEFT left=79 right=1
+2026-11-08T08:19:32.017-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=36 type=RIGHT left=79 right=1
+2026-11-08T08:19:32.019-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=36 type=FULL left=79 right=1
+2026-11-08T08:19:32.023-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=37 type=INNER left=105 right=165
+2026-11-08T08:19:32.059-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=37 type=LEFT left=105 right=165
+2026-11-08T08:19:32.093-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=37 type=RIGHT left=105 right=165
+2026-11-08T08:19:32.127-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=37 type=FULL left=105 right=165
+2026-11-08T08:19:32.163-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=38 type=INNER left=28 right=229
+2026-11-08T08:19:32.171-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=38 type=LEFT left=28 right=229
+2026-11-08T08:19:32.182-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=38 type=RIGHT left=28 right=229
+2026-11-08T08:19:32.195-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=38 type=FULL left=28 right=229
+2026-11-08T08:19:32.209-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=39 type=INNER left=54 right=33
+2026-11-08T08:19:32.220-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=39 type=LEFT left=54 right=33
+2026-11-08T08:19:32.230-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=39 type=RIGHT left=54 right=33
+2026-11-08T08:19:32.238-0600	INFO	ForkJoinPool-1-worker-3	stdout	AUDIT fuzz seed=39 type=FULL left=54 right=33
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.448 s -- in io.trino.operator.join.merge.TestMergeJoinOperator
+2026-11-08T08:19:35.093-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.94s, stopped 226.00ms: 635.07MB -> 191.10MB
+2026-11-08T08:19:35.825-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT V03 spill=false value=l.v plan=
+Trino version: testversion
+Fragment 0 [HASH]
+    Output layout: [field, field_2, sum]
+    Output partitioning: SINGLE []
+    Output[columnNames = [k, g, _col2]]
+    │   Layout: [field:integer, field_2:integer, sum:bigint]
+    │   Estimates: {rows: 32 (608B), cpu: 0, memory: 0B, network: 0B}
+    │   k := field
+    │   g := field_2
+    │   _col2 := sum
+    └─ Aggregate[type = FINAL, keys = [field, field_2]]
+       │   Layout: [field:integer, field_2:integer, sum:bigint]
+       │   Estimates: {rows: 32 (608B), cpu: 11.88k, memory: 608B, network: 0B}
+       │   sum := sum(sum_3)
+       └─ LocalExchange[partitioning = HASH, arguments = [field::integer, field_2::integer]]
+          │   Layout: [field:integer, field_2:integer, sum_3:bigint]
+          │   Estimates: {rows: 640 (11.88kB), cpu: 11.88k, memory: 0B, network: 0B}
+          └─ InnerJoin[criteria = (field = field_1), distribution = PARTITIONED]
+             │   Layout: [field:integer, sum_3:bigint, field_2:integer]
+             │   Estimates: {rows: 640 (11.88kB), cpu: 20.78k, memory: 160B, network: 0B}
+             │   Distribution: PARTITIONED
+             │   Algorithm: MERGE
+             ├─ Aggregate[type = PARTIAL, keys = [field]]
+             │  │   Layout: [field:integer, sum_3:bigint]
+             │  │   Estimates: {rows: 640 (8.75kB), cpu: ?, memory: ?, network: ?}
+             │  │   sum_3 := sum(field_0)
+             │  └─ RemoteMerge[sourceFragmentIds = [1]]
+             │         Layout: [field:integer, field_0:bigint]
+             └─ RemoteMerge[sourceFragmentIds = [2]]
+                    Layout: [field_1:integer, field_2:integer]
+
+Fragment 1 [SINGLE]
+    Output layout: [field, field_0]
+    Output partitioning: HASH [field]
+    LocalMerge[orderBy = [field ASC NULLS LAST]]
+    │   Layout: [field:integer, field_0:bigint]
+    │   Estimates: {rows: 640 (8.75kB), cpu: 0, memory: 0B, network: 0B}
+    └─ PartialSort[orderBy = [field ASC NULLS LAST]]
+       │   Layout: [field:integer, field_0:bigint]
+       │   Estimates: {rows: 640 (8.75kB), cpu: ?, memory: ?, network: ?}
+       └─ Filter[filterPredicate = ((integer '0' <= field) AND (field <= integer '15') AND $not((field IS NULL)))]
+          │   Layout: [field:integer, field_0:bigint]
+          │   Estimates: {rows: 640 (8.75kB), cpu: 8.75k, memory: 0B, network: 0B}
+          └─ LocalExchange[partitioning = ROUND_ROBIN]
+             │   Layout: [field:integer, field_0:bigint]
+             │   Estimates: {rows: 640 (8.75kB), cpu: 8.75k, memory: 0B, network: 0B}
+             └─ Values[]
+                    Layout: [field:integer, field_0:bigint]
+                    Estimates: {rows: 640 (8.75kB), cpu: 0, memory: 0B, network: 0B}
+                    (integer '0', bigint '0')
+                    (integer '1', bigint '1')
+                    (integer '2', bigint '2')
+                    (integer '3', bigint '3')
+                    (integer '4', bigint '4')
+                    (integer '5', bigint '5')
+                    (integer '6', bigint '6')
+                    (integer '7', bigint '7')
+                    (integer '8', bigint '8')
+                    (integer '9', bigint '9')
+                    (... 630 more rows ...)
+
+Fragment 2 [SINGLE]
+    Output layout: [field_1, field_2]
+    Output partitioning: HASH [field_1]
+    LocalMerge[orderBy = [field_1 ASC NULLS LAST]]
+    │   Layout: [field_1:integer, field_2:integer]
+    │   Estimates: {rows: 16 (160B), cpu: 0, memory: 0B, network: 0B}
+    └─ PartialSort[orderBy = [field_1 ASC NULLS LAST]]
+       │   Layout: [field_1:integer, field_2:integer]
+       │   Estimates: {rows: 16 (160B), cpu: ?, memory: ?, network: ?}
+       └─ LocalExchange[partitioning = ROUND_ROBIN]
+          │   Layout: [field_1:integer, field_2:integer]
+          │   Estimates: {rows: 16 (160B), cpu: 160, memory: 0B, network: 0B}
+          └─ Values[]
+                 Layout: [field_1:integer, field_2:integer]
+                 Estimates: {rows: 16 (160B), cpu: 0, memory: 0B, network: 0B}
+                 (integer '0', integer '0')
+                 (integer '1', integer '1')
+                 (integer '2', integer '0')
+                 (integer '3', integer '1')
+                 (integer '4', integer '0')
+                 (integer '5', integer '1')
+                 (integer '6', integer '0')
+                 (integer '7', integer '1')
+                 (integer '8', integer '0')
+                 (integer '9', integer '1')
+                 (... 6 more rows ...)
+2026-11-08T08:19:37.391-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT V03 spill=false value=l.v + 1 plan=
+Trino version: testversion
+Fragment 0 [HASH]
+    Output layout: [field, field_2, sum]
+    Output partitioning: SINGLE []
+    Output[columnNames = [k, g, _col2]]
+    │   Layout: [field:integer, field_2:integer, sum:bigint]
+    │   Estimates: {rows: 32 (608B), cpu: 0, memory: 0B, network: 0B}
+    │   k := field
+    │   g := field_2
+    │   _col2 := sum
+    └─ Aggregate[type = FINAL, keys = [field, field_2]]
+       │   Layout: [field:integer, field_2:integer, sum:bigint]
+       │   Estimates: {rows: 32 (608B), cpu: 11.88k, memory: 608B, network: 0B}
+       │   sum := sum(sum_3)
+       └─ LocalExchange[partitioning = HASH, arguments = [field::integer, field_2::integer]]
+          │   Layout: [field:integer, field_2:integer, sum_3:bigint]
+          │   Estimates: {rows: 640 (11.88kB), cpu: 11.88k, memory: 0B, network: 0B}
+          └─ LocalExchange[partitioning = ROUND_ROBIN]
+             │   Layout: [field:integer, field_2:integer, sum_3:bigint]
+             │   Estimates: {rows: 640 (11.88kB), cpu: 11.88k, memory: 0B, network: 0B}
+             └─ Project[]
+                │   Layout: [field:integer, field_2:integer, sum_3:bigint]
+                │   Estimates: {rows: 640 (11.88kB), cpu: 11.88k, memory: 0B, network: 0B}
+                │   field := field_4
+                │   field_2 := field_5
+                └─ Aggregate[type = INTERMEDIATE, keys = [field_4, field_5]]
+                   │   Layout: [field_4:integer, field_5:integer, sum_3:bigint]
+                   │   Estimates: {rows: 640 (11.88kB), cpu: ?, memory: ?, network: ?}
+                   │   sum_3 := sum(sum_3)
+                   └─ InnerJoin[criteria = (field = field_1), distribution = PARTITIONED]
+                      │   Layout: [field_4:integer, sum_3:bigint, field_5:integer]
+                      │   Estimates: {rows: 640 (11.88kB), cpu: 23.91k, memory: 160B, network: 0B}
+                      │   Distribution: PARTITIONED
+                      ├─ RemoteSource[sourceFragmentIds = [1]]
+                      │      Layout: [field_4:integer, field:integer, sum_3:bigint]
+                      └─ Project[]
+                         │   Layout: [field_5:integer, field_1:integer]
+                         │   Estimates: {rows: 16 (160B), cpu: 160, memory: 0B, network: 0B}
+                         │   field_5 := field_2
+                         └─ RemoteMerge[sourceFragmentIds = [2]]
+                                Layout: [field_1:integer, field_2:integer]
+
+Fragment 1 [SINGLE]
+    Output layout: [field_4, field, sum_3]
+    Output partitioning: HASH [field]
+    Project[]
+    │   Layout: [field_4:integer, field:integer, sum_3:bigint]
+    │   Estimates: {rows: 640 (11.88kB), cpu: 11.88k, memory: 0B, network: 0B}
+    │   field_4 := field_7
+    └─ LocalExchange[partitioning = UNKNOWN]
+       │   Layout: [field_7:integer, field:integer, sum_3:bigint]
+       │   Estimates: {rows: 640 (11.88kB), cpu: 0, memory: 0B, network: 0B}
+       └─ Project[]
+          │   Layout: [field_7:integer, field:integer, sum_3:bigint]
+          │   Estimates: {rows: 640 (11.88kB), cpu: 11.88k, memory: 0B, network: 0B}
+          │   field_7 := field_9
+          └─ Aggregate[type = PARTIAL, keys = [field_9, field]]
+             │   Layout: [field_9:integer, field:integer, sum_3:bigint]
+             │   Estimates: {rows: 640 (11.88kB), cpu: ?, memory: ?, network: ?}
+             │   sum_3 := sum(operator_add_8)
+             └─ Project[]
+                │   Layout: [field:integer, operator_add_8:bigint, field_9:integer]
+                │   Estimates: {rows: 640 (11.88kB), cpu: 11.88k, memory: 0B, network: 0B}
+                │   operator_add_8 := $operator$add(field_0, bigint '1')
+                │   field_9 := field
+                └─ PartialSort[orderBy = [field ASC NULLS LAST]]
+                   │   Layout: [field:integer, field_0:bigint]
+                   │   Estimates: {rows: 640 (8.75kB), cpu: ?, memory: ?, network: ?}
+                   └─ Filter[filterPredicate = ((integer '0' <= field) AND (field <= integer '15') AND $not((field IS NULL)))]
+                      │   Layout: [field:integer, field_0:bigint]
+                      │   Estimates: {rows: 640 (8.75kB), cpu: 8.75k, memory: 0B, network: 0B}
+                      └─ LocalExchange[partitioning = ROUND_ROBIN]
+                         │   Layout: [field:integer, field_0:bigint]
+                         │   Estimates: {rows: 640 (8.75kB), cpu: 8.75k, memory: 0B, network: 0B}
+                         └─ Values[]
+                                Layout: [field:integer, field_0:bigint]
+                                Estimates: {rows: 640 (8.75kB), cpu: 0, memory: 0B, network: 0B}
+                                (integer '0', bigint '0')
+                                (integer '1', bigint '1')
+                                (integer '2', bigint '2')
+                                (integer '3', bigint '3')
+                                (integer '4', bigint '4')
+                                (integer '5', bigint '5')
+                                (integer '6', bigint '6')
+                                (integer '7', bigint '7')
+                                (integer '8', bigint '8')
+                                (integer '9', bigint '9')
+                                (... 630 more rows ...)
+
+Fragment 2 [SINGLE]
+    Output layout: [field_1, field_2]
+    Output partitioning: HASH [field_1]
+    LocalMerge[orderBy = [field_1 ASC NULLS LAST]]
+    │   Layout: [field_1:integer, field_2:integer]
+    │   Estimates: {rows: 16 (160B), cpu: 0, memory: 0B, network: 0B}
+    └─ PartialSort[orderBy = [field_1 ASC NULLS LAST]]
+       │   Layout: [field_1:integer, field_2:integer]
+       │   Estimates: {rows: 16 (160B), cpu: ?, memory: ?, network: ?}
+       └─ LocalExchange[partitioning = ROUND_ROBIN]
+          │   Layout: [field_1:integer, field_2:integer]
+          │   Estimates: {rows: 16 (160B), cpu: 160, memory: 0B, network: 0B}
+          └─ Values[]
+                 Layout: [field_1:integer, field_2:integer]
+                 Estimates: {rows: 16 (160B), cpu: 0, memory: 0B, network: 0B}
+                 (integer '0', integer '0')
+                 (integer '1', integer '1')
+                 (integer '2', integer '0')
+                 (integer '3', integer '1')
+                 (integer '4', integer '0')
+                 (integer '5', integer '1')
+                 (integer '6', integer '0')
+                 (integer '7', integer '1')
+                 (integer '8', integer '0')
+                 (integer '9', integer '1')
+                 (... 6 more rows ...)
+2026-11-08T08:19:37.654-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.31s, stopped 251.00ms: 758.18MB -> 235.91MB
+2026-11-08T08:19:38.431-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT V03 spill=true value=l.v plan=
+Trino version: testversion
+Fragment 0 [HASH]
+    Output layout: [field, field_2, sum]
+    Output partitioning: SINGLE []
+    Output[columnNames = [k, g, _col2]]
+    │   Layout: [field:integer, field_2:integer, sum:bigint]
+    │   Estimates: {rows: 32 (608B), cpu: 0, memory: 0B, network: 0B}
+    │   k := field
+    │   g := field_2
+    │   _col2 := sum
+    └─ Aggregate[type = FINAL, keys = [field, field_2]]
+       │   Layout: [field:integer, field_2:integer, sum:bigint]
+       │   Estimates: {rows: 32 (608B), cpu: 11.88k, memory: 608B, network: 0B}
+       │   sum := sum(sum_3)
+       └─ LocalExchange[partitioning = HASH, arguments = [field::integer, field_2::integer]]
+          │   Layout: [field:integer, field_2:integer, sum_3:bigint]
+          │   Estimates: {rows: 640 (11.88kB), cpu: 11.88k, memory: 0B, network: 0B}
+          └─ InnerJoin[criteria = (field = field_1), distribution = PARTITIONED]
+             │   Layout: [field:integer, sum_3:bigint, field_2:integer]
+             │   Estimates: {rows: 640 (11.88kB), cpu: 20.78k, memory: 160B, network: 0B}
+             │   Distribution: PARTITIONED
+             │   Algorithm: MERGE
+             ├─ Aggregate[type = PARTIAL, keys = [field]]
+             │  │   Layout: [field:integer, sum_3:bigint]
+             │  │   Estimates: {rows: 640 (8.75kB), cpu: ?, memory: ?, network: ?}
+             │  │   sum_3 := sum(field_0)
+             │  └─ RemoteMerge[sourceFragmentIds = [1]]
+             │         Layout: [field:integer, field_0:bigint]
+             └─ RemoteMerge[sourceFragmentIds = [2]]
+                    Layout: [field_1:integer, field_2:integer]
+
+Fragment 1 [SINGLE]
+    Output layout: [field, field_0]
+    Output partitioning: HASH [field]
+    LocalMerge[orderBy = [field ASC NULLS LAST]]
+    │   Layout: [field:integer, field_0:bigint]
+    │   Estimates: {rows: 640 (8.75kB), cpu: 0, memory: 0B, network: 0B}
+    └─ PartialSort[orderBy = [field ASC NULLS LAST]]
+       │   Layout: [field:integer, field_0:bigint]
+       │   Estimates: {rows: 640 (8.75kB), cpu: ?, memory: ?, network: ?}
+       └─ Filter[filterPredicate = ((integer '0' <= field) AND (field <= integer '15') AND $not((field IS NULL)))]
+          │   Layout: [field:integer, field_0:bigint]
+          │   Estimates: {rows: 640 (8.75kB), cpu: 8.75k, memory: 0B, network: 0B}
+          └─ LocalExchange[partitioning = ROUND_ROBIN]
+             │   Layout: [field:integer, field_0:bigint]
+             │   Estimates: {rows: 640 (8.75kB), cpu: 8.75k, memory: 0B, network: 0B}
+             └─ Values[]
+                    Layout: [field:integer, field_0:bigint]
+                    Estimates: {rows: 640 (8.75kB), cpu: 0, memory: 0B, network: 0B}
+                    (integer '0', bigint '0')
+                    (integer '1', bigint '1')
+                    (integer '2', bigint '2')
+                    (integer '3', bigint '3')
+                    (integer '4', bigint '4')
+                    (integer '5', bigint '5')
+                    (integer '6', bigint '6')
+                    (integer '7', bigint '7')
+                    (integer '8', bigint '8')
+                    (integer '9', bigint '9')
+                    (... 630 more rows ...)
+
+Fragment 2 [SINGLE]
+    Output layout: [field_1, field_2]
+    Output partitioning: HASH [field_1]
+    LocalMerge[orderBy = [field_1 ASC NULLS LAST]]
+    │   Layout: [field_1:integer, field_2:integer]
+    │   Estimates: {rows: 16 (160B), cpu: 0, memory: 0B, network: 0B}
+    └─ PartialSort[orderBy = [field_1 ASC NULLS LAST]]
+       │   Layout: [field_1:integer, field_2:integer]
+       │   Estimates: {rows: 16 (160B), cpu: ?, memory: ?, network: ?}
+       └─ LocalExchange[partitioning = ROUND_ROBIN]
+          │   Layout: [field_1:integer, field_2:integer]
+          │   Estimates: {rows: 16 (160B), cpu: 160, memory: 0B, network: 0B}
+          └─ Values[]
+                 Layout: [field_1:integer, field_2:integer]
+                 Estimates: {rows: 16 (160B), cpu: 0, memory: 0B, network: 0B}
+                 (integer '0', integer '0')
+                 (integer '1', integer '1')
+                 (integer '2', integer '0')
+                 (integer '3', integer '1')
+                 (integer '4', integer '0')
+                 (integer '5', integer '1')
+                 (integer '6', integer '0')
+                 (integer '7', integer '1')
+                 (integer '8', integer '0')
+                 (integer '9', integer '1')
+                 (... 6 more rows ...)
+2026-11-08T08:19:39.531-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT V03 spill=true value=l.v + 1 plan=
+Trino version: testversion
+Fragment 0 [HASH]
+    Output layout: [field, field_2, sum]
+    Output partitioning: SINGLE []
+    Output[columnNames = [k, g, _col2]]
+    │   Layout: [field:integer, field_2:integer, sum:bigint]
+    │   Estimates: {rows: 32 (608B), cpu: 0, memory: 0B, network: 0B}
+    │   k := field
+    │   g := field_2
+    │   _col2 := sum
+    └─ Aggregate[type = FINAL, keys = [field, field_2]]
+       │   Layout: [field:integer, field_2:integer, sum:bigint]
+       │   Estimates: {rows: 32 (608B), cpu: 11.88k, memory: 608B, network: 0B}
+       │   sum := sum(sum_3)
+       └─ LocalExchange[partitioning = HASH, arguments = [field::integer, field_2::integer]]
+          │   Layout: [field:integer, field_2:integer, sum_3:bigint]
+          │   Estimates: {rows: 640 (11.88kB), cpu: 11.88k, memory: 0B, network: 0B}
+          └─ LocalExchange[partitioning = ROUND_ROBIN]
+             │   Layout: [field:integer, field_2:integer, sum_3:bigint]
+             │   Estimates: {rows: 640 (11.88kB), cpu: 11.88k, memory: 0B, network: 0B}
+             └─ Project[]
+                │   Layout: [field:integer, field_2:integer, sum_3:bigint]
+                │   Estimates: {rows: 640 (11.88kB), cpu: 11.88k, memory: 0B, network: 0B}
+                │   field := field_4
+                │   field_2 := field_5
+                └─ Aggregate[type = INTERMEDIATE, keys = [field_4, field_5]]
+                   │   Layout: [field_4:integer, field_5:integer, sum_3:bigint]
+                   │   Estimates: {rows: 640 (11.88kB), cpu: ?, memory: ?, network: ?}
+                   │   sum_3 := sum(sum_3)
+                   └─ InnerJoin[criteria = (field = field_1), distribution = PARTITIONED]
+                      │   Layout: [field_4:integer, sum_3:bigint, field_5:integer]
+                      │   Estimates: {rows: 640 (11.88kB), cpu: 23.91k, memory: 160B, network: 0B}
+                      │   Distribution: PARTITIONED
+                      ├─ RemoteSource[sourceFragmentIds = [1]]
+                      │      Layout: [field_4:integer, field:integer, sum_3:bigint]
+                      └─ Project[]
+                         │   Layout: [field_5:integer, field_1:integer]
+                         │   Estimates: {rows: 16 (160B), cpu: 160, memory: 0B, network: 0B}
+                         │   field_5 := field_2
+                         └─ RemoteMerge[sourceFragmentIds = [2]]
+                                Layout: [field_1:integer, field_2:integer]
+
+Fragment 1 [SINGLE]
+    Output layout: [field_4, field, sum_3]
+    Output partitioning: HASH [field]
+    Project[]
+    │   Layout: [field_4:integer, field:integer, sum_3:bigint]
+    │   Estimates: {rows: 640 (11.88kB), cpu: 11.88k, memory: 0B, network: 0B}
+    │   field_4 := field_7
+    └─ LocalExchange[partitioning = UNKNOWN]
+       │   Layout: [field_7:integer, field:integer, sum_3:bigint]
+       │   Estimates: {rows: 640 (11.88kB), cpu: 0, memory: 0B, network: 0B}
+       └─ Project[]
+          │   Layout: [field_7:integer, field:integer, sum_3:bigint]
+          │   Estimates: {rows: 640 (11.88kB), cpu: 11.88k, memory: 0B, network: 0B}
+          │   field_7 := field_9
+          └─ Aggregate[type = PARTIAL, keys = [field_9, field]]
+             │   Layout: [field_9:integer, field:integer, sum_3:bigint]
+             │   Estimates: {rows: 640 (11.88kB), cpu: ?, memory: ?, network: ?}
+             │   sum_3 := sum(operator_add_8)
+             └─ Project[]
+                │   Layout: [field:integer, operator_add_8:bigint, field_9:integer]
+                │   Estimates: {rows: 640 (11.88kB), cpu: 11.88k, memory: 0B, network: 0B}
+                │   operator_add_8 := $operator$add(field_0, bigint '1')
+                │   field_9 := field
+                └─ PartialSort[orderBy = [field ASC NULLS LAST]]
+                   │   Layout: [field:integer, field_0:bigint]
+                   │   Estimates: {rows: 640 (8.75kB), cpu: ?, memory: ?, network: ?}
+                   └─ Filter[filterPredicate = ((integer '0' <= field) AND (field <= integer '15') AND $not((field IS NULL)))]
+                      │   Layout: [field:integer, field_0:bigint]
+                      │   Estimates: {rows: 640 (8.75kB), cpu: 8.75k, memory: 0B, network: 0B}
+                      └─ LocalExchange[partitioning = ROUND_ROBIN]
+                         │   Layout: [field:integer, field_0:bigint]
+                         │   Estimates: {rows: 640 (8.75kB), cpu: 8.75k, memory: 0B, network: 0B}
+                         └─ Values[]
+                                Layout: [field:integer, field_0:bigint]
+                                Estimates: {rows: 640 (8.75kB), cpu: 0, memory: 0B, network: 0B}
+                                (integer '0', bigint '0')
+                                (integer '1', bigint '1')
+                                (integer '2', bigint '2')
+                                (integer '3', bigint '3')
+                                (integer '4', bigint '4')
+                                (integer '5', bigint '5')
+                                (integer '6', bigint '6')
+                                (integer '7', bigint '7')
+                                (integer '8', bigint '8')
+                                (integer '9', bigint '9')
+                                (... 630 more rows ...)
+
+Fragment 2 [SINGLE]
+    Output layout: [field_1, field_2]
+    Output partitioning: HASH [field_1]
+    LocalMerge[orderBy = [field_1 ASC NULLS LAST]]
+    │   Layout: [field_1:integer, field_2:integer]
+    │   Estimates: {rows: 16 (160B), cpu: 0, memory: 0B, network: 0B}
+    └─ PartialSort[orderBy = [field_1 ASC NULLS LAST]]
+       │   Layout: [field_1:integer, field_2:integer]
+       │   Estimates: {rows: 16 (160B), cpu: ?, memory: ?, network: ?}
+       └─ LocalExchange[partitioning = ROUND_ROBIN]
+          │   Layout: [field_1:integer, field_2:integer]
+          │   Estimates: {rows: 16 (160B), cpu: 160, memory: 0B, network: 0B}
+          └─ Values[]
+                 Layout: [field_1:integer, field_2:integer]
+                 Estimates: {rows: 16 (160B), cpu: 0, memory: 0B, network: 0B}
+                 (integer '0', integer '0')
+                 (integer '1', integer '1')
+                 (integer '2', integer '0')
+                 (integer '3', integer '1')
+                 (integer '4', integer '0')
+                 (integer '5', integer '1')
+                 (integer '6', integer '0')
+                 (integer '7', integer '1')
+                 (integer '8', integer '0')
+                 (integer '9', integer '1')
+                 (... 6 more rows ...)
+[ERROR] Tests run: 2, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 12.13 s <<< FAILURE! -- in io.trino.sql.query.TestMergeJoinPostSelectionAudit
+[ERROR] io.trino.sql.query.TestMergeJoinPostSelectionAudit.testPostSelectionAggregationOrdering -- Time elapsed: 4.221 s <<< ERROR!
+io.trino.testing.QueryFailedException: no more sources
+	at io.trino.testing.TestingDirectTrinoClient.toMaterializedRows(TestingDirectTrinoClient.java:80)
+	at io.trino.testing.TestingDirectTrinoClient.lambda$execute$0(TestingDirectTrinoClient.java:68)
+	at io.trino.testing.StandaloneQueryRunner.execute(StandaloneQueryRunner.java:119)
+	at io.trino.sql.query.QueryAssertions.execute(QueryAssertions.java:230)
+	at io.trino.sql.query.TestMergeJoinPostSelectionAudit.check(TestMergeJoinPostSelectionAudit.java:67)
+	at io.trino.sql.query.TestMergeJoinPostSelectionAudit.testPostSelectionAggregationOrdering(TestMergeJoinPostSelectionAudit.java:42)
+Caused by: java.lang.IllegalStateException: no more sources
+	at com.google.common.base.Preconditions.checkState(Preconditions.java:535)
+	at io.trino.operator.exchange.LocalExchange.lambda$new$6(LocalExchange.java:128)
+	at io.trino.operator.exchange.LocalExchange.createSink(LocalExchange.java:332)
+	at io.trino.operator.exchange.LocalExchange$LocalExchangeSinkFactory.createSink(LocalExchange.java:457)
+	at io.trino.operator.exchange.LocalExchangeSinkOperator$LocalExchangeSinkOperatorFactory.createOperator(LocalExchangeSinkOperator.java:66)
+	at io.trino.operator.DriverFactory.createDriver(DriverFactory.java:107)
+	at io.trino.execution.SqlTaskExecution$DriverSplitRunnerFactory.createDriver(SqlTaskExecution.java:717)
+	at io.trino.execution.SqlTaskExecution$DriverSplitRunner.processFor(SqlTaskExecution.java:920)
+	at io.trino.execution.executor.dedicated.SplitProcessor.run(SplitProcessor.java:89)
+	at io.trino.execution.executor.dedicated.TaskEntry$VersionEmbedderBridge.lambda$run$0(TaskEntry.java:438)
+	at io.trino.$gen.Trino_testversion___Runnable.run(Unknown Source)
+	at io.trino.execution.executor.dedicated.TaskEntry$VersionEmbedderBridge.run(TaskEntry.java:439)
+	at io.trino.execution.executor.scheduler.FairScheduler.runTask(FairScheduler.java:190)
+	at io.trino.execution.executor.scheduler.FairScheduler.lambda$submit$0(FairScheduler.java:177)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:545)
+	at com.google.common.util.concurrent.TrustedListenableFutureTask$TrustedFutureInterruptibleTask.runInterruptibly(TrustedListenableFutureTask.java:128)
+	at com.google.common.util.concurrent.InterruptibleTask.run(InterruptibleTask.java:72)
+	at com.google.common.util.concurrent.TrustedListenableFutureTask.run(TrustedListenableFutureTask.java:80)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base/java.lang.Thread.run(Thread.java:1474)
+
+[ERROR] io.trino.sql.query.TestMergeJoinPostSelectionAudit.testProjectionPreservesSpillability -- Time elapsed: 1.740 s <<< ERROR!
+io.trino.testing.QueryFailedException: spillable not yet set
+	at io.trino.testing.TestingDirectTrinoClient.toMaterializedRows(TestingDirectTrinoClient.java:80)
+	at io.trino.testing.TestingDirectTrinoClient.lambda$execute$0(TestingDirectTrinoClient.java:68)
+	at io.trino.testing.StandaloneQueryRunner.execute(StandaloneQueryRunner.java:119)
+	at io.trino.sql.query.QueryAssertions.execute(QueryAssertions.java:230)
+	at io.trino.sql.query.TestMergeJoinPostSelectionAudit.check(TestMergeJoinPostSelectionAudit.java:67)
+	at io.trino.sql.query.TestMergeJoinPostSelectionAudit.testProjectionPreservesSpillability(TestMergeJoinPostSelectionAudit.java:48)
+Caused by: java.lang.IllegalArgumentException: spillable not yet set
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.lambda$createLookupJoin$0(LocalExecutionPlanner.java:3005)
+	at java.base/java.util.Optional.orElseThrow(Optional.java:403)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.createLookupJoin(LocalExecutionPlanner.java:3005)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitJoin(LocalExecutionPlanner.java:2570)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitJoin(LocalExecutionPlanner.java:892)
+	at io.trino.sql.planner.plan.JoinNode.accept(JoinNode.java:357)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitAggregation(LocalExecutionPlanner.java:1989)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitAggregation(LocalExecutionPlanner.java:892)
+	at io.trino.sql.planner.plan.AggregationNode.accept(AggregationNode.java:236)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitScanFilterAndProject(LocalExecutionPlanner.java:2092)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitProject(LocalExecutionPlanner.java:2044)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitProject(LocalExecutionPlanner.java:892)
+	at io.trino.sql.planner.plan.ProjectNode.accept(ProjectNode.java:82)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.createLocalExchange(LocalExecutionPlanner.java:3878)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitExchange(LocalExecutionPlanner.java:3777)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitExchange(LocalExecutionPlanner.java:892)
+	at io.trino.sql.planner.plan.ExchangeNode.accept(ExchangeNode.java:305)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.createLocalExchange(LocalExecutionPlanner.java:3878)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitExchange(LocalExecutionPlanner.java:3777)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitExchange(LocalExecutionPlanner.java:892)
+	at io.trino.sql.planner.plan.ExchangeNode.accept(ExchangeNode.java:305)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitAggregation(LocalExecutionPlanner.java:1989)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitAggregation(LocalExecutionPlanner.java:892)
+	at io.trino.sql.planner.plan.AggregationNode.accept(AggregationNode.java:236)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitOutput(LocalExecutionPlanner.java:986)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitOutput(LocalExecutionPlanner.java:892)
+	at io.trino.sql.planner.plan.OutputNode.accept(OutputNode.java:83)
+	at io.trino.sql.planner.LocalExecutionPlanner.plan(LocalExecutionPlanner.java:653)
+	at io.trino.sql.planner.LocalExecutionPlanner.plan(LocalExecutionPlanner.java:560)
+	at io.trino.execution.SqlTaskExecutionFactory.create(SqlTaskExecutionFactory.java:84)
+	at io.trino.execution.SqlTask.tryCreateSqlTaskExecution(SqlTask.java:588)
+	at io.trino.execution.SqlTask.updateTask(SqlTask.java:539)
+	at io.trino.execution.SqlTaskManager.doUpdateTask(SqlTaskManager.java:569)
+	at io.trino.execution.SqlTaskManager.lambda$updateTask$0(SqlTaskManager.java:507)
+	at io.trino.$gen.Trino_testversion___Callable.call(Unknown Source)
+	at io.trino.execution.SqlTaskManager.updateTask(SqlTaskManager.java:507)
+	at io.trino.server.TaskResource.createOrUpdateTask(TaskResource.java:163)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.glassfish.jersey.server.model.internal.ResourceMethodInvocationHandlerFactory.lambda$static$0(ResourceMethodInvocationHandlerFactory.java:52)
+	at org.glassfish.jersey.server.model.internal.AbstractJavaResourceMethodDispatcher$1.run(AbstractJavaResourceMethodDispatcher.java:146)
+	at org.glassfish.jersey.server.model.internal.AbstractJavaResourceMethodDispatcher.invoke(AbstractJavaResourceMethodDispatcher.java:189)
+	at org.glassfish.jersey.server.model.internal.JavaResourceMethodDispatcherProvider$VoidOutInvoker.doDispatch(JavaResourceMethodDispatcherProvider.java:159)
+	at org.glassfish.jersey.server.model.internal.AbstractJavaResourceMethodDispatcher.dispatch(AbstractJavaResourceMethodDispatcher.java:93)
+	at org.glassfish.jersey.server.model.ResourceMethodInvoker.invoke(ResourceMethodInvoker.java:470)
+	at org.glassfish.jersey.server.model.ResourceMethodInvoker.apply(ResourceMethodInvoker.java:394)
+	at org.glassfish.jersey.server.model.ResourceMethodInvoker.apply(ResourceMethodInvoker.java:80)
+	at org.glassfish.jersey.server.ServerRuntime$1.run(ServerRuntime.java:274)
+	at org.glassfish.jersey.internal.Errors$1.call(Errors.java:248)
+	at org.glassfish.jersey.internal.Errors$1.call(Errors.java:244)
+	at org.glassfish.jersey.internal.Errors.process(Errors.java:292)
+	at org.glassfish.jersey.internal.Errors.process(Errors.java:274)
+	at org.glassfish.jersey.internal.Errors.process(Errors.java:244)
+	at org.glassfish.jersey.process.internal.RequestScope.runInScope(RequestScope.java:266)
+	at org.glassfish.jersey.server.ServerRuntime.process(ServerRuntime.java:253)
+	at org.glassfish.jersey.server.ApplicationHandler.handle(ApplicationHandler.java:720)
+	at org.glassfish.jersey.servlet.WebComponent.serviceImpl(WebComponent.java:422)
+	at org.glassfish.jersey.servlet.WebComponent.service(WebComponent.java:374)
+	at org.glassfish.jersey.servlet.ServletContainer.service(ServletContainer.java:355)
+	at org.glassfish.jersey.servlet.ServletContainer.service(ServletContainer.java:309)
+	at org.glassfish.jersey.servlet.ServletContainer.service(ServletContainer.java:202)
+	at org.eclipse.jetty.ee11.servlet.ServletHolder.handle(ServletHolder.java:754)
+	at org.eclipse.jetty.ee11.servlet.ServletHandler$ChainEnd.doFilter(ServletHandler.java:1688)
+	at io.airlift.http.server.tracing.TracingServletFilter.doFilter(TracingServletFilter.java:140)
+	at jakarta.servlet.http.HttpFilter.doFilter(HttpFilter.java:97)
+	at org.eclipse.jetty.ee11.servlet.FilterHolder.doFilter(FilterHolder.java:205)
+	at org.eclipse.jetty.ee11.servlet.ServletHandler$Chain.doFilter(ServletHandler.java:1647)
+	at org.eclipse.jetty.ee11.servlet.ServletHandler$MappedServlet.handle(ServletHandler.java:1602)
+	at org.eclipse.jetty.ee11.servlet.ServletChannel.dispatch(ServletChannel.java:871)
+	at org.eclipse.jetty.ee11.servlet.ServletChannel.handle(ServletChannel.java:449)
+	at org.eclipse.jetty.ee11.servlet.ServletHandler.handle(ServletHandler.java:469)
+	at org.eclipse.jetty.server.handler.ContextHandler.handle(ContextHandler.java:1253)
+	at org.eclipse.jetty.compression.server.CompressionHandler.handle(CompressionHandler.java:343)
+	at org.eclipse.jetty.server.Handler$Wrapper.handle(Handler.java:794)
+	at org.eclipse.jetty.server.handler.EventsHandler.handle(EventsHandler.java:81)
+	at org.eclipse.jetty.server.Handler$Wrapper.handle(Handler.java:794)
+	at org.eclipse.jetty.server.handler.GracefulHandler.handle(GracefulHandler.java:120)
+	at org.eclipse.jetty.server.Server.handle(Server.java:197)
+	at org.eclipse.jetty.server.internal.HttpChannelState$HandlerInvoker.run(HttpChannelState.java:804)
+	at org.eclipse.jetty.http2.server.internal.HttpStreamOverHTTP2.lambda$onRequest$0(HttpStreamOverHTTP2.java:132)
+	at org.eclipse.jetty.util.thread.Invocable$ReadyTask.run(Invocable.java:178)
+	at java.base/java.util.concurrent.ThreadPerTaskExecutor$TaskRunner.run(ThreadPerTaskExecutor.java:291)
+	at java.base/java.lang.VirtualThread.run(VirtualThread.java:460)
+
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Failures: 
+[ERROR]   TestAppendingSpiller.testAuditV03EncryptedMatchBitmap:70 
+Expecting actual:
+  [85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, ... 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85]
+not to be equal to:
+  [85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, ... 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85]
+
+[ERROR] Errors: 
+[ERROR]   TestMergeJoinPostSelectionAudit.testPostSelectionAggregationOrdering:42->check:67 » QueryFailed no more sources
+[ERROR]   TestMergeJoinPostSelectionAudit.testProjectionPreservesSpillability:48->check:67 » QueryFailed spillable not yet set
+[INFO] 
+[ERROR] Tests run: 4, Failures: 1, Errors: 2, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  19.104 s
+[INFO] Finished at: 2026-11-08T17:19:40+03:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Njord session closed
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.6.1:test (default-cli) on project trino-main: There are test failures.
+[ERROR] 
+[ERROR] See /tmp/trino-smj-audit-v03-check/core/trino-main/target/surefire-reports for the individual test results.
+[ERROR] See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

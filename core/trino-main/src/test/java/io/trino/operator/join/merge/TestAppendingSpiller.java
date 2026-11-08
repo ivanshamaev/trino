@@ -23,11 +23,14 @@ import io.trino.spiller.SpillerStats;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
+import static com.google.common.primitives.Bytes.indexOf;
 import static com.google.common.util.concurrent.MoreExecutors.listeningDecorator;
 import static io.trino.execution.buffer.CompressionCodec.NONE;
 import static io.trino.memory.context.AggregatedMemoryContext.newSimpleAggregatedMemoryContext;
@@ -39,6 +42,50 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class TestAppendingSpiller
 {
+    @Test
+    public void testMatchBitmapInheritsSpillEncryption(@TempDir Path spillPath)
+            throws Exception
+    {
+        ExecutorService executor = newSingleThreadExecutor();
+        FileSingleStreamSpillerFactory files = new FileSingleStreamSpillerFactory(
+                listeningDecorator(executor), TESTING_BLOCK_ENCODING_SERDE, new SpillerStats(), ImmutableList.of(spillPath), 1, 1.0, NONE, true);
+        AggregatedMemoryContext memory = newSimpleAggregatedMemoryContext();
+        try (AppendingSpiller spiller = (AppendingSpiller) AppendingSpiller.factory(files).create(ImmutableList.of(BIGINT), _ -> {}, memory)) {
+            // Exercise the encrypted data stream and the auxiliary storage from the same owner.
+            spiller.spill(RowPagesBuilder.rowPagesBuilder(BIGINT).row(7L).build().iterator()).get();
+            try (DiskBackedMatchBitmap bitmap = spiller.createMatchBitmap(9000)) {
+                while (!bitmap.initialize()) {
+                    Thread.yield();
+                }
+                for (int position = 0; position < 8192; position += 2) {
+                    bitmap.mark(position);
+                }
+                bitmap.mark(8192);
+                byte[] plaintext = new byte[1024];
+                Arrays.fill(plaintext, (byte) 0x55);
+                try (var paths = Files.list(spillPath)) {
+                    for (Path path : paths.toList()) {
+                        byte[] content = Files.readAllBytes(path);
+                        if (content.length >= plaintext.length) {
+                            assertThat(indexOf(content, plaintext)).isEqualTo(-1);
+                        }
+                    }
+                }
+                assertThat(bitmap.isMarked(0)).isTrue();
+                assertThat(bitmap.isMarked(1)).isFalse();
+            }
+            assertThat(spiller.getSpilledPagesFrom(0).next().getPositionCount()).isEqualTo(1);
+        }
+        finally {
+            files.destroy();
+            executor.shutdownNow();
+            memory.close();
+        }
+        try (var paths = Files.list(spillPath)) {
+            assertThat(paths.toList()).isEmpty();
+        }
+    }
+
     @Test
     public void testBatchesAppendToOneSpillStream(@TempDir Path spillPath)
             throws Exception

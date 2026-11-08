@@ -120,7 +120,8 @@ public final class PushProjectionThroughJoin
                 joinNode.getFilter(),
                 joinNode.getDistributionType(),
                 joinNode.isSpillable(),
-                Optional.empty(),
+                // Equi-keys are retained as identities, so their ordering and the physical algorithm survive.
+                joinNode.getAlgorithm(),
                 joinNode.getDynamicFilters(),
                 joinNode.getReorderJoinStatsAndCost()));
     }

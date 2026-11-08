@@ -1,0 +1,20 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] 
+[INFO] ------------------------< io.trino:trino-main >-------------------------
+[INFO] Building trino-main 485-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- airstyle:10:format (default-cli) @ trino-main ---
+[INFO] Formatted: /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/operator/join/merge/DiskBackedMatchBitmap.java
+[INFO] Formatted: /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/operator/join/merge/TestAppendingSpiller.java
+[INFO] Processed 4292 files, formatted 2
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  01:27 min
+[INFO] Finished at: 2026-11-08T19:06:47+03:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Njord session closed

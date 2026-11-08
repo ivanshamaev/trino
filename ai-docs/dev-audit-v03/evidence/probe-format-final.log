@@ -1,0 +1,40 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] trino-main                                                         [jar]
+[INFO] trino-iceberg                                             [trino-plugin]
+[INFO] 
+[INFO] ------------------------< io.trino:trino-main >-------------------------
+[INFO] Building trino-main 485-SNAPSHOT                                   [1/2]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- airstyle:10:format (default-cli) @ trino-main ---
+[INFO] Formatted: /tmp/trino-smj-audit-v03-check/core/trino-main/src/test/java/io/trino/operator/join/merge/TestMergeJoinOperator.java
+[INFO] Processed 4289 files, formatted 1
+[INFO] 
+[INFO] -----------------------< io.trino:trino-iceberg >-----------------------
+[INFO] Building trino-iceberg 485-SNAPSHOT                                [2/2]
+[INFO]   from /tmp/trino-smj-audit-v03-check/plugin/trino-iceberg/pom.xml
+[INFO] ----------------------------[ trino-plugin ]----------------------------
+[INFO] 
+[INFO] --- airstyle:10:format (default-cli) @ trino-iceberg ---
+[INFO] Processed 495 files, formatted 0
+[INFO] ------------------------------------------------------------------------
+[INFO] Average project wall time: 51.00s
+[INFO] Total concurrency: 100%
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for trino-main 485-SNAPSHOT:
+[INFO] 
+[INFO] trino-main ......................................... SUCCESS [01:17 min]
+[INFO] trino-iceberg ...................................... SUCCESS [ 25.468 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  01:45 min
+[INFO] Finished at: 2026-11-08T17:16:32+03:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Njord session closed

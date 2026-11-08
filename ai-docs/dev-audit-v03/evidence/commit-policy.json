@@ -1,0 +1,252 @@
+{
+  "checker_sha256": "0b735a9f8b10ab9f3b929354ffd105bc70f9d8c854ee316545aa499fbe93cb99",
+  "pinned_action": "1652e24519f5c7cec59d841070bf9beffadabdf9",
+  "selection": "Non-merge commits from explicitly pinned fork/review bases; --message-file mode",
+  "results": [
+    {
+      "branch": "smj-plan",
+      "commit": "fd36b682eaeb21f830f40014cab31b84cf989a7b",
+      "subject": "Add Sorted Merge Join research and implementation plan",
+      "exit_code": 0,
+      "diagnostics": "Checked commit message; subject meets style and length requirements, description meets length limits, and no prohibited attributions were found.\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "f85704d29f68ff90b8520b6003d4acd890e817b2",
+      "subject": "Add merge join algorithm marker to JoinNode",
+      "exit_code": 0,
+      "diagnostics": "Checked commit message; subject meets style and length requirements, description meets length limits, and no prohibited attributions were found.\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "7e2b9b5ee9b95e3f9e5a5a8b0f39f45cdfe5698d",
+      "subject": "Add merge join operator",
+      "exit_code": 0,
+      "diagnostics": "Checked commit message; subject meets style and length requirements, description meets length limits, and no prohibited attributions were found.\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "2dfc26d3d14a5355c5832c53e415b360849eeb43",
+      "subject": "Add merge join operator tests",
+      "exit_code": 0,
+      "diagnostics": "Checked commit message; subject meets style and length requirements, description meets length limits, and no prohibited attributions were found.\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "5b36c36a6aa3a4ed0e54dc346efc6a4fa0b16ac7",
+      "subject": "Add DetermineJoinAlgorithm rule and prefer_merge_join property",
+      "exit_code": 1,
+      "diagnostics": "Commit subjects must not start with a lowercase letter or end with a period.\nCommon past-tense leading verbs must use their imperative form.\nCommit subjects should be at most 50 characters; this check fails subjects over 60 characters.\n\ncommit message Add DetermineJoinAlgorithm rule and prefer_merge_join property\n  subject: 62 characters\n\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "8290506d1dcb8a0c087512f9131ad93a22e7d007",
+      "subject": "Wire merge join into planner and local execution (MVP)",
+      "exit_code": 0,
+      "diagnostics": "Checked commit message; subject meets style and length requirements, description meets length limits, and no prohibited attributions were found.\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "eab864b6b3b3eba7a9ee9306516bb67ab5e4bc68",
+      "subject": "Update SMJ dev todo list after MVP completion",
+      "exit_code": 0,
+      "diagnostics": "Checked commit message; subject meets style and length requirements, description meets length limits, and no prohibited attributions were found.\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "419529bc82c4ee951007d219132d38f24f71f65d",
+      "subject": "Report Iceberg sortedness via table properties",
+      "exit_code": 0,
+      "diagnostics": "Checked commit message; subject meets style and length requirements, description meets length limits, and no prohibited attributions were found.\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "8d1d1c37acd74ded4bf54f39b60b85836fee26c2",
+      "subject": "Update dev todo list after Iceberg sortedness stage",
+      "exit_code": 0,
+      "diagnostics": "Checked commit message; subject meets style and length requirements, description meets length limits, and no prohibited attributions were found.\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "508a623f20207c418728c742f34f9a9672028a2c",
+      "subject": "Propagate join algorithm through plan rewrites, add rule tests, sorted output derivation, EXPLAIN support",
+      "exit_code": 1,
+      "diagnostics": "Commit subjects must not start with a lowercase letter or end with a period.\nCommon past-tense leading verbs must use their imperative form.\nCommit subjects should be at most 50 characters; this check fails subjects over 60 characters.\n\ncommit message Propagate join algorithm through plan rewrites, add rule tests, sorted output derivation, EXPLAIN support\n  subject: 105 characters\n\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "d55ef7be1d39dafe5c08445ec6194be5ee999233",
+      "subject": "Fix merge join bridge lifecycle and document runner livelock",
+      "exit_code": 0,
+      "diagnostics": "Checked commit message; subject meets style and length requirements, description meets length limits, and no prohibited attributions were found.\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "2d16c9d4d62d2fcc8cc7f1b4197cfd9abc85e54f",
+      "subject": "Remove JVM crash logs committed by accident",
+      "exit_code": 0,
+      "diagnostics": "Checked commit message; subject meets style and length requirements, description meets length limits, and no prohibited attributions were found.\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "befa3f855c011f8426ac090dd203b07cafb68b3f",
+      "subject": "Fix merge join livelock by enforcing single-stream join pipelines in AddLocalExchanges",
+      "exit_code": 1,
+      "diagnostics": "Commit subjects must not start with a lowercase letter or end with a period.\nCommon past-tense leading verbs must use their imperative form.\nCommit subjects should be at most 50 characters; this check fails subjects over 60 characters.\n\ncommit message Fix merge join livelock by enforcing single-stream join pipelines in AddLocalExchanges\n  subject: 86 characters\n\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "5ea9a3a58e7ad451f4e9ca07416a49b304a1bb3a",
+      "subject": "Add RIGHT and FULL outer join support to merge join operator",
+      "exit_code": 0,
+      "diagnostics": "Checked commit message; subject meets style and length requirements, description meets length limits, and no prohibited attributions were found.\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "cc00465b364527e5a868e770fe5f07bf57784bba",
+      "subject": "Update dev todo list: all MVP items complete, RIGHT/FULL supported, KP-1 resolved",
+      "exit_code": 1,
+      "diagnostics": "Commit subjects must not start with a lowercase letter or end with a period.\nCommon past-tense leading verbs must use their imperative form.\nCommit subjects should be at most 50 characters; this check fails subjects over 60 characters.\n\ncommit message Update dev todo list: all MVP items complete, RIGHT/FULL supported, KP-1 resolved\n  subject: 81 characters\n\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "38691c6a14a4916cabb875544b9a1c92b7aaaa09",
+      "subject": "Add IS NOT NULL filters for INNER merge join to prune NULL tail before shuffle",
+      "exit_code": 1,
+      "diagnostics": "Commit subjects must not start with a lowercase letter or end with a period.\nCommon past-tense leading verbs must use their imperative form.\nCommit subjects should be at most 50 characters; this check fails subjects over 60 characters.\n\ncommit message Add IS NOT NULL filters for INNER merge join to prune NULL tail before shuffle\n  subject: 78 characters\n\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "993532631884047052db40ab1fef66d403bb2a92",
+      "subject": "Add dynamic filter collection for INNER merge join",
+      "exit_code": 0,
+      "diagnostics": "Checked commit message; subject meets style and length requirements, description meets length limits, and no prohibited attributions were found.\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "3dd8e29c5c723343c99f605a25865b2e78b0fc52",
+      "subject": "Update dev todo list: all Stage 1-4 and 3.3/3.5 items complete",
+      "exit_code": 1,
+      "diagnostics": "Commit subjects must not start with a lowercase letter or end with a period.\nCommon past-tense leading verbs must use their imperative form.\nCommit subjects should be at most 50 characters; this check fails subjects over 60 characters.\n\ncommit message Update dev todo list: all Stage 1-4 and 3.3/3.5 items complete\n  subject: 62 characters\n\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "f39e649cd548c799d70f75649d30a829ca25dbb2",
+      "subject": "Add COST_BASED merge join strategy with memory pressure thresholds",
+      "exit_code": 1,
+      "diagnostics": "Commit subjects must not start with a lowercase letter or end with a period.\nCommon past-tense leading verbs must use their imperative form.\nCommit subjects should be at most 50 characters; this check fails subjects over 60 characters.\n\ncommit message Add COST_BASED merge join strategy with memory pressure thresholds\n  subject: 66 characters\n\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "250156c8783002b38d0902d216fac94283a66b00",
+      "subject": "Update dev todo list: COST_BASED implemented, architecture verification complete",
+      "exit_code": 1,
+      "diagnostics": "Commit subjects must not start with a lowercase letter or end with a period.\nCommon past-tense leading verbs must use their imperative form.\nCommit subjects should be at most 50 characters; this check fails subjects over 60 characters.\n\ncommit message Update dev todo list: COST_BASED implemented, architecture verification complete\n  subject: 80 characters\n\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "515dded0a3edf0e790d96e1cc43848c7f35e5215",
+      "subject": "Relax ExchangeNode invariant to support REPARTITION exchanges with ordering for merge join",
+      "exit_code": 1,
+      "diagnostics": "Commit subjects must not start with a lowercase letter or end with a period.\nCommon past-tense leading verbs must use their imperative form.\nCommit subjects should be at most 50 characters; this check fails subjects over 60 characters.\n\ncommit message Relax ExchangeNode invariant to support REPARTITION exchanges with ordering for merge join\n  subject: 90 characters\n\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "45f749e92cef667b047999695984d18f53b9e3ba",
+      "subject": "Add spill infrastructure to merge join buffer and finalize dev todo list",
+      "exit_code": 1,
+      "diagnostics": "Commit subjects must not start with a lowercase letter or end with a period.\nCommon past-tense leading verbs must use their imperative form.\nCommit subjects should be at most 50 characters; this check fails subjects over 60 characters.\n\ncommit message Add spill infrastructure to merge join buffer and finalize dev todo list\n  subject: 72 characters\n\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "ef5574afbf40532650d25ad31a6bece5e69bf05a",
+      "subject": "Wire mergingPartitionedExchange in AddExchanges and SpillerFactory from LEP for merge join build spilling",
+      "exit_code": 1,
+      "diagnostics": "Commit subjects must not start with a lowercase letter or end with a period.\nCommon past-tense leading verbs must use their imperative form.\nCommit subjects should be at most 50 characters; this check fails subjects over 60 characters.\n\ncommit message Wire mergingPartitionedExchange in AddExchanges and SpillerFactory from LEP for merge join build spilling\n  subject: 105 characters\n\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "327e213c431cc00b56c37c3bf767fdebf57f9194",
+      "subject": "Finalize Stage 7 items and comprehensive architecture cross-check",
+      "exit_code": 1,
+      "diagnostics": "Commit subjects must not start with a lowercase letter or end with a period.\nCommon past-tense leading verbs must use their imperative form.\nCommit subjects should be at most 50 characters; this check fails subjects over 60 characters.\n\ncommit message Finalize Stage 7 items and comprehensive architecture cross-check\n  subject: 65 characters\n\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "3563040d906b404068b4d8142790f42a0f790f34",
+      "subject": "Implement actual build-side spilling in merge join buffer operator with SpillerFactory",
+      "exit_code": 1,
+      "diagnostics": "Commit subjects must not start with a lowercase letter or end with a period.\nCommon past-tense leading verbs must use their imperative form.\nCommit subjects should be at most 50 characters; this check fails subjects over 60 characters.\n\ncommit message Implement actual build-side spilling in merge join buffer operator with SpillerFactory\n  subject: 86 characters\n\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "6be8b69b1c8d9c3e1a1b7532f22fb831cbbf74f7",
+      "subject": "Fix INNER to LEFT/RIGHT conversion to keep merge join marker since RIGHT is now supported",
+      "exit_code": 1,
+      "diagnostics": "Commit subjects must not start with a lowercase letter or end with a period.\nCommon past-tense leading verbs must use their imperative form.\nCommit subjects should be at most 50 characters; this check fails subjects over 60 characters.\n\ncommit message Fix INNER to LEFT/RIGHT conversion to keep merge join marker since RIGHT is now supported\n  subject: 89 characters\n\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "fd5886e7b51a877eb298806a7c5afe224667579c",
+      "subject": "Add JoinOperatorType.mergeJoin factory and MergeJoinStatistics for WebUI observability",
+      "exit_code": 1,
+      "diagnostics": "Commit subjects must not start with a lowercase letter or end with a period.\nCommon past-tense leading verbs must use their imperative form.\nCommit subjects should be at most 50 characters; this check fails subjects over 60 characters.\n\ncommit message Add JoinOperatorType.mergeJoin factory and MergeJoinStatistics for WebUI observability\n  subject: 86 characters\n\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "1d7ab12541e80bddc65e75df71090d8179876aed",
+      "subject": "Mark item 2.8 (JoinOperatorType.mergeJoin + statistics) as complete",
+      "exit_code": 1,
+      "diagnostics": "Commit subjects must not start with a lowercase letter or end with a period.\nCommon past-tense leading verbs must use their imperative form.\nCommit subjects should be at most 50 characters; this check fails subjects over 60 characters.\n\ncommit message Mark item 2.8 (JoinOperatorType.mergeJoin + statistics) as complete\n  subject: 67 characters\n\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "71cbe8ca3d9e8f2d3c7459ebbec6c2e1e6888b09",
+      "subject": "codex some fixes",
+      "exit_code": 1,
+      "diagnostics": "Commit subjects must not start with a lowercase letter or end with a period.\nCommon past-tense leading verbs must use their imperative form.\nCommit subjects should be at most 50 characters; this check fails subjects over 60 characters.\n\ncommit message codex some fixes\n  subject: starts with a lowercase letter\n\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "773afdee3bd26dc1a59eb0524a3445657fc1b0d7",
+      "subject": "Complete bounded sorted merge join implementation",
+      "exit_code": 0,
+      "diagnostics": "Checked commit message; subject meets style and length requirements, description meets length limits, and no prohibited attributions were found.\n"
+    },
+    {
+      "branch": "smj-plan",
+      "commit": "0393e45fcf954473db34a33ecebe587c8cfff94d",
+      "subject": "Fix sorted merge join audit findings",
+      "exit_code": 0,
+      "diagnostics": "Checked commit message; subject meets style and length requirements, description meets length limits, and no prohibited attributions were found.\n"
+    },
+    {
+      "branch": "smj-upstream-v02",
+      "commit": "7186a02dbf294b95f7d14de03061a6fa9fa3626d",
+      "subject": "Add indexed replay for append-only spill streams",
+      "exit_code": 0,
+      "diagnostics": "Checked commit message; subject meets style and length requirements, description meets length limits, and no prohibited attributions were found.\n"
+    },
+    {
+      "branch": "smj-upstream-v02",
+      "commit": "722d41115607b6b52da510da518839355a4b35a7",
+      "subject": "Add bounded spill runs for explicit merge sorts",
+      "exit_code": 0,
+      "diagnostics": "Checked commit message; subject meets style and length requirements, description meets length limits, and no prohibited attributions were found.\n"
+    },
+    {
+      "branch": "smj-upstream-v02",
+      "commit": "925f2d1f8d77cddae08a4c9dd39c1f14d255b133",
+      "subject": "Add experimental partitioned sorted merge joins",
+      "exit_code": 0,
+      "diagnostics": "Checked commit message; subject meets style and length requirements, description meets length limits, and no prohibited attributions were found.\n"
+    },
+    {
+      "branch": "smj-upstream-v02",
+      "commit": "a0a11bff2fa450885f748da16549e4f8a9c202a7",
+      "subject": "Report verified Iceberg file ordering",
+      "exit_code": 0,
+      "diagnostics": "Checked commit message; subject meets style and length requirements, description meets length limits, and no prohibited attributions were found.\n"
+    }
+  ]
+}

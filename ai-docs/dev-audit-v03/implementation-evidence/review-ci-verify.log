@@ -1,0 +1,57 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] trino-main                                                         [jar]
+[INFO] trino-iceberg                                             [trino-plugin]
+[INFO] trino-tests                                                        [jar]
+[INFO] 
+[INFO] ------------------------< io.trino:trino-main >-------------------------
+[INFO] Building trino-main 485-SNAPSHOT                                   [1/3]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.7.0:enforce (default) @ trino-main ---
+[INFO] Rule 0: org.apache.maven.enforcer.rules.dependency.BannedDependencies passed
+[INFO] Rule 1: org.apache.maven.enforcer.rules.RequireProfileIdsExist passed
+[INFO] Rule 2: org.codehaus.mojo.extraenforcer.model.RequirePropertyDiverges passed
+[INFO] Rule 3: org.apache.maven.enforcer.rules.property.RequireProperty passed
+[INFO] Rule 4: org.apache.maven.enforcer.rules.RequireJavaVendor passed
+[INFO] Rule 5: org.apache.maven.enforcer.rules.BanDuplicatePomDependencyVersions passed
+[INFO] Rule 6: org.apache.maven.enforcer.rules.dependency.RequireUpperBoundDeps passed
+[INFO] Rule 7: org.apache.maven.enforcer.rules.version.RequireMavenVersion passed
+[INFO] Rule 8: org.apache.maven.enforcer.rules.version.RequireJavaVersion passed
+[INFO] Rule 9: org.codehaus.mojo.extraenforcer.dependencies.EnforceBytecodeVersion passed
+[INFO] Rule 10: org.apache.maven.enforcer.rules.RequirePluginVersions passed
+[INFO] Rule 11: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 12: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 13: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 14: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 15: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 16: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 17: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] 
+[INFO] --- enforcer:3.7.0:enforce (junit-extensions) @ trino-main ---
+[INFO] Rule 0: io.airlift.airbase.RequireJunitExtensions passed
+[INFO] 
+[INFO] --- enforcer:3.7.0:enforce (trino-restrict-imports) @ trino-main ---
+[INFO] Rule 0: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 1: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 2: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] Rule 3: org.apache.maven.plugins.enforcer.RestrictImports passed
+[INFO] 
+[INFO] --- sortpom:4.0.0:verify (default) @ trino-main ---
+[INFO] Verifying file /tmp/trino-smj-upstream-v02-check/core/trino-main/pom.xml
+[INFO] 
+[INFO] --- license:5.1.2:check (default) @ trino-main ---
+[INFO] Checking licenses...
+[WARNING] Unknown file extension: /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/execution/executor/scheduler/group-state-diagram.dot
+[INFO] License check: 4265 file(s) checked (OK: 4264, Missing: 0, Unknown: 1)
+[WARNING] Unable to find a comment style definition for some files. You may want to add a custom mapping for the relevant file extensions.
+[INFO] 
+[INFO] --- airstyle:10:check (airstyle) @ trino-main ---
+[INFO] All 4295 files are already formatted
+[INFO] 
+[INFO] --- checkstyle:3.6.0:check (checkstyle) @ trino-main ---

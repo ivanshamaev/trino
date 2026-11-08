@@ -1,0 +1,19 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] 
+[INFO] ------------------------< io.trino:trino-main >-------------------------
+[INFO] Building trino-main 485-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- airstyle:10:format (default-cli) @ trino-main ---
+[INFO] Formatted: /tmp/trino-smj-audit-v03-check/core/trino-main/src/test/java/io/trino/operator/join/merge/TestAppendingSpiller.java
+[INFO] Processed 4289 files, formatted 1
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  01:20 min
+[INFO] Finished at: 2026-11-08T17:08:01+03:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Njord session closed

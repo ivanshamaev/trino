@@ -1,0 +1,116 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] 
+[INFO] ------------------------< io.trino:trino-tests >------------------------
+[INFO] Building trino-tests 485-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-tests ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-tests ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-cli) @ trino-tests ---
+[INFO] Tests will run in random order. To reproduce ordering use flag -Dsurefire.runOrder.random.seed=35262828962557
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+WARNING: Using incubator modules: jdk.incubator.vector
+[INFO] Running io.trino.sql.planner.TestPartitionedTpcdsCostBasedPlan
+2026-11-08T09:57:11.058-0600	INFO	ForkJoinPool-1-worker-1	io.trino.simd.BlockEncodingSimdSupport	Detected SIMD Support for architecture=amd64, vectorBitWidth=128: SimdSupport[capabilities=[]]
+2026-11-08T09:57:14.060-0600	INFO	ForkJoinPool-1-worker-1	org.testcontainers.images.PullPolicy	Image pull policy will be performed by: DefaultPullPolicy()
+2026-11-08T09:57:14.069-0600	INFO	ForkJoinPool-1-worker-1	org.testcontainers.utility.ImageNameSubstitutor	Image name substitution will be performed by: DefaultImageNameSubstitutor (composite of 'ConfigurationFileImageNameSubstitutor' and 'PrefixingImageNameSubstitutor')
+2026-11-08T09:57:14.084-0600	INFO	ForkJoinPool-1-worker-1	org.testcontainers.DockerClientFactory	Testcontainers version: 2.0.5
+2026-11-08T09:57:14.374-0600	INFO	ForkJoinPool-1-worker-1	org.testcontainers.dockerclient.DockerClientProviderStrategy	Loaded org.testcontainers.dockerclient.UnixSocketClientProviderStrategy from ~/.testcontainers.properties, will try it first
+2026-11-08T09:57:15.189-0600	INFO	ForkJoinPool-1-worker-1	org.testcontainers.dockerclient.DockerClientProviderStrategy	Found Docker environment with local Unix socket (unix:///var/run/docker.sock)
+2026-11-08T09:57:15.193-0600	INFO	ForkJoinPool-1-worker-1	org.testcontainers.DockerClientFactory	Docker host IP address is localhost
+2026-11-08T09:57:15.219-0600	INFO	ForkJoinPool-1-worker-1	org.testcontainers.DockerClientFactory	Connected to docker: 
+  Server Version: 29.1.3
+  API Version: 1.52
+  Operating System: Ubuntu 26.04.1 LTS
+  Total Memory: 15388 MB
+2026-11-08T09:57:15.669-0600	INFO	ForkJoinPool-1-worker-1	tc.testcontainers/ryuk:0.14.0	Creating container for image: testcontainers/ryuk:0.14.0
+2026-11-08T09:57:15.683-0600	INFO	ForkJoinPool-1-worker-1	org.testcontainers.utility.RegistryAuthLocator	Failure when attempting to lookup auth config. Please ignore if you don't have images in an authenticated registry. Details: (dockerImageName: testcontainers/ryuk:0.14.0, configFile: /home/ivan/.docker/config.json, configEnv: DOCKER_AUTH_CONFIG). Falling back to docker-java default behaviour. Exception message: Status 404: No config supplied. Checked in order: /home/ivan/.docker/config.json (file not found), DOCKER_AUTH_CONFIG (not set)
+2026-11-08T09:57:16.037-0600	INFO	ForkJoinPool-1-worker-1	tc.testcontainers/ryuk:0.14.0	Container testcontainers/ryuk:0.14.0 is starting: d83376d422b874c71f8d69e68f8b380f9ed03336d150a98245f3eeeb86c56913
+2026-11-08T09:57:16.614-0600	INFO	ForkJoinPool-1-worker-1	tc.testcontainers/ryuk:0.14.0	Container testcontainers/ryuk:0.14.0 started in PT0.945001488S
+2026-11-08T09:57:16.623-0600	INFO	ForkJoinPool-1-worker-1	org.testcontainers.utility.RyukResourceReaper	Ryuk started - will monitor and terminate Testcontainers containers on JVM exit
+2026-11-08T09:57:16.624-0600	INFO	ForkJoinPool-1-worker-1	org.testcontainers.DockerClientFactory	Checking the system...
+2026-11-08T09:57:16.626-0600	INFO	ForkJoinPool-1-worker-1	org.testcontainers.DockerClientFactory	✔︎ Docker server version should be at least 1.6.0
+2026-11-08T09:57:16.627-0600	INFO	ForkJoinPool-1-worker-1	tc.floci/floci:2.2.0	Creating container for image: floci/floci:2.2.0
+2026-11-08T09:57:16.711-0600	INFO	ForkJoinPool-1-worker-1	tc.floci/floci:2.2.0	Container floci/floci:2.2.0 is starting: cd2616f941aac36ab62989a9878f8debd9470711f79336e447a211a38fa72179
+2026-11-08T09:57:17.051-0600	INFO	ForkJoinPool-1-worker-1	org.testcontainers.containers.wait.strategy.HttpWaitStrategy	/zealous_solomon: Waiting for 60 seconds for URL: http://localhost:32781/_floci/init (where port 32781 maps to container port 4566)
+2026-11-08T09:57:34.232-0600	INFO	ForkJoinPool-1-worker-1	tc.floci/floci:2.2.0	Container floci/floci:2.2.0 started in PT17.604790105S
+2026-11-08T09:57:36.731-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Copying resources for call_center table from iceberg/tpcds/sf1000/partitioned/call_center to iceberg-tpcds-sf1000-parquet-part/call_center in the container
+2026-11-08T09:57:37.489-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Registering table call_center using metadata location s3://starburst-benchmarks-data/iceberg-tpcds-sf1000-parquet-part/call_center/metadata/00001-e89d97b2-9b2d-47ff-b99d-6651df79a90f.metadata.json
+2026-11-08T09:57:37.641-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Copying resources for catalog_page table from iceberg/tpcds/sf1000/partitioned/catalog_page to iceberg-tpcds-sf1000-parquet-part/catalog_page in the container
+2026-11-08T09:57:38.172-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Registering table catalog_page using metadata location s3://starburst-benchmarks-data/iceberg-tpcds-sf1000-parquet-part/catalog_page/metadata/00001-f71cfe6e-55e3-41b5-880a-5147a972c288.metadata.json
+2026-11-08T09:57:38.181-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Copying resources for catalog_returns table from iceberg/tpcds/sf1000/partitioned/catalog_returns to iceberg-tpcds-sf1000-parquet-part/catalog_returns in the container
+2026-11-08T09:57:38.735-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Registering table catalog_returns using metadata location s3://starburst-benchmarks-data/iceberg-tpcds-sf1000-parquet-part/catalog_returns/metadata/00001-535dd9c7-f58d-4caf-a091-9d9f69ccf38a.metadata.json
+2026-11-08T09:57:38.748-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Copying resources for catalog_sales table from iceberg/tpcds/sf1000/partitioned/catalog_sales to iceberg-tpcds-sf1000-parquet-part/catalog_sales in the container
+2026-11-08T09:57:39.418-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Registering table catalog_sales using metadata location s3://starburst-benchmarks-data/iceberg-tpcds-sf1000-parquet-part/catalog_sales/metadata/00001-614bb4de-488f-47fa-b807-878548c039ed.metadata.json
+2026-11-08T09:57:39.427-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Copying resources for customer table from iceberg/tpcds/sf1000/partitioned/customer to iceberg-tpcds-sf1000-parquet-part/customer in the container
+2026-11-08T09:57:39.946-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Registering table customer using metadata location s3://starburst-benchmarks-data/iceberg-tpcds-sf1000-parquet-part/customer/metadata/00001-bc8cb648-42d6-4481-b109-a6e77d653c8b.metadata.json
+2026-11-08T09:57:39.957-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Copying resources for customer_address table from iceberg/tpcds/sf1000/partitioned/customer_address to iceberg-tpcds-sf1000-parquet-part/customer_address in the container
+2026-11-08T09:57:40.400-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Registering table customer_address using metadata location s3://starburst-benchmarks-data/iceberg-tpcds-sf1000-parquet-part/customer_address/metadata/00001-b07d6011-b792-4256-b355-f7a7bb59ff30.metadata.json
+2026-11-08T09:57:40.410-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Copying resources for customer_demographics table from iceberg/tpcds/sf1000/partitioned/customer_demographics to iceberg-tpcds-sf1000-parquet-part/customer_demographics in the container
+2026-11-08T09:57:40.846-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Registering table customer_demographics using metadata location s3://starburst-benchmarks-data/iceberg-tpcds-sf1000-parquet-part/customer_demographics/metadata/00001-5c1100bd-e0de-4f2b-bd05-5f9c3a482dcb.metadata.json
+2026-11-08T09:57:40.856-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Copying resources for date_dim table from iceberg/tpcds/sf1000/partitioned/date_dim to iceberg-tpcds-sf1000-parquet-part/date_dim in the container
+2026-11-08T09:57:41.299-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Registering table date_dim using metadata location s3://starburst-benchmarks-data/iceberg-tpcds-sf1000-parquet-part/date_dim/metadata/00001-17d74180-6c5f-4ec9-9bf1-1a17a5e7cc1c.metadata.json
+2026-11-08T09:57:41.312-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Copying resources for household_demographics table from iceberg/tpcds/sf1000/partitioned/household_demographics to iceberg-tpcds-sf1000-parquet-part/household_demographics in the container
+2026-11-08T09:57:41.830-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Registering table household_demographics using metadata location s3://starburst-benchmarks-data/iceberg-tpcds-sf1000-parquet-part/household_demographics/metadata/00001-25b249a8-7d9f-45e6-a8d4-0a6584ff3d85.metadata.json
+2026-11-08T09:57:41.839-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Copying resources for income_band table from iceberg/tpcds/sf1000/partitioned/income_band to iceberg-tpcds-sf1000-parquet-part/income_band in the container
+2026-11-08T09:57:42.274-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Registering table income_band using metadata location s3://starburst-benchmarks-data/iceberg-tpcds-sf1000-parquet-part/income_band/metadata/00001-99568020-4baf-4515-83bc-00b6f63e40ed.metadata.json
+2026-11-08T09:57:42.281-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Copying resources for inventory table from iceberg/tpcds/sf1000/partitioned/inventory to iceberg-tpcds-sf1000-parquet-part/inventory in the container
+2026-11-08T09:57:42.711-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Registering table inventory using metadata location s3://starburst-benchmarks-data/iceberg-tpcds-sf1000-parquet-part/inventory/metadata/00001-69b008e4-f403-42f3-b3d6-73ee96472da3.metadata.json
+2026-11-08T09:57:42.718-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Copying resources for item table from iceberg/tpcds/sf1000/partitioned/item to iceberg-tpcds-sf1000-parquet-part/item in the container
+2026-11-08T09:57:43.211-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Registering table item using metadata location s3://starburst-benchmarks-data/iceberg-tpcds-sf1000-parquet-part/item/metadata/00001-fd875019-2247-4ec5-adf6-ae30605db15b.metadata.json
+2026-11-08T09:57:43.219-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Copying resources for promotion table from iceberg/tpcds/sf1000/partitioned/promotion to iceberg-tpcds-sf1000-parquet-part/promotion in the container
+2026-11-08T09:57:43.677-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Registering table promotion using metadata location s3://starburst-benchmarks-data/iceberg-tpcds-sf1000-parquet-part/promotion/metadata/00001-a0a4a9ff-53d6-4cd0-9639-089a17b5707f.metadata.json
+2026-11-08T09:57:43.686-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Copying resources for reason table from iceberg/tpcds/sf1000/partitioned/reason to iceberg-tpcds-sf1000-parquet-part/reason in the container
+2026-11-08T09:57:44.135-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Registering table reason using metadata location s3://starburst-benchmarks-data/iceberg-tpcds-sf1000-parquet-part/reason/metadata/00001-db60d8bb-5734-4c79-b9e6-d0ec7b90e8c1.metadata.json
+2026-11-08T09:57:44.148-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Copying resources for ship_mode table from iceberg/tpcds/sf1000/partitioned/ship_mode to iceberg-tpcds-sf1000-parquet-part/ship_mode in the container
+2026-11-08T09:57:44.599-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Registering table ship_mode using metadata location s3://starburst-benchmarks-data/iceberg-tpcds-sf1000-parquet-part/ship_mode/metadata/00001-b7cbf038-7ac7-40c6-a00a-1dbe7b4dd5b5.metadata.json
+2026-11-08T09:57:44.605-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Copying resources for store table from iceberg/tpcds/sf1000/partitioned/store to iceberg-tpcds-sf1000-parquet-part/store in the container
+2026-11-08T09:57:45.157-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Registering table store using metadata location s3://starburst-benchmarks-data/iceberg-tpcds-sf1000-parquet-part/store/metadata/00001-7f61b83f-1f99-4c10-b931-ee450d7c8bc5.metadata.json
+2026-11-08T09:57:45.163-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Copying resources for store_returns table from iceberg/tpcds/sf1000/partitioned/store_returns to iceberg-tpcds-sf1000-parquet-part/store_returns in the container
+2026-11-08T09:57:45.626-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Registering table store_returns using metadata location s3://starburst-benchmarks-data/iceberg-tpcds-sf1000-parquet-part/store_returns/metadata/00001-49bd4963-e9b0-4157-8aa4-2a3230d8ecd3.metadata.json
+2026-11-08T09:57:45.635-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Copying resources for store_sales table from iceberg/tpcds/sf1000/partitioned/store_sales to iceberg-tpcds-sf1000-parquet-part/store_sales in the container
+2026-11-08T09:57:46.098-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Registering table store_sales using metadata location s3://starburst-benchmarks-data/iceberg-tpcds-sf1000-parquet-part/store_sales/metadata/00001-5f263491-0286-413e-9c52-986221cc8a7d.metadata.json
+2026-11-08T09:57:46.105-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Copying resources for time_dim table from iceberg/tpcds/sf1000/partitioned/time_dim to iceberg-tpcds-sf1000-parquet-part/time_dim in the container
+2026-11-08T09:57:46.547-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Registering table time_dim using metadata location s3://starburst-benchmarks-data/iceberg-tpcds-sf1000-parquet-part/time_dim/metadata/00001-67c70332-7ef8-4956-b815-4d190e6caa27.metadata.json
+2026-11-08T09:57:46.554-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Copying resources for warehouse table from iceberg/tpcds/sf1000/partitioned/warehouse to iceberg-tpcds-sf1000-parquet-part/warehouse in the container
+2026-11-08T09:57:47.006-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Registering table warehouse using metadata location s3://starburst-benchmarks-data/iceberg-tpcds-sf1000-parquet-part/warehouse/metadata/00001-79b8fa02-a351-4660-ab95-539b41950c4b.metadata.json
+2026-11-08T09:57:47.013-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Copying resources for web_page table from iceberg/tpcds/sf1000/partitioned/web_page to iceberg-tpcds-sf1000-parquet-part/web_page in the container
+2026-11-08T09:57:47.480-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Registering table web_page using metadata location s3://starburst-benchmarks-data/iceberg-tpcds-sf1000-parquet-part/web_page/metadata/00001-cbf8131d-a417-43be-b61e-766768459e3f.metadata.json
+2026-11-08T09:57:47.487-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Copying resources for web_returns table from iceberg/tpcds/sf1000/partitioned/web_returns to iceberg-tpcds-sf1000-parquet-part/web_returns in the container
+2026-11-08T09:57:47.979-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Registering table web_returns using metadata location s3://starburst-benchmarks-data/iceberg-tpcds-sf1000-parquet-part/web_returns/metadata/00001-48e3f75b-93ef-493e-a23c-2316f1ab787d.metadata.json
+2026-11-08T09:57:47.991-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Copying resources for web_sales table from iceberg/tpcds/sf1000/partitioned/web_sales to iceberg-tpcds-sf1000-parquet-part/web_sales in the container
+2026-11-08T09:57:48.516-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Registering table web_sales using metadata location s3://starburst-benchmarks-data/iceberg-tpcds-sf1000-parquet-part/web_sales/metadata/00001-c5b98ee0-296d-4767-99d5-2dbc01e759a4.metadata.json
+2026-11-08T09:57:48.527-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Copying resources for web_site table from iceberg/tpcds/sf1000/partitioned/web_site to iceberg-tpcds-sf1000-parquet-part/web_site in the container
+2026-11-08T09:57:48.948-0600	INFO	ForkJoinPool-1-worker-1	io.trino.sql.planner.IcebergCostBasedPlanTestSetup	Registering table web_site using metadata location s3://starburst-benchmarks-data/iceberg-tpcds-sf1000-parquet-part/web_site/metadata/00001-48e6cb18-4dae-4195-ba13-40e7023ffa58.metadata.json
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by org.xerial.snappy.SnappyLoader in an unnamed module (file:/home/ivan/.m2/repository/org/xerial/snappy/snappy-java/1.1.10.12/snappy-java-1.1.10.12.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+2026-11-08T09:57:58.226-0600	INFO	ForkJoinPool-1-worker-4	io.trino.sql.planner.TestPartitionedTpcdsCostBasedPlan	TPCDS merge choice query=/sql/trino/tpcds/q04.sql buildRows=1.4677811740264417E11 buildBytes=8.512293256720932E12 buildNDV=[1.198619E7]
+2026-11-08T09:58:05.405-0600	INFO	ForkJoinPool-1-worker-3	io.trino.sql.planner.TestPartitionedTpcdsCostBasedPlan	TPCDS merge choice query=/sql/trino/tpcds/q11.sql buildRows=6.179496338823626E9 buildBytes=2.5332408814078522E11 buildNDV=[1.198619E7]
+2026-11-08T09:58:56.070-0600	INFO	ForkJoinPool-1-worker-2	io.trino.sql.planner.TestPartitionedTpcdsCostBasedPlan	TPCDS merge choice query=/sql/trino/tpcds/q74.sql buildRows=6.179496338823626E9 buildBytes=2.5332408814078522E11 buildNDV=[1.198619E7]
+[INFO] Tests run: 206, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 122.4 s -- in io.trino.sql.planner.TestPartitionedTpcdsCostBasedPlan
+2026-11-08T09:59:12.953-0600	INFO	main	io.trino.testing.containers.junit.ReportLeakedContainers	Checking for leaked containers
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 206, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  02:12 min
+[INFO] Finished at: 2026-11-08T18:59:13+03:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Njord session closed

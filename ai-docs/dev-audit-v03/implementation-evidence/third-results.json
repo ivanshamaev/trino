@@ -1,0 +1,44 @@
+[
+  {
+    "phase": "format-third",
+    "command": [
+      "./mvnw",
+      "-pl",
+      "core/trino-main,plugin/trino-iceberg",
+      "airstyle:format"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 138.859,
+    "log": "format-third.log"
+  },
+  {
+    "phase": "build-third",
+    "command": [
+      "./mvnw",
+      "package",
+      "-DskipTests",
+      "-Dair.check.skip-all=true",
+      "-pl",
+      "core/trino-main,plugin/trino-iceberg,testing/trino-tests"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 215.356,
+    "log": "build-third.log"
+  },
+  {
+    "phase": "core-third",
+    "command": [
+      "./mvnw",
+      "initialize",
+      "surefire:test",
+      "-Dair.check.skip-all=true",
+      "-Dsmj.large=true",
+      "-pl",
+      "core/trino-main",
+      "-Dtest=TestAppendingSpiller,TestCachingStatsProvider,TestColocatedJoin,TestCostCalculator,TestDetermineJoinAlgorithm,TestDiskBackedMatchBitmap,TestDynamicFilterService,TestEffectivePredicateExtractor,TestEliminateCrossJoins,TestFileSingleStreamSpiller,TestFileSingleStreamSpillerFactory,TestIncrementalRefreshVisitor,TestJoinNodeAlgorithm,TestJoinStatsRule,TestMergeJoin,TestMergeJoinAggregationPushdown,TestMergeJoinCostModel,TestMergeJoinExpressionRewrite,TestMergeJoinOperator,TestMergeJoinOperatorInfo,TestMergeJoinRepeatedKeys,TestMergeJoinScalarTypes,TestMultiSourcePartitionedScheduler,TestOptimizerConfig,TestOrderByOperator,TestPagesIndex,TestPushPartialAggregationThroughExchange,TestPushPartialAggregationThroughJoin,TestSchedulingUtils,TestSortingSpiller,TestSourcePartitionedScheduler,TestTopologicalOrderSubPlanVisitor,TestValidateJoinAlgorithms"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 219.062,
+    "log": "core-third.log"
+  }
+]

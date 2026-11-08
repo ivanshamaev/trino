@@ -26,7 +26,6 @@ import io.trino.spi.connector.SortOrder;
 import io.trino.spi.type.Type;
 import io.trino.spiller.Spiller;
 
-import java.nio.file.Path;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -208,10 +207,16 @@ public class MergeJoinBridge
         }
     }
 
-    public Path createMatchFile()
+    public DiskBackedMatchBitmap createMatchBitmap(long positions)
     {
         checkState(spiller instanceof AppendingSpiller, "Large build groups require a replayable spiller");
-        return ((AppendingSpiller) spiller).createMatchFile();
+        return ((AppendingSpiller) spiller).createMatchBitmap(positions);
+    }
+
+    public long matchBitmapRetainedSize()
+    {
+        checkState(spiller instanceof AppendingSpiller, "Large build groups require a replayable spiller");
+        return ((AppendingSpiller) spiller).matchBitmapRetainedSize();
     }
 
     public boolean canCreateMatchFile()

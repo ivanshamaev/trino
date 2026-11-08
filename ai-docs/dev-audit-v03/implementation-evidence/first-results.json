@@ -1,0 +1,43 @@
+[
+  {
+    "phase": "format-first",
+    "command": [
+      "./mvnw",
+      "-pl",
+      "core/trino-main,plugin/trino-iceberg",
+      "airstyle:format"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 130.876,
+    "log": "format-first.log"
+  },
+  {
+    "phase": "build-first",
+    "command": [
+      "./mvnw",
+      "package",
+      "-DskipTests",
+      "-Dair.check.skip-all=true",
+      "-pl",
+      "core/trino-main,plugin/trino-iceberg,testing/trino-tests"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 264.252,
+    "log": "build-first.log"
+  },
+  {
+    "phase": "core-first",
+    "command": [
+      "./mvnw",
+      "initialize",
+      "surefire:test",
+      "-Dair.check.skip-all=true",
+      "-pl",
+      "core/trino-main",
+      "-Dtest=TestAppendingSpiller,TestDiskBackedMatchBitmap,TestMergeJoinAggregationPushdown,TestMergeJoinScalarTypes,TestValidateJoinAlgorithms,TestPushPartialAggregationThroughJoin,TestPushPartialAggregationThroughExchange,TestMergeJoinOperator#testDifferentialJoinWithCompressedEncryptedSpill+testEncryptedOuterJoinWithDiskMatchBitmap+testSpilledRightJoinMatchBitmapLargerThanMemoryLimit"
+    ],
+    "exit_code": 1,
+    "elapsed_seconds": 28.67,
+    "log": "core-first.log"
+  }
+]

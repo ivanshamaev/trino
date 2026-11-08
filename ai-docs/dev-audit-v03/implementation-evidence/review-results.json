@@ -1,0 +1,255 @@
+[
+  {
+    "phase": "review-create-branch",
+    "command": [
+      "git",
+      "switch",
+      "-c",
+      "smj-upstream-v03"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T15:39:20.545608+00:00",
+    "elapsed_seconds": 0.009,
+    "exit_code": 0,
+    "log": "review-create-branch.log"
+  },
+  {
+    "phase": "review-stage-1-apply",
+    "command": [
+      "git",
+      "apply",
+      "/home/ivan/opencode/trino/ai-docs/dev-audit-v03/implementation-evidence/planner-changes.patch"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T15:39:20.580859+00:00",
+    "elapsed_seconds": 0.005,
+    "exit_code": 0,
+    "log": "review-stage-1-apply.log"
+  },
+  {
+    "phase": "review-stage-1-stage",
+    "command": [
+      "git",
+      "add",
+      "--",
+      "core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/DetermineJoinAlgorithm.java",
+      "core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/PushPartialAggregationThroughExchange.java",
+      "core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/PushPartialAggregationThroughJoin.java",
+      "core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/PushProjectionThroughJoin.java",
+      "core/trino-main/src/main/java/io/trino/sql/planner/optimizations/PropertyDerivations.java",
+      "core/trino-main/src/main/java/io/trino/sql/planner/sanity/PlanSanityChecker.java",
+      "core/trino-main/src/main/java/io/trino/sql/planner/sanity/ValidateJoinAlgorithms.java",
+      "core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestMergeJoinExpressionRewrite.java",
+      "core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestPushPartialAggregationThroughExchange.java",
+      "core/trino-main/src/test/java/io/trino/sql/planner/sanity/TestValidateJoinAlgorithms.java",
+      "core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoinAggregationPushdown.java",
+      "core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoinScalarTypes.java",
+      "plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSortedWriting.java",
+      "plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestMergeJoinAggregationExchange.java",
+      "docs/src/main/sphinx/optimizer/merge-join.md"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T15:39:20.586319+00:00",
+    "elapsed_seconds": 0.071,
+    "exit_code": 0,
+    "log": "review-stage-1-stage.log"
+  },
+  {
+    "phase": "review-stage-1-commit",
+    "command": [
+      "git",
+      "commit",
+      "-m",
+      "Preserve merge join contracts in late rewrites"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T15:39:20.657910+00:00",
+    "elapsed_seconds": 0.18,
+    "exit_code": 0,
+    "log": "review-stage-1-commit.log"
+  },
+  {
+    "phase": "review-stage-1-build",
+    "command": [
+      "./mvnw",
+      "package",
+      "-DskipTests",
+      "-Dair.check.skip-all=true",
+      "-pl",
+      "core/trino-main,plugin/trino-iceberg,testing/trino-tests"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T15:39:20.842181+00:00",
+    "elapsed_seconds": 256.648,
+    "exit_code": 0,
+    "log": "review-stage-1-build.log"
+  },
+  {
+    "phase": "review-stage-1-core-tests",
+    "command": [
+      "./mvnw",
+      "initialize",
+      "surefire:test",
+      "-Dair.check.skip-all=true",
+      "-pl",
+      "core/trino-main",
+      "-Dtest=TestMergeJoinAggregationPushdown,TestMergeJoinScalarTypes,TestValidateJoinAlgorithms,TestMergeJoinExpressionRewrite,TestPushPartialAggregationThroughJoin,TestPushPartialAggregationThroughExchange"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T15:43:37.490328+00:00",
+    "elapsed_seconds": 34.379,
+    "exit_code": 0,
+    "log": "review-stage-1-core-tests.log"
+  },
+  {
+    "phase": "review-stage-1-iceberg-tests",
+    "command": [
+      "./mvnw",
+      "initialize",
+      "surefire:test",
+      "-Dair.check.skip-all=true",
+      "-pl",
+      "plugin/trino-iceberg",
+      "-Dtest=TestMergeJoinAggregationExchange,TestIcebergSortedWriting#testMergeJoinWithPartialAggregationAndProjection+testMultipleSortedFilesWithMergeJoinDisabled"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T15:44:11.869993+00:00",
+    "elapsed_seconds": 47.168,
+    "exit_code": 0,
+    "log": "review-stage-1-iceberg-tests.log"
+  },
+  {
+    "phase": "review-stage-2-apply",
+    "command": [
+      "git",
+      "apply",
+      "/home/ivan/opencode/trino/ai-docs/dev-audit-v03/implementation-evidence/runtime-changes.patch"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T15:44:59.065457+00:00",
+    "elapsed_seconds": 0.005,
+    "exit_code": 0,
+    "log": "review-stage-2-apply.log"
+  },
+  {
+    "phase": "review-stage-2-stage",
+    "command": [
+      "git",
+      "add",
+      "--",
+      "core/trino-main/src/main/java/io/trino/operator/join/merge/AppendingSpiller.java",
+      "core/trino-main/src/main/java/io/trino/operator/join/merge/DiskBackedMatchBitmap.java",
+      "core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinBridge.java",
+      "core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java",
+      "core/trino-main/src/main/java/io/trino/spiller/FileSingleStreamSpiller.java",
+      "core/trino-main/src/test/java/io/trino/operator/join/merge/TestAppendingSpiller.java",
+      "core/trino-main/src/test/java/io/trino/operator/join/merge/TestDiskBackedMatchBitmap.java",
+      "core/trino-main/src/test/java/io/trino/operator/join/merge/TestMergeJoinOperator.java",
+      "docs/src/main/sphinx/optimizer/merge-join.md"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T15:44:59.071007+00:00",
+    "elapsed_seconds": 0.063,
+    "exit_code": 0,
+    "log": "review-stage-2-stage.log"
+  },
+  {
+    "phase": "review-stage-2-commit",
+    "command": [
+      "git",
+      "commit",
+      "-m",
+      "Encrypt merge join match spill state"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T15:44:59.134229+00:00",
+    "elapsed_seconds": 0.105,
+    "exit_code": 0,
+    "log": "review-stage-2-commit.log"
+  },
+  {
+    "phase": "review-stage-2-build",
+    "command": [
+      "./mvnw",
+      "package",
+      "-DskipTests",
+      "-Dair.check.skip-all=true",
+      "-pl",
+      "core/trino-main,plugin/trino-iceberg,testing/trino-tests"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T15:44:59.243890+00:00",
+    "elapsed_seconds": 252.936,
+    "exit_code": 0,
+    "log": "review-stage-2-build.log"
+  },
+  {
+    "phase": "review-core-large",
+    "command": [
+      "./mvnw",
+      "initialize",
+      "surefire:test",
+      "-Dair.check.skip-all=true",
+      "-Dsmj.large=true",
+      "-pl",
+      "core/trino-main",
+      "-Dtest=TestAppendingSpiller,TestCachingStatsProvider,TestColocatedJoin,TestCostCalculator,TestDetermineJoinAlgorithm,TestDiskBackedMatchBitmap,TestDynamicFilterService,TestEffectivePredicateExtractor,TestEliminateCrossJoins,TestFileSingleStreamSpiller,TestFileSingleStreamSpillerFactory,TestIncrementalRefreshVisitor,TestJoinNodeAlgorithm,TestJoinStatsRule,TestMergeJoin,TestMergeJoinAggregationPushdown,TestMergeJoinCostModel,TestMergeJoinExpressionRewrite,TestMergeJoinOperator,TestMergeJoinOperatorInfo,TestMergeJoinRepeatedKeys,TestMergeJoinScalarTypes,TestMultiSourcePartitionedScheduler,TestOptimizerConfig,TestOrderByOperator,TestPagesIndex,TestPushPartialAggregationThroughExchange,TestPushPartialAggregationThroughJoin,TestSchedulingUtils,TestSortingSpiller,TestSourcePartitionedScheduler,TestTopologicalOrderSubPlanVisitor,TestValidateJoinAlgorithms"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T15:49:12.180701+00:00",
+    "elapsed_seconds": 198.551,
+    "exit_code": 0,
+    "log": "review-core-large.log"
+  },
+  {
+    "phase": "review-iceberg-workloads",
+    "command": [
+      "./mvnw",
+      "initialize",
+      "surefire:test",
+      "-Dair.check.skip-all=true",
+      "-Dsmj.validation=true",
+      "-pl",
+      "plugin/trino-iceberg",
+      "-Dtest=TestIcebergConfig,TestIcebergSortedWriting,TestMergeJoinAggregationExchange,TestMergeJoinWorkloads"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T15:52:30.732214+00:00",
+    "elapsed_seconds": 267.704,
+    "exit_code": 0,
+    "log": "review-iceberg-workloads.log"
+  },
+  {
+    "phase": "review-tpcds-plans",
+    "command": [
+      "./mvnw",
+      "initialize",
+      "surefire:test",
+      "-Dair.check.skip-all=true",
+      "-pl",
+      "testing/trino-tests",
+      "-Dtest=TestPartitionedTpcdsCostBasedPlan"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T15:56:58.440862+00:00",
+    "elapsed_seconds": 135.518,
+    "exit_code": 0,
+    "log": "review-tpcds-plans.log"
+  },
+  {
+    "phase": "review-ci-verify",
+    "command": [
+      "./mvnw",
+      "verify",
+      "-DskipTests",
+      "-Pci",
+      "-pl",
+      "core/trino-main,plugin/trino-iceberg,testing/trino-tests"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T15:59:13.958058+00:00",
+    "elapsed_seconds": 144.313,
+    "exit_code": 143,
+    "log": "review-ci-verify.log"
+  }
+]

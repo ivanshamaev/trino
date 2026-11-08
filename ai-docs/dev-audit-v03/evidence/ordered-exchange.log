@@ -1,0 +1,141 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] 
+[INFO] -----------------------< io.trino:trino-iceberg >-----------------------
+[INFO] Building trino-iceberg 485-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] ----------------------------[ trino-plugin ]----------------------------
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-iceberg ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-iceberg ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-cli) @ trino-iceberg ---
+[INFO] Tests will run in random order. To reproduce ordering use flag -Dsurefire.runOrder.random.seed=29984348789813
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+WARNING: Using incubator modules: jdk.incubator.vector
+[INFO] Running io.trino.plugin.iceberg.TestMergeJoinExchangeAudit
+2026-11-08T08:29:14.403-0600	INFO	ForkJoinPool-1-worker-1	io.trino.simd.BlockEncodingSimdSupport	Detected SIMD Support for architecture=amd64, vectorBitWidth=128: SimdSupport[capabilities=[]]
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::loadLibrary has been called by com.aayushatharva.brotli4j.Brotli4jLoader in an unnamed module (file:/home/ivan/.m2/repository/com/aayushatharva/brotli4j/brotli4j/1.23.0/brotli4j-1.23.0.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+2026-11-08T08:29:15.571-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 107.00ms: 481.58MB -> 135.42MB
+2026-11-08T08:29:20.685-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 4.87s, stopped 248.00ms: 602.31MB -> 207.24MB
+2026-11-08T08:29:20.688-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 248.00ms: 602.31MB -> 207.24MB
+2026-11-08T08:29:20.696-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 248.00ms: 602.31MB -> 207.24MB
+2026-11-08T08:29:20.777-0600	INFO	ForkJoinPool-1-worker-1	io.trino.testing.DistributedQueryRunner	Created DistributedQueryRunner in 7.93s (unclosed instances = 1)
+2026-11-08T08:29:20.892-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T08:29:20.910-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T08:29:20.911-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T08:29:20.921-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T08:29:20.922-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T08:29:20.933-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T08:29:21.054-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	Usage filesystem.metadata of catalog iceberg requires [LOW_LATENCY], selected blob cache manager memory
+2026-11-08T08:29:30.975-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 9.89s, stopped 393.00ms: 1.09GB -> 622.06MB
+2026-11-08T08:29:30.976-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 9.89s, stopped 393.00ms: 1.09GB -> 622.06MB
+2026-11-08T08:29:30.977-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 9.89s, stopped 393.00ms: 1.09GB -> 622.06MB
+2026-11-08T08:29:33.321-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.04s, stopped 308.00ms: 901.52MB -> 654.39MB
+2026-11-08T08:29:33.322-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.04s, stopped 308.00ms: 901.52MB -> 654.39MB
+2026-11-08T08:29:33.323-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.04s, stopped 308.00ms: 901.52MB -> 654.39MB
+2026-11-08T08:29:35.030-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT V03 ordered exchange plan=
+Trino version: testversion
+Fragment 0 [HASH]
+    Output layout: [k, g, cutoff, sum]
+    Output partitioning: SINGLE []
+    Output[columnNames = [k, g, cutoff, _col3]]
+    │   Layout: [k:bigint, g:bigint, cutoff:bigint, sum:bigint]
+    │   Estimates: {rows: 192 (6.75kB), cpu: 0, memory: 0B, network: 0B}
+    │   _col3 := sum
+    └─ Aggregate[type = FINAL, keys = [k, g, cutoff]]
+       │   Layout: [k:bigint, g:bigint, cutoff:bigint, sum:bigint]
+       │   Estimates: {rows: 192 (6.75kB), cpu: 216.96k, memory: 6.75kB, network: 0B}
+       │   sum := sum(sum_4)
+       └─ LocalExchange[partitioning = HASH, arguments = [k::bigint, g::bigint, cutoff::bigint]]
+          │   Layout: [k:bigint, g:bigint, cutoff:bigint, sum_4:bigint]
+          │   Estimates: {rows: 6171 (216.96kB), cpu: 216.96k, memory: 0B, network: 0B}
+          └─ Aggregate[type = INTERMEDIATE, keys = [k, g, cutoff]]
+             │   Layout: [k:bigint, g:bigint, cutoff:bigint, sum_4:bigint]
+             │   Estimates: {rows: 6171 (216.96kB), cpu: ?, memory: ?, network: ?}
+             │   sum_4 := sum(sum_4)
+             └─ InnerJoin[criteria = (k = k_0), filter = (cutoff < expr), distribution = PARTITIONED]
+                │   Layout: [k:bigint, g:bigint, cutoff:bigint, sum_4:bigint]
+                │   Estimates: {rows: 6171 (216.96kB), cpu: 386.56k, memory: 168.75kB, network: 0B}
+                │   Distribution: PARTITIONED
+                │   Algorithm: MERGE
+                │   dynamicFilterAssignments = {k_0 -> #df_355, expr -> #df_356}
+                ├─ RemoteMerge[sourceFragmentIds = [1]]
+                │      Layout: [k:bigint, g:bigint, cutoff:bigint]
+                └─ Aggregate[type = PARTIAL, keys = [k_0, expr]]
+                   │   Layout: [k_0:bigint, expr:bigint, sum_4:bigint]
+                   │   Estimates: {rows: 6400 (168.75kB), cpu: ?, memory: ?, network: ?}
+                   │   sum_4 := sum(v)
+                   └─ RemoteMerge[sourceFragmentIds = [2]]
+                          Layout: [k_0:bigint, v:bigint, expr:bigint]
+
+Fragment 1 [SOURCE]
+    Output layout: [k, g, cutoff]
+    Output partitioning: HASH [k]
+    LocalMerge[orderBy = [k ASC NULLS LAST]]
+    │   Layout: [k:bigint, g:bigint, cutoff:bigint]
+    │   Estimates: {rows: 32 (864B), cpu: 0, memory: 0B, network: 0B}
+    └─ PartialSort[orderBy = [k ASC NULLS LAST]]
+       │   Layout: [k:bigint, g:bigint, cutoff:bigint]
+       │   Estimates: {rows: 32 (864B), cpu: ?, memory: ?, network: ?}
+       └─ LocalExchange[partitioning = ROUND_ROBIN]
+          │   Layout: [k:bigint, g:bigint, cutoff:bigint]
+          │   Estimates: {rows: 32 (864B), cpu: 864, memory: 0B, network: 0B}
+          └─ ScanFilter[table = iceberg:tpch.audit_exchange_dimjqm507vsw6$data@7731397662524319184, filterPredicate = $not((k IS NULL)), dynamicFilters = {k = #df_355, cutoff < #df_356}]
+                 Layout: [k:bigint, g:bigint, cutoff:bigint]
+                 Estimates: {rows: 32 (864B), cpu: 864, memory: 0B, network: 0B}/{rows: 32 (864B), cpu: 864, memory: 0B, network: 0B}
+                 g := 2:g:bigint
+                 k := 1:k:bigint
+                 cutoff := 3:cutoff:bigint
+
+Fragment 2 [SOURCE]
+    Output layout: [k_0, v, expr]
+    Output partitioning: HASH [k_0]
+    LocalMerge[orderBy = [k_0 ASC NULLS LAST]]
+    │   Layout: [k_0:bigint, v:bigint, expr:bigint]
+    │   Estimates: {rows: 6400 (168.75kB), cpu: 0, memory: 0B, network: 0B}
+    └─ PartialSort[orderBy = [k_0 ASC NULLS LAST]]
+       │   Layout: [k_0:bigint, v:bigint, expr:bigint]
+       │   Estimates: {rows: 6400 (168.75kB), cpu: ?, memory: ?, network: ?}
+       └─ LocalExchange[partitioning = ROUND_ROBIN]
+          │   Layout: [k_0:bigint, v:bigint, expr:bigint]
+          │   Estimates: {rows: 6400 (168.75kB), cpu: 168.75k, memory: 0B, network: 0B}
+          └─ ScanFilterProject[table = iceberg:tpch.audit_exchange_factf8tiqyttxj$data@5112380960845371669, filterPredicate = $not((k_0 IS NULL))]
+                 Layout: [k_0:bigint, v:bigint, expr:bigint]
+                 Estimates: {rows: 6400 (168.75kB), cpu: 112.50k, memory: 0B, network: 0B}/{rows: 6400 (168.75kB), cpu: 112.50k, memory: 0B, network: 0B}/{rows: 6400 (168.75kB), cpu: 168.75k, memory: 0B, network: 0B}
+                 expr := $operator$add(v, bigint '1')
+                 v := 2:v:bigint
+                 k_0 := 1:k:bigint
+2026-11-08T08:29:35.619-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 1.94s, stopped 357.00ms: 973.27MB -> 683.54MB
+2026-11-08T08:29:35.635-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 1.94s, stopped 357.00ms: 973.27MB -> 683.54MB
+2026-11-08T08:29:35.636-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 1.94s, stopped 357.00ms: 973.27MB -> 683.54MB
+2026-11-08T08:29:35.776-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT V03 ordered exchange run=0 actual=[[5, 2, 1, 604], [13, 1, 1, 601], [18, 0, 0, 600], [25, 1, 1, 600], [7, 1, 1, 598], [11, 2, 1, 600], [22, 1, 0, 602], [0, 0, 0, 600], [17, 2, 1, 596], [2, 2, 0, 599], [6, 0, 0, 601], [21, 0, 1, 598], [20, 2, 0, 601], [23, 2, 1, 599], [30, 0, 0, 599], [10, 1, 0, 596], [15, 0, 1, 602], [24, 0, 0, 596], [1, 1, 1, 602], [3, 0, 1, 596], [9, 0, 1, 599], [27, 0, 1, 601], [31, 1, 1, 596], [28, 1, 0, 598], [12, 0, 0, 604], [29, 2, 1, 602], [8, 2, 0, 602], [16, 1, 0, 599], [4, 1, 0, 600], [14, 2, 0, 598], [19, 1, 1, 604], [26, 2, 0, 604]] expected=[[2, 2, 0, 599], [6, 0, 0, 601], [21, 0, 1, 598], [7, 1, 1, 598], [11, 2, 1, 600], [22, 1, 0, 602], [12, 0, 0, 604], [29, 2, 1, 602], [8, 2, 0, 602], [16, 1, 0, 599], [4, 1, 0, 600], [14, 2, 0, 598], [19, 1, 1, 604], [26, 2, 0, 604], [20, 2, 0, 601], [23, 2, 1, 599], [30, 0, 0, 599], [10, 1, 0, 596], [15, 0, 1, 602], [24, 0, 0, 596], [0, 0, 0, 600], [17, 2, 1, 596], [1, 1, 1, 602], [3, 0, 1, 596], [9, 0, 1, 599], [27, 0, 1, 601], [31, 1, 1, 596], [28, 1, 0, 598], [5, 2, 1, 604], [13, 1, 1, 601], [18, 0, 0, 600], [25, 1, 1, 600]]
+2026-11-08T08:29:36.129-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT V03 ordered exchange run=1 actual=[[4, 1, 0, 600], [14, 2, 0, 598], [19, 1, 1, 604], [26, 2, 0, 604], [0, 0, 0, 600], [17, 2, 1, 596], [5, 2, 1, 604], [13, 1, 1, 601], [18, 0, 0, 600], [25, 1, 1, 600], [20, 2, 0, 601], [23, 2, 1, 599], [30, 0, 0, 599], [2, 2, 0, 599], [6, 0, 0, 601], [21, 0, 1, 598], [10, 1, 0, 596], [15, 0, 1, 602], [24, 0, 0, 596], [8, 2, 0, 602], [16, 1, 0, 599], [7, 1, 1, 598], [11, 2, 1, 600], [22, 1, 0, 602], [1, 1, 1, 602], [3, 0, 1, 596], [9, 0, 1, 599], [27, 0, 1, 601], [31, 1, 1, 596], [28, 1, 0, 598], [12, 0, 0, 604], [29, 2, 1, 602]] expected=[[2, 2, 0, 599], [6, 0, 0, 601], [21, 0, 1, 598], [7, 1, 1, 598], [11, 2, 1, 600], [22, 1, 0, 602], [12, 0, 0, 604], [29, 2, 1, 602], [8, 2, 0, 602], [16, 1, 0, 599], [4, 1, 0, 600], [14, 2, 0, 598], [19, 1, 1, 604], [26, 2, 0, 604], [20, 2, 0, 601], [23, 2, 1, 599], [30, 0, 0, 599], [10, 1, 0, 596], [15, 0, 1, 602], [24, 0, 0, 596], [0, 0, 0, 600], [17, 2, 1, 596], [1, 1, 1, 602], [3, 0, 1, 596], [9, 0, 1, 599], [27, 0, 1, 601], [31, 1, 1, 596], [28, 1, 0, 598], [5, 2, 1, 604], [13, 1, 1, 601], [18, 0, 0, 600], [25, 1, 1, 600]]
+2026-11-08T08:29:36.470-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT V03 ordered exchange run=2 actual=[[20, 2, 0, 601], [23, 2, 1, 599], [30, 0, 0, 599], [28, 1, 0, 598], [12, 0, 0, 604], [29, 2, 1, 602], [5, 2, 1, 604], [13, 1, 1, 601], [18, 0, 0, 600], [25, 1, 1, 600], [1, 1, 1, 602], [3, 0, 1, 596], [9, 0, 1, 599], [27, 0, 1, 601], [31, 1, 1, 596], [0, 0, 0, 600], [17, 2, 1, 596], [2, 2, 0, 599], [6, 0, 0, 601], [21, 0, 1, 598], [10, 1, 0, 596], [15, 0, 1, 602], [24, 0, 0, 596], [4, 1, 0, 600], [14, 2, 0, 598], [19, 1, 1, 604], [26, 2, 0, 604], [16, 1, 0, 599], [7, 1, 1, 598], [11, 2, 1, 600], [22, 1, 0, 602], [8, 2, 0, 602]] expected=[[2, 2, 0, 599], [6, 0, 0, 601], [21, 0, 1, 598], [7, 1, 1, 598], [11, 2, 1, 600], [22, 1, 0, 602], [12, 0, 0, 604], [29, 2, 1, 602], [8, 2, 0, 602], [16, 1, 0, 599], [4, 1, 0, 600], [14, 2, 0, 598], [19, 1, 1, 604], [26, 2, 0, 604], [20, 2, 0, 601], [23, 2, 1, 599], [30, 0, 0, 599], [10, 1, 0, 596], [15, 0, 1, 602], [24, 0, 0, 596], [0, 0, 0, 600], [17, 2, 1, 596], [1, 1, 1, 602], [3, 0, 1, 596], [9, 0, 1, 599], [27, 0, 1, 601], [31, 1, 1, 596], [28, 1, 0, 598], [5, 2, 1, 604], [13, 1, 1, 601], [18, 0, 0, 600], [25, 1, 1, 600]]
+2026-11-08T08:29:36.823-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT V03 ordered exchange run=3 actual=[[10, 1, 0, 596], [15, 0, 1, 602], [24, 0, 0, 596], [28, 1, 0, 598], [0, 0, 0, 600], [17, 2, 1, 596], [2, 2, 0, 599], [6, 0, 0, 601], [21, 0, 1, 598], [20, 2, 0, 601], [23, 2, 1, 599], [30, 0, 0, 599], [4, 1, 0, 600], [14, 2, 0, 598], [19, 1, 1, 604], [26, 2, 0, 604], [5, 2, 1, 604], [13, 1, 1, 601], [18, 0, 0, 600], [25, 1, 1, 600], [1, 1, 1, 602], [3, 0, 1, 596], [9, 0, 1, 599], [27, 0, 1, 601], [31, 1, 1, 596], [12, 0, 0, 604], [29, 2, 1, 602], [16, 1, 0, 599], [8, 2, 0, 602], [7, 1, 1, 598], [11, 2, 1, 600], [22, 1, 0, 602]] expected=[[2, 2, 0, 599], [6, 0, 0, 601], [21, 0, 1, 598], [7, 1, 1, 598], [11, 2, 1, 600], [22, 1, 0, 602], [12, 0, 0, 604], [29, 2, 1, 602], [8, 2, 0, 602], [16, 1, 0, 599], [4, 1, 0, 600], [14, 2, 0, 598], [19, 1, 1, 604], [26, 2, 0, 604], [20, 2, 0, 601], [23, 2, 1, 599], [30, 0, 0, 599], [10, 1, 0, 596], [15, 0, 1, 602], [24, 0, 0, 596], [0, 0, 0, 600], [17, 2, 1, 596], [1, 1, 1, 602], [3, 0, 1, 596], [9, 0, 1, 599], [27, 0, 1, 601], [31, 1, 1, 596], [28, 1, 0, 598], [5, 2, 1, 604], [13, 1, 1, 601], [18, 0, 0, 600], [25, 1, 1, 600]]
+2026-11-08T08:29:37.131-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT V03 ordered exchange run=4 actual=[[0, 0, 0, 600], [17, 2, 1, 596], [16, 1, 0, 599], [2, 2, 0, 599], [6, 0, 0, 601], [21, 0, 1, 598], [20, 2, 0, 601], [23, 2, 1, 599], [30, 0, 0, 599], [1, 1, 1, 602], [3, 0, 1, 596], [9, 0, 1, 599], [27, 0, 1, 601], [31, 1, 1, 596], [7, 1, 1, 598], [11, 2, 1, 600], [22, 1, 0, 602], [4, 1, 0, 600], [14, 2, 0, 598], [19, 1, 1, 604], [26, 2, 0, 604], [8, 2, 0, 602], [10, 1, 0, 596], [15, 0, 1, 602], [24, 0, 0, 596], [5, 2, 1, 604], [13, 1, 1, 601], [18, 0, 0, 600], [25, 1, 1, 600], [12, 0, 0, 604], [29, 2, 1, 602], [28, 1, 0, 598]] expected=[[2, 2, 0, 599], [6, 0, 0, 601], [21, 0, 1, 598], [7, 1, 1, 598], [11, 2, 1, 600], [22, 1, 0, 602], [12, 0, 0, 604], [29, 2, 1, 602], [8, 2, 0, 602], [16, 1, 0, 599], [4, 1, 0, 600], [14, 2, 0, 598], [19, 1, 1, 604], [26, 2, 0, 604], [20, 2, 0, 601], [23, 2, 1, 599], [30, 0, 0, 599], [10, 1, 0, 596], [15, 0, 1, 602], [24, 0, 0, 596], [0, 0, 0, 600], [17, 2, 1, 596], [1, 1, 1, 602], [3, 0, 1, 596], [9, 0, 1, 599], [27, 0, 1, 601], [31, 1, 1, 596], [28, 1, 0, 598], [5, 2, 1, 604], [13, 1, 1, 601], [18, 0, 0, 600], [25, 1, 1, 600]]
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 26.58 s -- in io.trino.plugin.iceberg.TestMergeJoinExchangeAudit
+2026-11-08T08:29:38.387-0600	INFO	main	io.trino.testing.containers.junit.ReportLeakedContainers	DockerClientFactory not initialized, so there should be no leaked containers, skipping the check
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  33.904 s
+[INFO] Finished at: 2026-11-08T17:29:38+03:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Njord session closed

@@ -1,0 +1,981 @@
+{
+  "core-first": {
+    "classes": [
+      {
+        "class": "io.trino.operator.join.merge.TestDiskBackedMatchBitmap",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.operator.join.merge.TestAppendingSpiller",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.sanity.TestValidateJoinAlgorithms",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.iterative.rule.TestPushPartialAggregationThroughExchange",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.iterative.rule.TestPushPartialAggregationThroughJoin",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.query.TestMergeJoinAggregationPushdown",
+        "tests": 2,
+        "failures": 0,
+        "errors": 2,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.query.TestMergeJoinScalarTypes",
+        "tests": 1,
+        "failures": 0,
+        "errors": 1,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.operator.join.merge.TestMergeJoinOperator",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "totals": {
+      "tests": 37,
+      "failures": 0,
+      "errors": 3,
+      "skipped": 0
+    }
+  },
+  "core-third": {
+    "classes": [
+      {
+        "class": "io.trino.sql.planner.TestTopologicalOrderSubPlanVisitor",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.optimizations.TestColocatedJoin",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.iterative.rule.TestEliminateCrossJoins",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.iterative.rule.TestPushPartialAggregationThroughJoin",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.execution.scheduler.TestMultiSourcePartitionedScheduler",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.operator.TestOrderByOperator",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.execution.scheduler.TestSourcePartitionedScheduler",
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.sanity.TestValidateJoinAlgorithms",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.operator.join.merge.TestAppendingSpiller",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.plan.TestJoinNodeAlgorithm",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.cost.TestMergeJoinCostModel",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.iterative.rule.TestPushPartialAggregationThroughExchange",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.operator.join.merge.TestMergeJoinOperatorInfo",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.cost.TestOptimizerConfig",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.operator.join.merge.TestDiskBackedMatchBitmap",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.operator.TestPagesIndex",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.iterative.rule.TestMergeJoinExpressionRewrite",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.spiller.TestFileSingleStreamSpillerFactory",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.cost.TestJoinStatsRule",
+        "tests": 15,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.execution.scheduler.TestSchedulingUtils",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.query.TestMergeJoinRepeatedKeys",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.server.TestDynamicFilterService",
+        "tests": 20,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.cost.TestCostCalculator",
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.optimizations.TestEliminateCrossJoins",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.query.TestMergeJoin",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.query.TestMergeJoinAggregationPushdown",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.spiller.TestFileSingleStreamSpiller",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.spiller.TestSortingSpiller",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.cost.TestCachingStatsProvider",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.TestIncrementalRefreshVisitor",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.iterative.rule.TestDetermineJoinAlgorithm",
+        "tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.TestEffectivePredicateExtractor",
+        "tests": 20,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.query.TestMergeJoinScalarTypes",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.operator.join.merge.TestMergeJoinOperator",
+        "tests": 66,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      }
+    ],
+    "totals": {
+      "tests": 307,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1
+    }
+  },
+  "review-stage-1-core-tests": {
+    "classes": [
+      {
+        "class": "io.trino.sql.planner.iterative.rule.TestMergeJoinExpressionRewrite",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.iterative.rule.TestPushPartialAggregationThroughExchange",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.iterative.rule.TestPushPartialAggregationThroughJoin",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.sanity.TestValidateJoinAlgorithms",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.query.TestMergeJoinAggregationPushdown",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.query.TestMergeJoinScalarTypes",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "totals": {
+      "tests": 27,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "review-stage-1-iceberg-tests": {
+    "classes": [
+      {
+        "class": "io.trino.plugin.iceberg.TestMergeJoinAggregationExchange",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.plugin.iceberg.TestIcebergSortedWriting",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "totals": {
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "review-core-large": {
+    "classes": [
+      {
+        "class": "io.trino.spiller.TestFileSingleStreamSpiller",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.operator.join.merge.TestAppendingSpiller",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.plan.TestJoinNodeAlgorithm",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.operator.join.merge.TestDiskBackedMatchBitmap",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.sanity.TestValidateJoinAlgorithms",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.cost.TestCostCalculator",
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.cost.TestMergeJoinCostModel",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.server.TestDynamicFilterService",
+        "tests": 20,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.iterative.rule.TestDetermineJoinAlgorithm",
+        "tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.execution.scheduler.TestMultiSourcePartitionedScheduler",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.query.TestMergeJoinAggregationPushdown",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.operator.join.merge.TestMergeJoinOperatorInfo",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.spiller.TestSortingSpiller",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.TestEffectivePredicateExtractor",
+        "tests": 20,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.spiller.TestFileSingleStreamSpillerFactory",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.iterative.rule.TestMergeJoinExpressionRewrite",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.cost.TestOptimizerConfig",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.operator.TestPagesIndex",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.query.TestMergeJoinScalarTypes",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.execution.scheduler.TestSchedulingUtils",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.TestTopologicalOrderSubPlanVisitor",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.optimizations.TestEliminateCrossJoins",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.query.TestMergeJoin",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.iterative.rule.TestEliminateCrossJoins",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.query.TestMergeJoinRepeatedKeys",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.iterative.rule.TestPushPartialAggregationThroughExchange",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.cost.TestJoinStatsRule",
+        "tests": 15,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.TestIncrementalRefreshVisitor",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.operator.TestOrderByOperator",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.iterative.rule.TestPushPartialAggregationThroughJoin",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.cost.TestCachingStatsProvider",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.optimizations.TestColocatedJoin",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.execution.scheduler.TestSourcePartitionedScheduler",
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.operator.join.merge.TestMergeJoinOperator",
+        "tests": 66,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      }
+    ],
+    "totals": {
+      "tests": 307,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1
+    }
+  },
+  "review-iceberg-workloads": {
+    "classes": [
+      {
+        "class": "io.trino.plugin.iceberg.TestIcebergConfig",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.plugin.iceberg.TestMergeJoinAggregationExchange",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.plugin.iceberg.TestIcebergSortedWriting",
+        "tests": 16,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 2
+      },
+      {
+        "class": "io.trino.plugin.iceberg.TestMergeJoinWorkloads",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "totals": {
+      "tests": 26,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 2
+    }
+  },
+  "review-tpcds-plans": {
+    "classes": [
+      {
+        "class": "io.trino.sql.planner.TestPartitionedTpcdsCostBasedPlan",
+        "tests": 206,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "totals": {
+      "tests": 206,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "initialization-core-large": {
+    "classes": [
+      {
+        "class": "io.trino.execution.scheduler.TestSchedulingUtils",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.operator.TestPagesIndex",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.cost.TestOptimizerConfig",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.spiller.TestFileSingleStreamSpillerFactory",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.spiller.TestFileSingleStreamSpiller",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.server.TestDynamicFilterService",
+        "tests": 20,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.iterative.rule.TestMergeJoinExpressionRewrite",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.cost.TestCostCalculator",
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.query.TestMergeJoinRepeatedKeys",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.query.TestMergeJoinAggregationPushdown",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.operator.join.merge.TestMergeJoinOperatorInfo",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.cost.TestCachingStatsProvider",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.query.TestMergeJoinScalarTypes",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.operator.join.merge.TestDiskBackedMatchBitmap",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.TestEffectivePredicateExtractor",
+        "tests": 20,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.sanity.TestValidateJoinAlgorithms",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.spiller.TestSortingSpiller",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.iterative.rule.TestEliminateCrossJoins",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.optimizations.TestEliminateCrossJoins",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.cost.TestJoinStatsRule",
+        "tests": 15,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.query.TestMergeJoin",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.iterative.rule.TestDetermineJoinAlgorithm",
+        "tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.operator.join.merge.TestAppendingSpiller",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.execution.scheduler.TestMultiSourcePartitionedScheduler",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.TestIncrementalRefreshVisitor",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.cost.TestMergeJoinCostModel",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.optimizations.TestColocatedJoin",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.TestTopologicalOrderSubPlanVisitor",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.iterative.rule.TestPushPartialAggregationThroughJoin",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.plan.TestJoinNodeAlgorithm",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.sql.planner.iterative.rule.TestPushPartialAggregationThroughExchange",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.operator.TestOrderByOperator",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.execution.scheduler.TestSourcePartitionedScheduler",
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.operator.join.merge.TestMergeJoinOperator",
+        "tests": 66,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      }
+    ],
+    "totals": {
+      "tests": 309,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1
+    }
+  },
+  "initialization-iceberg-workloads": {
+    "classes": [
+      {
+        "class": "io.trino.plugin.iceberg.TestIcebergConfig",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.plugin.iceberg.TestMergeJoinAggregationExchange",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "class": "io.trino.plugin.iceberg.TestIcebergSortedWriting",
+        "tests": 16,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 2
+      },
+      {
+        "class": "io.trino.plugin.iceberg.TestMergeJoinWorkloads",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "totals": {
+      "tests": 26,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 2
+    }
+  }
+}

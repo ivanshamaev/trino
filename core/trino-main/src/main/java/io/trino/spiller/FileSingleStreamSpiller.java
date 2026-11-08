@@ -416,6 +416,11 @@ public class FileSingleStreamSpiller
 
     private record ReplayCheckpoint(int pageIndex, long byteOffset) {}
 
+    public boolean isEncrypted()
+    {
+        return encrypted;
+    }
+
     public Path createTemporaryFile()
     {
         try {

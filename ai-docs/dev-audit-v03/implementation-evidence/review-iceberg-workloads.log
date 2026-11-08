@@ -1,0 +1,390 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] 
+[INFO] -----------------------< io.trino:trino-iceberg >-----------------------
+[INFO] Building trino-iceberg 485-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] ----------------------------[ trino-plugin ]----------------------------
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-iceberg ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-iceberg ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-cli) @ trino-iceberg ---
+[INFO] Tests will run in random order. To reproduce ordering use flag -Dsurefire.runOrder.random.seed=34995096973779
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+WARNING: Using incubator modules: jdk.incubator.vector
+[INFO] Running io.trino.plugin.iceberg.TestMergeJoinWorkloads
+[INFO] Running io.trino.plugin.iceberg.TestMergeJoinAggregationExchange
+[INFO] Running io.trino.plugin.iceberg.TestIcebergSortedWriting
+[INFO] Running io.trino.plugin.iceberg.TestIcebergConfig
+2026-11-08T09:52:44.436-0600	INFO	ForkJoinPool-1-worker-3	org.hibernate.validator.internal.util.Version	HV000001: Hibernate Validator 9.1.5.Final
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.636 s -- in io.trino.plugin.iceberg.TestIcebergConfig
+2026-11-08T09:52:47.373-0600	INFO	ForkJoinPool-1-worker-2	io.trino.simd.BlockEncodingSimdSupport	Detected SIMD Support for architecture=amd64, vectorBitWidth=128: SimdSupport[capabilities=[]]
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::loadLibrary has been called by com.aayushatharva.brotli4j.Brotli4jLoader in an unnamed module (file:/home/ivan/.m2/repository/com/aayushatharva/brotli4j/brotli4j/1.23.0/brotli4j-1.23.0.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+2026-11-08T09:52:56.299-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 311.00ms: 391.13MB -> 245.90MB
+2026-11-08T09:52:56.301-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 311.00ms: 391.13MB -> 245.90MB
+2026-11-08T09:52:56.302-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 311.00ms: 391.13MB -> 245.90MB
+2026-11-08T09:52:58.936-0600	INFO	ForkJoinPool-1-worker-1	io.trino.testing.DistributedQueryRunner	Created DistributedQueryRunner in 13.33s (unclosed instances = 1)
+2026-11-08T09:52:59.063-0600	INFO	ForkJoinPool-1-worker-2	io.trino.testing.DistributedQueryRunner	Created DistributedQueryRunner in 13.46s (unclosed instances = 2)
+2026-11-08T09:52:59.090-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T09:52:59.109-0600	INFO	ForkJoinPool-1-worker-2	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T09:52:59.117-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T09:52:59.119-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T09:52:59.121-0600	INFO	ForkJoinPool-1-worker-2	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T09:52:59.122-0600	INFO	ForkJoinPool-1-worker-2	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T09:52:59.131-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T09:52:59.131-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T09:52:59.141-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T09:52:59.151-0600	INFO	ForkJoinPool-1-worker-2	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T09:52:59.160-0600	INFO	ForkJoinPool-1-worker-2	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T09:52:59.195-0600	INFO	ForkJoinPool-1-worker-2	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T09:52:59.326-0600	INFO	ForkJoinPool-1-worker-2	io.trino.cache.CacheManagerRegistry	Usage filesystem.metadata of catalog iceberg requires [LOW_LATENCY], selected blob cache manager memory
+2026-11-08T09:52:59.329-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	Usage filesystem.metadata of catalog iceberg requires [LOW_LATENCY], selected blob cache manager memory
+2026-11-08T09:52:59.345-0600	INFO	ForkJoinPool-1-worker-4	io.trino.testing.DistributedQueryRunner	Created DistributedQueryRunner in 13.74s (unclosed instances = 3)
+2026-11-08T09:52:59.390-0600	INFO	ForkJoinPool-1-worker-4	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T09:52:59.408-0600	INFO	ForkJoinPool-1-worker-4	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T09:52:59.409-0600	INFO	ForkJoinPool-1-worker-4	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T09:52:59.420-0600	INFO	ForkJoinPool-1-worker-4	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T09:52:59.422-0600	INFO	ForkJoinPool-1-worker-4	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T09:52:59.439-0600	INFO	ForkJoinPool-1-worker-4	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T09:52:59.520-0600	INFO	ForkJoinPool-1-worker-4	io.trino.cache.CacheManagerRegistry	Usage filesystem.metadata of catalog iceberg requires [LOW_LATENCY], selected blob cache manager memory
+2026-11-08T09:53:03.361-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.37s, stopped 666.00ms: 701.08MB -> 653.99MB
+2026-11-08T09:53:03.362-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.37s, stopped 666.00ms: 701.08MB -> 653.99MB
+2026-11-08T09:53:03.363-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.37s, stopped 666.00ms: 701.08MB -> 653.99MB
+2026-11-08T09:53:03.383-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 666.00ms: 701.08MB -> 653.99MB
+2026-11-08T09:53:03.384-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 666.00ms: 701.08MB -> 653.99MB
+2026-11-08T09:53:03.384-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 666.00ms: 701.08MB -> 653.99MB
+2026-11-08T09:53:03.385-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 666.00ms: 701.08MB -> 653.99MB
+2026-11-08T09:53:03.385-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 666.00ms: 701.08MB -> 653.99MB
+2026-11-08T09:53:03.385-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 666.00ms: 701.08MB -> 653.99MB
+2026-11-08T09:53:09.933-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.01s, stopped 574.00ms: 1.34GB -> 704.93MB
+2026-11-08T09:53:09.934-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.01s, stopped 574.00ms: 1.34GB -> 704.93MB
+2026-11-08T09:53:09.934-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.01s, stopped 574.00ms: 1.34GB -> 704.93MB
+2026-11-08T09:53:09.957-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.01s, stopped 574.00ms: 1.34GB -> 704.93MB
+2026-11-08T09:53:09.958-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.01s, stopped 574.00ms: 1.34GB -> 704.93MB
+2026-11-08T09:53:09.958-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.01s, stopped 574.00ms: 1.34GB -> 704.93MB
+2026-11-08T09:53:09.959-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.01s, stopped 574.00ms: 1.34GB -> 704.93MB
+2026-11-08T09:53:09.959-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.01s, stopped 574.00ms: 1.34GB -> 704.93MB
+2026-11-08T09:53:09.960-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.01s, stopped 574.00ms: 1.34GB -> 704.93MB
+2026-11-08T09:53:15.549-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 4.86s, stopped 759.00ms: 1.35GB -> 842.90MB
+2026-11-08T09:53:15.550-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 4.86s, stopped 759.00ms: 1.35GB -> 842.90MB
+2026-11-08T09:53:15.559-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 4.86s, stopped 759.00ms: 1.35GB -> 842.90MB
+2026-11-08T09:53:15.569-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 4.86s, stopped 759.00ms: 1.35GB -> 842.90MB
+2026-11-08T09:53:15.570-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 4.86s, stopped 759.00ms: 1.35GB -> 842.90MB
+2026-11-08T09:53:15.571-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 4.86s, stopped 759.00ms: 1.35GB -> 842.90MB
+2026-11-08T09:53:15.571-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 4.86s, stopped 759.00ms: 1.35GB -> 842.90MB
+2026-11-08T09:53:15.572-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 4.86s, stopped 759.00ms: 1.35GB -> 842.90MB
+2026-11-08T09:53:15.585-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 4.86s, stopped 759.00ms: 1.35GB -> 842.90MB
+2026-11-08T09:53:19.918-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.46s, stopped 918.00ms: 1.34GB -> 886.38MB
+2026-11-08T09:53:19.928-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.46s, stopped 918.00ms: 1.34GB -> 886.38MB
+2026-11-08T09:53:19.929-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.46s, stopped 918.00ms: 1.34GB -> 886.38MB
+2026-11-08T09:53:19.945-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.46s, stopped 918.00ms: 1.34GB -> 886.38MB
+2026-11-08T09:53:19.945-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.46s, stopped 918.00ms: 1.34GB -> 886.38MB
+2026-11-08T09:53:19.946-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.46s, stopped 918.00ms: 1.34GB -> 886.38MB
+2026-11-08T09:53:19.946-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.46s, stopped 918.00ms: 1.34GB -> 886.38MB
+2026-11-08T09:53:19.947-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.46s, stopped 918.00ms: 1.34GB -> 886.38MB
+2026-11-08T09:53:19.974-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.46s, stopped 918.00ms: 1.34GB -> 886.38MB
+2026-11-08T09:53:23.885-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.16s, stopped 801.00ms: 1.51GB -> 943.43MB
+2026-11-08T09:53:23.897-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.16s, stopped 801.00ms: 1.51GB -> 943.43MB
+2026-11-08T09:53:23.901-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.16s, stopped 801.00ms: 1.51GB -> 943.43MB
+2026-11-08T09:53:23.902-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.16s, stopped 801.00ms: 1.51GB -> 943.43MB
+2026-11-08T09:53:23.906-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.16s, stopped 801.00ms: 1.51GB -> 943.43MB
+2026-11-08T09:53:23.907-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.16s, stopped 801.00ms: 1.51GB -> 943.43MB
+2026-11-08T09:53:23.907-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.16s, stopped 801.00ms: 1.51GB -> 943.43MB
+2026-11-08T09:53:23.907-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.16s, stopped 801.00ms: 1.51GB -> 943.43MB
+2026-11-08T09:53:23.908-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.16s, stopped 801.00ms: 1.51GB -> 943.43MB
+2026-11-08T09:53:26.842-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.12s, stopped 845.00ms: 1.01GB -> 972.34MB
+2026-11-08T09:53:26.843-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.12s, stopped 845.00ms: 1.01GB -> 972.34MB
+2026-11-08T09:53:26.855-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.12s, stopped 845.00ms: 1.01GB -> 972.34MB
+2026-11-08T09:53:26.859-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.12s, stopped 845.00ms: 1.01GB -> 972.34MB
+2026-11-08T09:53:26.863-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.12s, stopped 845.00ms: 1.01GB -> 972.34MB
+2026-11-08T09:53:26.863-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.12s, stopped 845.00ms: 1.01GB -> 972.34MB
+2026-11-08T09:53:26.866-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.12s, stopped 845.00ms: 1.01GB -> 972.34MB
+2026-11-08T09:53:26.871-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.12s, stopped 845.00ms: 1.01GB -> 972.34MB
+2026-11-08T09:53:26.872-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.12s, stopped 845.00ms: 1.01GB -> 972.34MB
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 47.13 s -- in io.trino.plugin.iceberg.TestMergeJoinAggregationExchange
+2026-11-08T09:53:31.215-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.74s, stopped 639.00ms: 1.37GB -> 950.83MB
+2026-11-08T09:53:31.216-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.74s, stopped 639.00ms: 1.37GB -> 950.83MB
+2026-11-08T09:53:31.216-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.74s, stopped 639.00ms: 1.37GB -> 950.83MB
+2026-11-08T09:53:31.221-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.74s, stopped 639.00ms: 1.37GB -> 950.83MB
+2026-11-08T09:53:31.222-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.74s, stopped 639.00ms: 1.37GB -> 950.83MB
+2026-11-08T09:53:31.222-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.74s, stopped 639.00ms: 1.37GB -> 950.83MB
+2026-11-08T09:53:37.074-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 5.06s, stopped 796.00ms: 1.61GB -> 844.33MB
+2026-11-08T09:53:37.091-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 5.06s, stopped 796.00ms: 1.61GB -> 844.33MB
+2026-11-08T09:53:37.092-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 5.06s, stopped 796.00ms: 1.61GB -> 844.33MB
+2026-11-08T09:53:37.095-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 5.06s, stopped 796.00ms: 1.61GB -> 844.33MB
+2026-11-08T09:53:37.096-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 5.06s, stopped 796.00ms: 1.61GB -> 844.33MB
+2026-11-08T09:53:37.101-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 5.06s, stopped 796.00ms: 1.61GB -> 844.33MB
+2026-11-08T09:53:43.743-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.05s, stopped 603.00ms: 915.72MB -> 900.64MB
+2026-11-08T09:53:43.813-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.05s, stopped 603.00ms: 915.72MB -> 900.64MB
+2026-11-08T09:53:43.813-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.05s, stopped 603.00ms: 915.72MB -> 900.64MB
+2026-11-08T09:53:43.814-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.05s, stopped 603.00ms: 915.72MB -> 900.64MB
+2026-11-08T09:53:43.814-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.05s, stopped 603.00ms: 915.72MB -> 900.64MB
+2026-11-08T09:53:43.814-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.05s, stopped 603.00ms: 915.72MB -> 900.64MB
+2026-11-08T09:53:52.398-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 8.08s, stopped 583.00ms: 1.02GB -> 964.96MB
+2026-11-08T09:53:52.399-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 8.08s, stopped 583.00ms: 1.02GB -> 964.96MB
+2026-11-08T09:53:52.400-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 8.08s, stopped 583.00ms: 1.02GB -> 964.96MB
+2026-11-08T09:53:52.400-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 8.08s, stopped 583.00ms: 1.02GB -> 964.96MB
+2026-11-08T09:53:52.401-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 8.08s, stopped 583.00ms: 1.02GB -> 964.96MB
+2026-11-08T09:53:52.401-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 8.08s, stopped 583.00ms: 1.02GB -> 964.96MB
+2026-11-08T09:54:02.965-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 9.76s, stopped 806.00ms: 1.63GB -> 1.04GB
+2026-11-08T09:54:03.010-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 9.76s, stopped 806.00ms: 1.63GB -> 1.04GB
+2026-11-08T09:54:03.011-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 9.76s, stopped 806.00ms: 1.63GB -> 1.04GB
+2026-11-08T09:54:03.011-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 9.76s, stopped 806.00ms: 1.63GB -> 1.04GB
+2026-11-08T09:54:03.011-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 9.76s, stopped 806.00ms: 1.63GB -> 1.04GB
+2026-11-08T09:54:03.012-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 9.76s, stopped 806.00ms: 1.63GB -> 1.04GB
+2026-11-08T09:54:12.748-0600	WARN	ForkJoinPool-1-worker-4	io.trino.blob.cache.memory.InMemoryBlobCacheManager	Failed to unregister MemoryBlobCacheStats MBean for catalog iceberg
+org.weakref.jmx.JmxException: io.trino.blob.cache.memory:type=MemoryBlobCacheStats,name=iceberg
+	at org.weakref.jmx.MBeanExporter.unexport(MBeanExporter.java:230)
+	at org.weakref.jmx.MBeanExporter.unexport(MBeanExporter.java:213)
+	at io.trino.blob.cache.memory.InMemoryBlobCacheManager.drop(InMemoryBlobCacheManager.java:84)
+	at java.base/java.util.ImmutableCollections$Set12.forEach(ImmutableCollections.java:1120)
+	at io.trino.blob.cache.memory.InMemoryBlobCacheManager.shutdown(InMemoryBlobCacheManager.java:96)
+	at io.trino.cache.CacheManagerRegistry.shutdown(CacheManagerRegistry.java:179)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at io.airlift.bootstrap.LifeCycleManager.stopInstance(LifeCycleManager.java:257)
+	at io.airlift.bootstrap.LifeCycleManager.stop(LifeCycleManager.java:226)
+	at io.airlift.bootstrap.LifeCycleManager.stop(LifeCycleManager.java:193)
+	at io.airlift.bootstrap.LifeCycleManager.stop(LifeCycleManager.java:177)
+	at io.trino.server.testing.TestingTrinoServer.lambda$close$1(TestingTrinoServer.java:486)
+	at com.google.common.io.Closer.close(Closer.java:203)
+	at io.trino.server.testing.TestingTrinoServer.close(TestingTrinoServer.java:489)
+	at com.google.common.io.Closer.close(Closer.java:203)
+	at io.trino.testing.DistributedQueryRunner.close(DistributedQueryRunner.java:702)
+	at io.trino.plugin.base.util.AutoCloseableCloser.close(AutoCloseableCloser.java:80)
+	at io.trino.testing.AbstractTestQueryFramework.close(AbstractTestQueryFramework.java:135)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:700)
+	at org.junit.platform.commons.support.ReflectionSupport.invokeMethod(ReflectionSupport.java:528)
+	at org.junit.jupiter.engine.support.MethodReflectionUtils.invoke(MethodReflectionUtils.java:53)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:61)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:124)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:163)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptLifecycleMethod(TimeoutExtension.java:128)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptAfterAllMethod(TimeoutExtension.java:118)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:124)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:105)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:99)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:66)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:47)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:39)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:104)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:98)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invokeVoid(InterceptingExecutableInvoker.java:71)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeAfterAllMethods$1(ClassBasedTestDescriptor.java:476)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeAfterAllMethods$0(ClassBasedTestDescriptor.java:474)
+	at java.base/java.lang.Iterable.forEach(Iterable.java:75)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.invokeAfterAllMethods(ClassBasedTestDescriptor.java:474)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.after(ClassBasedTestDescriptor.java:267)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.after(ClassBasedTestDescriptor.java:88)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$5(NodeTestTask.java:186)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$1(NodeTestTask.java:186)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:139)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$0(NodeTestTask.java:164)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:163)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:116)
+	at org.junit.platform.engine.support.hierarchical.ForkJoinPoolHierarchicalTestExecutorService$ExclusiveTask.exec(ForkJoinPoolHierarchicalTestExecutorService.java:266)
+	at java.base/java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:511)
+	at java.base/java.util.concurrent.ForkJoinPool$WorkQueue.topLevelExec(ForkJoinPool.java:1450)
+	at java.base/java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:2019)
+	at java.base/java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:187)
+
+
+[WARNING] Tests run: 16, Failures: 0, Errors: 0, Skipped: 2, Time elapsed: 89.56 s -- in io.trino.plugin.iceberg.TestIcebergSortedWriting
+2026-11-08T09:54:41.027-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 37.44s, stopped 629.00ms: 2.90GB -> 765.34MB
+2026-11-08T09:54:41.059-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 37.44s, stopped 629.00ms: 2.90GB -> 765.34MB
+2026-11-08T09:54:41.060-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 37.44s, stopped 629.00ms: 2.90GB -> 765.34MB
+2026-11-08T09:54:46.199-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload table=merge_join_entropymfoizhlw0c statistics=[[k, null, 746677.0, 0.0, null, 0, 749999], [v, 5.38562871E8, 739709.0, 0.0, null, null, null], [null, null, null, null, 750000.0, null, null]] logicalVarcharBytes=384000000
+2026-11-08T09:54:53.202-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=wide-full-entropy strategy=OFF merge=false
+2026-11-08T09:54:54.561-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=wide-full-entropy strategy=OFF memoryLimitExceeded=true
+2026-11-08T09:54:54.671-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=wide-full-entropy strategy=FORCE merge=true
+2026-11-08T09:55:14.795-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=wide-full-entropy strategy=FORCE elapsedMs=20123.14 peakBytes=125497600 spillBytes=4442290704 merge=true
+2026-11-08T09:55:14.895-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=wide-full-entropy strategy=COST_BASED merge=true
+2026-11-08T09:55:15.528-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 34.06s, stopped 450.00ms: 2.52GB -> 883.24MB
+2026-11-08T09:55:15.529-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 34.06s, stopped 450.00ms: 2.52GB -> 883.24MB
+2026-11-08T09:55:15.530-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 34.06s, stopped 450.00ms: 2.52GB -> 883.24MB
+2026-11-08T09:55:30.892-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=wide-full-entropy strategy=COST_BASED elapsedMs=15995.54 peakBytes=141068192 spillBytes=4337543988 merge=true
+2026-11-08T09:55:31.516-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=threshold-small-24351 strategy=OFF merge=false
+2026-11-08T09:55:31.922-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=threshold-small-24351 strategy=OFF elapsedMs=405.67 peakBytes=2099232 spillBytes=0 merge=false
+2026-11-08T09:55:32.046-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=threshold-small-24351 strategy=FORCE merge=true
+2026-11-08T09:55:32.501-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=threshold-small-24351 strategy=FORCE elapsedMs=454.12 peakBytes=6829784 spillBytes=0 merge=true
+2026-11-08T09:55:32.621-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=threshold-small-24351 strategy=COST_BASED merge=false
+2026-11-08T09:55:33.003-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=threshold-small-24351 strategy=COST_BASED elapsedMs=381.21 peakBytes=10487840 spillBytes=0 merge=false
+2026-11-08T09:55:33.530-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=threshold-small-27057 strategy=OFF merge=false
+2026-11-08T09:55:33.957-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=threshold-small-27057 strategy=OFF elapsedMs=426.04 peakBytes=1566784 spillBytes=0 merge=false
+2026-11-08T09:55:34.062-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=threshold-small-27057 strategy=FORCE merge=true
+2026-11-08T09:55:34.691-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=threshold-small-27057 strategy=FORCE elapsedMs=627.72 peakBytes=15814000 spillBytes=51933962 merge=true
+2026-11-08T09:55:34.793-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=threshold-small-27057 strategy=COST_BASED merge=false
+2026-11-08T09:55:35.284-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=threshold-small-27057 strategy=COST_BASED elapsedMs=489.90 peakBytes=11005008 spillBytes=0 merge=false
+2026-11-08T09:55:35.882-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=threshold-small-29763 strategy=OFF merge=false
+2026-11-08T09:55:36.372-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=threshold-small-29763 strategy=OFF elapsedMs=488.92 peakBytes=18876448 spillBytes=0 merge=false
+2026-11-08T09:55:36.496-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=threshold-small-29763 strategy=FORCE merge=true
+2026-11-08T09:55:37.174-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=threshold-small-29763 strategy=FORCE elapsedMs=677.13 peakBytes=6110000 spillBytes=54791442 merge=true
+2026-11-08T09:55:37.272-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=threshold-small-29763 strategy=COST_BASED merge=false
+2026-11-08T09:55:37.681-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=threshold-small-29763 strategy=COST_BASED elapsedMs=408.18 peakBytes=1049616 spillBytes=0 merge=false
+2026-11-08T09:55:38.502-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=threshold-pressure-56820 strategy=OFF merge=false
+2026-11-08T09:55:39.269-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=threshold-pressure-56820 strategy=OFF elapsedMs=765.59 peakBytes=1049616 spillBytes=0 merge=false
+2026-11-08T09:55:39.381-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=threshold-pressure-56820 strategy=FORCE merge=true
+2026-11-08T09:55:40.460-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=threshold-pressure-56820 strategy=FORCE elapsedMs=1078.38 peakBytes=37321776 spillBytes=124985176 merge=true
+2026-11-08T09:55:40.561-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=threshold-pressure-56820 strategy=COST_BASED merge=false
+2026-11-08T09:55:41.275-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=threshold-pressure-56820 strategy=COST_BASED elapsedMs=713.39 peakBytes=2099232 spillBytes=0 merge=false
+2026-11-08T09:55:42.083-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=threshold-pressure-63133 strategy=OFF merge=false
+2026-11-08T09:55:42.858-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=threshold-pressure-63133 strategy=OFF elapsedMs=774.39 peakBytes=1049616 spillBytes=0 merge=false
+2026-11-08T09:55:42.976-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=threshold-pressure-63133 strategy=FORCE merge=true
+2026-11-08T09:55:44.343-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 28.40s, stopped 409.00ms: 1.70GB -> 859.14MB
+2026-11-08T09:55:44.344-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 28.40s, stopped 409.00ms: 1.70GB -> 859.14MB
+2026-11-08T09:55:44.344-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 28.40s, stopped 409.00ms: 1.70GB -> 859.14MB
+2026-11-08T09:55:44.415-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=threshold-pressure-63133 strategy=FORCE elapsedMs=1436.43 peakBytes=38634248 spillBytes=88684850 merge=true
+2026-11-08T09:55:44.546-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=threshold-pressure-63133 strategy=COST_BASED merge=false
+2026-11-08T09:55:45.225-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=threshold-pressure-63133 strategy=COST_BASED elapsedMs=678.87 peakBytes=9438224 spillBytes=0 merge=false
+2026-11-08T09:55:46.231-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=threshold-pressure-69446 strategy=OFF merge=false
+2026-11-08T09:55:46.988-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=threshold-pressure-69446 strategy=OFF elapsedMs=755.39 peakBytes=42512320 spillBytes=0 merge=false
+2026-11-08T09:55:47.094-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=threshold-pressure-69446 strategy=FORCE merge=true
+2026-11-08T09:55:48.299-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=threshold-pressure-69446 strategy=FORCE elapsedMs=1204.26 peakBytes=57945040 spillBytes=112268278 merge=true
+2026-11-08T09:55:48.417-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=threshold-pressure-69446 strategy=COST_BASED merge=false
+2026-11-08T09:55:49.338-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=threshold-pressure-69446 strategy=COST_BASED elapsedMs=919.68 peakBytes=25306408 spillBytes=0 merge=false
+2026-11-08T09:55:51.042-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=threshold-big-165003 strategy=OFF merge=false
+2026-11-08T09:55:52.643-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=threshold-big-165003 strategy=OFF elapsedMs=1599.32 peakBytes=113045752 spillBytes=0 merge=false
+2026-11-08T09:55:52.761-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=threshold-big-165003 strategy=FORCE merge=true
+2026-11-08T09:55:56.059-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=threshold-big-165003 strategy=FORCE elapsedMs=3297.38 peakBytes=101750984 spillBytes=615562382 merge=true
+2026-11-08T09:55:56.178-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=threshold-big-165003 strategy=COST_BASED merge=false
+2026-11-08T09:55:57.846-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=threshold-big-165003 strategy=COST_BASED elapsedMs=1667.58 peakBytes=114513176 spillBytes=0 merge=false
+2026-11-08T09:55:59.703-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=threshold-big-183337 strategy=OFF merge=false
+2026-11-08T09:56:01.500-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=threshold-big-183337 strategy=OFF elapsedMs=1795.84 peakBytes=118669240 spillBytes=0 merge=false
+2026-11-08T09:56:01.599-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=threshold-big-183337 strategy=FORCE merge=true
+2026-11-08T09:56:04.685-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=threshold-big-183337 strategy=FORCE elapsedMs=3085.77 peakBytes=81067384 spillBytes=625892984 merge=true
+2026-11-08T09:56:04.798-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=threshold-big-183337 strategy=COST_BASED merge=false
+2026-11-08T09:56:06.626-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=threshold-big-183337 strategy=COST_BASED elapsedMs=1826.83 peakBytes=155795832 spillBytes=0 merge=false
+2026-11-08T09:56:08.977-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=threshold-big-201670 strategy=OFF merge=false
+2026-11-08T09:56:11.179-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=threshold-big-201670 strategy=OFF elapsedMs=2196.23 peakBytes=131643776 spillBytes=0 merge=false
+2026-11-08T09:56:11.298-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=threshold-big-201670 strategy=FORCE merge=true
+2026-11-08T09:56:13.152-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 28.39s, stopped 425.00ms: 2.98GB -> 952.72MB
+2026-11-08T09:56:13.153-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 28.39s, stopped 425.00ms: 2.98GB -> 952.72MB
+2026-11-08T09:56:13.153-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 28.39s, stopped 425.00ms: 2.98GB -> 952.72MB
+2026-11-08T09:56:15.262-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=threshold-big-201670 strategy=FORCE elapsedMs=3963.25 peakBytes=93627240 spillBytes=754958064 merge=true
+2026-11-08T09:56:15.382-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=threshold-big-201670 strategy=COST_BASED merge=false
+2026-11-08T09:56:17.248-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=threshold-big-201670 strategy=COST_BASED elapsedMs=1865.07 peakBytes=137132224 spillBytes=0 merge=false
+2026-11-08T09:56:18.020-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload table=merge_join_wideutojcg7jkw statistics=[[k, null, 746677.0, 0.0, null, 0, 749999], [v, 4.0287518E7, 739320.0, 0.0, null, null, null], [null, null, null, null, 750000.0, null, null]] logicalVarcharBytes=384000000
+2026-11-08T09:56:24.220-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=wide-full-compressible strategy=FORCE merge=true
+2026-11-08T09:56:40.672-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=wide-full-compressible strategy=FORCE elapsedMs=16451.15 peakBytes=96591472 spillBytes=4940583128 merge=true
+2026-11-08T09:56:40.853-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=wide-full-compressible strategy=COST_BASED merge=false
+2026-11-08T09:56:42.275-0600	INFO	ForkJoinPool-1-worker-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=wide-full-compressible strategy=COST_BASED merge=false memoryLimitExceeded=true compressedSizeEstimate=true
+2026-11-08T09:56:43.677-0600	INFO	pool-285-thread-2	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=concurrent-chain-skew strategy=FORCE merge=true
+2026-11-08T09:56:43.740-0600	INFO	pool-285-thread-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=concurrent-chain-skew strategy=FORCE merge=true
+2026-11-08T09:56:46.816-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 33.14s, stopped 528.00ms: 3.00GB -> 884.90MB
+2026-11-08T09:56:46.821-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 33.14s, stopped 528.00ms: 3.00GB -> 884.90MB
+2026-11-08T09:56:46.822-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 33.14s, stopped 528.00ms: 3.00GB -> 884.90MB
+2026-11-08T09:56:48.202-0600	INFO	pool-285-thread-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=concurrent-chain-skew strategy=FORCE elapsedMs=4461.12 peakBytes=72424408 spillBytes=504005794 merge=true
+2026-11-08T09:56:48.444-0600	INFO	pool-285-thread-2	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=concurrent-chain-skew strategy=FORCE elapsedMs=4765.83 peakBytes=81295624 spillBytes=506094546 merge=true
+2026-11-08T09:56:48.623-0600	INFO	pool-285-thread-2	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=concurrent-chain-skew strategy=FORCE merge=true
+2026-11-08T09:56:48.659-0600	INFO	pool-285-thread-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=concurrent-chain-skew strategy=FORCE merge=true
+2026-11-08T09:56:52.698-0600	INFO	pool-285-thread-2	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=concurrent-chain-skew strategy=FORCE elapsedMs=4074.49 peakBytes=86898808 spillBytes=473522940 merge=true
+2026-11-08T09:56:52.699-0600	INFO	pool-285-thread-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=concurrent-chain-skew strategy=FORCE elapsedMs=4039.81 peakBytes=78737208 spillBytes=520359562 merge=true
+2026-11-08T09:56:52.861-0600	INFO	pool-285-thread-2	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=concurrent-chain-skew strategy=FORCE merge=true
+2026-11-08T09:56:52.894-0600	INFO	pool-285-thread-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload start scenario=concurrent-chain-skew strategy=FORCE merge=true
+2026-11-08T09:56:56.742-0600	INFO	pool-285-thread-1	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=concurrent-chain-skew strategy=FORCE elapsedMs=3847.33 peakBytes=69531320 spillBytes=489736470 merge=true
+2026-11-08T09:56:56.744-0600	INFO	pool-285-thread-2	io.trino.plugin.iceberg.TestMergeJoinWorkloads	SMJ workload scenario=concurrent-chain-skew strategy=FORCE elapsedMs=3881.89 peakBytes=66515128 spillBytes=384660402 merge=true
+2026-11-08T09:56:57.970-0600	WARN	ForkJoinPool-1-worker-1	io.trino.blob.cache.memory.InMemoryBlobCacheManager	Failed to unregister MemoryBlobCacheStats MBean for catalog iceberg
+org.weakref.jmx.JmxException: io.trino.blob.cache.memory:type=MemoryBlobCacheStats,name=iceberg
+	at org.weakref.jmx.MBeanExporter.unexport(MBeanExporter.java:230)
+	at org.weakref.jmx.MBeanExporter.unexport(MBeanExporter.java:213)
+	at io.trino.blob.cache.memory.InMemoryBlobCacheManager.drop(InMemoryBlobCacheManager.java:84)
+	at java.base/java.util.ImmutableCollections$Set12.forEach(ImmutableCollections.java:1120)
+	at io.trino.blob.cache.memory.InMemoryBlobCacheManager.shutdown(InMemoryBlobCacheManager.java:96)
+	at io.trino.cache.CacheManagerRegistry.shutdown(CacheManagerRegistry.java:179)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at io.airlift.bootstrap.LifeCycleManager.stopInstance(LifeCycleManager.java:257)
+	at io.airlift.bootstrap.LifeCycleManager.stop(LifeCycleManager.java:226)
+	at io.airlift.bootstrap.LifeCycleManager.stop(LifeCycleManager.java:193)
+	at io.airlift.bootstrap.LifeCycleManager.stop(LifeCycleManager.java:177)
+	at io.trino.server.testing.TestingTrinoServer.lambda$close$1(TestingTrinoServer.java:486)
+	at com.google.common.io.Closer.close(Closer.java:203)
+	at io.trino.server.testing.TestingTrinoServer.close(TestingTrinoServer.java:489)
+	at com.google.common.io.Closer.close(Closer.java:203)
+	at io.trino.testing.DistributedQueryRunner.close(DistributedQueryRunner.java:702)
+	at io.trino.plugin.base.util.AutoCloseableCloser.close(AutoCloseableCloser.java:80)
+	at io.trino.testing.AbstractTestQueryFramework.close(AbstractTestQueryFramework.java:135)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:700)
+	at org.junit.platform.commons.support.ReflectionSupport.invokeMethod(ReflectionSupport.java:528)
+	at org.junit.jupiter.engine.support.MethodReflectionUtils.invoke(MethodReflectionUtils.java:53)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:61)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:124)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:163)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptLifecycleMethod(TimeoutExtension.java:128)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptAfterAllMethod(TimeoutExtension.java:118)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:124)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:105)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:99)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:66)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:47)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:39)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:104)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:98)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invokeVoid(InterceptingExecutableInvoker.java:71)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeAfterAllMethods$1(ClassBasedTestDescriptor.java:476)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeAfterAllMethods$0(ClassBasedTestDescriptor.java:474)
+	at java.base/java.lang.Iterable.forEach(Iterable.java:75)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.invokeAfterAllMethods(ClassBasedTestDescriptor.java:474)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.after(ClassBasedTestDescriptor.java:267)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.after(ClassBasedTestDescriptor.java:88)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$5(NodeTestTask.java:186)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$1(NodeTestTask.java:186)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:139)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$0(NodeTestTask.java:164)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:163)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:116)
+	at org.junit.platform.engine.support.hierarchical.ForkJoinPoolHierarchicalTestExecutorService$ExclusiveTask.exec(ForkJoinPoolHierarchicalTestExecutorService.java:266)
+	at org.junit.platform.engine.support.hierarchical.ForkJoinPoolHierarchicalTestExecutorService$ExclusiveTask.execSync(ForkJoinPoolHierarchicalTestExecutorService.java:239)
+	at org.junit.platform.engine.support.hierarchical.ForkJoinPoolHierarchicalTestExecutorService.executeSync(ForkJoinPoolHierarchicalTestExecutorService.java:181)
+	at org.junit.platform.engine.support.hierarchical.ForkJoinPoolHierarchicalTestExecutorService.invokeAll(ForkJoinPoolHierarchicalTestExecutorService.java:153)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$2(NodeTestTask.java:180)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$1(NodeTestTask.java:166)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:139)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$0(NodeTestTask.java:164)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:74)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:163)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:116)
+	at org.junit.platform.engine.support.hierarchical.ForkJoinPoolHierarchicalTestExecutorService$ExclusiveTask.exec(ForkJoinPoolHierarchicalTestExecutorService.java:266)
+	at java.base/java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:511)
+	at java.base/java.util.concurrent.ForkJoinPool$WorkQueue.topLevelExec(ForkJoinPool.java:1450)
+	at java.base/java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:2019)
+	at java.base/java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:187)
+
+
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 254.8 s -- in io.trino.plugin.iceberg.TestMergeJoinWorkloads
+2026-11-08T09:56:57.999-0600	INFO	main	io.trino.testing.containers.junit.ReportLeakedContainers	DockerClientFactory not initialized, so there should be no leaked containers, skipping the check
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 26, Failures: 0, Errors: 0, Skipped: 2
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  04:25 min
+[INFO] Finished at: 2026-11-08T18:56:58+03:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Njord session closed

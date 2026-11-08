@@ -1,0 +1,73 @@
+[
+  {
+    "phase": "controls-format-retry",
+    "command": [
+      "./mvnw",
+      "-pl",
+      "core/trino-main,plugin/trino-iceberg",
+      "airstyle:format",
+      "-Dincludes=**/TestMergeJoinOperator.java,**/TestMergeJoinTypeAudit.java,**/TestMergeJoinPostSelectionAudit.java,**/TestIcebergSortedWriting.java"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 135.267,
+    "log": "controls-format-retry.log"
+  },
+  {
+    "phase": "controls-compile-retry",
+    "command": [
+      "./mvnw",
+      "test-compile",
+      "-Dair.check.skip-all=true",
+      "-pl",
+      "core/trino-main,plugin/trino-iceberg"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 168.234,
+    "log": "controls-compile-retry.log"
+  },
+  {
+    "phase": "positive-controls",
+    "command": [
+      "./mvnw",
+      "initialize",
+      "surefire:test",
+      "-Dair.check.skip-all=true",
+      "-pl",
+      "core/trino-main",
+      "-Dtest=TestMergeJoinTypeAudit,TestMergeJoinOperator#testAuditV03DifferentialFuzz"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 28.45,
+    "log": "positive-controls.log"
+  },
+  {
+    "phase": "negative-controls",
+    "command": [
+      "./mvnw",
+      "initialize",
+      "surefire:test",
+      "-Dair.check.skip-all=true",
+      "-pl",
+      "core/trino-main",
+      "-Dtest=TestAppendingSpiller#testAuditV03EncryptedMatchBitmap,TestMergeJoinPostSelectionAudit"
+    ],
+    "exit_code": 1,
+    "elapsed_seconds": 23.008,
+    "log": "negative-controls.log"
+  },
+  {
+    "phase": "distributed-controls",
+    "command": [
+      "./mvnw",
+      "initialize",
+      "surefire:test",
+      "-Dair.check.skip-all=true",
+      "-pl",
+      "plugin/trino-iceberg",
+      "-Dtest=TestIcebergSortedWriting#testAuditV03PostSelectionAggregation"
+    ],
+    "exit_code": 1,
+    "elapsed_seconds": 37.837,
+    "log": "distributed-controls.log"
+  }
+]

@@ -1,0 +1,7 @@
+[smj-upstream-v03 60149fa87e8] Preserve merge join contracts in late rewrites
+ 15 files changed, 679 insertions(+), 5 deletions(-)
+ create mode 100644 core/trino-main/src/main/java/io/trino/sql/planner/sanity/ValidateJoinAlgorithms.java
+ create mode 100644 core/trino-main/src/test/java/io/trino/sql/planner/sanity/TestValidateJoinAlgorithms.java
+ create mode 100644 core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoinAggregationPushdown.java
+ create mode 100644 core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoinScalarTypes.java
+ create mode 100644 plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestMergeJoinAggregationExchange.java

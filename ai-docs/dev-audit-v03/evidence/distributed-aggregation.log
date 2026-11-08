@@ -1,0 +1,333 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] 
+[INFO] -----------------------< io.trino:trino-iceberg >-----------------------
+[INFO] Building trino-iceberg 485-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] ----------------------------[ trino-plugin ]----------------------------
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-iceberg ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-iceberg ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-cli) @ trino-iceberg ---
+[INFO] Tests will run in random order. To reproduce ordering use flag -Dsurefire.runOrder.random.seed=29421406789328
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+WARNING: Using incubator modules: jdk.incubator.vector
+[INFO] Running io.trino.plugin.iceberg.TestIcebergSortedWriting
+2026-11-08T08:19:51.496-0600	INFO	ForkJoinPool-1-worker-1	io.trino.simd.BlockEncodingSimdSupport	Detected SIMD Support for architecture=amd64, vectorBitWidth=128: SimdSupport[capabilities=[]]
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::loadLibrary has been called by com.aayushatharva.brotli4j.Brotli4jLoader in an unnamed module (file:/home/ivan/.m2/repository/com/aayushatharva/brotli4j/brotli4j/1.23.0/brotli4j-1.23.0.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+2026-11-08T08:19:52.635-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 99.00ms: 481.43MB -> 134.74MB
+2026-11-08T08:19:57.701-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 4.83s, stopped 245.00ms: 603.45MB -> 207.91MB
+2026-11-08T08:19:57.703-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 245.00ms: 603.45MB -> 207.91MB
+2026-11-08T08:19:57.704-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 245.00ms: 603.45MB -> 207.91MB
+2026-11-08T08:19:57.799-0600	INFO	ForkJoinPool-1-worker-1	io.trino.testing.DistributedQueryRunner	Created DistributedQueryRunner in 7.82s (unclosed instances = 1)
+2026-11-08T08:19:57.880-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T08:19:57.898-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T08:19:57.899-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T08:19:57.908-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T08:19:57.909-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loading blob cache manager memory --
+2026-11-08T08:19:57.919-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	-- Loaded blob cache manager memory --
+2026-11-08T08:19:58.040-0600	INFO	ForkJoinPool-1-worker-1	io.trino.cache.CacheManagerRegistry	Usage filesystem.metadata of catalog iceberg requires [LOW_LATENCY], selected blob cache manager memory
+2026-11-08T08:20:04.192-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.27s, stopped 218.00ms: 724.16MB -> 567.39MB
+2026-11-08T08:20:04.193-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.27s, stopped 218.00ms: 724.16MB -> 567.39MB
+2026-11-08T08:20:04.194-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 6.27s, stopped 218.00ms: 724.16MB -> 567.39MB
+2026-11-08T08:20:08.277-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.80s, stopped 284.00ms: 817.59MB -> 626.90MB
+2026-11-08T08:20:08.278-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.80s, stopped 284.00ms: 817.59MB -> 626.90MB
+2026-11-08T08:20:08.278-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 3.80s, stopped 284.00ms: 817.59MB -> 626.90MB
+2026-11-08T08:20:12.129-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT V03 distributed expr=l.v plan=
+Trino version: testversion
+Fragment 0 [HASH]
+    Output layout: [k, g, sum]
+    Output partitioning: SINGLE []
+    Output[columnNames = [k, g, _col2]]
+    │   Layout: [k:bigint, g:bigint, sum:bigint]
+    │   Estimates: {rows: 32 (864B), cpu: 0, memory: 0B, network: 0B}
+    │   _col2 := sum
+    └─ Aggregate[type = FINAL, keys = [k, g]]
+       │   Layout: [k:bigint, g:bigint, sum:bigint]
+       │   Estimates: {rows: 32 (864B), cpu: 16.88k, memory: 864B, network: 0B}
+       │   sum := sum(sum_4)
+       └─ LocalExchange[partitioning = HASH, arguments = [k::bigint, g::bigint]]
+          │   Layout: [k:bigint, g:bigint, sum_4:bigint]
+          │   Estimates: {rows: 640 (16.88kB), cpu: 16.88k, memory: 0B, network: 0B}
+          └─ InnerJoin[criteria = (k = k_0), distribution = PARTITIONED]
+             │   Layout: [k:bigint, sum_4:bigint, g:bigint]
+             │   Estimates: {rows: 640 (16.88kB), cpu: 28.41k, memory: 288B, network: 0B}
+             │   Distribution: PARTITIONED
+             │   Algorithm: MERGE
+             │   dynamicFilterAssignments = {k_0 -> #df_264}
+             ├─ Aggregate[type = PARTIAL, keys = [k]]
+             │  │   Layout: [k:bigint, sum_4:bigint]
+             │  │   Estimates: {rows: 640 (11.25kB), cpu: ?, memory: ?, network: ?}
+             │  │   sum_4 := sum(v)
+             │  └─ RemoteMerge[sourceFragmentIds = [1]]
+             │         Layout: [k:bigint, v:bigint]
+             └─ RemoteMerge[sourceFragmentIds = [2]]
+                    Layout: [k_0:bigint, g:bigint]
+
+Fragment 1 [SOURCE]
+    Output layout: [k, v]
+    Output partitioning: HASH [k]
+    LocalMerge[orderBy = [k ASC NULLS LAST]]
+    │   Layout: [k:bigint, v:bigint]
+    │   Estimates: {rows: 640 (11.25kB), cpu: 0, memory: 0B, network: 0B}
+    └─ PartialSort[orderBy = [k ASC NULLS LAST]]
+       │   Layout: [k:bigint, v:bigint]
+       │   Estimates: {rows: 640 (11.25kB), cpu: ?, memory: ?, network: ?}
+       └─ LocalExchange[partitioning = ROUND_ROBIN]
+          │   Layout: [k:bigint, v:bigint]
+          │   Estimates: {rows: 640 (11.25kB), cpu: 11.25k, memory: 0B, network: 0B}
+          └─ ScanFilter[table = iceberg:tpch.audit_v03_factfcm2j0pbdc$data@9187875428621872693, filterPredicate = $not((k IS NULL)), dynamicFilters = {k = #df_264}]
+                 Layout: [k:bigint, v:bigint]
+                 Estimates: {rows: 640 (11.25kB), cpu: 11.25k, memory: 0B, network: 0B}/{rows: 640 (11.25kB), cpu: 11.25k, memory: 0B, network: 0B}
+                 k := 1:k:bigint
+                 v := 2:v:bigint
+
+Fragment 2 [SOURCE]
+    Output layout: [k_0, g]
+    Output partitioning: HASH [k_0]
+    LocalMerge[orderBy = [k_0 ASC NULLS LAST]]
+    │   Layout: [k_0:bigint, g:bigint]
+    │   Estimates: {rows: 16 (288B), cpu: 0, memory: 0B, network: 0B}
+    └─ PartialSort[orderBy = [k_0 ASC NULLS LAST]]
+       │   Layout: [k_0:bigint, g:bigint]
+       │   Estimates: {rows: 16 (288B), cpu: ?, memory: ?, network: ?}
+       └─ LocalExchange[partitioning = ROUND_ROBIN]
+          │   Layout: [k_0:bigint, g:bigint]
+          │   Estimates: {rows: 16 (288B), cpu: 288, memory: 0B, network: 0B}
+          └─ ScanFilter[table = iceberg:tpch.audit_v03_dim04wpejg42s$data@6244005883117474587, filterPredicate = $not((k_0 IS NULL))]
+                 Layout: [k_0:bigint, g:bigint]
+                 Estimates: {rows: 16 (288B), cpu: 288, memory: 0B, network: 0B}/{rows: 16 (288B), cpu: 288, memory: 0B, network: 0B}
+                 g := 2:g:bigint
+                 k_0 := 1:k:bigint
+2026-11-08T08:20:12.908-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 4.20s, stopped 430.00ms: 1.13GB -> 693.54MB
+2026-11-08T08:20:12.909-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 4.20s, stopped 430.00ms: 1.13GB -> 693.54MB
+2026-11-08T08:20:12.910-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 4.20s, stopped 430.00ms: 1.13GB -> 693.54MB
+2026-11-08T08:20:13.723-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT V03 distributed expr=l.v + 1 plan=
+Trino version: testversion
+Fragment 0 [HASH]
+    Output layout: [k, g, sum]
+    Output partitioning: SINGLE []
+    Output[columnNames = [k, g, _col2]]
+    │   Layout: [k:bigint, g:bigint, sum:bigint]
+    │   Estimates: {rows: 32 (864B), cpu: 0, memory: 0B, network: 0B}
+    │   _col2 := sum
+    └─ Aggregate[type = FINAL, keys = [k, g]]
+       │   Layout: [k:bigint, g:bigint, sum:bigint]
+       │   Estimates: {rows: 32 (864B), cpu: 16.88k, memory: 864B, network: 0B}
+       │   sum := sum(sum_4)
+       └─ LocalExchange[partitioning = HASH, arguments = [k::bigint, g::bigint]]
+          │   Layout: [k:bigint, g:bigint, sum_4:bigint]
+          │   Estimates: {rows: 640 (16.88kB), cpu: 16.88k, memory: 0B, network: 0B}
+          └─ LocalExchange[partitioning = ROUND_ROBIN]
+             │   Layout: [k:bigint, g:bigint, sum_4:bigint]
+             │   Estimates: {rows: 640 (16.88kB), cpu: 16.88k, memory: 0B, network: 0B}
+             └─ Project[]
+                │   Layout: [k:bigint, g:bigint, sum_4:bigint]
+                │   Estimates: {rows: 640 (16.88kB), cpu: 16.88k, memory: 0B, network: 0B}
+                │   k := k_5
+                │   g := g_6
+                └─ Aggregate[type = INTERMEDIATE, keys = [k_5, g_6]]
+                   │   Layout: [k_5:bigint, g_6:bigint, sum_4:bigint]
+                   │   Estimates: {rows: 640 (16.88kB), cpu: ?, memory: ?, network: ?}
+                   │   sum_4 := sum(sum_4)
+                   └─ InnerJoin[criteria = (k = k_0), distribution = PARTITIONED]
+                      │   Layout: [k_5:bigint, sum_4:bigint, g_6:bigint]
+                      │   Estimates: {rows: 640 (16.88kB), cpu: 34.03k, memory: 288B, network: 0B}
+                      │   Distribution: PARTITIONED
+                      │   dynamicFilterAssignments = {k_0 -> #df_298}
+                      ├─ RemoteSource[sourceFragmentIds = [1]]
+                      │      Layout: [k_5:bigint, k:bigint, sum_4:bigint]
+                      └─ Project[]
+                         │   Layout: [g_6:bigint, k_0:bigint]
+                         │   Estimates: {rows: 16 (288B), cpu: 288, memory: 0B, network: 0B}
+                         │   g_6 := g
+                         └─ RemoteMerge[sourceFragmentIds = [2]]
+                                Layout: [k_0:bigint, g:bigint]
+
+Fragment 1 [SOURCE]
+    Output layout: [k_5, k, sum_4]
+    Output partitioning: HASH [k]
+    Project[]
+    │   Layout: [k_5:bigint, k:bigint, sum_4:bigint]
+    │   Estimates: {rows: 640 (16.88kB), cpu: 16.88k, memory: 0B, network: 0B}
+    │   k_5 := k_8
+    └─ LocalExchange[partitioning = UNKNOWN]
+       │   Layout: [k_8:bigint, k:bigint, sum_4:bigint]
+       │   Estimates: {rows: 640 (16.88kB), cpu: 0, memory: 0B, network: 0B}
+       └─ Project[]
+          │   Layout: [k_8:bigint, k:bigint, sum_4:bigint]
+          │   Estimates: {rows: 640 (16.88kB), cpu: 16.88k, memory: 0B, network: 0B}
+          │   k_8 := k_10
+          └─ Aggregate[type = PARTIAL, keys = [k_10, k]]
+             │   Layout: [k_10:bigint, k:bigint, sum_4:bigint]
+             │   Estimates: {rows: 640 (16.88kB), cpu: ?, memory: ?, network: ?}
+             │   sum_4 := sum(operator_add_9)
+             └─ Project[]
+                │   Layout: [k:bigint, operator_add_9:bigint, k_10:bigint]
+                │   Estimates: {rows: 640 (16.88kB), cpu: 16.88k, memory: 0B, network: 0B}
+                │   operator_add_9 := $operator$add(v, bigint '1')
+                │   k_10 := k
+                └─ PartialSort[orderBy = [k ASC NULLS LAST]]
+                   │   Layout: [k:bigint, v:bigint]
+                   │   Estimates: {rows: 640 (11.25kB), cpu: ?, memory: ?, network: ?}
+                   └─ LocalExchange[partitioning = ROUND_ROBIN]
+                      │   Layout: [k:bigint, v:bigint]
+                      │   Estimates: {rows: 640 (11.25kB), cpu: 11.25k, memory: 0B, network: 0B}
+                      └─ ScanFilter[table = iceberg:tpch.audit_v03_factfcm2j0pbdc$data@9187875428621872693, filterPredicate = $not((k IS NULL)), dynamicFilters = {k = #df_298}]
+                             Layout: [k:bigint, v:bigint]
+                             Estimates: {rows: 640 (11.25kB), cpu: 11.25k, memory: 0B, network: 0B}/{rows: 640 (11.25kB), cpu: 11.25k, memory: 0B, network: 0B}
+                             k := 1:k:bigint
+                             v := 2:v:bigint
+
+Fragment 2 [SOURCE]
+    Output layout: [k_0, g]
+    Output partitioning: HASH [k_0]
+    LocalMerge[orderBy = [k_0 ASC NULLS LAST]]
+    │   Layout: [k_0:bigint, g:bigint]
+    │   Estimates: {rows: 16 (288B), cpu: 0, memory: 0B, network: 0B}
+    └─ PartialSort[orderBy = [k_0 ASC NULLS LAST]]
+       │   Layout: [k_0:bigint, g:bigint]
+       │   Estimates: {rows: 16 (288B), cpu: ?, memory: ?, network: ?}
+       └─ LocalExchange[partitioning = ROUND_ROBIN]
+          │   Layout: [k_0:bigint, g:bigint]
+          │   Estimates: {rows: 16 (288B), cpu: 288, memory: 0B, network: 0B}
+          └─ ScanFilter[table = iceberg:tpch.audit_v03_dim04wpejg42s$data@6244005883117474587, filterPredicate = $not((k_0 IS NULL))]
+                 Layout: [k_0:bigint, g:bigint]
+                 Estimates: {rows: 16 (288B), cpu: 288, memory: 0B, network: 0B}/{rows: 16 (288B), cpu: 288, memory: 0B, network: 0B}
+                 g := 2:g:bigint
+                 k_0 := 1:k:bigint
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 26.15 s <<< FAILURE! -- in io.trino.plugin.iceberg.TestIcebergSortedWriting
+[ERROR] io.trino.plugin.iceberg.TestIcebergSortedWriting.testAuditV03PostSelectionAggregation -- Time elapsed: 3.290 s <<< ERROR!
+io.trino.testing.QueryFailedException: spillable not yet set
+	at io.trino.testing.AbstractTestingTrinoClient.execute(AbstractTestingTrinoClient.java:133)
+	at io.trino.testing.DistributedQueryRunner.executeInternal(DistributedQueryRunner.java:597)
+	at io.trino.testing.DistributedQueryRunner.execute(DistributedQueryRunner.java:580)
+	at io.trino.testing.AbstractTestQueryFramework.computeActual(AbstractTestQueryFramework.java:319)
+	at io.trino.plugin.iceberg.TestIcebergSortedWriting.testAuditV03PostSelectionAggregation(TestIcebergSortedWriting.java:144)
+	Suppressed: java.lang.Exception: SQL: SELECT r.k, r.g, sum(l.v + 1) FROM audit_v03_factfcm2j0pbdc l JOIN audit_v03_dim04wpejg42s r ON l.k = r.k GROUP BY r.k, r.g
+		at io.trino.testing.DistributedQueryRunner.executeInternal(DistributedQueryRunner.java:604)
+		... 3 more
+Caused by: java.lang.IllegalArgumentException: spillable not yet set
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.lambda$createLookupJoin$0(LocalExecutionPlanner.java:3005)
+	at java.base/java.util.Optional.orElseThrow(Optional.java:403)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.createLookupJoin(LocalExecutionPlanner.java:3005)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitJoin(LocalExecutionPlanner.java:2570)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitJoin(LocalExecutionPlanner.java:892)
+	at io.trino.sql.planner.plan.JoinNode.accept(JoinNode.java:357)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitAggregation(LocalExecutionPlanner.java:1989)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitAggregation(LocalExecutionPlanner.java:892)
+	at io.trino.sql.planner.plan.AggregationNode.accept(AggregationNode.java:236)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitScanFilterAndProject(LocalExecutionPlanner.java:2092)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitProject(LocalExecutionPlanner.java:2044)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitProject(LocalExecutionPlanner.java:892)
+	at io.trino.sql.planner.plan.ProjectNode.accept(ProjectNode.java:82)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.createLocalExchange(LocalExecutionPlanner.java:3878)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitExchange(LocalExecutionPlanner.java:3777)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitExchange(LocalExecutionPlanner.java:892)
+	at io.trino.sql.planner.plan.ExchangeNode.accept(ExchangeNode.java:305)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.createLocalExchange(LocalExecutionPlanner.java:3878)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitExchange(LocalExecutionPlanner.java:3777)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitExchange(LocalExecutionPlanner.java:892)
+	at io.trino.sql.planner.plan.ExchangeNode.accept(ExchangeNode.java:305)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitAggregation(LocalExecutionPlanner.java:1989)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitAggregation(LocalExecutionPlanner.java:892)
+	at io.trino.sql.planner.plan.AggregationNode.accept(AggregationNode.java:236)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitOutput(LocalExecutionPlanner.java:986)
+	at io.trino.sql.planner.LocalExecutionPlanner$Visitor.visitOutput(LocalExecutionPlanner.java:892)
+	at io.trino.sql.planner.plan.OutputNode.accept(OutputNode.java:83)
+	at io.trino.sql.planner.LocalExecutionPlanner.plan(LocalExecutionPlanner.java:653)
+	at io.trino.sql.planner.LocalExecutionPlanner.plan(LocalExecutionPlanner.java:560)
+	at io.trino.execution.SqlTaskExecutionFactory.create(SqlTaskExecutionFactory.java:84)
+	at io.trino.execution.SqlTask.tryCreateSqlTaskExecution(SqlTask.java:588)
+	at io.trino.execution.SqlTask.updateTask(SqlTask.java:539)
+	at io.trino.execution.SqlTaskManager.doUpdateTask(SqlTaskManager.java:569)
+	at io.trino.execution.SqlTaskManager.lambda$updateTask$0(SqlTaskManager.java:507)
+	at io.trino.$gen.Trino_testversion___Callable.call(Unknown Source)
+	at io.trino.execution.SqlTaskManager.updateTask(SqlTaskManager.java:507)
+	at io.trino.server.TaskResource.createOrUpdateTask(TaskResource.java:163)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.glassfish.jersey.server.model.internal.ResourceMethodInvocationHandlerFactory.lambda$static$0(ResourceMethodInvocationHandlerFactory.java:52)
+	at org.glassfish.jersey.server.model.internal.AbstractJavaResourceMethodDispatcher$1.run(AbstractJavaResourceMethodDispatcher.java:146)
+	at org.glassfish.jersey.server.model.internal.AbstractJavaResourceMethodDispatcher.invoke(AbstractJavaResourceMethodDispatcher.java:189)
+	at org.glassfish.jersey.server.model.internal.JavaResourceMethodDispatcherProvider$VoidOutInvoker.doDispatch(JavaResourceMethodDispatcherProvider.java:159)
+	at org.glassfish.jersey.server.model.internal.AbstractJavaResourceMethodDispatcher.dispatch(AbstractJavaResourceMethodDispatcher.java:93)
+	at org.glassfish.jersey.server.model.ResourceMethodInvoker.invoke(ResourceMethodInvoker.java:470)
+	at org.glassfish.jersey.server.model.ResourceMethodInvoker.apply(ResourceMethodInvoker.java:394)
+	at org.glassfish.jersey.server.model.ResourceMethodInvoker.apply(ResourceMethodInvoker.java:80)
+	at org.glassfish.jersey.server.ServerRuntime$1.run(ServerRuntime.java:274)
+	at org.glassfish.jersey.internal.Errors$1.call(Errors.java:248)
+	at org.glassfish.jersey.internal.Errors$1.call(Errors.java:244)
+	at org.glassfish.jersey.internal.Errors.process(Errors.java:292)
+	at org.glassfish.jersey.internal.Errors.process(Errors.java:274)
+	at org.glassfish.jersey.internal.Errors.process(Errors.java:244)
+	at org.glassfish.jersey.process.internal.RequestScope.runInScope(RequestScope.java:266)
+	at org.glassfish.jersey.server.ServerRuntime.process(ServerRuntime.java:253)
+	at org.glassfish.jersey.server.ApplicationHandler.handle(ApplicationHandler.java:720)
+	at org.glassfish.jersey.servlet.WebComponent.serviceImpl(WebComponent.java:422)
+	at org.glassfish.jersey.servlet.WebComponent.service(WebComponent.java:374)
+	at org.glassfish.jersey.servlet.ServletContainer.service(ServletContainer.java:355)
+	at org.glassfish.jersey.servlet.ServletContainer.service(ServletContainer.java:309)
+	at org.glassfish.jersey.servlet.ServletContainer.service(ServletContainer.java:202)
+	at org.eclipse.jetty.ee11.servlet.ServletHolder.handle(ServletHolder.java:754)
+	at org.eclipse.jetty.ee11.servlet.ServletHandler$ChainEnd.doFilter(ServletHandler.java:1688)
+	at io.airlift.http.server.tracing.TracingServletFilter.doFilter(TracingServletFilter.java:140)
+	at jakarta.servlet.http.HttpFilter.doFilter(HttpFilter.java:97)
+	at org.eclipse.jetty.ee11.servlet.FilterHolder.doFilter(FilterHolder.java:205)
+	at org.eclipse.jetty.ee11.servlet.ServletHandler$Chain.doFilter(ServletHandler.java:1647)
+	at org.eclipse.jetty.ee11.servlet.ServletHandler$MappedServlet.handle(ServletHandler.java:1602)
+	at org.eclipse.jetty.ee11.servlet.ServletChannel.dispatch(ServletChannel.java:871)
+	at org.eclipse.jetty.ee11.servlet.ServletChannel.handle(ServletChannel.java:449)
+	at org.eclipse.jetty.ee11.servlet.ServletHandler.handle(ServletHandler.java:469)
+	at org.eclipse.jetty.server.handler.ContextHandler.handle(ContextHandler.java:1253)
+	at org.eclipse.jetty.compression.server.CompressionHandler.handle(CompressionHandler.java:343)
+	at org.eclipse.jetty.server.Handler$Wrapper.handle(Handler.java:794)
+	at org.eclipse.jetty.server.handler.EventsHandler.handle(EventsHandler.java:81)
+	at org.eclipse.jetty.server.Handler$Wrapper.handle(Handler.java:794)
+	at org.eclipse.jetty.server.handler.GracefulHandler.handle(GracefulHandler.java:120)
+	at org.eclipse.jetty.server.Server.handle(Server.java:197)
+	at org.eclipse.jetty.server.internal.HttpChannelState$HandlerInvoker.run(HttpChannelState.java:804)
+	at org.eclipse.jetty.http2.server.internal.HttpStreamOverHTTP2.lambda$onRequest$0(HttpStreamOverHTTP2.java:132)
+	at org.eclipse.jetty.util.thread.Invocable$ReadyTask.run(Invocable.java:178)
+	at java.base/java.util.concurrent.ThreadPerTaskExecutor$TaskRunner.run(ThreadPerTaskExecutor.java:291)
+	at java.base/java.lang.VirtualThread.run(VirtualThread.java:460)
+
+2026-11-08T08:20:15.072-0600	INFO	main	io.trino.testing.containers.junit.ReportLeakedContainers	DockerClientFactory not initialized, so there should be no leaked containers, skipping the check
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Errors: 
+[ERROR]   TestIcebergSortedWriting.testAuditV03PostSelectionAggregation:144->AbstractTestQueryFramework.computeActual:319 » QueryFailed spillable not yet set
+[INFO] 
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  33.567 s
+[INFO] Finished at: 2026-11-08T17:20:15+03:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Njord session closed
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.6.1:test (default-cli) on project trino-iceberg: 
+[ERROR] 
+[ERROR] See /tmp/trino-smj-audit-v03-check/plugin/trino-iceberg/target/surefire-reports for the individual test results.
+[ERROR] See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

@@ -1,0 +1,706 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] trino-main                                                         [jar]
+[INFO] trino-iceberg                                             [trino-plugin]
+[INFO] trino-tests                                                        [jar]
+[INFO] 
+[INFO] ------------------------< io.trino:trino-main >-------------------------
+[INFO] Building trino-main 485-SNAPSHOT                                   [1/3]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.5.0:clean (default-clean) @ trino-main ---
+[INFO] Deleting /tmp/trino-smj-upstream-v02-check/core/trino-main/target
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-main ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-main ---
+[INFO] 
+[INFO] --- antlr4:4.13.2:antlr4 (default) @ trino-main ---
+[INFO] ANTLR 4: Processing source directory /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/antlr4
+[INFO] Processing grammar: io/trino/type/TypeCalculation.g4
+[INFO] Processing grammar: io/trino/jsonpath/JsonDateTimeTemplateLexer.g4
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ trino-main ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 0 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.16.0:compile (default-compile) @ trino-main ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 2743 source files with javac [forked debug deprecation parameters release 25] to target/classes
+[WARNING] Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+/tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/SystemSessionProperties.java:[647,40] [deprecation] getMarkDistinctStrategy() in OptimizerConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/SystemSessionProperties.java:[842,39] [deprecation] isIncrementalHashArrayLoadFactorEnabled() in FeaturesConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/analyzer/JsonPathAnalyzer.java:[126,40] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/util/DateTimeUtils.java:[248,49] [deprecation] CompositeIntervalQualifier(Optional<DataTypeParameter>,IntervalField,IntervalField) in CompositeIntervalQualifier has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/util/DateTimeUtils.java:[248,16] [deprecation] IntervalLiteral(String,Sign,IntervalQualifier) in IntervalLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/analyzer/TypeDescriptorTranslator.java:[584,40] [deprecation] Field(Optional<NodeLocation>,Optional<Identifier>,DataType) in Field has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/metadata/PropertyUtil.java:[208,31] [deprecation] Property(Identifier,Expression) in Property has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/metadata/PropertyUtil.java:[222,30] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/metadata/PropertyUtil.java:[223,31] [deprecation] BooleanLiteral(String) in BooleanLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/metadata/PropertyUtil.java:[224,39] [deprecation] LongLiteral(String) in LongLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/metadata/PropertyUtil.java:[225,30] [deprecation] DoubleLiteral(String) in DoubleLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/metadata/PropertyUtil.java:[226,34] [deprecation] Array(List<Expression>) in Array has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/DynamicFilterService.java:[307,24] [deprecation] <V>unmodifiableFuture(CompletableFuture<V>) in MoreFutures has been deprecated
+  where V is a type-variable:
+    V extends Object declared in method <V>unmodifiableFuture(CompletableFuture<V>)
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/planner/LocalDynamicFiltersCollector.java:[199,20] [deprecation] <V>unmodifiableFuture(CompletableFuture<V>) in MoreFutures has been deprecated
+  where V is a type-variable:
+    V extends Object declared in method <V>unmodifiableFuture(CompletableFuture<V>)
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/type/TypeCoercion.java:[129,53] [deprecation] getTypeParameters() in Type has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/type/TypeCoercion.java:[130,53] [deprecation] getTypeParameters() in Type has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/type/TypeCoercion.java:[400,49] [deprecation] getTypeParameters() in Type has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/type/TypeCoercion.java:[401,45] [deprecation] getTypeParameters() in Type has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/metadata/SignatureBinder.java:[314,53] [deprecation] getTypeParameters() in Type has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/metadata/SignatureBinder.java:[479,78] [deprecation] getTypeParameters() in Type has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/metadata/SignatureBinder.java:[652,32] [deprecation] getTypeParameters() in Type has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/analyzer/StatementAnalyzer.java:[5596,83] [deprecation] LongLiteral(String) in LongLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/analyzer/StatementAnalyzer.java:[5596,47] [deprecation] SubscriptExpression(Expression,Expression) in SubscriptExpression has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/connector/DefaultNodeManager.java:[70,17] [deprecation] getCurrentNode() in NodeManager has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/connector/informationschema/InformationSchemaPageSource.java:[194,17] [deprecation] getMemoryUsage() in ConnectorPageSource has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/connector/informationschema/InformationSchemaPageSourceProvider.java:[50,32] [deprecation] createPageSource(ConnectorTransactionHandle,ConnectorSession,ConnectorSplit,ConnectorTableHandle,Optional<ConnectorTableCredentials>,List<ColumnHandle>,DynamicFilter) in ConnectorPageSourceProvider has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/execution/SqlTaskManager.java:[665,34] [deprecation] unsafeInvalidate(Object) in NonKeyEvictableLoadingCache has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/planner/LocalExecutionPlanner.java:[465,13] [deprecation] expireAfterAccess(long,TimeUnit) in CacheBuilder has been deprecated
+  where K,V are type-variables:
+    K extends Object declared in class CacheBuilder
+    V extends Object declared in class CacheBuilder
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/planner/LocalExecutionPlanner.java:[468,13] [deprecation] expireAfterAccess(long,TimeUnit) in CacheBuilder has been deprecated
+  where K,V are type-variables:
+    K extends Object declared in class CacheBuilder
+    V extends Object declared in class CacheBuilder
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/HttpRequestSessionContextFactory.java:[87,50] [deprecation] getAlternateHeaderName() in ProtocolConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/HttpRequestSessionContextFactory.java:[212,22] [deprecation] checkCanSetUser(Optional<Principal>,String) in AccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/HttpRequestSessionContextFactory.java:[227,26] [deprecation] checkCanSetUser(Optional<Principal>,String) in AccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/execution/SetSessionAuthorizationTask.java:[93,26] [deprecation] checkCanSetUser(Optional<Principal>,String) in AccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/execution/resourcegroups/LegacyResourceGroupConfigurationManager.java:[45,38] [deprecation] getMaxConcurrentQueries() in QueryManagerConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/execution/resourcegroups/LegacyResourceGroupConfigurationManager.java:[46,27] [deprecation] getMaxQueuedQueries() in QueryManagerConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/metadata/SystemFunctionBundle.java:[820,31] [deprecation] getRegexLibrary() in FeaturesConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/node/AirliftNodeInventoryModule.java:[48,65] [deprecation] isEnabled() in EmbeddedDiscoveryConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/security/AllowAllAccessControl.java:[41,17] [deprecation] checkCanSetUser(Optional<Principal>,String) in AccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/security/DenyAllAccessControl.java:[125,17] [deprecation] checkCanSetUser(Optional<Principal>,String) in AccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/QuerySessionSupplier.java:[74,22] [deprecation] checkCanSetUser(Optional<Principal>,String) in AccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/QuerySessionSupplier.java:[92,26] [deprecation] checkCanSetUser(Optional<Principal>,String) in AccessControl has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/StatusResource.java:[90,74] [deprecation] getSystemCpuLoad() in OperatingSystemMXBean has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/protocol/JsonEncodingUtils.java:[477,59] [deprecation] getTypeParameters() in Type has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/security/InsecureAuthenticator.java:[42,50] [deprecation] getAlternateHeaderName() in ProtocolConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/security/CertificateAuthenticator.java:[63,74] [deprecation] authenticate(List<X509Certificate>) in CertificateAuthenticator has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/security/HeaderAuthenticator.java:[63,52] [deprecation] createAuthenticatedPrincipal(Headers) in HeaderAuthenticator has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/security/PasswordAuthenticator.java:[46,50] [deprecation] getAlternateHeaderName() in ProtocolConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/security/PasswordAuthenticator.java:[67,52] [deprecation] createAuthenticatedPrincipal(String,String) in PasswordAuthenticator has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/security/oauth2/NimbusOAuth2Client.java:[392,33] [deprecation] TokenRequest(URI,ClientAuthentication,AuthorizationGrant) in TokenRequest has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/ui/PasswordManagerFormAuthenticator.java:[82,52] [deprecation] createAuthenticatedPrincipal(String,String) in PasswordAuthenticator has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/ui/WebUiStaticResource.java:[55,20] [deprecation] isPreviewEnabled() in WebUiConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/server/ui/WebUiStaticResource.java:[95,24] [deprecation] isPreviewEnabled() in WebUiConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/analyzer/JsonAccessorChain.java:[186,73] [deprecation] LongLiteral(String) in LongLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/planner/ParameterRewriter.java:[65,25] [deprecation] Cast(Expression,DataType,boolean) in Cast has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/DetermineJoinDistributionType.java:[236,41] [deprecation] toPlanCost() in LocalCostEstimate has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/DetermineSemiJoinDistributionType.java:[150,41] [deprecation] toPlanCost() in LocalCostEstimate has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeInputRewrite.java:[92,38] [deprecation] NullLiteral() in NullLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeInputRewrite.java:[92,29] [deprecation] Cast(Expression,DataType) in Cast has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeInputRewrite.java:[93,42] [deprecation] NullLiteral() in NullLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeInputRewrite.java:[93,33] [deprecation] Cast(Expression,DataType) in Cast has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeInputRewrite.java:[95,39] [deprecation] LongLiteral(String) in LongLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeInputRewrite.java:[95,29] [deprecation] Limit(Expression) in Limit has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeInputRewrite.java:[175,21] [deprecation] LongLiteral(String) in LongLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeInputRewrite.java:[176,21] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[96,38] [deprecation] NullLiteral() in NullLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[96,29] [deprecation] Cast(Expression,DataType) in Cast has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[97,42] [deprecation] NullLiteral() in NullLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[97,33] [deprecation] Cast(Expression,DataType) in Cast has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[98,42] [deprecation] NullLiteral() in NullLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[98,33] [deprecation] Cast(Expression,DataType) in Cast has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[99,42] [deprecation] NullLiteral() in NullLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[99,33] [deprecation] Cast(Expression,DataType) in Cast has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[100,42] [deprecation] NullLiteral() in NullLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[100,33] [deprecation] Cast(Expression,DataType) in Cast has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[101,42] [deprecation] NullLiteral() in NullLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[101,33] [deprecation] Cast(Expression,DataType) in Cast has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[102,42] [deprecation] NullLiteral() in NullLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[102,33] [deprecation] Cast(Expression,DataType) in Cast has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[104,39] [deprecation] LongLiteral(String) in LongLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[104,29] [deprecation] Limit(Expression) in Limit has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[181,36] [deprecation] LongLiteral(String) in LongLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[183,28] [deprecation] LongLiteral(String) in LongLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[203,21] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[204,21] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[205,21] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[206,21] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[207,21] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/DescribeOutputRewrite.java:[209,21] [deprecation] BooleanLiteral(String) in BooleanLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[269,70] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[273,122] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[273,187] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[312,59] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[313,57] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[358,42] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[364,38] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[382,43] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[395,32] [deprecation] AllColumns() in AllColumns has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[413,120] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[413,179] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/main/java/io/trino/sql/rewrite/ShowQueriesRewrite.java:[427,38] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[INFO] Some input files additionally use or override a deprecated API.
+[INFO] Some input files use unchecked or unsafe operations.
+[INFO] Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ trino-main ---
+[INFO] Copying 32 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ trino-main ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 1559 source files with javac [forked debug deprecation parameters release 25] to target/test-classes
+[WARNING] Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+/tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/connector/MockConnector.java:[626,47] [deprecation] streamTableColumns(ConnectorSession,SchemaTablePrefix) in ConnectorMetadata has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/connector/MockConnector.java:[620,59] [deprecation] listTableColumns(ConnectorSession,SchemaTablePrefix) in ConnectorMetadata has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/connector/MockConnectorPageSource.java:[69,17] [deprecation] getMemoryUsage() in ConnectorPageSource has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/connector/MockConnectorPageSource.java:[71,24] [deprecation] getMemoryUsage() in ConnectorPageSource has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/test/PlanBuilder.java:[513,38] [deprecation] NullLiteral() in NullLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/test/PlanBuilder.java:[529,38] [deprecation] NullLiteral() in NullLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/cost/TestAggregationStatsRule.java:[179,107] [deprecation] symbol(String) in PlanBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/cost/TestAggregationStatsRule.java:[179,123] [deprecation] symbol(String) in PlanBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestAddColumnTask.java:[356,83] [deprecation] LongLiteral(String) in LongLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestAddColumnTask.java:[356,35] [deprecation] Property(Identifier,Expression) in Property has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateCatalogTask.java:[74,134] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateCatalogTask.java:[74,76] [deprecation] Property(Identifier,Expression) in Property has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateMaterializedViewTask.java:[127,40] [deprecation] AllColumns() in AllColumns has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateMaterializedViewTask.java:[148,40] [deprecation] AllColumns() in AllColumns has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateMaterializedViewTask.java:[171,40] [deprecation] AllColumns() in AllColumns has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateMaterializedViewTask.java:[176,95] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateMaterializedViewTask.java:[194,40] [deprecation] AllColumns() in AllColumns has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateMaterializedViewTask.java:[200,25] [deprecation] Property(Identifier) in Property has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateMaterializedViewTask.java:[201,25] [deprecation] Property(Identifier) in Property has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateMaterializedViewTask.java:[256,40] [deprecation] AllColumns() in AllColumns has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateTableTask.java:[215,70] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateTableTask.java:[215,34] [deprecation] Property(Identifier,Expression) in Property has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateViewTask.java:[210,108] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateViewTask.java:[223,108] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestCreateViewTask.java:[246,46] [deprecation] AllColumns() in AllColumns has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestPrepareTask.java:[88,46] [deprecation] AllColumns() in AllColumns has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestPrepareTask.java:[101,46] [deprecation] AllColumns() in AllColumns has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestQueryManagerConfig.java:[59,17] [deprecation] setMaxConcurrentQueries(int) in QueryManagerConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestQueryManagerConfig.java:[60,17] [deprecation] setMaxQueuedQueries(int) in QueryManagerConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestQueryManagerConfig.java:[234,17] [deprecation] setMaxConcurrentQueries(int) in QueryManagerConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestQueryManagerConfig.java:[235,17] [deprecation] setMaxQueuedQueries(int) in QueryManagerConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestQueryPreparer.java:[44,83] [deprecation] AllColumns() in AllColumns has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestQueryPreparer.java:[54,83] [deprecation] AllColumns() in AllColumns has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestQueryPreparer.java:[61,83] [deprecation] AllColumns() in AllColumns has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetPropertiesTask.java:[51,97] [deprecation] LongLiteral(String) in LongLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetPropertiesTask.java:[51,33] [deprecation] Property(Identifier,Expression) in Property has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetPropertiesTask.java:[52,97] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetPropertiesTask.java:[52,33] [deprecation] Property(Identifier,Expression) in Property has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetPropertiesTask.java:[66,33] [deprecation] Property(Identifier) in Property has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetPropertiesTask.java:[67,33] [deprecation] Property(Identifier) in Property has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[151,31] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[154,17] [deprecation] FunctionCall(QualifiedName,List<Expression>) in FunctionCall has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[155,25] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[156,25] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[163,45] [deprecation] LongLiteral(String) in LongLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[164,45] [deprecation] LongLiteral(String) in LongLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[166,70] [deprecation] LongLiteral(String) in LongLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[174,66] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[183,37] [deprecation] FunctionCall(QualifiedName,List<Expression>) in FunctionCall has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[184,17] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[185,17] [deprecation] Parameter(int) in Parameter has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetSessionTask.java:[187,86] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetTimeZoneTask.java:[104,29] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetTimeZoneTask.java:[160,29] [deprecation] StringLiteral(String) in StringLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetTimeZoneTask.java:[171,29] [deprecation] IntervalLiteral(String,Sign,IntervalQualifier) in IntervalLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetTimeZoneTask.java:[244,29] [deprecation] IntervalLiteral(String,Sign,IntervalQualifier) in IntervalLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetTimeZoneTask.java:[256,29] [deprecation] IntervalLiteral(String,Sign,IntervalQualifier) in IntervalLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestSetTimeZoneTask.java:[268,29] [deprecation] IntervalLiteral(String,Sign,IntervalQualifier) in IntervalLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/execution/TestingPageSourceProvider.java:[54,32] [deprecation] createPageSource(ConnectorTransactionHandle,ConnectorSession,ConnectorSplit,ConnectorTableHandle,Optional<ConnectorTableCredentials>,List<ColumnHandle>,DynamicFilter) in ConnectorPageSourceProvider has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/security/TestAccessControlManager.java:[112,33] [deprecation] checkCanSetUser(Optional<Principal>,String) in AccessControlManager has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[176,54] [deprecation] checkCanSetUser(Optional<Principal>,String) in AccessControlManager has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[179,29] [deprecation] checkCanSetUser(Optional<Principal>,String) in AccessControlManager has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[180,29] [deprecation] checkCanSetUser(Optional<Principal>,String) in AccessControlManager has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[181,54] [deprecation] checkCanSetUser(Optional<Principal>,String) in AccessControlManager has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[184,29] [deprecation] checkCanSetUser(Optional<Principal>,String) in AccessControlManager has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[185,54] [deprecation] checkCanSetUser(Optional<Principal>,String) in AccessControlManager has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[188,29] [deprecation] checkCanSetUser(Optional<Principal>,String) in AccessControlManager has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[189,29] [deprecation] checkCanSetUser(Optional<Principal>,String) in AccessControlManager has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[190,54] [deprecation] checkCanSetUser(Optional<Principal>,String) in AccessControlManager has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/security/TestFileBasedSystemAccessControl.java:[194,39] [deprecation] checkCanSetUser(Optional<Principal>,String) in AccessControlManager has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/util/DynamicFiltersTestUtil.java:[147,20] [deprecation] <V>unmodifiableFuture(CompletableFuture<V>) in MoreFutures has been deprecated
+  where V is a type-variable:
+    V extends Object declared in method <V>unmodifiableFuture(CompletableFuture<V>)
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/server/TestEmbeddedDiscoveryConfig.java:[32,17] [deprecation] setEnabled(boolean) in EmbeddedDiscoveryConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/server/TestEmbeddedDiscoveryConfig.java:[41,17] [deprecation] setEnabled(boolean) in EmbeddedDiscoveryConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/server/TestHttpRequestSessionContextFactory.java:[208,25] [deprecation] setAlternateHeaderName(String) in ProtocolConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/server/TestProtocolConfig.java:[31,17] [deprecation] setAlternateHeaderName(String) in ProtocolConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/server/TestProtocolConfig.java:[46,17] [deprecation] setAlternateHeaderName(String) in ProtocolConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/server/security/TestHeaderAuthenticatorManager.java:[73,38] [deprecation] createAuthenticatedPrincipal(Headers) in HeaderAuthenticator has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/server/security/TestPasswordAuthenticatorManager.java:[66,38] [deprecation] createAuthenticatedPrincipal(String,String) in PasswordAuthenticator has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/server/security/oauth2/TestingHydraIdentityProvider.java:[164,16] [deprecation] <SELF>FixedHostPortGenericContainer(@org.jetbrains.annotations.NotNull String) in FixedHostPortGenericContainer has been deprecated
+  where SELF is a type-variable:
+    SELF extends FixedHostPortGenericContainer<SELF> declared in class FixedHostPortGenericContainer
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/server/ui/TestWebUiConfig.java:[32,17] [deprecation] setPreviewEnabled(boolean) in WebUiConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/server/ui/TestWebUiConfig.java:[46,17] [deprecation] setPreviewEnabled(boolean) in WebUiConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/split/TestRecordPageSourceProvider.java:[69,30] [deprecation] getMemoryUsage() in ConnectorPageSource has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/analyzer/TestFeaturesConfig.java:[46,17] [deprecation] setRegexLibrary(RegexLibrary) in FeaturesConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/analyzer/TestFeaturesConfig.java:[65,17] [deprecation] setIncrementalHashArrayLoadFactorEnabled(boolean) in FeaturesConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/analyzer/TestFeaturesConfig.java:[117,17] [deprecation] setRegexLibrary(RegexLibrary) in FeaturesConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/analyzer/TestFeaturesConfig.java:[136,17] [deprecation] setIncrementalHashArrayLoadFactorEnabled(boolean) in FeaturesConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/TestIncrementalRefreshVisitor.java:[108,17] [deprecation] NullLiteral() in NullLiteral has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/TestSchedulingOrderVisitor.java:[62,40] [deprecation] symbol(String) in PlanBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/TestSchedulingOrderVisitor.java:[64,45] [deprecation] symbol(String) in PlanBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/TestSchedulingOrderVisitor.java:[69,28] [deprecation] symbol(String) in PlanBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestAddIntermediateAggregations.java:[40,46] [deprecation] symbol(String) in PlanBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestAddIntermediateAggregations.java:[46,70] [deprecation] symbol(String) in PlanBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestAddIntermediateAggregations.java:[47,71] [deprecation] symbol(String) in PlanBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestAddIntermediateAggregations.java:[59,43] [deprecation] symbol(String) in PlanBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestAddIntermediateAggregations.java:[61,46] [deprecation] symbol(String) in PlanBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestAddIntermediateAggregations.java:[65,87] [deprecation] symbol(String) in PlanBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestAddIntermediateAggregations.java:[67,70] [deprecation] symbol(String) in PlanBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestAddIntermediateAggregations.java:[68,71] [deprecation] symbol(String) in PlanBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestDecorrelateInnerUnnestWithGlobalAggregation.java:[79,43] [deprecation] symbol(String) in PlanBuilder has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestDecorrelateInnerUnnestWithGlobalAggregation.java:[80,35] [deprecation] symbol(String) in PlanBuilder has been deprecated
+[INFO] Some input files additionally use or override a deprecated API.
+[INFO] Some input files use unchecked or unsafe operations.
+[INFO] Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] -----------------------< io.trino:trino-iceberg >-----------------------
+[INFO] Building trino-iceberg 485-SNAPSHOT                                [2/3]
+[INFO]   from /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/pom.xml
+[INFO] ----------------------------[ trino-plugin ]----------------------------
+[INFO] 
+[INFO] --- clean:3.5.0:clean (default-clean) @ trino-iceberg ---
+[INFO] Deleting /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/target
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-iceberg ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-iceberg ---
+[INFO] 
+[INFO] --- antlr4:4.13.2:antlr4 (default) @ trino-iceberg ---
+[INFO] No ANTLR 4 grammars to compile in /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/antlr4
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ trino-iceberg ---
+[INFO] skip non existing resourceDirectory /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.16.0:compile (default-compile) @ trino-iceberg ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 277 source files with javac [forked debug deprecation parameters release 25] to target/classes
+[WARNING] Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+warning: unknown enum constant SchemaType.OBJECT
+  reason: class file for org.eclipse.microprofile.openapi.annotations.enums.SchemaType not found
+/tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergMaterializedViewProperties.java:[39,38] [deprecation] getMaterializedViewsStorageSchema() in IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergSessionProperties.java:[135,38] [deprecation] isUseFileSizeFromMetadata() in IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergSessionProperties.java:[175,40] [deprecation] isLazyReadSmallRanges() in OrcReaderConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergSessionProperties.java:[180,40] [deprecation] isNestedLazy() in OrcReaderConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergMetadata.java:[3779,17] [deprecation] createView(ConnectorSession,SchemaTableName,ConnectorViewDefinition,Map<String,Object>,boolean) in ConnectorMetadata has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergMetadata.java:[1279,43] [deprecation] streamTableColumns(ConnectorSession,SchemaTablePrefix) in ConnectorMetadata has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergMetadata.java:[1273,55] [deprecation] listTableColumns(ConnectorSession,SchemaTablePrefix) in ConnectorMetadata has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergFileWriterFactory.java:[125,39] [deprecation] isUseLegacyVersion() in OrcWriterConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergModule.java:[126,44] [deprecation] RollbackToSnapshotProcedure in io.trino.plugin.iceberg.procedure has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergPageSourceProvider.java:[679,29] [deprecation] withLazyReadSmallRanges(boolean) in OrcReaderOptions has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergPageSourceProvider.java:[680,29] [deprecation] withNestedLazy(boolean) in OrcReaderOptions has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/catalog/glue/TrinoGlueCatalog.java:[950,32] [deprecation] appendPath(String,String) in Locations has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/catalog/glue/TrinoGlueCatalog.java:[953,16] [deprecation] appendPath(String,String) in Locations has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/catalog/glue/TrinoGlueCatalogFactory.java:[90,62] [deprecation] isHideMaterializedViewStorageTable() in IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/catalog/hms/TrinoHiveCatalog.java:[534,16] [deprecation] appendPath(String,String) in Locations has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/catalog/hms/TrinoHiveCatalogFactory.java:[85,55] [deprecation] isHideMaterializedViewStorageTable() in IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/catalog/jdbc/TrinoJdbcCatalog.java:[481,17] [deprecation] appendPath(String,String) in Locations has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/catalog/jdbc/TrinoJdbcCatalog.java:[483,16] [deprecation] appendPath(String,String) in Locations has been deprecated
+[WARNING] unknown enum constant SchemaType.OBJECT
+[WARNING] unknown enum constant SchemaType.OBJECT
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/catalog/nessie/TrinoNessieCatalog.java:[343,17] [deprecation] appendPath(String,String) in Locations has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/catalog/nessie/TrinoNessieCatalog.java:[345,16] [deprecation] appendPath(String,String) in Locations has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/catalog/rest/TrinoRestCatalog.java:[731,16] [deprecation] appendPath(String,String) in Locations has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/system/IcebergSystemTablePageSource.java:[122,17] [deprecation] getMemoryUsage() in ConnectorPageSource has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/system/files/FilesTablePageSource.java:[296,17] [deprecation] getMemoryUsage() in ConnectorPageSource has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergAvroDataConversion.java:[128,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'RecordIterator(Page page, List<Type> types, Schema icebergSchema)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergTableProperties.java:[444,25] [TypeParameterUnusedInFormals] Declaring a type parameter that is only used in the return type is a misuse of generics: operations on the type parameter are unchecked, it hides unsafe casts at invocations of the method, and it interacts badly with method overload resolution.
+    (see https://errorprone.info/bugpattern/TypeParameterUnusedInFormals)
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergBucketFunction.java:[136,23] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'Object getValue(Page page, int position)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergBucketFunction.java:[146,21] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'long computeHash(Page page, int position)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergPartitioningHandle.java:[150,55] [EnumOrdinal] You should almost never invoke the Enum.ordinal() method or depend on the enum values by index.
+    (see https://errorprone.info/bugpattern/EnumOrdinal)
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergTransactionManager.java:[81,55] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'synchronized Optional<IcebergMetadata> optionalGet()'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergTransactionManager.java:[86,45] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'synchronized IcebergMetadata get(ConnectorIdentity identity)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergUtil.java:[1231,31] [BoxingComparator] Comparator.comparing() unnecessarily boxes numerical primitives; please use the primitive-specific method instead (e.g., comparingInt()).
+    (see https://errorprone.info/bugpattern/BoxingComparator)
+  Did you mean '.max(comparingLong(HistoryEntry::timestampMillis))'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/TableStatisticsReader.java:[250,55] [LongDoubleConversion] Conversion from long to double may lose precision; use an explicit cast to double if this was intentional
+    (see https://errorprone.info/bugpattern/LongDoubleConversion)
+  Did you mean 'columnBuilder.setDataSize(Estimate.of((double) columnSize));'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergMetadata.java:[2417,118] [OperatorPrecedence] Use grouping parenthesis to make the operator precedence explicit
+    (see https://errorprone.info/bugpattern/OperatorPrecedence)
+  Did you mean 'if (optimizeHandle.snapshotId().isEmpty() || (scannedDataFiles.isEmpty() && fullyAppliedDeleteFiles.isEmpty() && newFiles.isEmpty())) {'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergMetadata.java:[4288,62] [StringSplitter] String.split(String) has surprising behavior
+    (see https://errorprone.info/bugpattern/StringSplitter)
+  Did you mean 'List<String> schemaTable = Splitter.on('.').splitToList(sourceTable.getKey());'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergStatistics.java:[227,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'ColumnStatistics(MethodHandle comparisonHandle, Object initialMin, Object initialMax)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergStatistics.java:[234,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'ColumnStatistics(ColumnStatistics other)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergStatistics.java:[247,33] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'Optional<Object> getMin()'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergStatistics.java:[257,33] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'Optional<Object> getMax()'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergStatistics.java:[268,21] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'void updateMinMax(@Nullable Object lowerBound, @Nullable Object upperBound)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergConnectorFactory.java:[104,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'IcebergFileSystemModule(String catalogName, ConnectorContext context)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergMergeSink.java:[334,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'FileDeletion(int partitionSpecId, String partitionDataJson, long fileRecordCount, long fileSizeInByt'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergMergeSink.java:[344,21] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'long updateRetainedSize()'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergMergeSink.java:[351,20] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'int partitionSpecId()'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergMergeSink.java:[356,23] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'String partitionDataJson()'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergMergeSink.java:[361,35] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'ReferencedDataFile referencedDataFile(String path)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergMergeSink.java:[366,39] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'DeletionVector.Builder rowsToDelete()'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergMergeSink.java:[120,42] [FutureReturnValueIgnored] Return value of methods returning Future must be checked. Ignoring returned Futures suppresses exceptions thrown from the code that completes the Future.
+    (see https://errorprone.info/bugpattern/FutureReturnValueIgnored)
+  Did you mean 'var _ = insertPageSink.appendPage(createInsertionsPageWithRowId(insertionsPage, page));' or to remove this line?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergMergeSink.java:[123,42] [FutureReturnValueIgnored] Return value of methods returning Future must be checked. Ignoring returned Futures suppresses exceptions thrown from the code that completes the Future.
+    (see https://errorprone.info/bugpattern/FutureReturnValueIgnored)
+  Did you mean 'var _ = insertPageSink.appendPage(insertionsPage);' or to remove this line?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/delete/DeletionVector.java:[208,69] [IntLongMath] Expression of type int may overflow before being assigned to a long
+    (see https://errorprone.info/bugpattern/IntLongMath)
+  Did you mean 'long expectedLength = (long) data.length() - LENGTH_SIZE_BYTES - CRC_SIZE_BYTES;'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/util/OrcMetrics.java:[366,27] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'ByteBuffer getMin()'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/util/OrcMetrics.java:[371,27] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'ByteBuffer getMax()'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergPageSink.java:[848,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'WriteContext(IcebergFileWriter writer, String path, Optional<PartitionData> partitionData)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergPageSink.java:[855,34] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'IcebergFileWriter getWriter()'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergPageSink.java:[860,23] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'String getPath()'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergPageSink.java:[865,40] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'Optional<PartitionData> getPartitionData()'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergPageSink.java:[870,21] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'long getWrittenBytes()'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergPageSink.java:[875,21] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'void rollback()'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergPageSink.java:[886,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'PagePartitioner(PageIndexerFactory pageIndexerFactory, List<PartitionColumn> columns)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergPageSink.java:[894,22] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'int[] partitionPage(Page page)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergPageSink.java:[917,20] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'int getMaxIndex()'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergPageSink.java:[922,38] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'List<PartitionColumn> getColumns()'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergSplit.java:[119,52] [ArrayRecordComponent] Record components should not be arrays.
+    (see https://errorprone.info/bugpattern/ArrayRecordComponent)
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergSplit.java:[119,78] [ArrayRecordComponent] Record components should not be arrays.
+    (see https://errorprone.info/bugpattern/ArrayRecordComponent)
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergSplitSource.java:[285,47] [MixedMutabilityReturnType] This method returns both mutable and immutable collections or maps from different paths. This may be confusing for users of the method.
+    (see https://errorprone.info/bugpattern/MixedMutabilityReturnType)
+  Did you mean 'private synchronized ImmutableList<ConnectorSplit> getNextBatchInternal(int maxSize, DynamicFilterSnapshot dynamicFilterSnapshot)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergSplitSource.java:[601,151] [LongDoubleConversion] Conversion from long to double may lose precision; use an explicit cast to double if this was intentional
+    (see https://errorprone.info/bugpattern/LongDoubleConversion)
+  Did you mean '.put("scanPlanningDuration", new DurationTiming(Duration.succinctDuration((double) scanMetrics.totalPlanningDuration().totalDuration().toMillis(), MILLISECONDS)))'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergPageSourceProvider.java:[1069,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'IdBasedFieldMapperFactory(List<IcebergColumnHandle> columns)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergPageSourceProvider.java:[1121,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'IdBasedFieldMapper(Map<Integer, OrcColumn> idToColumnMappingForFile, Map<String, Integer> nameToIdMa'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergPageSourceProvider.java:[1715,39] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'static ProjectedLayout createProjectedLayout(OrcColumn root, List<List<Integer>> fieldIdDereferences'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergPageSourceProvider.java:[2005,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'DereferenceChain(ColumnIdentity baseColumnIdentity, List<Integer> path)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergPageSourceProvider.java:[2014,43] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'Iterable<DereferenceChain> orderedPrefixes()'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergPageSourceProvider.java:[410,25] [FutureReturnValueIgnored] Return value of methods returning Future must be checked. Ignoring returned Futures suppresses exceptions thrown from the code that completes the Future.
+    (see https://errorprone.info/bugpattern/FutureReturnValueIgnored)
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergPageSourceProvider.java:[467,33] [FutureReturnValueIgnored] Return value of methods returning Future must be checked. Ignoring returned Futures suppresses exceptions thrown from the code that completes the Future.
+    (see https://errorprone.info/bugpattern/FutureReturnValueIgnored)
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergPageSourceProvider.java:[596,45] [FutureReturnValueIgnored] Return value of methods returning Future must be checked. Ignoring returned Futures suppresses exceptions thrown from the code that completes the Future.
+    (see https://errorprone.info/bugpattern/FutureReturnValueIgnored)
+  Did you mean 'var _ = readBufferMemoryContext.setBytes(contentSize);' or to remove this line?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergPageSourceProvider.java:[1390,58] [ArrayRecordComponent] Record components should not be arrays.
+    (see https://errorprone.info/bugpattern/ArrayRecordComponent)
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergPageSourceProvider.java:[1593,21] [FutureReturnValueIgnored] Return value of methods returning Future must be checked. Ignoring returned Futures suppresses exceptions thrown from the code that completes the Future.
+    (see https://errorprone.info/bugpattern/FutureReturnValueIgnored)
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/IcebergPageSourceProvider.java:[2192,91] [ArrayRecordComponent] Record components should not be arrays.
+    (see https://errorprone.info/bugpattern/ArrayRecordComponent)
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/catalog/hms/HiveMetastoreTableOperations.java:[178,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'ThriftMetastoreLock(Table table)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/catalog/rest/IcebergRestCatalogFileSystemFactory.java:[310,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'VendedCredentialsCacheKey'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/catalog/rest/IcebergRestCatalogFileSystemFactory.java:[325,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'CachedVendedCredentialsProviders'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/catalog/rest/TrinoRestCatalog.java:[1368,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'RemoteObjectNotFoundException()'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/catalog/rest/TrinoRestCatalog.java:[1041,35] [JavaUtilDate] Date has a bad API that leads to bugs; prefer java.time.Instant or LocalDate.
+    (see https://errorprone.info/bugpattern/JavaUtilDate)
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/delete/PositionDeleteReader.java:[187,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'CachingVarcharComparator(Slice reference)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/delete/PositionDeleteReader.java:[193,20] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'int compare(Block block, int position)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/delete/PositionDeleteReader.java:[200,20] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'int compare(Slice next)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/functions/tablechanges/TableChangesFunctionProcessor.java:[100,13] [IfChainToSwitch] This if-chain may be converted into a switch
+    (see https://errorprone.info/bugpattern/IfChainToSwitch)
+  Did you mean 'switch (column.getId()) {'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/main/java/io/trino/plugin/iceberg/system/IcebergTablesSystemTable.java:[85,9] [BadImport] Importing nested classes/static methods/static fields with commonly-used names can make code harder to read, because it may not be clear from the context exactly which type is being referred to. Qualifying the name with that of the containing class can make the code clearer. Here we recommend using qualified class: InMemoryRecordSet.
+    (see https://errorprone.info/bugpattern/BadImport)
+  Did you mean 'InMemoryRecordSet.Builder result = InMemoryRecordSet.builder(METADATA);'?
+[INFO] Some input files use unchecked or unsafe operations.
+[INFO] Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- trino:26:generate-service-descriptor (default-generate-service-descriptor) @ trino-iceberg ---
+[INFO] Wrote io.trino.plugin.iceberg.IcebergPlugin to /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/target/trino-iceberg-485-SNAPSHOT-services.jar
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ trino-iceberg ---
+[INFO] Copying 98 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ trino-iceberg ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 219 source files with javac [forked debug deprecation parameters release 25] to target/test-classes
+[WARNING] Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+/tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/BaseIcebergConnectorTest.java:[1956,21] [deprecation] nonTrinoExceptionFailure() in QueryAssert has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/IcebergTestUtils.java:[349,36] [deprecation] isHideMaterializedViewStorageTable() in IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/BaseIcebergSystemTables.java:[835,48] non-varargs call of varargs method with inexact argument type for last parameter;
+  cast to Object for a varargs call
+  cast to Object[] for a non-varargs call and to suppress this warning
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[56,17] [deprecation] setUseFileSizeFromMetadata(boolean) in IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[74,17] [deprecation] setHideMaterializedViewStorageTable(boolean) in IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[75,17] [deprecation] setMaterializedViewsStorageSchema(String) in IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[158,17] [deprecation] setUseFileSizeFromMetadata(boolean) in IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[176,17] [deprecation] setHideMaterializedViewStorageTable(boolean) in IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[177,17] [deprecation] setMaterializedViewsStorageSchema(String) in IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[209,25] [deprecation] setHideMaterializedViewStorageTable(boolean) in IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergConfig.java:[210,25] [deprecation] setMaterializedViewsStorageSchema(String) in IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergMaterializedViewSummary.java:[239,35] [deprecation] removedDataFiles(FileIO) in Snapshot has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergMaterializedViewSummary.java:[233,35] [deprecation] addedDataFiles(FileIO) in Snapshot has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergMergeAppend.java:[68,36] [deprecation] isHideMaterializedViewStorageTable() in IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergOrcMetricsCollection.java:[108,36] [deprecation] isHideMaterializedViewStorageTable() in IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergPageSourceProvider.java:[280,34] [deprecation] getMemoryUsage() in ConnectorPageSource has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergRegisterTableProcedure.java:[103,35] [deprecation] TestingIcebergPlugin(Path,Supplier<Optional<Module>>) in TestingIcebergPlugin has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSplitSource.java:[173,36] [deprecation] isHideMaterializedViewStorageTable() in IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSplitSource.java:[397,31] [deprecation] rewriteFiles(Set<DataFile>,Set<DataFile>) in RewriteFiles has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergStatistics.java:[686,17] [deprecation] nonTrinoExceptionFailure() in QueryAssert has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergStatistics.java:[689,17] [deprecation] nonTrinoExceptionFailure() in QueryAssert has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/file/TestIcebergFileMetastoreCreateTableFailure.java:[156,35] [deprecation] TestingIcebergPlugin(Path,Supplier<Optional<Module>>) in TestingIcebergPlugin has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/file/TestTrinoHiveCatalogWithFileMetastore.java:[122,36] [deprecation] isHideMaterializedViewStorageTable() in IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestIcebergGlueAccessDeniedException.java:[68,35] [deprecation] TestingIcebergPlugin(Path,Supplier<Optional<Module>>) in TestingIcebergPlugin has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestIcebergGlueTableOperationsCreateTableFailure.java:[128,35] [deprecation] TestingIcebergPlugin(Path,Supplier<Optional<Module>>) in TestingIcebergPlugin has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestIcebergGlueTableOperationsInsertFailure.java:[99,35] [deprecation] TestingIcebergPlugin(Path,Supplier<Optional<Module>>) in TestingIcebergPlugin has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestTrinoGlueCatalog.java:[131,36] [deprecation] isHideMaterializedViewStorageTable() in IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestTrinoGlueCatalog.java:[279,36] [deprecation] isHideMaterializedViewStorageTable() in IcebergConfig has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/BaseIcebergConnectorTest.java:[317,47] [JUnitMethodInvoked] Directly invoking a JUnit test method is discouraged; only the JUnit test runner should call these methods. If you need to share logic between tests, extract a helper method or class.
+    (see https://errorprone.info/bugpattern/JUnitMethodInvoked)
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergAlluxioCacheFileOperations.java:[173,38] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'static CacheOperation create(SpanData span)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergFileWriterFactory.java:[117,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'FailingCreateFileSystem(TrinoFileSystem delegate)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergMaterializedViewExpiredSnapshotCleanup.java:[132,81] [BoxingComparator] Comparator.comparing() unnecessarily boxes numerical primitives; please use the primitive-specific method instead (e.g., comparingInt()).
+    (see https://errorprone.info/bugpattern/BoxingComparator)
+  Did you mean 'Ordering<Snapshot> snapshotOrdering = Ordering.from(Comparator.comparingLong(Snapshot::timestampMillis));'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergMemoryCacheFileOperations.java:[204,38] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'static CacheOperation create(SpanData span)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergMergeSink.java:[229,21] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'void setMemoryUsage(long memoryUsage)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergPageSourceProvider.java:[454,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'RecordingParquetDataSource(Slice input)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestMetadataQueryOptimization.java:[102,25] [BadImport] Importing nested classes/static methods/static fields with commonly-used names can make code harder to read, because it may not be clear from the context exactly which type is being referred to. Qualifying the name with that of the containing class can make the code clearer. Here we recommend using qualified class: PlanMatchPattern.
+    (see https://errorprone.info/bugpattern/BadImport)
+  Did you mean 'anyTree(PlanMatchPattern.values('?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestSharedHiveMetastore.java:[138,16] [InlineFormatString] Prefer to create format strings inline, instead of extracting them to a single-use constant
+    (see https://errorprone.info/bugpattern/InlineFormatString)
+  Did you mean to remove this line?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestSharedHiveThriftMetastore.java:[173,16] [InlineFormatString] Prefer to create format strings inline, instead of extracting them to a single-use constant
+    (see https://errorprone.info/bugpattern/InlineFormatString)
+  Did you mean to remove this line?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestingIcebergPlugin.java:[41,12] [InlineMeSuggester] This deprecated API looks inlineable. If you'd like the body of the API to be automatically inlined to its callers, please annotate it with @InlineMe. NOTE: the suggested fix makes the method final if it was not already.
+    (see https://errorprone.info/bugpattern/InlineMeSuggester)
+  Did you mean '@InlineMe(replacement = "this(localFileSystemRootPath, icebergCatalogModule, Optional::empty)", imports = "java.util.Optional")'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/file/TestAbstractIcebergTableOperations.java:[293,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'TestingFileMetastoreTableOperations(FileIO fileIo, HiveMetastore metastore, String committedMetadata'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/file/TestAbstractIcebergTableOperations.java:[160,32] [InputStreamSlowMultibyteRead] Please also override int read(byte[], int, int), otherwise multi-byte reads from this input stream are likely to be slow.
+    (see https://errorprone.info/bugpattern/InputStreamSlowMultibyteRead)
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestSharedGlueMetastore.java:[145,16] [InlineFormatString] Prefer to create format strings inline, instead of extracting them to a single-use constant
+    (see https://errorprone.info/bugpattern/InlineFormatString)
+  Did you mean to remove this line?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/glue/TestSharedGlueMetastore.java:[159,16] [InlineFormatString] Prefer to create format strings inline, instead of extracting them to a single-use constant
+    (see https://errorprone.info/bugpattern/InlineFormatString)
+  Did you mean to remove this line?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/rest/TestIcebergPolarisCatalogConnectorSmokeTest.java:[288,51] [JUnitMethodInvoked] Directly invoking a JUnit test method is discouraged; only the JUnit test runner should call these methods. If you need to share logic between tests, extract a helper method or class.
+    (see https://errorprone.info/bugpattern/JUnitMethodInvoked)
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/rest/TestOAuth2TokenFetch.java:[107,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'ExpiringTokenRestCatalogAdapter(Catalog delegate, Duration tokenExpiresIn)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/rest/TestOAuth2TokenFetch.java:[134,20] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'int tokenFetchCount()'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/rest/TestTrinoRestCatalog.java:[432,17] [EmptyCatch] Caught exceptions should not be ignored
+    (see https://google.github.io/styleguide/javaguide.html#s6.2-caught-exceptions)
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/rest/TestTrinoRestCatalog.java:[486,17] [EmptyCatch] Caught exceptions should not be ignored
+    (see https://google.github.io/styleguide/javaguide.html#s6.2-caught-exceptions)
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/rest/TestTrinoRestCatalog.java:[587,17] [EmptyCatch] Caught exceptions should not be ignored
+    (see https://google.github.io/styleguide/javaguide.html#s6.2-caught-exceptions)
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/catalog/rest/TestTrinoRestCatalog.java:[671,17] [EmptyCatch] Caught exceptions should not be ignored
+    (see https://google.github.io/styleguide/javaguide.html#s6.2-caught-exceptions)
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/delete/TestDeleteManager.java:[90,17] [FutureReturnValueIgnored] Return value of methods returning Future must be checked. Ignoring returned Futures suppresses exceptions thrown from the code that completes the Future.
+    (see https://errorprone.info/bugpattern/FutureReturnValueIgnored)
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/delete/TestDeleteManager.java:[126,17] [FutureReturnValueIgnored] Return value of methods returning Future must be checked. Ignoring returned Futures suppresses exceptions thrown from the code that completes the Future.
+    (see https://errorprone.info/bugpattern/FutureReturnValueIgnored)
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/delete/TestEqualityDeleteFilter.java:[476,36] [FutureReturnValueIgnored] Return value of methods returning Future must be checked. Ignoring returned Futures suppresses exceptions thrown from the code that completes the Future.
+    (see https://errorprone.info/bugpattern/FutureReturnValueIgnored)
+  Did you mean 'var _ = builder.readEqualityDeletes(' or to remove this line?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/delete/TestEqualityDeleteFilter.java:[481,36] [FutureReturnValueIgnored] Return value of methods returning Future must be checked. Ignoring returned Futures suppresses exceptions thrown from the code that completes the Future.
+    (see https://errorprone.info/bugpattern/FutureReturnValueIgnored)
+  Did you mean 'var _ = builder.readEqualityDeletes(' or to remove this line?
+[WARNING] /tmp/trino-smj-upstream-v02-check/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/delete/TestEqualityDeleteFilter.java:[547,36] [FutureReturnValueIgnored] Return value of methods returning Future must be checked. Ignoring returned Futures suppresses exceptions thrown from the code that completes the Future.
+    (see https://errorprone.info/bugpattern/FutureReturnValueIgnored)
+  Did you mean 'var _ = builder.readEqualityDeletes(' or to remove this line?
+[INFO] 
+[INFO] ------------------------< io.trino:trino-tests >------------------------
+[INFO] Building trino-tests 485-SNAPSHOT                                  [3/3]
+[INFO]   from /tmp/trino-smj-upstream-v02-check/testing/trino-tests/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.5.0:clean (default-clean) @ trino-tests ---
+[INFO] Deleting /tmp/trino-smj-upstream-v02-check/testing/trino-tests/target
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-tests ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-tests ---
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ trino-tests ---
+[INFO] skip non existing resourceDirectory /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.16.0:compile (default-compile) @ trino-tests ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 1 source file with javac [forked debug deprecation parameters release 25] to target/classes
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ trino-tests ---
+[INFO] Copying 269 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.16.0:testCompile (default-testCompile) @ trino-tests ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 136 source files with javac [forked debug deprecation parameters release 25] to target/test-classes
+[WARNING] Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+/tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/test/java/io/trino/execution/AbstractTestCoordinatorDynamicFiltering.java:[592,44] [deprecation] createPageSource(ConnectorTransactionHandle,ConnectorSession,ConnectorSplit,ConnectorTableHandle,Optional<ConnectorTableCredentials>,List<ColumnHandle>,DynamicFilter) in ConnectorPageSourceProvider has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/test/java/io/trino/execution/TestBeginQuery.java:[201,44] [deprecation] createPageSource(ConnectorTransactionHandle,ConnectorSession,ConnectorSplit,ConnectorTableHandle,Optional<ConnectorTableCredentials>,List<ColumnHandle>,DynamicFilter) in ConnectorPageSourceProvider has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/test/java/io/trino/execution/TestErrorThrowableInQuery.java:[118,17] [deprecation] nonTrinoExceptionFailure() in QueryAssert has been deprecated
+[WARNING] /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/test/java/io/trino/connector/TestDynamicCatalogs.java:[167,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'PrepopulatedInMemoryCatalogStoreModule(Map<CatalogName, CatalogProperties> prepopulatedCatalogs)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/test/java/io/trino/connector/TestDynamicCatalogs.java:[190,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'PrepopulatedInMemoryCatalogStoreFactory(Map<CatalogName, CatalogProperties> prepopulatedCatalogs)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/test/java/io/trino/connector/TestDynamicCatalogs.java:[213,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'PrepopulatedInMemoryCatalogStore(Map<CatalogName, CatalogProperties> prepopulatedCatalogs)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/test/java/io/trino/connector/system/runtime/TestSystemRuntimeConnector.java:[62,74] [UnnecessaryLambda] Returning a lambda from a helper method or saving it in a constant is unnecessary; prefer to implement the functional interface method directly and use a method reference instead.
+    (see https://errorprone.info/bugpattern/UnnecessaryLambda)
+  Did you mean 'private static  List<ColumnMetadata> defaultGetColumns(SchemaTableName ){return ImmutableList.of(new ColumnMetadata("c", VARCHAR));}'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/test/java/io/trino/execution/AbstractTestCoordinatorDynamicFiltering.java:[480,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'TestingPlugin() {}'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/test/java/io/trino/execution/TestBeginQuery.java:[243,21] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'void resetCounters()'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/test/java/io/trino/execution/TestEventListenerPlugin.java:[49,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'TestingEventListenerFactory(EventsCollector eventsCollector)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/test/java/io/trino/execution/TestEventListenerBasic.java:[1597,16] [InlineFormatString] Prefer to create format strings inline, instead of extracting them to a single-use constant
+    (see https://errorprone.info/bugpattern/InlineFormatString)
+  Did you mean to remove this line?
+[WARNING] /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/test/java/io/trino/execution/TestEventListenerBasic.java:[1598,16] [InlineFormatString] Prefer to create format strings inline, instead of extracting them to a single-use constant
+    (see https://errorprone.info/bugpattern/InlineFormatString)
+  Did you mean to remove this line?
+[WARNING] /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/test/java/io/trino/execution/TestEventListenerBasic.java:[402,35] [FutureReturnValueIgnored] Return value of methods returning Future must be checked. Ignoring returned Futures suppresses exceptions thrown from the code that completes the Future.
+    (see https://errorprone.info/bugpattern/FutureReturnValueIgnored)
+  Did you mean 'var _ = executorService.submit(' or to remove this line?
+[WARNING] /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/test/java/io/trino/execution/TestEventListenerWithSplits.java:[158,54] [JavaDurationGetSecondsToToSeconds] Prefer duration.toSeconds() over duration.getSeconds()
+    (see https://errorprone.info/bugpattern/JavaDurationGetSecondsToToSeconds)
+  Did you mean 'assertThat(statistics.getCpuTime().toSeconds() >= 0).isTrue();'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/test/java/io/trino/execution/TestEventListenerWithSplits.java:[159,55] [JavaDurationGetSecondsToToSeconds] Prefer duration.toSeconds() over duration.getSeconds()
+    (see https://errorprone.info/bugpattern/JavaDurationGetSecondsToToSeconds)
+  Did you mean 'assertThat(statistics.getWallTime().toSeconds() >= 0).isTrue();'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/test/java/io/trino/execution/TestExecutionJmxMetrics.java:[81,13] [EmptyCatch] Caught exceptions should not be ignored
+    (see https://google.github.io/styleguide/javaguide.html#s6.2-caught-exceptions)
+[WARNING] /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/test/java/io/trino/execution/TestQueryTracker.java:[145,19] [TypeParameterUnusedInFormals] Declaring a type parameter that is only used in the return type is a misuse of generics: operations on the type parameter are unchecked, it hides unsafe casts at invocations of the method, and it interacts badly with method overload resolution.
+    (see https://errorprone.info/bugpattern/TypeParameterUnusedInFormals)
+[WARNING] /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/test/java/io/trino/execution/TestTableRedirection.java:[118,74] [UnnecessaryLambda] Returning a lambda from a helper method or saving it in a constant is unnecessary; prefer to implement the functional interface method directly and use a method reference instead.
+    (see https://errorprone.info/bugpattern/UnnecessaryLambda)
+  Did you mean 'private static  List<ColumnMetadata> columnsGetter(SchemaTableName table){'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/test/java/io/trino/execution/resourcegroups/db/H2TestUtil.java:[106,46] [MathAbsoluteNegative] Math.abs() does not always give a non-negative result. Please consider other methods for positive numbers, such as IntMath.saturatedAbs() or Math.floorMod().
+    (see https://errorprone.info/bugpattern/MathAbsoluteNegative)
+[WARNING] /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/test/java/io/trino/sql/planner/BaseCostBasedPlanTest.java:[295,16] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'JoinOrderPrinter(Session session)'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/test/java/io/trino/sql/planner/BaseCostBasedPlanTest.java:[300,23] [EffectivelyPrivate] This declaration has public or protected modifiers, but is effectively private.
+    (see https://errorprone.info/bugpattern/EffectivelyPrivate)
+  Did you mean 'String result()'?
+[WARNING] /tmp/trino-smj-upstream-v02-check/testing/trino-tests/src/test/java/io/trino/tests/tpch/TestTpchConnectorTest.java:[233,46] [JUnitMethodInvoked] Directly invoking a JUnit test method is discouraged; only the JUnit test runner should call these methods. If you need to share logic between tests, extract a helper method or class.
+    (see https://errorprone.info/bugpattern/JUnitMethodInvoked)
+[INFO] ------------------------------------------------------------------------
+[INFO] Average project wall time: 278.33s
+[INFO] Total concurrency: 100%
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for trino-main 485-SNAPSHOT:
+[INFO] 
+[INFO] trino-main ......................................... SUCCESS [11:31 min]
+[INFO] trino-iceberg ...................................... SUCCESS [01:52 min]
+[INFO] trino-tests ........................................ SUCCESS [ 31.603 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  13:57 min
+[INFO] Finished at: 2026-11-08T19:41:56+03:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Njord session closed

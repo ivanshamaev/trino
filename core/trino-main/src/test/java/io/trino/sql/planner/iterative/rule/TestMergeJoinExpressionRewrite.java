@@ -17,10 +17,14 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.trino.matching.Captures;
 import io.trino.sql.ir.Logical;
+import io.trino.sql.planner.PlanNodeIdAllocator;
 import io.trino.sql.planner.Symbol;
+import io.trino.sql.planner.iterative.Lookup;
 import io.trino.sql.planner.iterative.Rule;
+import io.trino.sql.planner.plan.Assignments;
 import io.trino.sql.planner.plan.JoinNode;
 import io.trino.sql.planner.plan.PlanNodeId;
+import io.trino.sql.planner.plan.ProjectNode;
 import io.trino.sql.planner.plan.ValuesNode;
 import org.junit.jupiter.api.Test;
 
@@ -33,6 +37,35 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class TestMergeJoinExpressionRewrite
 {
+    @Test
+    public void testPayloadProjectionPreservesAlgorithmAndEquiKeys()
+    {
+        Symbol left = new Symbol(BIGINT, "left");
+        Symbol right = new Symbol(BIGINT, "right");
+        Symbol payload = new Symbol(BIGINT, "payload");
+        JoinNode join = new JoinNode(
+                new PlanNodeId("join"),
+                INNER,
+                new ValuesNode(new PlanNodeId("left"), ImmutableList.of(left)),
+                new ValuesNode(new PlanNodeId("right"), ImmutableList.of(right)),
+                ImmutableList.of(new JoinNode.EquiJoinClause(left, right)),
+                ImmutableList.of(left),
+                ImmutableList.of(right),
+                false,
+                Optional.empty(),
+                Optional.of(JoinNode.DistributionType.PARTITIONED),
+                Optional.empty(),
+                Optional.of(JoinNode.JoinAlgorithm.MERGE),
+                ImmutableMap.of(),
+                Optional.empty());
+        ProjectNode projection = new ProjectNode(new PlanNodeId("project"), join, Assignments.of(payload, left.toSymbolReference()));
+        JoinNode rewritten = (JoinNode) PushProjectionThroughJoin.pushProjectionThroughJoin(projection, Lookup.noLookup(), new PlanNodeIdAllocator()).orElseThrow();
+        assertThat(rewritten.getAlgorithm()).contains(JoinNode.JoinAlgorithm.MERGE);
+        assertThat(rewritten.getCriteria()).isEqualTo(join.getCriteria());
+        assertThat(((ProjectNode) rewritten.getLeft()).getAssignments().get(left)).isEqualTo(left.toSymbolReference());
+        assertThat(((ProjectNode) rewritten.getRight()).getAssignments().get(right)).isEqualTo(right.toSymbolReference());
+    }
+
     @Test
     @SuppressWarnings("unchecked")
     public void testFilterRewritePreservesAlgorithm()

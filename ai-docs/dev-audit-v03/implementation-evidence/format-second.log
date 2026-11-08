@@ -1,0 +1,42 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] trino-main                                                         [jar]
+[INFO] trino-iceberg                                             [trino-plugin]
+[INFO] 
+[INFO] ------------------------< io.trino:trino-main >-------------------------
+[INFO] Building trino-main 485-SNAPSHOT                                   [1/2]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- airstyle:10:format (default-cli) @ trino-main ---
+[INFO] Formatted: /home/ivan/opencode/trino/core/trino-main/src/main/java/io/trino/sql/planner/sanity/ValidateJoinAlgorithms.java
+[INFO] Formatted: /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestMergeJoinExpressionRewrite.java
+[INFO] Formatted: /home/ivan/opencode/trino/core/trino-main/src/test/java/io/trino/sql/planner/sanity/TestValidateJoinAlgorithms.java
+[INFO] Processed 4292 files, formatted 3
+[INFO] 
+[INFO] -----------------------< io.trino:trino-iceberg >-----------------------
+[INFO] Building trino-iceberg 485-SNAPSHOT                                [2/2]
+[INFO]   from /home/ivan/opencode/trino/plugin/trino-iceberg/pom.xml
+[INFO] ----------------------------[ trino-plugin ]----------------------------
+[INFO] 
+[INFO] --- airstyle:10:format (default-cli) @ trino-iceberg ---
+[INFO] Processed 496 files, formatted 0
+[INFO] ------------------------------------------------------------------------
+[INFO] Average project wall time: 70.00s
+[INFO] Total concurrency: 100%
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for trino-main 485-SNAPSHOT:
+[INFO] 
+[INFO] trino-main ......................................... SUCCESS [01:45 min]
+[INFO] trino-iceberg ...................................... SUCCESS [ 34.548 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  02:23 min
+[INFO] Finished at: 2026-11-08T18:24:41+03:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Njord session closed

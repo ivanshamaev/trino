@@ -1,0 +1,308 @@
+{
+  "source_log": "initialization-iceberg-workloads.log",
+  "scope": "Embedded distributed runner; single observations, not latency benchmarks. Reservations are QueryStats, not whole-JVM heap or per-worker peaks.",
+  "successful_measurements": [
+    {
+      "scenario": "wide-full-entropy",
+      "strategy": "FORCE",
+      "elapsed_ms": 16038.54,
+      "peak_query_user_reservation_bytes": 143748056,
+      "spilled_bytes": 4397895026,
+      "merge": true
+    },
+    {
+      "scenario": "wide-full-entropy",
+      "strategy": "COST_BASED",
+      "elapsed_ms": 15145.56,
+      "peak_query_user_reservation_bytes": 141516200,
+      "spilled_bytes": 4292250038,
+      "merge": true
+    },
+    {
+      "scenario": "wide-full-compressible",
+      "strategy": "FORCE",
+      "elapsed_ms": 15386.09,
+      "peak_query_user_reservation_bytes": 106696600,
+      "spilled_bytes": 4341950416,
+      "merge": true
+    },
+    {
+      "scenario": "concurrent-chain-skew",
+      "strategy": "FORCE",
+      "elapsed_ms": 4238.2,
+      "peak_query_user_reservation_bytes": 56944952,
+      "spilled_bytes": 318325960,
+      "merge": true
+    },
+    {
+      "scenario": "concurrent-chain-skew",
+      "strategy": "FORCE",
+      "elapsed_ms": 4223.93,
+      "peak_query_user_reservation_bytes": 74053096,
+      "spilled_bytes": 486820962,
+      "merge": true
+    },
+    {
+      "scenario": "concurrent-chain-skew",
+      "strategy": "FORCE",
+      "elapsed_ms": 5279.47,
+      "peak_query_user_reservation_bytes": 69837392,
+      "spilled_bytes": 493667186,
+      "merge": true
+    },
+    {
+      "scenario": "concurrent-chain-skew",
+      "strategy": "FORCE",
+      "elapsed_ms": 5413.09,
+      "peak_query_user_reservation_bytes": 73975552,
+      "spilled_bytes": 494847850,
+      "merge": true
+    },
+    {
+      "scenario": "concurrent-chain-skew",
+      "strategy": "FORCE",
+      "elapsed_ms": 5337.11,
+      "peak_query_user_reservation_bytes": 77502816,
+      "spilled_bytes": 498668116,
+      "merge": true
+    },
+    {
+      "scenario": "concurrent-chain-skew",
+      "strategy": "FORCE",
+      "elapsed_ms": 5353.83,
+      "peak_query_user_reservation_bytes": 63756088,
+      "spilled_bytes": 513118044,
+      "merge": true
+    },
+    {
+      "scenario": "threshold-small-24351",
+      "strategy": "OFF",
+      "elapsed_ms": 473.02,
+      "peak_query_user_reservation_bytes": 2088,
+      "spilled_bytes": 0,
+      "merge": false
+    },
+    {
+      "scenario": "threshold-small-24351",
+      "strategy": "FORCE",
+      "elapsed_ms": 561.25,
+      "peak_query_user_reservation_bytes": 10488800,
+      "spilled_bytes": 38872204,
+      "merge": true
+    },
+    {
+      "scenario": "threshold-small-24351",
+      "strategy": "COST_BASED",
+      "elapsed_ms": 467.47,
+      "peak_query_user_reservation_bytes": 2099232,
+      "spilled_bytes": 0,
+      "merge": false
+    },
+    {
+      "scenario": "threshold-small-27056",
+      "strategy": "OFF",
+      "elapsed_ms": 517.61,
+      "peak_query_user_reservation_bytes": 1566152,
+      "spilled_bytes": 0,
+      "merge": false
+    },
+    {
+      "scenario": "threshold-small-27056",
+      "strategy": "FORCE",
+      "elapsed_ms": 719.64,
+      "peak_query_user_reservation_bytes": 5838736,
+      "spilled_bytes": 47903640,
+      "merge": true
+    },
+    {
+      "scenario": "threshold-small-27056",
+      "strategy": "COST_BASED",
+      "elapsed_ms": 507.38,
+      "peak_query_user_reservation_bytes": 3132304,
+      "spilled_bytes": 0,
+      "merge": false
+    },
+    {
+      "scenario": "threshold-small-29762",
+      "strategy": "OFF",
+      "elapsed_ms": 527.91,
+      "peak_query_user_reservation_bytes": 10487840,
+      "spilled_bytes": 0,
+      "merge": false
+    },
+    {
+      "scenario": "threshold-small-29762",
+      "strategy": "FORCE",
+      "elapsed_ms": 794.18,
+      "peak_query_user_reservation_bytes": 14714056,
+      "spilled_bytes": 53008168,
+      "merge": true
+    },
+    {
+      "scenario": "threshold-small-29762",
+      "strategy": "COST_BASED",
+      "elapsed_ms": 591.23,
+      "peak_query_user_reservation_bytes": 18876448,
+      "spilled_bytes": 0,
+      "merge": false
+    },
+    {
+      "scenario": "threshold-pressure-56818",
+      "strategy": "OFF",
+      "elapsed_ms": 808.33,
+      "peak_query_user_reservation_bytes": 33032240,
+      "spilled_bytes": 0,
+      "merge": false
+    },
+    {
+      "scenario": "threshold-pressure-56818",
+      "strategy": "FORCE",
+      "elapsed_ms": 1144.93,
+      "peak_query_user_reservation_bytes": 51632664,
+      "spilled_bytes": 109405400,
+      "merge": true
+    },
+    {
+      "scenario": "threshold-pressure-56818",
+      "strategy": "COST_BASED",
+      "elapsed_ms": 721.04,
+      "peak_query_user_reservation_bytes": 2320,
+      "spilled_bytes": 0,
+      "merge": false
+    },
+    {
+      "scenario": "threshold-pressure-63131",
+      "strategy": "OFF",
+      "elapsed_ms": 687.9,
+      "peak_query_user_reservation_bytes": 1050656,
+      "spilled_bytes": 0,
+      "merge": false
+    },
+    {
+      "scenario": "threshold-pressure-63131",
+      "strategy": "FORCE",
+      "elapsed_ms": 927.16,
+      "peak_query_user_reservation_bytes": 37966928,
+      "spilled_bytes": 76514546,
+      "merge": true
+    },
+    {
+      "scenario": "threshold-pressure-63131",
+      "strategy": "COST_BASED",
+      "elapsed_ms": 772.25,
+      "peak_query_user_reservation_bytes": 28208320,
+      "spilled_bytes": 0,
+      "merge": false
+    },
+    {
+      "scenario": "threshold-pressure-69444",
+      "strategy": "OFF",
+      "elapsed_ms": 705.91,
+      "peak_query_user_reservation_bytes": 22456512,
+      "spilled_bytes": 0,
+      "merge": false
+    },
+    {
+      "scenario": "threshold-pressure-69444",
+      "strategy": "FORCE",
+      "elapsed_ms": 1052.47,
+      "peak_query_user_reservation_bytes": 56510856,
+      "spilled_bytes": 113741158,
+      "merge": true
+    },
+    {
+      "scenario": "threshold-pressure-69444",
+      "strategy": "COST_BASED",
+      "elapsed_ms": 825.5,
+      "peak_query_user_reservation_bytes": 42445520,
+      "spilled_bytes": 0,
+      "merge": false
+    },
+    {
+      "scenario": "threshold-big-164999",
+      "strategy": "OFF",
+      "elapsed_ms": 1699.44,
+      "peak_query_user_reservation_bytes": 118229328,
+      "spilled_bytes": 0,
+      "merge": false
+    },
+    {
+      "scenario": "threshold-big-164999",
+      "strategy": "FORCE",
+      "elapsed_ms": 3236.63,
+      "peak_query_user_reservation_bytes": 89217568,
+      "spilled_bytes": 582718660,
+      "merge": true
+    },
+    {
+      "scenario": "threshold-big-164999",
+      "strategy": "COST_BASED",
+      "elapsed_ms": 1712.2,
+      "peak_query_user_reservation_bytes": 114477888,
+      "spilled_bytes": 0,
+      "merge": false
+    },
+    {
+      "scenario": "threshold-big-183332",
+      "strategy": "OFF",
+      "elapsed_ms": 2146.56,
+      "peak_query_user_reservation_bytes": 157578856,
+      "spilled_bytes": 0,
+      "merge": false
+    },
+    {
+      "scenario": "threshold-big-183332",
+      "strategy": "FORCE",
+      "elapsed_ms": 3229.93,
+      "peak_query_user_reservation_bytes": 104518664,
+      "spilled_bytes": 646520324,
+      "merge": true
+    },
+    {
+      "scenario": "threshold-big-183332",
+      "strategy": "COST_BASED",
+      "elapsed_ms": 1719.23,
+      "peak_query_user_reservation_bytes": 150741672,
+      "spilled_bytes": 0,
+      "merge": false
+    },
+    {
+      "scenario": "threshold-big-201665",
+      "strategy": "OFF",
+      "elapsed_ms": 2111.16,
+      "peak_query_user_reservation_bytes": 146604720,
+      "spilled_bytes": 0,
+      "merge": false
+    },
+    {
+      "scenario": "threshold-big-201665",
+      "strategy": "FORCE",
+      "elapsed_ms": 3868.08,
+      "peak_query_user_reservation_bytes": 109709592,
+      "spilled_bytes": 708623022,
+      "merge": true
+    },
+    {
+      "scenario": "threshold-big-201665",
+      "strategy": "COST_BASED",
+      "elapsed_ms": 1781.01,
+      "peak_query_user_reservation_bytes": 140461112,
+      "spilled_bytes": 0,
+      "merge": false
+    }
+  ],
+  "expected_memory_limit_failures": [
+    {
+      "scenario": "wide-full-entropy",
+      "strategy": "OFF",
+      "expected_memory_limit_failure": true,
+      "compressed_size_estimate": false
+    },
+    {
+      "scenario": "wide-full-compressible",
+      "strategy": "COST_BASED",
+      "expected_memory_limit_failure": true,
+      "compressed_size_estimate": true
+    }
+  ]
+}

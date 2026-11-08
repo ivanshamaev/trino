@@ -1,0 +1,28 @@
+[
+  {
+    "phase": "format-second",
+    "command": [
+      "./mvnw",
+      "-pl",
+      "core/trino-main,plugin/trino-iceberg",
+      "airstyle:format"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 146.065,
+    "log": "format-second.log"
+  },
+  {
+    "phase": "build-second",
+    "command": [
+      "./mvnw",
+      "package",
+      "-DskipTests",
+      "-Dair.check.skip-all=true",
+      "-pl",
+      "core/trino-main,plugin/trino-iceberg,testing/trino-tests"
+    ],
+    "exit_code": 1,
+    "elapsed_seconds": 221.485,
+    "log": "build-second.log"
+  }
+]

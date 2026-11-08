@@ -1,0 +1,28 @@
+[
+  {
+    "phase": "controls-format",
+    "command": [
+      "./mvnw",
+      "-pl",
+      "core/trino-main,plugin/trino-iceberg",
+      "airstyle:format",
+      "-Dincludes=**/TestMergeJoinOperator.java,**/TestMergeJoinTypeAudit.java,**/TestMergeJoinPostSelectionAudit.java,**/TestIcebergSortedWriting.java"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 103.444,
+    "log": "controls-format.log"
+  },
+  {
+    "phase": "controls-compile",
+    "command": [
+      "./mvnw",
+      "test-compile",
+      "-Dair.check.skip-all=true",
+      "-pl",
+      "core/trino-main,plugin/trino-iceberg"
+    ],
+    "exit_code": 1,
+    "elapsed_seconds": 136.494,
+    "log": "controls-compile.log"
+  }
+]

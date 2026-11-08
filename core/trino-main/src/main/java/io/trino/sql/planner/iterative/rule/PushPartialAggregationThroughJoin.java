@@ -54,6 +54,7 @@ import static io.trino.sql.planner.iterative.rule.Util.restrictOutputs;
 import static io.trino.sql.planner.plan.AggregationNode.Step.INTERMEDIATE;
 import static io.trino.sql.planner.plan.AggregationNode.Step.PARTIAL;
 import static io.trino.sql.planner.plan.AggregationNode.singleGroupingSet;
+import static io.trino.sql.planner.plan.JoinNode.JoinAlgorithm.MERGE;
 import static io.trino.sql.planner.plan.Patterns.aggregation;
 import static io.trino.sql.planner.plan.Patterns.join;
 import static io.trino.sql.planner.plan.Patterns.project;
@@ -151,6 +152,12 @@ public class PushPartialAggregationThroughJoin
     private Result applyPushdown(AggregationNode aggregationNode, Context context)
     {
         JoinNode joinNode = (JoinNode) context.getLookup().resolve(aggregationNode.getSource());
+
+        // This rule runs after local exchanges. A hash aggregation below MERGE would
+        // destroy its input ordering; changing the algorithm here would also require replanning exchanges.
+        if (joinNode.getAlgorithm().filter(MERGE::equals).isPresent()) {
+            return Result.empty();
+        }
 
         if (joinNode.getType() != JoinType.INNER) {
             return Result.empty();

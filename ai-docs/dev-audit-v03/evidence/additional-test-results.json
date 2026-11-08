@@ -1,0 +1,58 @@
+[
+  {
+    "phase": "additional-format",
+    "command": [
+      "./mvnw",
+      "-pl",
+      "core/trino-main,plugin/trino-iceberg",
+      "airstyle:format",
+      "-Dincludes=**/TestMergeJoinTypeAudit.java,**/TestMergeJoinExchangeAudit.java"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 99.457,
+    "log": "additional-format.log"
+  },
+  {
+    "phase": "additional-compile",
+    "command": [
+      "./mvnw",
+      "test-compile",
+      "-Dair.check.skip-all=true",
+      "-pl",
+      "core/trino-main,plugin/trino-iceberg"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 164.694,
+    "log": "additional-compile.log"
+  },
+  {
+    "phase": "scalar-types",
+    "command": [
+      "./mvnw",
+      "initialize",
+      "surefire:test",
+      "-Dair.check.skip-all=true",
+      "-pl",
+      "core/trino-main",
+      "-Dtest=TestMergeJoinTypeAudit"
+    ],
+    "exit_code": 1,
+    "elapsed_seconds": 24.78,
+    "log": "scalar-types.log"
+  },
+  {
+    "phase": "ordered-exchange",
+    "command": [
+      "./mvnw",
+      "initialize",
+      "surefire:test",
+      "-Dair.check.skip-all=true",
+      "-pl",
+      "plugin/trino-iceberg",
+      "-Dtest=TestMergeJoinExchangeAudit#testOrderedExchangeAfterAggregation"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 35.717,
+    "log": "ordered-exchange.log"
+  }
+]

@@ -1,0 +1,433 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] 
+[INFO] ------------------------< io.trino:trino-main >-------------------------
+[INFO] Building trino-main 485-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-main ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-main ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-cli) @ trino-main ---
+[INFO] Tests will run in random order. To reproduce ordering use flag -Dsurefire.runOrder.random.seed=32917316522526
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+WARNING: Using incubator modules: jdk.incubator.vector
+[INFO] Running io.trino.sql.planner.iterative.rule.TestPushPartialAggregationThroughJoin
+[INFO] Running io.trino.sql.planner.sanity.TestValidateJoinAlgorithms
+[INFO] Running io.trino.operator.join.merge.TestDiskBackedMatchBitmap
+[INFO] Running io.trino.sql.query.TestMergeJoinAggregationPushdown
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.450 s -- in io.trino.operator.join.merge.TestDiskBackedMatchBitmap
+[INFO] Running io.trino.operator.join.merge.TestAppendingSpiller
+2026-11-08T09:18:06.332-0600	INFO	ForkJoinPool-1-worker-2	io.trino.simd.BlockEncodingSimdSupport	Detected SIMD Support for architecture=amd64, vectorBitWidth=128: SimdSupport[capabilities=[]]
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.815 s -- in io.trino.operator.join.merge.TestAppendingSpiller
+[INFO] Running io.trino.sql.planner.iterative.rule.TestPushPartialAggregationThroughExchange
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.468 s -- in io.trino.sql.planner.sanity.TestValidateJoinAlgorithms
+[INFO] Running io.trino.sql.query.TestMergeJoinScalarTypes
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.567 s -- in io.trino.sql.planner.iterative.rule.TestPushPartialAggregationThroughExchange
+[INFO] Running io.trino.operator.join.merge.TestMergeJoinOperator
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::loadLibrary has been called by com.aayushatharva.brotli4j.Brotli4jLoader in an unnamed module (file:/home/ivan/.m2/repository/com/aayushatharva/brotli4j/brotli4j/1.23.0/brotli4j-1.23.0.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.271 s -- in io.trino.sql.planner.iterative.rule.TestPushPartialAggregationThroughJoin
+2026-11-08T09:18:17.329-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 290.00ms: 259.59MB -> 214.33MB
+2026-11-08T09:18:17.335-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 290.00ms: 259.59MB -> 214.33MB
+[ERROR] Tests run: 2, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 13.93 s <<< FAILURE! -- in io.trino.sql.query.TestMergeJoinAggregationPushdown
+[ERROR] io.trino.sql.query.TestMergeJoinAggregationPushdown.testProjectionPreservesSpillability -- Time elapsed: 1.058 s <<< ERROR!
+io.trino.testing.QueryFailedException: MERGE input is not sorted on canonical join keys: 325
+	at io.trino.testing.TestingDirectTrinoClient.toMaterializedRows(TestingDirectTrinoClient.java:80)
+	at io.trino.testing.TestingDirectTrinoClient.lambda$execute$0(TestingDirectTrinoClient.java:68)
+	at io.trino.testing.StandaloneQueryRunner.execute(StandaloneQueryRunner.java:119)
+	at io.trino.sql.query.QueryAssertions.execute(QueryAssertions.java:230)
+	at io.trino.sql.query.TestMergeJoinAggregationPushdown.check(TestMergeJoinAggregationPushdown.java:65)
+	at io.trino.sql.query.TestMergeJoinAggregationPushdown.testProjectionPreservesSpillability(TestMergeJoinAggregationPushdown.java:48)
+Caused by: java.lang.IllegalArgumentException: MERGE input is not sorted on canonical join keys: 325
+	at com.google.common.base.Preconditions.checkArgument(Preconditions.java:221)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.validateMergeInput(ValidateJoinAlgorithms.java:125)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.visitJoin(ValidateJoinAlgorithms.java:93)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.visitJoin(ValidateJoinAlgorithms.java:62)
+	at io.trino.sql.planner.plan.JoinNode.accept(JoinNode.java:357)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.lambda$visitPlan$0(ValidateJoinAlgorithms.java:81)
+	at com.google.common.collect.ImmutableList.forEach(ImmutableList.java:425)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.visitPlan(ValidateJoinAlgorithms.java:81)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.visitPlan(ValidateJoinAlgorithms.java:62)
+	at io.trino.sql.planner.plan.PlanVisitor.visitAggregation(PlanVisitor.java:29)
+	at io.trino.sql.planner.plan.AggregationNode.accept(AggregationNode.java:236)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.lambda$visitPlan$0(ValidateJoinAlgorithms.java:81)
+	at com.google.common.collect.ImmutableList.forEach(ImmutableList.java:425)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.visitPlan(ValidateJoinAlgorithms.java:81)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.visitPlan(ValidateJoinAlgorithms.java:62)
+	at io.trino.sql.planner.plan.PlanVisitor.visitExchange(PlanVisitor.java:214)
+	at io.trino.sql.planner.plan.ExchangeNode.accept(ExchangeNode.java:305)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.lambda$visitPlan$0(ValidateJoinAlgorithms.java:81)
+	at com.google.common.collect.ImmutableList.forEach(ImmutableList.java:425)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.visitPlan(ValidateJoinAlgorithms.java:81)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.visitPlan(ValidateJoinAlgorithms.java:62)
+	at io.trino.sql.planner.plan.PlanVisitor.visitAggregation(PlanVisitor.java:29)
+	at io.trino.sql.planner.plan.AggregationNode.accept(AggregationNode.java:236)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.lambda$visitPlan$0(ValidateJoinAlgorithms.java:81)
+	at com.google.common.collect.ImmutableList.forEach(ImmutableList.java:425)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.visitPlan(ValidateJoinAlgorithms.java:81)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.visitPlan(ValidateJoinAlgorithms.java:62)
+	at io.trino.sql.planner.plan.PlanVisitor.visitOutput(PlanVisitor.java:49)
+	at io.trino.sql.planner.plan.OutputNode.accept(OutputNode.java:83)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms.validate(ValidateJoinAlgorithms.java:59)
+	at io.trino.sql.planner.sanity.PlanSanityChecker.lambda$validate$0(PlanSanityChecker.java:109)
+	at com.google.common.collect.ImmutableList.forEach(ImmutableList.java:425)
+	at io.trino.sql.planner.sanity.PlanSanityChecker.validate(PlanSanityChecker.java:109)
+	at io.trino.sql.planner.sanity.PlanSanityChecker.validateFinalPlan(PlanSanityChecker.java:80)
+	at io.trino.sql.planner.LogicalPlanner.plan(LogicalPlanner.java:289)
+	at io.trino.sql.analyzer.QueryExplainer.getLogicalPlan(QueryExplainer.java:197)
+	at io.trino.sql.analyzer.QueryExplainer.getDistributedPlan(QueryExplainer.java:208)
+	at io.trino.sql.analyzer.QueryExplainer.textDistributedPlan(QueryExplainer.java:120)
+	at io.trino.sql.analyzer.QueryExplainer.getPlan(QueryExplainer.java:111)
+	at io.trino.sql.rewrite.ExplainRewrite$Visitor.getQueryPlan(ExplainRewrite.java:154)
+	at io.trino.sql.rewrite.ExplainRewrite$Visitor.visitExplain(ExplainRewrite.java:135)
+	at io.trino.sql.rewrite.ExplainRewrite$Visitor.visitExplain(ExplainRewrite.java:77)
+	at io.trino.sql.tree.Explain.accept(Explain.java:50)
+	at io.trino.sql.tree.AstVisitor.process(AstVisitor.java:27)
+	at io.trino.sql.rewrite.ExplainRewrite.rewrite(ExplainRewrite.java:74)
+	at io.trino.sql.rewrite.StatementRewrite.rewrite(StatementRewrite.java:54)
+	at io.trino.sql.analyzer.Analyzer.analyze(Analyzer.java:93)
+	at io.trino.sql.analyzer.Analyzer.analyze(Analyzer.java:87)
+	at io.trino.execution.SqlQueryExecution.analyze(SqlQueryExecution.java:288)
+	at io.trino.execution.SqlQueryExecution.<init>(SqlQueryExecution.java:222)
+	at io.trino.execution.SqlQueryExecution$SqlQueryExecutionFactory.createQueryExecution(SqlQueryExecution.java:900)
+	at io.trino.dispatcher.LocalDispatchQueryFactory.lambda$createDispatchQuery$0(LocalDispatchQueryFactory.java:163)
+	at io.trino.$gen.Trino_testversion___Callable.call(Unknown Source)
+	at com.google.common.util.concurrent.TrustedListenableFutureTask$TrustedFutureInterruptibleTask.runInterruptibly(TrustedListenableFutureTask.java:128)
+	at com.google.common.util.concurrent.InterruptibleTask.run(InterruptibleTask.java:72)
+	at com.google.common.util.concurrent.TrustedListenableFutureTask.run(TrustedListenableFutureTask.java:80)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base/java.lang.Thread.run(Thread.java:1474)
+	Suppressed: java.lang.Exception: Current plan:
+                Output[columnNames = [k, g, _col2]]
+                │   Layout: [field:integer, field_2:integer, sum:bigint]
+                │   k := field
+                │   g := field_2
+                │   _col2 := sum
+                └─ Aggregate[type = FINAL, keys = [field, field_2]]
+                   │   Layout: [field:integer, field_2:integer, sum:bigint]
+                   │   sum := sum(sum_3)
+                   └─ LocalExchange[partitioning = HASH, arguments = [field::integer, field_2::integer]]
+                      │   Layout: [field:integer, field_2:integer, sum_3:bigint]
+                      └─ Aggregate[type = PARTIAL, keys = [field, field_2]]
+                         │   Layout: [field:integer, field_2:integer, sum_3:bigint]
+                         │   sum_3 := sum(field_0)
+                         └─ InnerJoin[criteria = (field = field_1), distribution = PARTITIONED]
+                            │   Layout: [field:integer, field_0:bigint, field_2:integer]
+                            │   Distribution: PARTITIONED
+                            │   Algorithm: MERGE
+                            ├─ RemoteMerge[orderBy = [field ASC NULLS LAST]]
+                            │  │   Layout: [field:integer, field_0:bigint]
+                            │  └─ LocalMerge[orderBy = [field ASC NULLS LAST]]
+                            │     │   Layout: [field:integer, field_0:bigint]
+                            │     └─ PartialSort[orderBy = [field ASC NULLS LAST]]
+                            │        │   Layout: [field:integer, field_0:bigint]
+                            │        └─ Filter[filterPredicate = ((integer '0' <= field) AND (field <= integer '15') AND $not((field IS NULL)))]
+                            │           │   Layout: [field:integer, field_0:bigint]
+                            │           └─ LocalExchange[partitioning = ROUND_ROBIN]
+                            │              │   Layout: [field:integer, field_0:bigint]
+                            │              └─ Values[]
+                            │                     Layout: [field:integer, field_0:bigint]
+                            │                     (integer '0', bigint '0')
+                            │                     (integer '1', bigint '1')
+                            │                     (integer '2', bigint '2')
+                            │                     (integer '3', bigint '3')
+                            │                     (integer '4', bigint '4')
+                            │                     (integer '5', bigint '5')
+                            │                     (integer '6', bigint '6')
+                            │                     (integer '7', bigint '7')
+                            │                     (integer '8', bigint '8')
+                            │                     (integer '9', bigint '9')
+                            │                     (... 630 more rows ...)
+                            └─ RemoteMerge[orderBy = [field_1 ASC NULLS LAST]]
+                               │   Layout: [field_1:integer, field_2:integer]
+                               └─ LocalMerge[orderBy = [field_1 ASC NULLS LAST]]
+                                  │   Layout: [field_1:integer, field_2:integer]
+                                  └─ PartialSort[orderBy = [field_1 ASC NULLS LAST]]
+                                     │   Layout: [field_1:integer, field_2:integer]
+                                     └─ LocalExchange[partitioning = ROUND_ROBIN]
+                                        │   Layout: [field_1:integer, field_2:integer]
+                                        └─ Values[]
+                                               Layout: [field_1:integer, field_2:integer]
+                                               (integer '0', integer '0')
+                                               (integer '1', integer '1')
+                                               (integer '2', integer '0')
+                                               (integer '3', integer '1')
+                                               (integer '4', integer '0')
+                                               (integer '5', integer '1')
+                                               (integer '6', integer '0')
+                                               (integer '7', integer '1')
+                                               (integer '8', integer '0')
+                                               (integer '9', integer '1')
+                                               (... 6 more rows ...)
+
+		at io.trino.sql.planner.sanity.PlanSanityChecker.validate(PlanSanityChecker.java:122)
+		... 26 more
+
+[ERROR] io.trino.sql.query.TestMergeJoinAggregationPushdown.testPostSelectionAggregationOrdering -- Time elapsed: 0.732 s <<< ERROR!
+io.trino.testing.QueryFailedException: MERGE input is not sorted on canonical join keys: 325
+	at io.trino.testing.TestingDirectTrinoClient.toMaterializedRows(TestingDirectTrinoClient.java:80)
+	at io.trino.testing.TestingDirectTrinoClient.lambda$execute$0(TestingDirectTrinoClient.java:68)
+	at io.trino.testing.StandaloneQueryRunner.execute(StandaloneQueryRunner.java:119)
+	at io.trino.sql.query.QueryAssertions.execute(QueryAssertions.java:230)
+	at io.trino.sql.query.TestMergeJoinAggregationPushdown.check(TestMergeJoinAggregationPushdown.java:65)
+	at io.trino.sql.query.TestMergeJoinAggregationPushdown.testPostSelectionAggregationOrdering(TestMergeJoinAggregationPushdown.java:42)
+Caused by: java.lang.IllegalArgumentException: MERGE input is not sorted on canonical join keys: 325
+	at com.google.common.base.Preconditions.checkArgument(Preconditions.java:221)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.validateMergeInput(ValidateJoinAlgorithms.java:125)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.visitJoin(ValidateJoinAlgorithms.java:93)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.visitJoin(ValidateJoinAlgorithms.java:62)
+	at io.trino.sql.planner.plan.JoinNode.accept(JoinNode.java:357)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.lambda$visitPlan$0(ValidateJoinAlgorithms.java:81)
+	at com.google.common.collect.ImmutableList.forEach(ImmutableList.java:425)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.visitPlan(ValidateJoinAlgorithms.java:81)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.visitPlan(ValidateJoinAlgorithms.java:62)
+	at io.trino.sql.planner.plan.PlanVisitor.visitAggregation(PlanVisitor.java:29)
+	at io.trino.sql.planner.plan.AggregationNode.accept(AggregationNode.java:236)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.lambda$visitPlan$0(ValidateJoinAlgorithms.java:81)
+	at com.google.common.collect.ImmutableList.forEach(ImmutableList.java:425)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.visitPlan(ValidateJoinAlgorithms.java:81)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.visitPlan(ValidateJoinAlgorithms.java:62)
+	at io.trino.sql.planner.plan.PlanVisitor.visitExchange(PlanVisitor.java:214)
+	at io.trino.sql.planner.plan.ExchangeNode.accept(ExchangeNode.java:305)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.lambda$visitPlan$0(ValidateJoinAlgorithms.java:81)
+	at com.google.common.collect.ImmutableList.forEach(ImmutableList.java:425)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.visitPlan(ValidateJoinAlgorithms.java:81)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.visitPlan(ValidateJoinAlgorithms.java:62)
+	at io.trino.sql.planner.plan.PlanVisitor.visitAggregation(PlanVisitor.java:29)
+	at io.trino.sql.planner.plan.AggregationNode.accept(AggregationNode.java:236)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.lambda$visitPlan$0(ValidateJoinAlgorithms.java:81)
+	at com.google.common.collect.ImmutableList.forEach(ImmutableList.java:425)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.visitPlan(ValidateJoinAlgorithms.java:81)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.visitPlan(ValidateJoinAlgorithms.java:62)
+	at io.trino.sql.planner.plan.PlanVisitor.visitOutput(PlanVisitor.java:49)
+	at io.trino.sql.planner.plan.OutputNode.accept(OutputNode.java:83)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms.validate(ValidateJoinAlgorithms.java:59)
+	at io.trino.sql.planner.sanity.PlanSanityChecker.lambda$validate$0(PlanSanityChecker.java:109)
+	at com.google.common.collect.ImmutableList.forEach(ImmutableList.java:425)
+	at io.trino.sql.planner.sanity.PlanSanityChecker.validate(PlanSanityChecker.java:109)
+	at io.trino.sql.planner.sanity.PlanSanityChecker.validateFinalPlan(PlanSanityChecker.java:80)
+	at io.trino.sql.planner.LogicalPlanner.plan(LogicalPlanner.java:289)
+	at io.trino.sql.analyzer.QueryExplainer.getLogicalPlan(QueryExplainer.java:197)
+	at io.trino.sql.analyzer.QueryExplainer.getDistributedPlan(QueryExplainer.java:208)
+	at io.trino.sql.analyzer.QueryExplainer.textDistributedPlan(QueryExplainer.java:120)
+	at io.trino.sql.analyzer.QueryExplainer.getPlan(QueryExplainer.java:111)
+	at io.trino.sql.rewrite.ExplainRewrite$Visitor.getQueryPlan(ExplainRewrite.java:154)
+	at io.trino.sql.rewrite.ExplainRewrite$Visitor.visitExplain(ExplainRewrite.java:135)
+	at io.trino.sql.rewrite.ExplainRewrite$Visitor.visitExplain(ExplainRewrite.java:77)
+	at io.trino.sql.tree.Explain.accept(Explain.java:50)
+	at io.trino.sql.tree.AstVisitor.process(AstVisitor.java:27)
+	at io.trino.sql.rewrite.ExplainRewrite.rewrite(ExplainRewrite.java:74)
+	at io.trino.sql.rewrite.StatementRewrite.rewrite(StatementRewrite.java:54)
+	at io.trino.sql.analyzer.Analyzer.analyze(Analyzer.java:93)
+	at io.trino.sql.analyzer.Analyzer.analyze(Analyzer.java:87)
+	at io.trino.execution.SqlQueryExecution.analyze(SqlQueryExecution.java:288)
+	at io.trino.execution.SqlQueryExecution.<init>(SqlQueryExecution.java:222)
+	at io.trino.execution.SqlQueryExecution$SqlQueryExecutionFactory.createQueryExecution(SqlQueryExecution.java:900)
+	at io.trino.dispatcher.LocalDispatchQueryFactory.lambda$createDispatchQuery$0(LocalDispatchQueryFactory.java:163)
+	at io.trino.$gen.Trino_testversion___Callable.call(Unknown Source)
+	at com.google.common.util.concurrent.TrustedListenableFutureTask$TrustedFutureInterruptibleTask.runInterruptibly(TrustedListenableFutureTask.java:128)
+	at com.google.common.util.concurrent.InterruptibleTask.run(InterruptibleTask.java:72)
+	at com.google.common.util.concurrent.TrustedListenableFutureTask.run(TrustedListenableFutureTask.java:80)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base/java.lang.Thread.run(Thread.java:1474)
+	Suppressed: java.lang.Exception: Current plan:
+                Output[columnNames = [k, g, _col2]]
+                │   Layout: [field:integer, field_2:integer, sum:bigint]
+                │   k := field
+                │   g := field_2
+                │   _col2 := sum
+                └─ Aggregate[type = FINAL, keys = [field, field_2]]
+                   │   Layout: [field:integer, field_2:integer, sum:bigint]
+                   │   sum := sum(sum_3)
+                   └─ LocalExchange[partitioning = HASH, arguments = [field::integer, field_2::integer]]
+                      │   Layout: [field:integer, field_2:integer, sum_3:bigint]
+                      └─ Aggregate[type = PARTIAL, keys = [field, field_2]]
+                         │   Layout: [field:integer, field_2:integer, sum_3:bigint]
+                         │   sum_3 := sum(field_0)
+                         └─ InnerJoin[criteria = (field = field_1), distribution = PARTITIONED]
+                            │   Layout: [field:integer, field_0:bigint, field_2:integer]
+                            │   Distribution: PARTITIONED
+                            │   Algorithm: MERGE
+                            ├─ RemoteMerge[orderBy = [field ASC NULLS LAST]]
+                            │  │   Layout: [field:integer, field_0:bigint]
+                            │  └─ LocalMerge[orderBy = [field ASC NULLS LAST]]
+                            │     │   Layout: [field:integer, field_0:bigint]
+                            │     └─ PartialSort[orderBy = [field ASC NULLS LAST]]
+                            │        │   Layout: [field:integer, field_0:bigint]
+                            │        └─ Filter[filterPredicate = ((integer '0' <= field) AND (field <= integer '15') AND $not((field IS NULL)))]
+                            │           │   Layout: [field:integer, field_0:bigint]
+                            │           └─ LocalExchange[partitioning = ROUND_ROBIN]
+                            │              │   Layout: [field:integer, field_0:bigint]
+                            │              └─ Values[]
+                            │                     Layout: [field:integer, field_0:bigint]
+                            │                     (integer '0', bigint '0')
+                            │                     (integer '1', bigint '1')
+                            │                     (integer '2', bigint '2')
+                            │                     (integer '3', bigint '3')
+                            │                     (integer '4', bigint '4')
+                            │                     (integer '5', bigint '5')
+                            │                     (integer '6', bigint '6')
+                            │                     (integer '7', bigint '7')
+                            │                     (integer '8', bigint '8')
+                            │                     (integer '9', bigint '9')
+                            │                     (... 630 more rows ...)
+                            └─ RemoteMerge[orderBy = [field_1 ASC NULLS LAST]]
+                               │   Layout: [field_1:integer, field_2:integer]
+                               └─ LocalMerge[orderBy = [field_1 ASC NULLS LAST]]
+                                  │   Layout: [field_1:integer, field_2:integer]
+                                  └─ PartialSort[orderBy = [field_1 ASC NULLS LAST]]
+                                     │   Layout: [field_1:integer, field_2:integer]
+                                     └─ LocalExchange[partitioning = ROUND_ROBIN]
+                                        │   Layout: [field_1:integer, field_2:integer]
+                                        └─ Values[]
+                                               Layout: [field_1:integer, field_2:integer]
+                                               (integer '0', integer '0')
+                                               (integer '1', integer '1')
+                                               (integer '2', integer '0')
+                                               (integer '3', integer '1')
+                                               (integer '4', integer '0')
+                                               (integer '5', integer '1')
+                                               (integer '6', integer '0')
+                                               (integer '7', integer '1')
+                                               (integer '8', integer '0')
+                                               (integer '9', integer '1')
+                                               (... 6 more rows ...)
+
+		at io.trino.sql.planner.sanity.PlanSanityChecker.validate(PlanSanityChecker.java:122)
+		... 26 more
+
+2026-11-08T09:18:20.385-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.86s, stopped 226.00ms: 340.08MB -> 251.29MB
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 8.297 s <<< FAILURE! -- in io.trino.sql.query.TestMergeJoinScalarTypes
+[ERROR] io.trino.sql.query.TestMergeJoinScalarTypes.testSupportedScalarFamilies -- Time elapsed: 2.876 s <<< ERROR!
+io.trino.testing.QueryFailedException: MERGE input is not sorted on canonical join keys: 230
+	at io.trino.testing.TestingDirectTrinoClient.toMaterializedRows(TestingDirectTrinoClient.java:80)
+	at io.trino.testing.TestingDirectTrinoClient.lambda$execute$0(TestingDirectTrinoClient.java:68)
+	at io.trino.testing.StandaloneQueryRunner.execute(StandaloneQueryRunner.java:119)
+	at io.trino.sql.query.QueryAssertions.execute(QueryAssertions.java:230)
+	at io.trino.sql.query.TestMergeJoinScalarTypes.testSupportedScalarFamilies(TestMergeJoinScalarTypes.java:59)
+Caused by: java.lang.IllegalArgumentException: MERGE input is not sorted on canonical join keys: 230
+	at com.google.common.base.Preconditions.checkArgument(Preconditions.java:221)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.validateMergeInput(ValidateJoinAlgorithms.java:125)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.visitJoin(ValidateJoinAlgorithms.java:93)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.visitJoin(ValidateJoinAlgorithms.java:62)
+	at io.trino.sql.planner.plan.JoinNode.accept(JoinNode.java:357)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.lambda$visitPlan$0(ValidateJoinAlgorithms.java:81)
+	at com.google.common.collect.ImmutableList.forEach(ImmutableList.java:425)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.visitPlan(ValidateJoinAlgorithms.java:81)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms$Visitor.visitPlan(ValidateJoinAlgorithms.java:62)
+	at io.trino.sql.planner.plan.PlanVisitor.visitOutput(PlanVisitor.java:49)
+	at io.trino.sql.planner.plan.OutputNode.accept(OutputNode.java:83)
+	at io.trino.sql.planner.sanity.ValidateJoinAlgorithms.validate(ValidateJoinAlgorithms.java:59)
+	at io.trino.sql.planner.sanity.PlanSanityChecker.lambda$validate$0(PlanSanityChecker.java:109)
+	at com.google.common.collect.ImmutableList.forEach(ImmutableList.java:425)
+	at io.trino.sql.planner.sanity.PlanSanityChecker.validate(PlanSanityChecker.java:109)
+	at io.trino.sql.planner.sanity.PlanSanityChecker.validateFinalPlan(PlanSanityChecker.java:80)
+	at io.trino.sql.planner.LogicalPlanner.plan(LogicalPlanner.java:289)
+	at io.trino.sql.analyzer.QueryExplainer.getLogicalPlan(QueryExplainer.java:197)
+	at io.trino.sql.analyzer.QueryExplainer.getDistributedPlan(QueryExplainer.java:208)
+	at io.trino.sql.analyzer.QueryExplainer.textDistributedPlan(QueryExplainer.java:120)
+	at io.trino.sql.analyzer.QueryExplainer.getPlan(QueryExplainer.java:111)
+	at io.trino.sql.rewrite.ExplainRewrite$Visitor.getQueryPlan(ExplainRewrite.java:154)
+	at io.trino.sql.rewrite.ExplainRewrite$Visitor.visitExplain(ExplainRewrite.java:135)
+	at io.trino.sql.rewrite.ExplainRewrite$Visitor.visitExplain(ExplainRewrite.java:77)
+	at io.trino.sql.tree.Explain.accept(Explain.java:50)
+	at io.trino.sql.tree.AstVisitor.process(AstVisitor.java:27)
+	at io.trino.sql.rewrite.ExplainRewrite.rewrite(ExplainRewrite.java:74)
+	at io.trino.sql.rewrite.StatementRewrite.rewrite(StatementRewrite.java:54)
+	at io.trino.sql.analyzer.Analyzer.analyze(Analyzer.java:93)
+	at io.trino.sql.analyzer.Analyzer.analyze(Analyzer.java:87)
+	at io.trino.execution.SqlQueryExecution.analyze(SqlQueryExecution.java:288)
+	at io.trino.execution.SqlQueryExecution.<init>(SqlQueryExecution.java:222)
+	at io.trino.execution.SqlQueryExecution$SqlQueryExecutionFactory.createQueryExecution(SqlQueryExecution.java:900)
+	at io.trino.dispatcher.LocalDispatchQueryFactory.lambda$createDispatchQuery$0(LocalDispatchQueryFactory.java:163)
+	at io.trino.$gen.Trino_testversion___Callable.call(Unknown Source)
+	at com.google.common.util.concurrent.TrustedListenableFutureTask$TrustedFutureInterruptibleTask.runInterruptibly(TrustedListenableFutureTask.java:128)
+	at com.google.common.util.concurrent.InterruptibleTask.run(InterruptibleTask.java:72)
+	at com.google.common.util.concurrent.TrustedListenableFutureTask.run(TrustedListenableFutureTask.java:80)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base/java.lang.Thread.run(Thread.java:1474)
+	Suppressed: java.lang.Exception: Current plan:
+                Output[columnNames = [k, k]]
+                │   Layout: [field:boolean, field:boolean]
+                │   k := field
+                │   k := field
+                └─ InnerJoin[criteria = (field = field_0), distribution = PARTITIONED]
+                   │   Layout: [field:boolean]
+                   │   Distribution: PARTITIONED
+                   │   Algorithm: MERGE
+                   ├─ RemoteMerge[orderBy = [field ASC NULLS LAST]]
+                   │  │   Layout: [field:boolean]
+                   │  └─ LocalMerge[orderBy = [field ASC NULLS LAST]]
+                   │     │   Layout: [field:boolean]
+                   │     └─ PartialSort[orderBy = [field ASC NULLS LAST]]
+                   │        │   Layout: [field:boolean]
+                   │        └─ Filter[filterPredicate = (field IN (boolean 'false', boolean 'true'))]
+                   │           │   Layout: [field:boolean]
+                   │           └─ LocalExchange[partitioning = ROUND_ROBIN]
+                   │              │   Layout: [field:boolean]
+                   │              └─ Values[]
+                   │                     Layout: [field:boolean]
+                   │                     (boolean 'false')
+                   │                     (boolean 'true')
+                   │                     (boolean 'true')
+                   └─ RemoteMerge[orderBy = [field_0 ASC NULLS LAST]]
+                      │   Layout: [field_0:boolean]
+                      └─ LocalMerge[orderBy = [field_0 ASC NULLS LAST]]
+                         │   Layout: [field_0:boolean]
+                         └─ PartialSort[orderBy = [field_0 ASC NULLS LAST]]
+                            │   Layout: [field_0:boolean]
+                            └─ LocalExchange[partitioning = ROUND_ROBIN]
+                               │   Layout: [field_0:boolean]
+                               └─ Values[]
+                                      Layout: [field_0:boolean]
+                                      (boolean 'false')
+                                      (boolean 'true')
+                                      (boolean 'true')
+
+		at io.trino.sql.planner.sanity.PlanSanityChecker.validate(PlanSanityChecker.java:122)
+		... 26 more
+
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.297 s -- in io.trino.operator.join.merge.TestMergeJoinOperator
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Errors: 
+[ERROR]   TestMergeJoinAggregationPushdown.testPostSelectionAggregationOrdering:42->check:65 » QueryFailed MERGE input is not sorted on canonical join keys: 325
+[ERROR]   TestMergeJoinAggregationPushdown.testProjectionPreservesSpillability:48->check:65 » QueryFailed MERGE input is not sorted on canonical join keys: 325
+[ERROR]   TestMergeJoinScalarTypes.testSupportedScalarFamilies:59 » QueryFailed MERGE input is not sorted on canonical join keys: 230
+[INFO] 
+[ERROR] Tests run: 37, Failures: 0, Errors: 3, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  25.862 s
+[INFO] Finished at: 2026-11-08T18:18:22+03:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Njord session closed
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.6.1:test (default-cli) on project trino-main: 
+[ERROR] 
+[ERROR] See /home/ivan/opencode/trino/core/trino-main/target/surefire-reports for the individual test results.
+[ERROR] See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

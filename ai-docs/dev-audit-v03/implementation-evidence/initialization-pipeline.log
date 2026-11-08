@@ -1,0 +1,11 @@
+START initialization-build
+END initialization-build 0
+START initialization-core-large
+END initialization-core-large 0
+START initialization-iceberg-workloads
+END initialization-iceberg-workloads 0
+START initialization-ci-verify
+END initialization-ci-verify 0
+START initialization-errorprone
+END initialization-errorprone 0
+FINAL INITIALIZATION PIPELINE COMPLETE

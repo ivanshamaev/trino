@@ -1,0 +1,43 @@
+[
+  {
+    "phase": "probe-format",
+    "command": [
+      "./mvnw",
+      "-pl",
+      "core/trino-main,plugin/trino-iceberg",
+      "airstyle:format",
+      "-Dincludes=**/TestMergeJoinOperator.java,**/TestIcebergSortedWriting.java"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 104.428,
+    "log": "probe-format.log"
+  },
+  {
+    "phase": "probe-compile",
+    "command": [
+      "./mvnw",
+      "test-compile",
+      "-Dair.check.skip-all=true",
+      "-pl",
+      "core/trino-main,plugin/trino-iceberg"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 161.968,
+    "log": "probe-compile.log"
+  },
+  {
+    "phase": "differential-fuzz",
+    "command": [
+      "./mvnw",
+      "initialize",
+      "surefire:test",
+      "-Dair.check.skip-all=true",
+      "-pl",
+      "core/trino-main",
+      "-Dtest=TestMergeJoinOperator#testAuditV03DifferentialFuzz"
+    ],
+    "exit_code": 1,
+    "elapsed_seconds": 9.008,
+    "log": "differential-fuzz.log"
+  }
+]

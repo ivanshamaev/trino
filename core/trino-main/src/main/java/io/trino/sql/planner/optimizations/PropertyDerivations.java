@@ -743,7 +743,13 @@ public final class PropertyDerivations
                 builder.local(localProperties.build());
                 builder.constants(constants);
 
-                if (inputProperties.stream().anyMatch(ActualProperties::isCoordinatorOnly)) {
+                if (inputProperties.size() == 1) {
+                    // A local exchange cannot move rows between nodes. Retain the source's
+                    // node partitioning as well as single-node placement for final validation.
+                    Map<Symbol, Symbol> inputToOutput = exchangeInputToOutput(node, 0);
+                    builder.global(inputProperties.get(0).translate(symbol -> Optional.ofNullable(inputToOutput.get(symbol))));
+                }
+                else if (inputProperties.stream().anyMatch(ActualProperties::isCoordinatorOnly)) {
                     builder.global(coordinatorSinglePartition());
                 }
                 else if (inputProperties.stream().anyMatch(ActualProperties::isSingleNode)) {
@@ -761,6 +767,7 @@ public final class PropertyDerivations
                         .build();
                 case REPARTITION -> ActualProperties.builder()
                         .global(deriveRepartitionGlobalProperties(node.getPartitioningScheme()))
+                        .local(localProperties.build())
                         .constants(constants)
                         .build();
                 // TODO: this should have the same global properties as the stream taking the replicated data

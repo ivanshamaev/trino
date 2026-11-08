@@ -21,6 +21,7 @@ import io.trino.spi.function.OperatorType;
 import io.trino.sql.ir.Call;
 import io.trino.sql.ir.Constant;
 import io.trino.sql.ir.Reference;
+import io.trino.sql.planner.OrderingScheme;
 import io.trino.sql.planner.Symbol;
 import io.trino.sql.planner.iterative.rule.test.BaseRuleTest;
 import io.trino.sql.planner.iterative.rule.test.PlanBuilder;
@@ -30,6 +31,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Optional;
 
 import static io.trino.SystemSessionProperties.PREFER_PARTIAL_AGGREGATION;
+import static io.trino.spi.connector.SortOrder.ASC_NULLS_LAST;
 import static io.trino.spi.type.BigintType.BIGINT;
 import static io.trino.spi.type.IntegerType.INTEGER;
 import static io.trino.sql.planner.assertions.PlanMatchPattern.aggregation;
@@ -47,6 +49,24 @@ public class TestPushPartialAggregationThroughExchange
 {
     private static final TestingFunctionResolution FUNCTIONS = new TestingFunctionResolution();
     private static final ResolvedFunction MULTIPLY_INTEGER = FUNCTIONS.resolveOperator(OperatorType.MULTIPLY, ImmutableList.of(INTEGER, INTEGER));
+
+    @Test
+    public void testComputedProjectionDoesNotPushAggregationThroughOrderedExchange()
+    {
+        tester().assertThat(new PushPartialAggregationThroughExchange(tester().getPlannerContext()).pushPartialAggregationThroughExchangeWithProjection())
+                .on(p -> {
+                    Symbol a = p.symbol("a", INTEGER);
+                    Symbol b = p.symbol("b", INTEGER);
+                    Symbol value = p.symbol("value", INTEGER);
+                    return p.aggregation(aggregation -> aggregation.singleGroupingSet(a).step(PARTIAL)
+                            .addAggregation(p.symbol("count", BIGINT), PlanBuilder.aggregation("count", ImmutableList.of(value.toSymbolReference())), ImmutableList.of(INTEGER))
+                            .source(p.project(Assignments.builder().putIdentity(a)
+                                            .put(value, new Call(MULTIPLY_INTEGER, ImmutableList.of(b.toSymbolReference(), new Constant(INTEGER, 5L)))).build(),
+                                    p.exchange(exchange -> exchange.type(REPARTITION).addSource(p.values(a, b)).addInputsSet(a, b)
+                                            .fixedHashDistributionPartitioningScheme(ImmutableList.of(a, b), ImmutableList.of(a))
+                                            .orderingScheme(new OrderingScheme(ImmutableList.of(a), ImmutableMap.of(a, ASC_NULLS_LAST)))))));
+                }).doesNotFire();
+    }
 
     @Test
     public void testPushesPartialAggregationThroughExchangeWithoutProjection()

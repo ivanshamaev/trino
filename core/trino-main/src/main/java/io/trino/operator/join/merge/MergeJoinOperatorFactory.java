@@ -675,6 +675,9 @@ public class MergeJoinOperatorFactory
                         return;
                     }
                 }
+                if (!initializeMatchBitmap()) {
+                    return;
+                }
                 if (groupStartPage < 0) {
                     if (isProbeOuter()) {
                         startDrainingUnmatchedProbeChunk();
@@ -779,6 +782,16 @@ public class MergeJoinOperatorFactory
             }
         }
 
+        private boolean initializeMatchBitmap()
+        {
+            if (diskRowMatched != null && !diskRowMatched.initialize()) {
+                // Return to the driver between small encrypted initialization batches.
+                processedPositions = MAX_PROCESS_POSITIONS;
+                return false;
+            }
+            return true;
+        }
+
         private void clearProbeChunk()
         {
             probeChunk.clear();
@@ -826,6 +839,10 @@ public class MergeJoinOperatorFactory
                 if (!loadGroup()) {
                     return;
                 }
+            }
+
+            if (!initializeMatchBitmap()) {
+                return;
             }
 
             if (!probeRowInProgress) {
@@ -1024,10 +1041,10 @@ public class MergeJoinOperatorFactory
                 }
                 else {
                     if (!bridge.canCreateMatchFile()
-                            || !userMemoryContext.trySetBytes(DiskBackedMatchBitmap.BUFFER_SIZE)) {
+                            || !userMemoryContext.trySetBytes(bridge.matchBitmapRetainedSize())) {
                         throw new TrinoException(EXCEEDED_LOCAL_MEMORY_LIMIT, "Merge join key group does not fit in memory");
                     }
-                    diskRowMatched = new DiskBackedMatchBitmap(bridge.createMatchFile(), groupScanRows, bridge::updateMatchFileBytes);
+                    diskRowMatched = bridge.createMatchBitmap(groupScanRows);
                 }
                 drainPage = groupStartPage;
                 drainPos = groupStartPos;

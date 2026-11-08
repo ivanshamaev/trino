@@ -1,0 +1,104 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] 
+[INFO] ------------------------< io.trino:trino-main >-------------------------
+[INFO] Building trino-main 485-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-main ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-main ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-cli) @ trino-main ---
+[INFO] Tests will run in random order. To reproduce ordering use flag -Dsurefire.runOrder.random.seed=29958915647437
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+WARNING: Using incubator modules: jdk.incubator.vector
+[INFO] Running io.trino.sql.query.TestMergeJoinTypeAudit
+2026-11-08T08:28:47.082-0600	INFO	ForkJoinPool-1-worker-1	org.hibernate.validator.internal.util.Version	HV000001: Hibernate Validator 9.1.5.Final
+2026-11-08T08:28:48.797-0600	INFO	ForkJoinPool-1-worker-1	io.trino.simd.BlockEncodingSimdSupport	Detected SIMD Support for architecture=amd64, vectorBitWidth=128: SimdSupport[capabilities=[]]
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::loadLibrary has been called by com.aayushatharva.brotli4j.Brotli4jLoader in an unnamed module (file:/home/ivan/.m2/repository/com/aayushatharva/brotli4j/brotli4j/1.23.0/brotli4j-1.23.0.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+2026-11-08T08:28:50.601-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 101.00ms: 538.17MB -> 121.09MB
+2026-11-08T08:28:55.688-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 4.91s, stopped 189.00ms: 292.33MB -> 212.54MB
+2026-11-08T08:28:56.356-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=0 join=INNER matchedHash=true
+2026-11-08T08:28:56.712-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=0 join=LEFT matchedHash=true
+2026-11-08T08:28:57.039-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=0 join=RIGHT matchedHash=true
+2026-11-08T08:28:57.252-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 1.40s, stopped 169.00ms: 462.46MB -> 223.72MB
+2026-11-08T08:28:57.465-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=0 join=FULL matchedHash=true
+2026-11-08T08:28:57.953-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=1 join=INNER matchedHash=true
+2026-11-08T08:28:58.255-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=1 join=LEFT matchedHash=true
+2026-11-08T08:28:58.524-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=1 join=RIGHT matchedHash=true
+2026-11-08T08:28:58.741-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=1 join=FULL matchedHash=true
+2026-11-08T08:28:59.066-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=2 join=INNER matchedHash=true
+2026-11-08T08:28:59.490-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.02s, stopped 213.00ms: 591.02MB -> 234.61MB
+2026-11-08T08:28:59.521-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=2 join=LEFT matchedHash=true
+2026-11-08T08:28:59.730-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=2 join=RIGHT matchedHash=true
+2026-11-08T08:28:59.917-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=2 join=FULL matchedHash=true
+2026-11-08T08:29:00.155-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=3 join=INNER matchedHash=true
+2026-11-08T08:29:00.342-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=3 join=LEFT matchedHash=true
+2026-11-08T08:29:00.527-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=3 join=RIGHT matchedHash=true
+2026-11-08T08:29:00.678-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=3 join=FULL matchedHash=true
+2026-11-08T08:29:00.891-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=4 join=INNER matchedHash=true
+2026-11-08T08:29:01.086-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=4 join=LEFT matchedHash=true
+2026-11-08T08:29:01.310-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=4 join=RIGHT matchedHash=true
+2026-11-08T08:29:01.449-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=4 join=FULL matchedHash=true
+2026-11-08T08:29:01.656-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=5 join=INNER matchedHash=true
+2026-11-08T08:29:01.821-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=5 join=LEFT matchedHash=true
+2026-11-08T08:29:02.011-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=5 join=RIGHT matchedHash=true
+2026-11-08T08:29:02.386-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.61s, stopped 289.00ms: 867.87MB -> 247.07MB
+2026-11-08T08:29:02.464-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=5 join=FULL matchedHash=true
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 16.54 s <<< FAILURE! -- in io.trino.sql.query.TestMergeJoinTypeAudit
+[ERROR] io.trino.sql.query.TestMergeJoinTypeAudit.testSupportedScalarFamilies -- Time elapsed: 8.909 s <<< ERROR!
+java.time.DateTimeException: Invalid value for NanoOfSecond (valid values 0 - 999999999): 1000000000
+	at java.base/java.time.temporal.ValueRange.checkValidValue(ValueRange.java:319)
+	at java.base/java.time.temporal.ChronoField.checkValidValue(ChronoField.java:721)
+	at java.base/java.time.LocalDateTime.ofEpochSecond(LocalDateTime.java:422)
+	at io.trino.spi.type.SqlTimestamp.toLocalDateTime(SqlTimestamp.java:165)
+	at io.trino.testing.MaterializedResult.convertToTestTypes(MaterializedResult.java:312)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:214)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:570)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:560)
+	at java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:921)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:265)
+	at java.base/java.util.stream.ReferencePipeline.collect(ReferencePipeline.java:723)
+	at io.trino.testing.MaterializedResult.toTestTypes(MaterializedResult.java:286)
+	at io.trino.sql.query.QueryAssertions.execute(QueryAssertions.java:230)
+	at io.trino.sql.query.TestMergeJoinTypeAudit.testSupportedScalarFamilies(TestMergeJoinTypeAudit.java:60)
+
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Errors: 
+[ERROR]   TestMergeJoinTypeAudit.testSupportedScalarFamilies:60 » DateTime Invalid value for NanoOfSecond (valid values 0 - 999999999): 1000000000
+[INFO] 
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  23.114 s
+[INFO] Finished at: 2026-11-08T17:29:02+03:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Njord session closed
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.6.1:test (default-cli) on project trino-main: 
+[ERROR] 
+[ERROR] See /tmp/trino-smj-audit-v03-check/core/trino-main/target/surefire-reports for the individual test results.
+[ERROR] See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

@@ -24,7 +24,6 @@ import io.trino.spiller.SingleStreamSpillerFactory;
 import io.trino.spiller.Spiller;
 import io.trino.spiller.SpillerFactory;
 
-import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
 
@@ -99,10 +98,17 @@ public final class AppendingSpiller
         return ((FileSingleStreamSpiller) delegate).getSpilledPagesFrom(pageIndex, pageCount);
     }
 
-    public Path createMatchFile()
+    public DiskBackedMatchBitmap createMatchBitmap(long positions)
     {
         checkState(delegate instanceof FileSingleStreamSpiller, "Match files require a file spiller");
-        return ((FileSingleStreamSpiller) delegate).createTemporaryFile();
+        FileSingleStreamSpiller fileSpiller = (FileSingleStreamSpiller) delegate;
+        return new DiskBackedMatchBitmap(fileSpiller.createTemporaryFile(), positions, this::updateMatchFileBytes, fileSpiller.isEncrypted());
+    }
+
+    public long matchBitmapRetainedSize()
+    {
+        checkState(delegate instanceof FileSingleStreamSpiller, "Match files require a file spiller");
+        return DiskBackedMatchBitmap.retainedSize(((FileSingleStreamSpiller) delegate).isEncrypted());
     }
 
     public void updateMatchFileBytes(long bytes)

@@ -1,0 +1,58 @@
+[
+  {
+    "phase": "probe-format-second",
+    "command": [
+      "./mvnw",
+      "-pl",
+      "core/trino-main",
+      "airstyle:format",
+      "-Dincludes=**/TestMergeJoinOperator.java,**/TestMergeJoinPostSelectionAudit.java,**/TestAppendingSpiller.java"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 82.283,
+    "log": "probe-format-second.log"
+  },
+  {
+    "phase": "probe-compile-second",
+    "command": [
+      "./mvnw",
+      "test-compile",
+      "-Dair.check.skip-all=true",
+      "-pl",
+      "core/trino-main,plugin/trino-iceberg"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 161.486,
+    "log": "probe-compile-second.log"
+  },
+  {
+    "phase": "core-probes",
+    "command": [
+      "./mvnw",
+      "initialize",
+      "surefire:test",
+      "-Dair.check.skip-all=true",
+      "-pl",
+      "core/trino-main",
+      "-Dtest=TestMergeJoinOperator#testAuditV03DifferentialFuzz,TestAppendingSpiller#testAuditV03EncryptedMatchBitmap,TestMergeJoinPostSelectionAudit"
+    ],
+    "exit_code": 1,
+    "elapsed_seconds": 19.959,
+    "log": "core-probes.log"
+  },
+  {
+    "phase": "sortedness-off",
+    "command": [
+      "./mvnw",
+      "initialize",
+      "surefire:test",
+      "-Dair.check.skip-all=true",
+      "-pl",
+      "plugin/trino-iceberg",
+      "-Dtest=TestIcebergSortedWriting#testAuditV03MultipleFilesOffWindows"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 36.128,
+    "log": "sortedness-off.log"
+  }
+]

@@ -1,0 +1,30 @@
+{
+  "root_base": "0393e45fcf954473db34a33ecebe587c8cfff94d",
+  "candidate": "45fe8c5d602c2973950d214573b42e8481971fb0",
+  "paths": [
+    "core/trino-main/src/main/java/io/trino/operator/join/merge/AppendingSpiller.java",
+    "core/trino-main/src/main/java/io/trino/operator/join/merge/DiskBackedMatchBitmap.java",
+    "core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinBridge.java",
+    "core/trino-main/src/main/java/io/trino/operator/join/merge/MergeJoinOperatorFactory.java",
+    "core/trino-main/src/main/java/io/trino/spiller/FileSingleStreamSpiller.java",
+    "core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/DetermineJoinAlgorithm.java",
+    "core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/PushPartialAggregationThroughExchange.java",
+    "core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/PushPartialAggregationThroughJoin.java",
+    "core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/PushProjectionThroughJoin.java",
+    "core/trino-main/src/main/java/io/trino/sql/planner/optimizations/PropertyDerivations.java",
+    "core/trino-main/src/main/java/io/trino/sql/planner/sanity/PlanSanityChecker.java",
+    "core/trino-main/src/main/java/io/trino/sql/planner/sanity/ValidateJoinAlgorithms.java",
+    "core/trino-main/src/test/java/io/trino/operator/join/merge/TestAppendingSpiller.java",
+    "core/trino-main/src/test/java/io/trino/operator/join/merge/TestDiskBackedMatchBitmap.java",
+    "core/trino-main/src/test/java/io/trino/operator/join/merge/TestMergeJoinOperator.java",
+    "core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestMergeJoinExpressionRewrite.java",
+    "core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestPushPartialAggregationThroughExchange.java",
+    "core/trino-main/src/test/java/io/trino/sql/planner/sanity/TestValidateJoinAlgorithms.java",
+    "core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoinAggregationPushdown.java",
+    "core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoinScalarTypes.java",
+    "docs/src/main/sphinx/optimizer/merge-join.md",
+    "plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSortedWriting.java",
+    "plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestMergeJoinAggregationExchange.java"
+  ],
+  "byte_mismatches": []
+}

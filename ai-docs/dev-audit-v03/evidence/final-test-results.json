@@ -1,0 +1,89 @@
+[
+  {
+    "phase": "probe-format-final",
+    "command": [
+      "./mvnw",
+      "-pl",
+      "core/trino-main,plugin/trino-iceberg",
+      "airstyle:format",
+      "-Dincludes=**/TestMergeJoinOperator.java,**/TestMergeJoinPostSelectionAudit.java,**/TestAppendingSpiller.java,**/TestIcebergSortedWriting.java"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 106.842,
+    "log": "probe-format-final.log"
+  },
+  {
+    "phase": "probe-compile-final",
+    "command": [
+      "./mvnw",
+      "test-compile",
+      "-Dair.check.skip-all=true",
+      "-pl",
+      "core/trino-main,plugin/trino-iceberg"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 166.301,
+    "log": "probe-compile-final.log"
+  },
+  {
+    "phase": "core-probes-final",
+    "command": [
+      "./mvnw",
+      "initialize",
+      "surefire:test",
+      "-Dair.check.skip-all=true",
+      "-pl",
+      "core/trino-main",
+      "-Dtest=TestMergeJoinOperator#testAuditV03DifferentialFuzz,TestAppendingSpiller#testAuditV03EncryptedMatchBitmap,TestMergeJoinPostSelectionAudit"
+    ],
+    "exit_code": 1,
+    "elapsed_seconds": 21.006,
+    "log": "core-probes-final.log"
+  },
+  {
+    "phase": "distributed-aggregation",
+    "command": [
+      "./mvnw",
+      "initialize",
+      "surefire:test",
+      "-Dair.check.skip-all=true",
+      "-pl",
+      "plugin/trino-iceberg",
+      "-Dtest=TestIcebergSortedWriting#testAuditV03PostSelectionAggregation"
+    ],
+    "exit_code": 1,
+    "elapsed_seconds": 35.172,
+    "log": "distributed-aggregation.log"
+  },
+  {
+    "phase": "core-regressions-large",
+    "command": [
+      "./mvnw",
+      "initialize",
+      "surefire:test",
+      "-Dair.check.skip-all=true",
+      "-Dsmj.large=true",
+      "-pl",
+      "core/trino-main",
+      "-Dtest=TestAppendingSpiller#testBatchesAppendToOneSpillStream+testEncryptedSpillCanReplayFromEarlierPage+testCanAppendAfterReplay,TestCachingStatsProvider,TestColocatedJoin,TestCostCalculator,TestDetermineJoinAlgorithm,TestDiskBackedMatchBitmap,TestDynamicFilterService,TestEffectivePredicateExtractor,TestEliminateCrossJoins,TestFileSingleStreamSpiller,TestFileSingleStreamSpillerFactory,TestIncrementalRefreshVisitor,TestJoinNodeAlgorithm,TestJoinStatsRule,TestMergeJoin,TestMergeJoinCostModel,TestMergeJoinExpressionRewrite,TestMergeJoinOperator#testInnerJoinWithDuplicateKeys+testProbeGroupContinuesAcrossPages+testBuildGroupSpansOutputPages+testRightJoinDrainsAcrossOutputPages+testFullJoinDrainsUnmatchedGapAcrossOutputPages+testBufferWaitsForSpillCompletion+testBufferPropagatesSpillFailure+testBufferWaitsForMemoryPool+testSpilledPagesReadLazilyWithinMemoryLimit+testRemainingBuildPagesReleasedAsProbeAdvances+testRemainingBuildPagesReleasedWithGenericSpiller+testSpilledBuildLargerThanMemoryLimitWithSmallGroups+testProbeWaitsForSpilledGroupToComplete+testSpilledFullJoinLargerThanMemoryLimit+testSpilledRightJoinLargerThanMemoryLimit+testSpilledKeyGroupLargerThanMemoryLimit+testSpilledFullJoinKeyGroupLargerThanMemoryLimit+testSpilledKeyGroupWithResidualFilterLargerThanMemoryLimit+testSpilledProbeChunkEndsBeforeMixedKeyPage+testSpilledProbeChunkWithinMixedKeyPage+testTenMillionRowJoinWithBoundedMemory+testTenMillionRowFullJoinWithBoundedMemory+testTenMillionRowLeftJoinWithBoundedMemory+testTenMillionRowRightJoinWithBoundedMemory+testTenMillionRowSingleBuildGroupWithBoundedMemory+testBuildGroupRowCountExceedsIntegerRange+testFullJoinGroupAboveIntegerRangeWithBoundedMemory+testSpilledProbeChunkBoundsGroupReplay+testSpilledProbeChunkLeavesRoomForLargeBuildPage+testSpilledLeftProbeChunkWithRejectedMatches+testSpilledFullProbeChunkWithRejectedMatches+testSpilledRightJoinMatchBitmapLargerThanMemoryLimit+testLinearReplayForSmallGroups+testOutputMemoryAccounting+testYieldDuringRejectedGroup+testBuildScanYieldsAndResumes+testGroupDiscoveryYieldsAndCanBeCancelled+testBuildMemoryRemainsReservedUntilBridgeIsDestroyed+testUnspilledBuildPagesReleasedAsProbeAdvances+testAbortedBuildReleasesMemoryAndUnblocksProbe+testOuterJoinDoesNotAllocateGlobalBuildIndex+testOuterJoinGroupIndexRespectsMemoryLimit+testResidualFilterOnlyIndexesCurrentGroup+testInnerJoinEmptyBuild+testInnerJoinEmptyProbe+testLeftJoinWithPadding+testNullKeysNeverMatch+testLeftJoinAllNullProbeTail+testVarcharKey+testCompositeKey+testResidualFilter+testOutputSingleMatch+testNaNKeysNeverMatch+testFullOuterJoin+testFullOuterJoinWithNullKeys+testRightOuterJoin+testFullOuterJoinWithResidualFilter+testFullOuterJoinWithResidualFilterAcrossGroups+testResidualFilterMovesBetweenKeyGroups,TestMergeJoinOperatorInfo,TestMergeJoinRepeatedKeys,TestMultiSourcePartitionedScheduler,TestOptimizerConfig,TestOrderByOperator,TestPagesIndex,TestSchedulingUtils,TestSortingSpiller,TestSourcePartitionedScheduler,TestTopologicalOrderSubPlanVisitor,TestPushPartialAggregationThroughJoin,TestPushDownDereferenceThroughJoin"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 152.821,
+    "log": "core-regressions-large.log"
+  },
+  {
+    "phase": "iceberg-regressions",
+    "command": [
+      "./mvnw",
+      "initialize",
+      "surefire:test",
+      "-Dair.check.skip-all=true",
+      "-pl",
+      "plugin/trino-iceberg",
+      "-Dtest=TestIcebergConfig,TestIcebergSortedWriting#testSortednessReportedToEngine+testMergeJoinCostCalibration+testSortednessMetadataPlanningCost+testSortedMergeJoinAcrossMultipleFiles+testFileSortOrderCompatibility+testSortOrderEvolutionAndDeletes+testIdentitySortPrefix+testMergeJoinAcrossFileSplits+testRightMergeJoinCompletesDynamicFilter+testSortedWritingWithLocalStaging"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 63.777,
+    "log": "iceberg-regressions.log"
+  }
+]

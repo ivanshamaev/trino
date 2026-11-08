@@ -1,0 +1,251 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+[INFO] Scanning for projects...
+[INFO] Njord 0.10.0 session created
+[INFO] 
+[INFO] ------------------------< io.trino:trino-main >-------------------------
+[INFO] Building trino-main 485-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- git-commit-id:10.0.1:revision (default) @ trino-main ---
+[INFO] 
+[INFO] --- build-helper:3.6.2:bsh-property (surefire-enable-preview) @ trino-main ---
+[INFO] 
+[INFO] --- surefire:3.6.1:test (default-cli) @ trino-main ---
+[INFO] Tests will run in random order. To reproduce ordering use flag -Dsurefire.runOrder.random.seed=31539285092489
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+Picked up JAVA_TOOL_OPTIONS: -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops
+WARNING: Using incubator modules: jdk.incubator.vector
+[INFO] Running io.trino.operator.join.merge.TestMergeJoinOperator
+[INFO] Running io.trino.sql.query.TestMergeJoinTypeAudit
+2026-11-08T08:55:07.318-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=0 type=INNER left=160 right=113
+2026-11-08T08:55:07.492-0600	INFO	ForkJoinPool-1-worker-1	org.hibernate.validator.internal.util.Version	HV000001: Hibernate Validator 9.1.5.Final
+2026-11-08T08:55:07.645-0600	INFO	ForkJoinPool-1-worker-2	io.trino.simd.BlockEncodingSimdSupport	Detected SIMD Support for architecture=amd64, vectorBitWidth=128: SimdSupport[capabilities=[]]
+2026-11-08T08:55:07.879-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=0 type=LEFT left=160 right=113
+2026-11-08T08:55:07.992-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=0 type=RIGHT left=160 right=113
+2026-11-08T08:55:08.072-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=0 type=FULL left=160 right=113
+2026-11-08T08:55:08.140-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=1 type=INNER left=185 right=154
+WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.airlift.compress.v3.internal.NativeLoader in an unnamed module (file:/home/ivan/.m2/repository/io/airlift/aircompressor-v3/3.14/aircompressor-v3-3.14.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+2026-11-08T08:55:08.401-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=1 type=LEFT left=185 right=154
+2026-11-08T08:55:08.501-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=1 type=RIGHT left=185 right=154
+2026-11-08T08:55:08.603-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=1 type=FULL left=185 right=154
+2026-11-08T08:55:08.676-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=2 type=INNER left=108 right=176
+2026-11-08T08:55:08.776-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=2 type=LEFT left=108 right=176
+2026-11-08T08:55:08.815-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=2 type=RIGHT left=108 right=176
+2026-11-08T08:55:08.867-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=2 type=FULL left=108 right=176
+2026-11-08T08:55:08.900-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=3 type=INNER left=134 right=111
+2026-11-08T08:55:08.944-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=3 type=LEFT left=134 right=111
+2026-11-08T08:55:08.982-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=3 type=RIGHT left=134 right=111
+2026-11-08T08:55:09.019-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=3 type=FULL left=134 right=111
+2026-11-08T08:55:09.056-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=4 type=INNER left=62 right=2
+2026-11-08T08:55:09.061-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=4 type=LEFT left=62 right=2
+2026-11-08T08:55:09.072-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=4 type=RIGHT left=62 right=2
+2026-11-08T08:55:09.078-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=4 type=FULL left=62 right=2
+2026-11-08T08:55:09.086-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=5 type=INNER left=87 right=98
+2026-11-08T08:55:09.116-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=5 type=LEFT left=87 right=98
+2026-11-08T08:55:09.156-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=5 type=RIGHT left=87 right=98
+2026-11-08T08:55:09.186-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=5 type=FULL left=87 right=98
+2026-11-08T08:55:09.222-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=6 type=INNER left=11 right=196
+2026-11-08T08:55:09.232-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=6 type=LEFT left=11 right=196
+2026-11-08T08:55:09.241-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=6 type=RIGHT left=11 right=196
+2026-11-08T08:55:09.254-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=6 type=FULL left=11 right=196
+2026-11-08T08:55:09.269-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=7 type=INNER left=36 right=221
+2026-11-08T08:55:09.315-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=7 type=LEFT left=36 right=221
+2026-11-08T08:55:09.352-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=7 type=RIGHT left=36 right=221
+2026-11-08T08:55:09.386-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=7 type=FULL left=36 right=221
+2026-11-08T08:55:09.426-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=8 type=INNER left=164 right=201
+2026-11-08T08:55:09.474-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=8 type=LEFT left=164 right=201
+2026-11-08T08:55:09.522-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=8 type=RIGHT left=164 right=201
+2026-11-08T08:55:09.587-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=8 type=FULL left=164 right=201
+2026-11-08T08:55:09.638-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=9 type=INNER left=189 right=165
+2026-11-08T08:55:09.722-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=9 type=LEFT left=189 right=165
+2026-11-08T08:55:09.796-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=9 type=RIGHT left=189 right=165
+2026-11-08T08:55:09.889-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=9 type=FULL left=189 right=165
+2026-11-08T08:55:10.029-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=10 type=INNER left=113 right=193
+2026-11-08T08:55:10.065-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=10 type=LEFT left=113 right=193
+2026-11-08T08:55:10.099-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=10 type=RIGHT left=113 right=193
+2026-11-08T08:55:10.128-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=10 type=FULL left=113 right=193
+2026-11-08T08:55:10.150-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=11 type=INNER left=138 right=134
+2026-11-08T08:55:10.189-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=11 type=LEFT left=138 right=134
+2026-11-08T08:55:10.337-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 0.00s, stopped 100.00ms: 330.27MB -> 123.60MB
+2026-11-08T08:55:10.341-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=11 type=RIGHT left=138 right=134
+2026-11-08T08:55:10.384-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=11 type=FULL left=138 right=134
+2026-11-08T08:55:10.435-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=12 type=INNER left=66 right=135
+2026-11-08T08:55:10.447-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=12 type=LEFT left=66 right=135
+2026-11-08T08:55:10.462-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=12 type=RIGHT left=66 right=135
+2026-11-08T08:55:10.476-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=12 type=FULL left=66 right=135
+2026-11-08T08:55:10.492-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=13 type=INNER left=92 right=174
+2026-11-08T08:55:10.529-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=13 type=LEFT left=92 right=174
+2026-11-08T08:55:10.571-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=13 type=RIGHT left=92 right=174
+2026-11-08T08:55:10.604-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=13 type=FULL left=92 right=174
+2026-11-08T08:55:10.639-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=14 type=INNER left=15 right=209
+2026-11-08T08:55:10.647-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=14 type=LEFT left=15 right=209
+2026-11-08T08:55:10.659-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=14 type=RIGHT left=15 right=209
+2026-11-08T08:55:10.671-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=14 type=FULL left=15 right=209
+2026-11-08T08:55:10.679-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=15 type=INNER left=41 right=90
+2026-11-08T08:55:10.692-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=15 type=LEFT left=41 right=90
+2026-11-08T08:55:10.704-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=15 type=RIGHT left=41 right=90
+2026-11-08T08:55:10.714-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=15 type=FULL left=41 right=90
+2026-11-08T08:55:10.729-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=16 type=INNER left=151 right=7
+2026-11-08T08:55:10.736-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=16 type=LEFT left=151 right=7
+2026-11-08T08:55:10.741-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=16 type=RIGHT left=151 right=7
+2026-11-08T08:55:10.748-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=16 type=FULL left=151 right=7
+2026-11-08T08:55:10.753-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=17 type=INNER left=176 right=107
+2026-11-08T08:55:10.793-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=17 type=LEFT left=176 right=107
+2026-11-08T08:55:10.842-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=17 type=RIGHT left=176 right=107
+2026-11-08T08:55:10.888-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=17 type=FULL left=176 right=107
+2026-11-08T08:55:10.936-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=18 type=INNER left=100 right=5
+2026-11-08T08:55:10.940-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=18 type=LEFT left=100 right=5
+2026-11-08T08:55:10.944-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=18 type=RIGHT left=100 right=5
+2026-11-08T08:55:10.951-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=18 type=FULL left=100 right=5
+2026-11-08T08:55:10.956-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=19 type=INNER left=125 right=82
+2026-11-08T08:55:10.983-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=19 type=LEFT left=125 right=82
+2026-11-08T08:55:11.006-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=19 type=RIGHT left=125 right=82
+2026-11-08T08:55:11.035-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=19 type=FULL left=125 right=82
+2026-11-08T08:55:11.064-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=20 type=INNER left=53 right=109
+2026-11-08T08:55:11.082-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=20 type=LEFT left=53 right=109
+2026-11-08T08:55:11.095-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=20 type=RIGHT left=53 right=109
+2026-11-08T08:55:11.113-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=20 type=FULL left=53 right=109
+2026-11-08T08:55:11.136-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=21 type=INNER left=78 right=42
+2026-11-08T08:55:11.148-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=21 type=LEFT left=78 right=42
+2026-11-08T08:55:11.162-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=21 type=RIGHT left=78 right=42
+2026-11-08T08:55:11.174-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=21 type=FULL left=78 right=42
+2026-11-08T08:55:11.193-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=22 type=INNER left=2 right=201
+2026-11-08T08:55:11.199-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=22 type=LEFT left=2 right=201
+2026-11-08T08:55:11.206-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=22 type=RIGHT left=2 right=201
+2026-11-08T08:55:11.215-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=22 type=FULL left=2 right=201
+2026-11-08T08:55:11.224-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=23 type=INNER left=27 right=172
+2026-11-08T08:55:11.240-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=23 type=LEFT left=27 right=172
+2026-11-08T08:55:11.260-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=23 type=RIGHT left=27 right=172
+2026-11-08T08:55:11.281-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=23 type=FULL left=27 right=172
+2026-11-08T08:55:11.298-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=24 type=INNER left=155 right=1
+2026-11-08T08:55:11.302-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=24 type=LEFT left=155 right=1
+2026-11-08T08:55:11.307-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=24 type=RIGHT left=155 right=1
+2026-11-08T08:55:11.311-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=24 type=FULL left=155 right=1
+2026-11-08T08:55:11.318-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=25 type=INNER left=181 right=110
+2026-11-08T08:55:11.372-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=25 type=LEFT left=181 right=110
+2026-11-08T08:55:11.416-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=25 type=RIGHT left=181 right=110
+2026-11-08T08:55:11.467-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=25 type=FULL left=181 right=110
+2026-11-08T08:55:11.519-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=26 type=INNER left=104 right=183
+2026-11-08T08:55:11.551-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=26 type=LEFT left=104 right=183
+2026-11-08T08:55:11.571-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=26 type=RIGHT left=104 right=183
+2026-11-08T08:55:11.598-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=26 type=FULL left=104 right=183
+2026-11-08T08:55:11.623-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=27 type=INNER left=130 right=82
+2026-11-08T08:55:11.650-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=27 type=LEFT left=130 right=82
+2026-11-08T08:55:11.676-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=27 type=RIGHT left=130 right=82
+2026-11-08T08:55:11.703-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=27 type=FULL left=130 right=82
+2026-11-08T08:55:11.728-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=28 type=INNER left=57 right=94
+2026-11-08T08:55:11.738-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=28 type=LEFT left=57 right=94
+2026-11-08T08:55:11.751-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=28 type=RIGHT left=57 right=94
+2026-11-08T08:55:11.763-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=28 type=FULL left=57 right=94
+2026-11-08T08:55:11.781-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=29 type=INNER left=83 right=247
+2026-11-08T08:55:11.832-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=29 type=LEFT left=83 right=247
+2026-11-08T08:55:11.930-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=29 type=RIGHT left=83 right=247
+2026-11-08T08:55:11.983-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=29 type=FULL left=83 right=247
+2026-11-08T08:55:12.038-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=30 type=INNER left=6 right=21
+2026-11-08T08:55:12.044-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=30 type=LEFT left=6 right=21
+2026-11-08T08:55:12.049-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=30 type=RIGHT left=6 right=21
+2026-11-08T08:55:12.053-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=30 type=FULL left=6 right=21
+2026-11-08T08:55:12.058-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=31 type=INNER left=32 right=218
+2026-11-08T08:55:12.077-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=31 type=LEFT left=32 right=218
+2026-11-08T08:55:12.094-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=31 type=RIGHT left=32 right=218
+2026-11-08T08:55:12.115-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=31 type=FULL left=32 right=218
+2026-11-08T08:55:12.138-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=32 type=INNER left=177 right=6
+2026-11-08T08:55:12.145-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=32 type=LEFT left=177 right=6
+2026-11-08T08:55:12.150-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=32 type=RIGHT left=177 right=6
+2026-11-08T08:55:12.155-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=32 type=FULL left=177 right=6
+2026-11-08T08:55:12.160-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=33 type=INNER left=3 right=136
+2026-11-08T08:55:12.169-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=33 type=LEFT left=3 right=136
+2026-11-08T08:55:12.176-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=33 type=RIGHT left=3 right=136
+2026-11-08T08:55:12.182-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=33 type=FULL left=3 right=136
+2026-11-08T08:55:12.190-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=34 type=INNER left=126 right=82
+2026-11-08T08:55:12.198-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=34 type=LEFT left=126 right=82
+2026-11-08T08:55:12.207-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=34 type=RIGHT left=126 right=82
+2026-11-08T08:55:12.220-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=34 type=FULL left=126 right=82
+2026-11-08T08:55:12.230-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=35 type=INNER left=152 right=74
+2026-11-08T08:55:12.255-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=35 type=LEFT left=152 right=74
+2026-11-08T08:55:12.279-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=35 type=RIGHT left=152 right=74
+2026-11-08T08:55:12.303-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=35 type=FULL left=152 right=74
+2026-11-08T08:55:12.328-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=36 type=INNER left=79 right=1
+2026-11-08T08:55:12.332-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=36 type=LEFT left=79 right=1
+2026-11-08T08:55:12.336-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=36 type=RIGHT left=79 right=1
+2026-11-08T08:55:12.340-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=36 type=FULL left=79 right=1
+2026-11-08T08:55:12.350-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=37 type=INNER left=105 right=165
+2026-11-08T08:55:12.392-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=37 type=LEFT left=105 right=165
+2026-11-08T08:55:12.434-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=37 type=RIGHT left=105 right=165
+2026-11-08T08:55:12.473-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=37 type=FULL left=105 right=165
+2026-11-08T08:55:12.517-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=38 type=INNER left=28 right=229
+2026-11-08T08:55:12.527-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=38 type=LEFT left=28 right=229
+2026-11-08T08:55:12.536-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=38 type=RIGHT left=28 right=229
+2026-11-08T08:55:12.548-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=38 type=FULL left=28 right=229
+2026-11-08T08:55:12.561-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=39 type=INNER left=54 right=33
+2026-11-08T08:55:12.568-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=39 type=LEFT left=54 right=33
+2026-11-08T08:55:12.574-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=39 type=RIGHT left=54 right=33
+2026-11-08T08:55:12.580-0600	INFO	ForkJoinPool-1-worker-2	stdout	AUDIT fuzz seed=39 type=FULL left=54 right=33
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.745 s -- in io.trino.operator.join.merge.TestMergeJoinOperator
+2026-11-08T08:55:14.548-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 4.05s, stopped 176.00ms: 291.53MB -> 199.20MB
+2026-11-08T08:55:15.484-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=0 join=INNER matchedHash=true
+2026-11-08T08:55:16.133-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=0 join=LEFT matchedHash=true
+2026-11-08T08:55:16.531-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 1.77s, stopped 205.00ms: 463.11MB -> 230.31MB
+2026-11-08T08:55:16.897-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=0 join=RIGHT matchedHash=true
+2026-11-08T08:55:17.230-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=0 join=FULL matchedHash=true
+2026-11-08T08:55:17.779-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=1 join=INNER matchedHash=true
+2026-11-08T08:55:18.243-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=1 join=LEFT matchedHash=true
+2026-11-08T08:55:18.685-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=1 join=RIGHT matchedHash=true
+2026-11-08T08:55:18.984-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=1 join=FULL matchedHash=true
+2026-11-08T08:55:19.335-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.59s, stopped 216.00ms: 547.56MB -> 239.00MB
+2026-11-08T08:55:19.560-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=2 join=INNER matchedHash=true
+2026-11-08T08:55:19.821-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=2 join=LEFT matchedHash=true
+2026-11-08T08:55:20.086-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=2 join=RIGHT matchedHash=true
+2026-11-08T08:55:20.281-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=2 join=FULL matchedHash=true
+2026-11-08T08:55:20.536-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=3 join=INNER matchedHash=true
+2026-11-08T08:55:20.733-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=3 join=LEFT matchedHash=true
+2026-11-08T08:55:20.929-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=3 join=RIGHT matchedHash=true
+2026-11-08T08:55:21.091-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=3 join=FULL matchedHash=true
+2026-11-08T08:55:21.288-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=4 join=INNER matchedHash=true
+2026-11-08T08:55:21.492-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=4 join=LEFT matchedHash=true
+2026-11-08T08:55:21.678-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=4 join=RIGHT matchedHash=true
+2026-11-08T08:55:21.987-0600	INFO	Notification Thread	io.airlift.stats.JmxGcMonitor	Major GC: application 2.39s, stopped 264.00ms: 749.53MB -> 249.14MB
+2026-11-08T08:55:22.133-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=4 join=FULL matchedHash=true
+2026-11-08T08:55:22.398-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=5 join=INNER matchedHash=true
+2026-11-08T08:55:22.564-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=5 join=LEFT matchedHash=true
+2026-11-08T08:55:22.732-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=5 join=RIGHT matchedHash=true
+2026-11-08T08:55:22.867-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=5 join=FULL matchedHash=true
+2026-11-08T08:55:23.074-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=6 join=INNER matchedHash=true
+2026-11-08T08:55:23.338-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=6 join=LEFT matchedHash=true
+2026-11-08T08:55:23.532-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=6 join=RIGHT matchedHash=true
+2026-11-08T08:55:23.661-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=6 join=FULL matchedHash=true
+2026-11-08T08:55:23.881-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=7 join=INNER matchedHash=true
+2026-11-08T08:55:24.047-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=7 join=LEFT matchedHash=true
+2026-11-08T08:55:24.230-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=7 join=RIGHT matchedHash=true
+2026-11-08T08:55:24.393-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=7 join=FULL matchedHash=true
+2026-11-08T08:55:24.589-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=8 join=INNER matchedHash=true
+2026-11-08T08:55:24.744-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=8 join=LEFT matchedHash=true
+2026-11-08T08:55:24.901-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=8 join=RIGHT matchedHash=true
+2026-11-08T08:55:25.025-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=8 join=FULL matchedHash=true
+2026-11-08T08:55:25.278-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=9 join=INNER matchedHash=true
+2026-11-08T08:55:25.488-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=9 join=LEFT matchedHash=true
+2026-11-08T08:55:25.687-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=9 join=RIGHT matchedHash=true
+2026-11-08T08:55:25.830-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT scalar family=9 join=FULL matchedHash=true
+2026-11-08T08:55:25.859-0600	INFO	ForkJoinPool-1-worker-1	stdout	AUDIT timestamp boundary fails with SMJ OFF and without JOIN; excluded from SMJ findings
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 19.05 s -- in io.trino.sql.query.TestMergeJoinTypeAudit
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  26.678 s
+[INFO] Finished at: 2026-11-08T17:55:26+03:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Njord session closed

@@ -1,0 +1,862 @@
+diff --git a/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/DetermineJoinAlgorithm.java b/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/DetermineJoinAlgorithm.java
+index 555ae0be671..59291937b5f 100644
+--- a/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/DetermineJoinAlgorithm.java
++++ b/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/DetermineJoinAlgorithm.java
+@@ -76,7 +76,7 @@ import static java.util.Objects.requireNonNull;
+  * distribution must already be decided) and before {@code AddExchanges}, so the
+  * exchange planner can build sorted streams for both join sides.
+  *
+- * <p>Eligibility (MUST gates, see ai-docs/smj-research/15-smj-selection-policy.md):
++ * <p>Eligibility (see the merge join optimizer documentation):
+  * <ul>
+  *     <li>INNER, LEFT, RIGHT or FULL join with non-empty equi-criteria</li>
+  *     <li>PARTITIONED distribution</li>
+@@ -280,7 +280,7 @@ public class DetermineJoinAlgorithm
+                 new IsNull(symbol.toSymbolReference()));
+     }
+ 
+-    private static boolean isEligible(JoinNode joinNode, Session session)
++    public static boolean isEligible(JoinNode joinNode, Session session)
+     {
+         if (joinNode.getType() != JoinType.INNER
+                 && joinNode.getType() != JoinType.LEFT
+diff --git a/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/PushPartialAggregationThroughExchange.java b/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/PushPartialAggregationThroughExchange.java
+index 5664f78d5ce..6ea911ea598 100644
+--- a/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/PushPartialAggregationThroughExchange.java
++++ b/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/PushPartialAggregationThroughExchange.java
+@@ -116,7 +116,9 @@ public class PushPartialAggregationThroughExchange
+         private static final Pattern<AggregationNode> PATTERN_WITH_PROJECTION = aggregation()
+                 .with(source().matching(project()
+                         .matching(project -> !isSymbolToSymbolProjection(project))
+-                        .with(source().matching(exchange().capturedAs(CHILD)))));
++                        .with(source().matching(exchange()
++                                .matching(node -> node.getOrderingScheme().isEmpty())
++                                .capturedAs(CHILD)))));
+ 
+         @Override
+         public Pattern<AggregationNode> getPattern()
+diff --git a/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/PushPartialAggregationThroughJoin.java b/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/PushPartialAggregationThroughJoin.java
+index 124229bfe3a..320911015a4 100644
+--- a/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/PushPartialAggregationThroughJoin.java
++++ b/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/PushPartialAggregationThroughJoin.java
+@@ -54,6 +54,7 @@ import static io.trino.sql.planner.iterative.rule.Util.restrictOutputs;
+ import static io.trino.sql.planner.plan.AggregationNode.Step.INTERMEDIATE;
+ import static io.trino.sql.planner.plan.AggregationNode.Step.PARTIAL;
+ import static io.trino.sql.planner.plan.AggregationNode.singleGroupingSet;
++import static io.trino.sql.planner.plan.JoinNode.JoinAlgorithm.MERGE;
+ import static io.trino.sql.planner.plan.Patterns.aggregation;
+ import static io.trino.sql.planner.plan.Patterns.join;
+ import static io.trino.sql.planner.plan.Patterns.project;
+@@ -152,6 +153,12 @@ public class PushPartialAggregationThroughJoin
+     {
+         JoinNode joinNode = (JoinNode) context.getLookup().resolve(aggregationNode.getSource());
+ 
++        // This rule runs after local exchanges. A hash aggregation below MERGE would
++        // destroy its input ordering; changing the algorithm here would also require replanning exchanges.
++        if (joinNode.getAlgorithm().filter(MERGE::equals).isPresent()) {
++            return Result.empty();
++        }
++
+         if (joinNode.getType() != JoinType.INNER) {
+             return Result.empty();
+         }
+diff --git a/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/PushProjectionThroughJoin.java b/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/PushProjectionThroughJoin.java
+index 4d3e3d46a5f..e9ee345d184 100644
+--- a/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/PushProjectionThroughJoin.java
++++ b/core/trino-main/src/main/java/io/trino/sql/planner/iterative/rule/PushProjectionThroughJoin.java
+@@ -120,7 +120,8 @@ public final class PushProjectionThroughJoin
+                 joinNode.getFilter(),
+                 joinNode.getDistributionType(),
+                 joinNode.isSpillable(),
+-                Optional.empty(),
++                // Equi-keys are retained as identities, so their ordering and the physical algorithm survive.
++                joinNode.getAlgorithm(),
+                 joinNode.getDynamicFilters(),
+                 joinNode.getReorderJoinStatsAndCost()));
+     }
+diff --git a/core/trino-main/src/main/java/io/trino/sql/planner/optimizations/PropertyDerivations.java b/core/trino-main/src/main/java/io/trino/sql/planner/optimizations/PropertyDerivations.java
+index 360a77cb420..5d661f660c1 100644
+--- a/core/trino-main/src/main/java/io/trino/sql/planner/optimizations/PropertyDerivations.java
++++ b/core/trino-main/src/main/java/io/trino/sql/planner/optimizations/PropertyDerivations.java
+@@ -743,7 +743,13 @@ public final class PropertyDerivations
+                 builder.local(localProperties.build());
+                 builder.constants(constants);
+ 
+-                if (inputProperties.stream().anyMatch(ActualProperties::isCoordinatorOnly)) {
++                if (inputProperties.size() == 1) {
++                    // A local exchange cannot move rows between nodes. Retain the source's
++                    // node partitioning as well as single-node placement for final validation.
++                    Map<Symbol, Symbol> inputToOutput = exchangeInputToOutput(node, 0);
++                    builder.global(inputProperties.get(0).translate(symbol -> Optional.ofNullable(inputToOutput.get(symbol))));
++                }
++                else if (inputProperties.stream().anyMatch(ActualProperties::isCoordinatorOnly)) {
+                     builder.global(coordinatorSinglePartition());
+                 }
+                 else if (inputProperties.stream().anyMatch(ActualProperties::isSingleNode)) {
+@@ -761,6 +767,7 @@ public final class PropertyDerivations
+                         .build();
+                 case REPARTITION -> ActualProperties.builder()
+                         .global(deriveRepartitionGlobalProperties(node.getPartitioningScheme()))
++                        .local(localProperties.build())
+                         .constants(constants)
+                         .build();
+                 // TODO: this should have the same global properties as the stream taking the replicated data
+diff --git a/core/trino-main/src/main/java/io/trino/sql/planner/sanity/PlanSanityChecker.java b/core/trino-main/src/main/java/io/trino/sql/planner/sanity/PlanSanityChecker.java
+index e1f5b8fdca1..3badf6fc6e0 100644
+--- a/core/trino-main/src/main/java/io/trino/sql/planner/sanity/PlanSanityChecker.java
++++ b/core/trino-main/src/main/java/io/trino/sql/planner/sanity/PlanSanityChecker.java
+@@ -51,6 +51,7 @@ public final class PlanSanityChecker
+                         new VerifyUseConnectorNodePartitioningSet(),
+                         new ValidateAggregationsWithDefaultValues(forceSingleNode),
+                         new ValidateScaledWritersUsage(),
++                        new ValidateJoinAlgorithms(),
+                         new ValidateStreamingAggregations(),
+                         new DynamicFiltersChecker(),
+                         new TableScanValidator(),
+@@ -64,6 +65,7 @@ public final class PlanSanityChecker
+                         new VerifyNoFilteredAggregations(),
+                         new VerifyUseConnectorNodePartitioningSet(),
+                         new ValidateScaledWritersUsage(),
++                        new ValidateJoinAlgorithms(),
+                         new TableScanValidator(),
+                         new TableExecuteStructureValidator())
+                 .build();
+diff --git a/core/trino-main/src/main/java/io/trino/sql/planner/sanity/ValidateJoinAlgorithms.java b/core/trino-main/src/main/java/io/trino/sql/planner/sanity/ValidateJoinAlgorithms.java
+new file mode 100644
+index 00000000000..b541717bf82
+--- /dev/null
++++ b/core/trino-main/src/main/java/io/trino/sql/planner/sanity/ValidateJoinAlgorithms.java
+@@ -0,0 +1,169 @@
++/*
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *     http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++package io.trino.sql.planner.sanity;
++
++import io.trino.Session;
++import io.trino.execution.warnings.WarningCollector;
++import io.trino.spi.connector.LocalProperty;
++import io.trino.spi.connector.SortingProperty;
++import io.trino.sql.PlannerContext;
++import io.trino.sql.planner.Symbol;
++import io.trino.sql.planner.SymbolAllocator;
++import io.trino.sql.planner.SymbolsExtractor;
++import io.trino.sql.planner.optimizations.ActualProperties;
++import io.trino.sql.planner.optimizations.LocalProperties;
++import io.trino.sql.planner.optimizations.PropertyDerivations;
++import io.trino.sql.planner.optimizations.StreamPropertyDerivations;
++import io.trino.sql.planner.optimizations.StreamPropertyDerivations.StreamProperties;
++import io.trino.sql.planner.plan.ExchangeNode;
++import io.trino.sql.planner.plan.JoinNode;
++import io.trino.sql.planner.plan.PlanNode;
++import io.trino.sql.planner.plan.PlanVisitor;
++import io.trino.sql.planner.sanity.PlanSanityChecker.Checker;
++
++import java.util.IdentityHashMap;
++import java.util.List;
++import java.util.Map;
++import java.util.Optional;
++import java.util.Set;
++
++import static com.google.common.base.Preconditions.checkArgument;
++import static com.google.common.collect.ImmutableList.toImmutableList;
++import static com.google.common.collect.ImmutableMap.toImmutableMap;
++import static com.google.common.collect.ImmutableSet.toImmutableSet;
++import static io.trino.SystemSessionProperties.isSpillEnabled;
++import static io.trino.spi.connector.SortOrder.ASC_NULLS_LAST;
++import static io.trino.sql.planner.iterative.rule.DetermineJoinAlgorithm.isEligible;
++import static io.trino.sql.planner.optimizations.StreamPropertyDerivations.StreamProperties.StreamDistribution.FIXED;
++import static io.trino.sql.planner.plan.JoinNode.JoinAlgorithm.MERGE;
++
++/**
++ * Verifies physical join contracts after all plan rewrites. DynamicFiltersChecker validates filter producers/consumers.
++ */
++public class ValidateJoinAlgorithms
++        implements Checker
++{
++    @Override
++    public void validate(PlanNode planNode, Session session, PlannerContext plannerContext, WarningCollector warningCollector)
++    {
++        planNode.accept(new Visitor(session, plannerContext, new SymbolAllocator(SymbolsExtractor.extractUnique(planNode))), null);
++    }
++
++    private static final class Visitor
++            extends PlanVisitor<Void, Void>
++    {
++        private final Session session;
++        private final PlannerContext plannerContext;
++        private final SymbolAllocator symbolAllocator;
++        private final Map<PlanNode, StreamProperties> streams = new IdentityHashMap<>();
++        private final Map<PlanNode, ActualProperties> properties = new IdentityHashMap<>();
++
++        private Visitor(Session session, PlannerContext plannerContext, SymbolAllocator symbolAllocator)
++        {
++            this.session = session;
++            this.plannerContext = plannerContext;
++            this.symbolAllocator = symbolAllocator;
++        }
++
++        @Override
++        protected Void visitPlan(PlanNode node, Void context)
++        {
++            node.getSources().forEach(source -> source.accept(this, context));
++            return null;
++        }
++
++        @Override
++        public Void visitJoin(JoinNode node, Void context)
++        {
++            visitPlan(node, context);
++            if (node.getAlgorithm().filter(MERGE::equals).isPresent()) {
++                checkArgument(isEligible(node, session), "Ineligible MERGE join: %s", node.getId());
++                List<Symbol> leftKeys = node.getCriteria().stream().map(JoinNode.EquiJoinClause::getLeft).distinct().collect(toImmutableList());
++                List<Symbol> rightKeys = node.getCriteria().stream().map(JoinNode.EquiJoinClause::getRight).distinct().collect(toImmutableList());
++                validateMergeInput(node.getLeft(), leftKeys);
++                validateMergeInput(node.getRight(), rightKeys);
++                ActualProperties left = properties(node.getLeft());
++                ActualProperties right = properties(node.getRight());
++                checkArgument(!left.isNullsAndAnyReplicated() && !right.isNullsAndAnyReplicated(), "MERGE inputs replicate nulls or arbitrary rows");
++                if (!left.isSingleNode() || !right.isSingleNode()) {
++                    Map<Symbol, Set<Symbol>> mapping = leftKeys.stream().collect(toImmutableMap(
++                            symbol -> symbol,
++                            symbol -> node.getCriteria().stream().filter(clause -> clause.getLeft().equals(symbol)).map(JoinNode.EquiJoinClause::getRight).collect(toImmutableSet())));
++                    checkArgument(left.isNodePartitionedOn(leftKeys, false) && right.isNodePartitionedOn(rightKeys, false)
++                                    && left.isCompatibleTablePartitioningWith(right, symbol -> mapping.getOrDefault(symbol, Set.of()), plannerContext.getMetadata(), session),
++                            "MERGE inputs have incompatible partitioning: %s",
++                            node.getId());
++                }
++            }
++            else if (isSpillEnabled(session) && !node.getCriteria().isEmpty()) {
++                checkArgument(node.isSpillable().isPresent(), "Hash join spillability not set after physical planning: %s", node.getId());
++                if (node.isSpillable().orElseThrow()) {
++                    checkArgument(streams(node.getLeft()).getDistribution() == FIXED, "Spillable hash join requires fixed probe streams: %s", node.getId());
++                    StreamProperties build = streams(node.getRight());
++                    List<Symbol> keys = node.getCriteria().stream().map(JoinNode.EquiJoinClause::getRight).collect(toImmutableList());
++                    checkArgument(build.isSingleStream() || build.isExactlyPartitionedOn(keys), "Hash join build streams do not match join keys: %s", node.getId());
++                }
++            }
++            return null;
++        }
++
++        @Override
++        public Void visitExchange(ExchangeNode node, Void context)
++        {
++            visitPlan(node, context);
++            node.getOrderingScheme().ifPresent(ordering -> {
++                for (int source = 0; source < node.getSources().size(); source++) {
++                    List<Symbol> inputs = node.getInputs().get(source);
++                    List<LocalProperty<Symbol>> desired = ordering.orderBy().stream()
++                            .map(key -> (LocalProperty<Symbol>) new SortingProperty<>(inputs.get(node.getOutputSymbols().indexOf(key)), ordering.ordering(key)))
++                            .collect(toImmutableList());
++                    checkArgument(LocalProperties.match(streams(node.getSources().get(source)).getLocalProperties(), desired).stream().allMatch(Optional::isEmpty),
++                            "Ordered exchange source is not sorted: %s",
++                            node.getId());
++                }
++            });
++            return null;
++        }
++
++        private void validateMergeInput(PlanNode source, List<Symbol> keys)
++        {
++            StreamProperties input = streams(source);
++            checkArgument(input.isSingleStream(), "MERGE input requires a single stream: %s", source.getId());
++            List<LocalProperty<Symbol>> desired = keys.stream().map(key -> (LocalProperty<Symbol>) new SortingProperty<>(key, ASC_NULLS_LAST)).collect(toImmutableList());
++            checkArgument(LocalProperties.match(input.getLocalProperties(), desired).stream().allMatch(Optional::isEmpty),
++                    "MERGE input is not sorted on canonical join keys: %s",
++                    source.getId());
++        }
++
++        private StreamProperties streams(PlanNode node)
++        {
++            StreamProperties result = streams.get(node);
++            if (result == null) {
++                result = StreamPropertyDerivations.deriveProperties(node, node.getSources().stream().map(this::streams).collect(toImmutableList()), plannerContext, session, symbolAllocator);
++                streams.put(node, result);
++            }
++            return result;
++        }
++
++        private ActualProperties properties(PlanNode node)
++        {
++            ActualProperties result = properties.get(node);
++            if (result == null) {
++                result = PropertyDerivations.deriveProperties(node, node.getSources().stream().map(this::properties).collect(toImmutableList()), plannerContext, session, symbolAllocator);
++                properties.put(node, result);
++            }
++            return result;
++        }
++    }
++}
+diff --git a/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestMergeJoinExpressionRewrite.java b/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestMergeJoinExpressionRewrite.java
+index 56be1e270a2..1e2a50fb29a 100644
+--- a/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestMergeJoinExpressionRewrite.java
++++ b/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestMergeJoinExpressionRewrite.java
+@@ -17,10 +17,14 @@ import com.google.common.collect.ImmutableList;
+ import com.google.common.collect.ImmutableMap;
+ import io.trino.matching.Captures;
+ import io.trino.sql.ir.Logical;
++import io.trino.sql.planner.PlanNodeIdAllocator;
+ import io.trino.sql.planner.Symbol;
++import io.trino.sql.planner.iterative.Lookup;
+ import io.trino.sql.planner.iterative.Rule;
++import io.trino.sql.planner.plan.Assignments;
+ import io.trino.sql.planner.plan.JoinNode;
+ import io.trino.sql.planner.plan.PlanNodeId;
++import io.trino.sql.planner.plan.ProjectNode;
+ import io.trino.sql.planner.plan.ValuesNode;
+ import org.junit.jupiter.api.Test;
+ 
+@@ -33,6 +37,35 @@ import static org.assertj.core.api.Assertions.assertThat;
+ 
+ public class TestMergeJoinExpressionRewrite
+ {
++    @Test
++    public void testPayloadProjectionPreservesAlgorithmAndEquiKeys()
++    {
++        Symbol left = new Symbol(BIGINT, "left");
++        Symbol right = new Symbol(BIGINT, "right");
++        Symbol payload = new Symbol(BIGINT, "payload");
++        JoinNode join = new JoinNode(
++                new PlanNodeId("join"),
++                INNER,
++                new ValuesNode(new PlanNodeId("left"), ImmutableList.of(left)),
++                new ValuesNode(new PlanNodeId("right"), ImmutableList.of(right)),
++                ImmutableList.of(new JoinNode.EquiJoinClause(left, right)),
++                ImmutableList.of(left),
++                ImmutableList.of(right),
++                false,
++                Optional.empty(),
++                Optional.of(JoinNode.DistributionType.PARTITIONED),
++                Optional.empty(),
++                Optional.of(JoinNode.JoinAlgorithm.MERGE),
++                ImmutableMap.of(),
++                Optional.empty());
++        ProjectNode projection = new ProjectNode(new PlanNodeId("project"), join, Assignments.of(payload, left.toSymbolReference()));
++        JoinNode rewritten = (JoinNode) PushProjectionThroughJoin.pushProjectionThroughJoin(projection, Lookup.noLookup(), new PlanNodeIdAllocator()).orElseThrow();
++        assertThat(rewritten.getAlgorithm()).contains(JoinNode.JoinAlgorithm.MERGE);
++        assertThat(rewritten.getCriteria()).isEqualTo(join.getCriteria());
++        assertThat(((ProjectNode) rewritten.getLeft()).getAssignments().get(left)).isEqualTo(left.toSymbolReference());
++        assertThat(((ProjectNode) rewritten.getRight()).getAssignments().get(right)).isEqualTo(right.toSymbolReference());
++    }
++
+     @Test
+     @SuppressWarnings("unchecked")
+     public void testFilterRewritePreservesAlgorithm()
+diff --git a/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestPushPartialAggregationThroughExchange.java b/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestPushPartialAggregationThroughExchange.java
+index 1b3f8bfd48b..eac53c3225d 100644
+--- a/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestPushPartialAggregationThroughExchange.java
++++ b/core/trino-main/src/test/java/io/trino/sql/planner/iterative/rule/TestPushPartialAggregationThroughExchange.java
+@@ -21,6 +21,7 @@ import io.trino.spi.function.OperatorType;
+ import io.trino.sql.ir.Call;
+ import io.trino.sql.ir.Constant;
+ import io.trino.sql.ir.Reference;
++import io.trino.sql.planner.OrderingScheme;
+ import io.trino.sql.planner.Symbol;
+ import io.trino.sql.planner.iterative.rule.test.BaseRuleTest;
+ import io.trino.sql.planner.iterative.rule.test.PlanBuilder;
+@@ -30,6 +31,7 @@ import org.junit.jupiter.api.Test;
+ import java.util.Optional;
+ 
+ import static io.trino.SystemSessionProperties.PREFER_PARTIAL_AGGREGATION;
++import static io.trino.spi.connector.SortOrder.ASC_NULLS_LAST;
+ import static io.trino.spi.type.BigintType.BIGINT;
+ import static io.trino.spi.type.IntegerType.INTEGER;
+ import static io.trino.sql.planner.assertions.PlanMatchPattern.aggregation;
+@@ -48,6 +50,24 @@ public class TestPushPartialAggregationThroughExchange
+     private static final TestingFunctionResolution FUNCTIONS = new TestingFunctionResolution();
+     private static final ResolvedFunction MULTIPLY_INTEGER = FUNCTIONS.resolveOperator(OperatorType.MULTIPLY, ImmutableList.of(INTEGER, INTEGER));
+ 
++    @Test
++    public void testComputedProjectionDoesNotPushAggregationThroughOrderedExchange()
++    {
++        tester().assertThat(new PushPartialAggregationThroughExchange(tester().getPlannerContext()).pushPartialAggregationThroughExchangeWithProjection())
++                .on(p -> {
++                    Symbol a = p.symbol("a", INTEGER);
++                    Symbol b = p.symbol("b", INTEGER);
++                    Symbol value = p.symbol("value", INTEGER);
++                    return p.aggregation(aggregation -> aggregation.singleGroupingSet(a).step(PARTIAL)
++                            .addAggregation(p.symbol("count", BIGINT), PlanBuilder.aggregation("count", ImmutableList.of(value.toSymbolReference())), ImmutableList.of(INTEGER))
++                            .source(p.project(Assignments.builder().putIdentity(a)
++                                            .put(value, new Call(MULTIPLY_INTEGER, ImmutableList.of(b.toSymbolReference(), new Constant(INTEGER, 5L)))).build(),
++                                    p.exchange(exchange -> exchange.type(REPARTITION).addSource(p.values(a, b)).addInputsSet(a, b)
++                                            .fixedHashDistributionPartitioningScheme(ImmutableList.of(a, b), ImmutableList.of(a))
++                                            .orderingScheme(new OrderingScheme(ImmutableList.of(a), ImmutableMap.of(a, ASC_NULLS_LAST)))))));
++                }).doesNotFire();
++    }
++
+     @Test
+     public void testPushesPartialAggregationThroughExchangeWithoutProjection()
+     {
+diff --git a/core/trino-main/src/test/java/io/trino/sql/planner/sanity/TestValidateJoinAlgorithms.java b/core/trino-main/src/test/java/io/trino/sql/planner/sanity/TestValidateJoinAlgorithms.java
+new file mode 100644
+index 00000000000..d28a2cd7f20
+--- /dev/null
++++ b/core/trino-main/src/test/java/io/trino/sql/planner/sanity/TestValidateJoinAlgorithms.java
+@@ -0,0 +1,175 @@
++/*
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *     http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++package io.trino.sql.planner.sanity;
++
++import com.google.common.collect.ImmutableList;
++import com.google.common.collect.ImmutableMap;
++import io.trino.Session;
++import io.trino.execution.warnings.WarningCollector;
++import io.trino.sql.planner.OrderingScheme;
++import io.trino.sql.planner.PlanNodeIdAllocator;
++import io.trino.sql.planner.Symbol;
++import io.trino.sql.planner.assertions.BasePlanTest;
++import io.trino.sql.planner.iterative.rule.test.PlanBuilder;
++import io.trino.sql.planner.plan.JoinNode;
++import io.trino.sql.planner.plan.PlanNode;
++import io.trino.sql.planner.plan.SortNode;
++import org.junit.jupiter.api.Test;
++
++import java.util.function.Function;
++
++import static io.trino.spi.connector.SortOrder.ASC_NULLS_LAST;
++import static io.trino.spi.type.BigintType.BIGINT;
++import static io.trino.spi.type.DoubleType.DOUBLE;
++import static io.trino.sql.planner.plan.ExchangeNode.Scope.LOCAL;
++import static io.trino.sql.planner.plan.ExchangeNode.Type.REPARTITION;
++import static io.trino.sql.planner.plan.JoinNode.DistributionType.PARTITIONED;
++import static io.trino.sql.planner.plan.JoinNode.JoinAlgorithm.MERGE;
++import static io.trino.sql.planner.plan.JoinType.INNER;
++import static org.assertj.core.api.Assertions.assertThatThrownBy;
++
++public class TestValidateJoinAlgorithms
++        extends BasePlanTest
++{
++    private final PlanNodeIdAllocator idAllocator = new PlanNodeIdAllocator();
++
++    @Test
++    public void testSortedSingleStreamInputs()
++    {
++        validate(p -> merge(p, true));
++    }
++
++    @Test
++    public void testUnsortedInputRejected()
++    {
++        assertThatThrownBy(() -> validate(p -> merge(p, false)))
++                .hasMessageContaining("MERGE input is not sorted on canonical join keys");
++    }
++
++    @Test
++    public void testWrongNullOrderingRejected()
++    {
++        assertThatThrownBy(() -> validate(p -> {
++            JoinNode join = merge(p, true);
++            return join.replaceChildren(ImmutableList.of(p.sort(ImmutableList.of(p.symbol("left", BIGINT)), join.getLeft()), join.getRight()));
++        })).hasMessageContaining("MERGE input is not sorted on canonical join keys");
++    }
++
++    @Test
++    public void testUnsupportedKeyRejected()
++    {
++        assertThatThrownBy(() -> validate(p -> p.join(
++                INNER,
++                PARTITIONED,
++                p.values(p.symbol("left", DOUBLE)),
++                p.values(p.symbol("right", DOUBLE)),
++                new JoinNode.EquiJoinClause(p.symbol("left", DOUBLE), p.symbol("right", DOUBLE))).withAlgorithm(MERGE)))
++                .hasMessageContaining("Ineligible MERGE join");
++    }
++
++    @Test
++    public void testRetryRejected()
++    {
++        Session session = Session.builder(getPlanTester().getDefaultSession()).setSystemProperty("retry_policy", "TASK").build();
++        assertThatThrownBy(() -> validate(session, p -> merge(p, true))).hasMessageContaining("Ineligible MERGE join");
++    }
++
++    @Test
++    public void testHashSpillabilityMustBeSet()
++    {
++        Session session = Session.builder(getPlanTester().getDefaultSession()).setSystemProperty("spill_enabled", "true").build();
++        assertThatThrownBy(() -> validate(session, p -> p.join(
++                INNER,
++                PARTITIONED,
++                p.values(p.symbol("left", BIGINT)),
++                p.values(p.symbol("right", BIGINT)),
++                new JoinNode.EquiJoinClause(p.symbol("left", BIGINT), p.symbol("right", BIGINT)))))
++                .hasMessageContaining("Hash join spillability not set after physical planning");
++    }
++
++    @Test
++    public void testMultipleInputStreamsRejected()
++    {
++        assertThatThrownBy(() -> validate(p -> {
++            JoinNode join = merge(p, true);
++            Symbol key = p.symbol("left", BIGINT);
++            return join.replaceChildren(ImmutableList.of(
++                    p.exchange(e -> e.scope(LOCAL).type(REPARTITION).addSource(join.getLeft()).addInputsSet(key)
++                            .fixedHashDistributionPartitioningScheme(ImmutableList.of(key), ImmutableList.of(key))),
++                    join.getRight()));
++        })).hasMessageContaining("MERGE input requires a single stream");
++    }
++
++    @Test
++    public void testOrderedExchangeCannotHideUnsortedSource()
++    {
++        assertThatThrownBy(() -> validate(p -> {
++            JoinNode join = merge(p, true);
++            Symbol key = p.symbol("left", BIGINT);
++            return join.replaceChildren(ImmutableList.of(
++                    p.exchange(e -> e.type(REPARTITION).addSource(p.values(key)).addInputsSet(key)
++                            .fixedHashDistributionPartitioningScheme(ImmutableList.of(key), ImmutableList.of(key))
++                            .orderingScheme(new OrderingScheme(ImmutableList.of(key), ImmutableMap.of(key, ASC_NULLS_LAST)))),
++                    join.getRight()));
++        })).hasMessageContaining("Ordered exchange source is not sorted");
++    }
++
++    @Test
++    public void testIncompatibleNodePartitioningRejected()
++    {
++        assertThatThrownBy(() -> validate(p -> {
++            JoinNode join = merge(p, true);
++            Symbol key = p.symbol("left", BIGINT);
++            Symbol other = p.symbol("other", BIGINT);
++            PlanNode source = new SortNode(
++                    idAllocator.getNextId(),
++                    p.values(key, other),
++                    new OrderingScheme(ImmutableList.of(key), ImmutableMap.of(key, ASC_NULLS_LAST)),
++                    false);
++            return join.replaceChildren(ImmutableList.of(
++                    p.exchange(e -> e.type(REPARTITION).addSource(source).addInputsSet(key, other)
++                            .fixedHashDistributionPartitioningScheme(ImmutableList.of(key, other), ImmutableList.of(other))
++                            .orderingScheme(new OrderingScheme(ImmutableList.of(key), ImmutableMap.of(key, ASC_NULLS_LAST)))),
++                    join.getRight()));
++        })).hasMessageContaining("MERGE inputs have incompatible partitioning");
++    }
++
++    private JoinNode merge(PlanBuilder p, boolean sorted)
++    {
++        Symbol left = p.symbol("left", BIGINT);
++        Symbol right = p.symbol("right", BIGINT);
++        PlanNode probe = p.values(left);
++        PlanNode build = p.values(right);
++        if (sorted) {
++            probe = new SortNode(idAllocator.getNextId(), probe, new OrderingScheme(ImmutableList.of(left), ImmutableMap.of(left, ASC_NULLS_LAST)), false);
++            build = new SortNode(idAllocator.getNextId(), build, new OrderingScheme(ImmutableList.of(right), ImmutableMap.of(right, ASC_NULLS_LAST)), false);
++        }
++        return p.join(INNER, PARTITIONED, probe, build, new JoinNode.EquiJoinClause(left, right)).withAlgorithm(MERGE);
++    }
++
++    private void validate(Function<PlanBuilder, PlanNode> provider)
++    {
++        validate(getPlanTester().getDefaultSession(), provider);
++    }
++
++    private void validate(Session session, Function<PlanBuilder, PlanNode> provider)
++    {
++        getPlanTester().inTransaction(session, transaction -> {
++            var context = getPlanTester().getPlannerContext();
++            PlanBuilder builder = new PlanBuilder(idAllocator, context, transaction);
++            new ValidateJoinAlgorithms().validate(provider.apply(builder), transaction, context, WarningCollector.NOOP);
++            return null;
++        });
++    }
++}
+diff --git a/core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoinAggregationPushdown.java b/core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoinAggregationPushdown.java
+new file mode 100644
+index 00000000000..be8a18168b8
+--- /dev/null
++++ b/core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoinAggregationPushdown.java
+@@ -0,0 +1,74 @@
++/*
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *     http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++package io.trino.sql.query;
++
++import io.trino.Session;
++import org.junit.jupiter.api.AfterAll;
++import org.junit.jupiter.api.Test;
++import org.junit.jupiter.api.TestInstance;
++
++import java.util.stream.Collectors;
++import java.util.stream.IntStream;
++
++import static io.trino.SessionTestUtils.TEST_SESSION;
++import static io.trino.testing.assertions.Assert.assertEqualsIgnoreOrder;
++import static org.assertj.core.api.Assertions.assertThat;
++
++@TestInstance(TestInstance.Lifecycle.PER_CLASS)
++public class TestMergeJoinAggregationPushdown
++{
++    private final QueryAssertions assertions = new QueryAssertions();
++
++    @AfterAll
++    public void close()
++    {
++        assertions.close();
++    }
++
++    @Test
++    public void testPostSelectionAggregationOrdering()
++    {
++        check(false);
++    }
++
++    @Test
++    public void testProjectionPreservesSpillability()
++    {
++        check(true);
++    }
++
++    private void check(boolean spilling)
++    {
++        Session forced = Session.builder(TEST_SESSION)
++                .setSystemProperty("prefer_merge_join", "FORCE")
++                .setSystemProperty("join_distribution_type", "PARTITIONED")
++                .setSystemProperty("join_reordering_strategy", "NONE")
++                .setSystemProperty("spill_enabled", Boolean.toString(spilling))
++                .setSystemProperty("push_partial_aggregation_through_join", "true")
++                .build();
++        Session hash = Session.builder(forced).setSystemProperty("prefer_merge_join", "OFF").build();
++        String fact = IntStream.range(0, 640).mapToObj(i -> "(" + i % 16 + ", BIGINT '" + i + "')").collect(Collectors.joining(","));
++        String dimension = IntStream.range(0, 16).mapToObj(i -> "(" + i + "," + i % 2 + ")").collect(Collectors.joining(","));
++        for (String value : new String[] {"l.v", "l.v + 1"}) {
++            String sql = "SELECT r.k, r.g, sum(" + value + ") FROM (VALUES " + fact + ") l(k,v) JOIN (VALUES " + dimension + ") r(k,g) ON l.k=r.k GROUP BY r.k, r.g";
++            String plan = (String) assertions.execute(forced, "EXPLAIN " + sql).getOnlyValue();
++            var expected = assertions.execute(hash, sql).getMaterializedRows();
++            Session noPushdown = Session.builder(forced).setSystemProperty("push_partial_aggregation_through_join", "false").build();
++            var control = assertions.execute(noPushdown, sql).getMaterializedRows();
++            assertEqualsIgnoreOrder(control, expected);
++            assertEqualsIgnoreOrder(assertions.execute(forced, sql).getMaterializedRows(), expected);
++            assertThat(plan).contains("Algorithm: MERGE");
++        }
++    }
++}
+diff --git a/core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoinScalarTypes.java b/core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoinScalarTypes.java
+new file mode 100644
+index 00000000000..f8d2a93f313
+--- /dev/null
++++ b/core/trino-main/src/test/java/io/trino/sql/query/TestMergeJoinScalarTypes.java
+@@ -0,0 +1,65 @@
++/*
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *     http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++package io.trino.sql.query;
++
++import io.trino.Session;
++import org.junit.jupiter.api.AfterAll;
++import org.junit.jupiter.api.Test;
++import org.junit.jupiter.api.TestInstance;
++
++import java.util.List;
++
++import static io.trino.SessionTestUtils.TEST_SESSION;
++import static io.trino.testing.assertions.Assert.assertEqualsIgnoreOrder;
++import static org.assertj.core.api.Assertions.assertThat;
++
++@TestInstance(TestInstance.Lifecycle.PER_CLASS)
++public class TestMergeJoinScalarTypes
++{
++    private final QueryAssertions assertions = new QueryAssertions();
++
++    @AfterAll
++    public void close()
++    {
++        assertions.close();
++    }
++
++    @Test
++    public void testSupportedScalarFamilies()
++    {
++        Session forced = Session.builder(TEST_SESSION).setSystemProperty("prefer_merge_join", "FORCE")
++                .setSystemProperty("join_distribution_type", "PARTITIONED").setSystemProperty("join_reordering_strategy", "NONE").build();
++        Session hash = Session.builder(forced).setSystemProperty("prefer_merge_join", "OFF").build();
++        List<String> inputs = List.of(
++                "FALSE, TRUE, TRUE, CAST(NULL AS BOOLEAN)",
++                "BIGINT '-9223372036854775808', BIGINT '0', BIGINT '9223372036854775807', CAST(NULL AS BIGINT)",
++                "CAST('12345678901234567890.123456' AS DECIMAL(38,6)), CAST('-12345678901234567890.123456' AS DECIMAL(38,6)), CAST('12345678901234567890.123456' AS DECIMAL(38,6)), CAST(NULL AS DECIMAL(38,6))",
++                "CAST('a' AS CHAR(5)), CAST('a ' AS CHAR(5)), CAST('b' AS CHAR(5)), CAST(NULL AS CHAR(5))",
++                "X'FF', X'00', X'FF', CAST(NULL AS VARBINARY)",
++                "DATE '2020-01-02', DATE '1969-12-31', DATE '2020-01-02', CAST(NULL AS DATE)",
++                "CAST('2020-01-01 00:00:00.123456789012' AS TIMESTAMP(12)), CAST('1969-12-31 23:59:59.987654321012' AS TIMESTAMP(12)), CAST('2020-01-01 00:00:00.123456789012' AS TIMESTAMP(12)), CAST(NULL AS TIMESTAMP(12))",
++                "CAST('2020-01-01 00:00:00.123456789012 UTC' AS TIMESTAMP(12) WITH TIME ZONE), CAST('2020-01-01 01:00:00.123456789012 +01:00' AS TIMESTAMP(12) WITH TIME ZONE), CAST('2019-12-31 23:59:59 UTC' AS TIMESTAMP(12) WITH TIME ZONE), CAST(NULL AS TIMESTAMP(12) WITH TIME ZONE)",
++                "UUID '00000000-0000-0000-0000-000000000001', UUID 'ffffffff-ffff-ffff-ffff-ffffffffffff', UUID '00000000-0000-0000-0000-000000000001', CAST(NULL AS UUID)",
++                "IPADDRESS '::1', IPADDRESS '1.2.3.4', IPADDRESS '::ffff:1.2.3.4', CAST(NULL AS IPADDRESS)");
++        for (int type = 0; type < inputs.size(); type++) {
++            for (String join : List.of("INNER", "LEFT", "RIGHT", "FULL")) {
++                String sql = "SELECT l.k, r.k FROM (VALUES " + inputs.get(type) + ") l(k) " + join + " JOIN (VALUES " + inputs.get(type) + ") r(k) ON l.k=r.k";
++                var expected = assertions.execute(hash, sql).getMaterializedRows();
++                String plan = (String) assertions.execute(forced, "EXPLAIN " + sql).getOnlyValue();
++                assertThat(plan).contains("Algorithm: MERGE");
++                assertEqualsIgnoreOrder(assertions.execute(forced, sql).getMaterializedRows(), expected);
++            }
++        }
++    }
++}
+diff --git a/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSortedWriting.java b/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSortedWriting.java
+index 5ce47ab704b..c2082ad981f 100644
+--- a/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSortedWriting.java
++++ b/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestIcebergSortedWriting.java
+@@ -125,6 +125,54 @@ public class TestIcebergSortedWriting
+         });
+     }
+ 
++    @Test
++    public void testMergeJoinWithPartialAggregationAndProjection()
++    {
++        try (TestTable fact = new TestTable(getQueryRunner()::execute, "audit_v03_fact", "WITH (sorted_by = ARRAY['k']) AS SELECT CAST(n % 16 AS BIGINT) k, CAST(n AS BIGINT) v FROM UNNEST(sequence(1, 640)) t(n)");
++                TestTable dimension = new TestTable(getQueryRunner()::execute, "audit_v03_dim", "WITH (sorted_by = ARRAY['k']) AS SELECT CAST(n AS BIGINT) k, CAST(n % 2 AS BIGINT) g FROM UNNEST(sequence(0, 15)) t(n)")) {
++            assertUpdate("ANALYZE " + fact.getName());
++            assertUpdate("ANALYZE " + dimension.getName());
++            Session forced = Session.builder(getSession()).setSystemProperty(PREFER_MERGE_JOIN, "FORCE")
++                    .setSystemProperty(JOIN_DISTRIBUTION_TYPE, "PARTITIONED")
++                    .setSystemProperty(JOIN_REORDERING_STRATEGY, "NONE")
++                    .setSystemProperty("spill_enabled", "true")
++                    .setSystemProperty("push_partial_aggregation_through_join", "true").build();
++            Session hash = Session.builder(forced).setSystemProperty(PREFER_MERGE_JOIN, "OFF").build();
++            for (String expression : List.of("l.v", "l.v + 1")) {
++                String sql = "SELECT r.k, r.g, sum(" + expression + ") FROM " + fact.getName() + " l JOIN " + dimension.getName() + " r ON l.k = r.k GROUP BY r.k, r.g";
++                assertThat((String) computeActual(forced, "EXPLAIN " + sql).getOnlyValue()).contains("Algorithm: MERGE");
++                var expected = computeActual(hash, sql).getMaterializedRows();
++                Session noPushdown = Session.builder(forced).setSystemProperty("push_partial_aggregation_through_join", "false").build();
++                var control = computeActual(noPushdown, sql).getMaterializedRows();
++                assertEqualsIgnoreOrder(control, expected);
++                assertEqualsIgnoreOrder(computeActual(forced, sql).getMaterializedRows(), expected);
++            }
++        }
++    }
++
++    @Test
++    public void testMultipleSortedFilesWithMergeJoinDisabled()
++    {
++        try (TestTable table = new TestTable(getQueryRunner()::execute, "audit_v03_sorted", "(k BIGINT, v BIGINT) WITH (sorted_by = ARRAY['k', 'v'])")) {
++            for (int insert = 0; insert < 5; insert++) {
++                assertUpdate("INSERT INTO " + table.getName() + " SELECT k, 10 * k + " + insert + " FROM UNNEST(sequence(1, 50)) t(k)", 50);
++            }
++            for (String concurrency : List.of("1", "4")) {
++                Session enabled = Session.builder(getSession()).setSystemProperty(PREFER_MERGE_JOIN, "OFF")
++                        .setSystemProperty("task_concurrency", concurrency).build();
++                Session disabled = Session.builder(enabled).setCatalogSessionProperty("iceberg", "report_sortedness", "false").build();
++                for (String query : List.of(
++                        "SELECT k, v, row_number() OVER (ORDER BY k, v) FROM %s",
++                        "SELECT k, v, sum(v) OVER (PARTITION BY k ORDER BY v ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) FROM %s",
++                        "SELECT k, sum(v), count(*) FROM %s GROUP BY k",
++                        "SELECT k, v FROM %s ORDER BY k, v FETCH FIRST 30 ROWS WITH TIES")) {
++                    String sql = query.formatted(table.getName());
++                    assertEqualsIgnoreOrder(computeActual(enabled, sql).getMaterializedRows(), computeActual(disabled, sql).getMaterializedRows());
++                }
++            }
++        }
++    }
++
+     @Test
+     public void testMergeJoinCostCalibration()
+     {
+diff --git a/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestMergeJoinAggregationExchange.java b/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestMergeJoinAggregationExchange.java
+new file mode 100644
+index 00000000000..810091ba6f7
+--- /dev/null
++++ b/plugin/trino-iceberg/src/test/java/io/trino/plugin/iceberg/TestMergeJoinAggregationExchange.java
+@@ -0,0 +1,67 @@
++/*
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *     http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++package io.trino.plugin.iceberg;
++
++import com.google.common.collect.ImmutableList;
++import io.trino.Session;
++import io.trino.testing.AbstractTestQueryFramework;
++import io.trino.testing.QueryRunner;
++import io.trino.testing.sql.TestTable;
++import org.junit.jupiter.api.Test;
++
++import static io.trino.testing.assertions.Assert.assertEqualsIgnoreOrder;
++import static org.assertj.core.api.Assertions.assertThat;
++
++public class TestMergeJoinAggregationExchange
++        extends AbstractTestQueryFramework
++{
++    @Override
++    protected QueryRunner createQueryRunner()
++            throws Exception
++    {
++        return IcebergQueryRunner.builder().setWorkerCount(2).setInitialTables(ImmutableList.of()).build();
++    }
++
++    @Test
++    public void testOrderedExchangeAfterAggregation()
++    {
++        try (TestTable fact = new TestTable(
++                getQueryRunner()::execute,
++                "audit_exchange_fact",
++                "WITH (sorted_by = ARRAY['k']) AS SELECT CAST(n % 32 AS BIGINT) k, CAST(n % 7 AS BIGINT) v FROM UNNEST(sequence(1, 6400)) t(n)");
++                TestTable dimension = new TestTable(
++                        getQueryRunner()::execute,
++                        "audit_exchange_dim",
++                        "WITH (sorted_by = ARRAY['k']) AS SELECT CAST(n AS BIGINT) k, CAST(n % 3 AS BIGINT) g, CAST(n % 2 AS BIGINT) cutoff FROM UNNEST(sequence(0, 31)) t(n)")) {
++            assertUpdate("ANALYZE " + fact.getName());
++            assertUpdate("ANALYZE " + dimension.getName());
++            Session forced = Session.builder(getSession())
++                    .setSystemProperty("prefer_merge_join", "FORCE")
++                    .setSystemProperty("join_distribution_type", "PARTITIONED")
++                    .setSystemProperty("join_reordering_strategy", "NONE")
++                    .setSystemProperty("push_partial_aggregation_through_join", "true").build();
++            Session hash = Session.builder(forced).setSystemProperty("prefer_merge_join", "OFF").build();
++            Session noPushdown = Session.builder(forced).setSystemProperty("push_partial_aggregation_through_join", "false").build();
++            String sql = "SELECT l.k, l.g, l.cutoff, sum(r.v) FROM " + dimension.getName() + " l JOIN " + fact.getName()
++                    + " r ON l.k=r.k AND l.cutoff < r.v + 1 GROUP BY l.k, l.g, l.cutoff";
++            var expected = computeActual(hash, sql).getMaterializedRows();
++            assertEqualsIgnoreOrder(computeActual(noPushdown, sql).getMaterializedRows(), expected);
++            assertThat((String) computeActual(forced, "EXPLAIN " + sql).getOnlyValue()).contains("Algorithm: MERGE", "RemoteMerge");
++            for (int run = 0; run < 5; run++) {
++                var actual = computeActual(forced, sql).getMaterializedRows();
++                assertEqualsIgnoreOrder(actual, expected);
++            }
++        }
++    }
++}

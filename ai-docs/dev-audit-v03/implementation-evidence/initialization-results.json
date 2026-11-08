@@ -1,0 +1,87 @@
+[
+  {
+    "phase": "initialization-build",
+    "command": [
+      "./mvnw",
+      "package",
+      "-DskipTests",
+      "-Dair.check.skip-all=true",
+      "-pl",
+      "core/trino-main,plugin/trino-iceberg,testing/trino-tests"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T16:08:24.411025+00:00",
+    "elapsed_seconds": 257.121,
+    "exit_code": 0,
+    "log": "initialization-build.log"
+  },
+  {
+    "phase": "initialization-core-large",
+    "command": [
+      "./mvnw",
+      "initialize",
+      "surefire:test",
+      "-Dair.check.skip-all=true",
+      "-Dsmj.large=true",
+      "-pl",
+      "core/trino-main",
+      "-Dtest=TestAppendingSpiller,TestCachingStatsProvider,TestColocatedJoin,TestCostCalculator,TestDetermineJoinAlgorithm,TestDiskBackedMatchBitmap,TestDynamicFilterService,TestEffectivePredicateExtractor,TestEliminateCrossJoins,TestFileSingleStreamSpiller,TestFileSingleStreamSpillerFactory,TestIncrementalRefreshVisitor,TestJoinNodeAlgorithm,TestJoinStatsRule,TestMergeJoin,TestMergeJoinAggregationPushdown,TestMergeJoinCostModel,TestMergeJoinExpressionRewrite,TestMergeJoinOperator,TestMergeJoinOperatorInfo,TestMergeJoinRepeatedKeys,TestMergeJoinScalarTypes,TestMultiSourcePartitionedScheduler,TestOptimizerConfig,TestOrderByOperator,TestPagesIndex,TestPushPartialAggregationThroughExchange,TestPushPartialAggregationThroughJoin,TestSchedulingUtils,TestSortingSpiller,TestSourcePartitionedScheduler,TestTopologicalOrderSubPlanVisitor,TestValidateJoinAlgorithms"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T16:12:41.531892+00:00",
+    "elapsed_seconds": 209.552,
+    "exit_code": 0,
+    "log": "initialization-core-large.log"
+  },
+  {
+    "phase": "initialization-iceberg-workloads",
+    "command": [
+      "./mvnw",
+      "initialize",
+      "surefire:test",
+      "-Dair.check.skip-all=true",
+      "-Dsmj.validation=true",
+      "-pl",
+      "plugin/trino-iceberg",
+      "-Dtest=TestIcebergConfig,TestIcebergSortedWriting,TestMergeJoinAggregationExchange,TestMergeJoinWorkloads"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T16:16:11.084655+00:00",
+    "elapsed_seconds": 258.654,
+    "exit_code": 0,
+    "log": "initialization-iceberg-workloads.log"
+  },
+  {
+    "phase": "initialization-ci-verify",
+    "command": [
+      "./mvnw",
+      "verify",
+      "-DskipTests",
+      "-Pci",
+      "-pl",
+      "core/trino-main,plugin/trino-iceberg,testing/trino-tests"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T16:20:29.739450+00:00",
+    "elapsed_seconds": 447.41,
+    "exit_code": 0,
+    "log": "initialization-ci-verify.log"
+  },
+  {
+    "phase": "initialization-errorprone",
+    "command": [
+      "./mvnw",
+      "clean",
+      "test-compile",
+      "-Dair.check.skip-all=true",
+      "-Perrorprone-compiler",
+      "-pl",
+      "core/trino-main,plugin/trino-iceberg,testing/trino-tests"
+    ],
+    "cwd": "/tmp/trino-smj-upstream-v02-check",
+    "started_utc": "2026-11-08T16:27:57.149902+00:00",
+    "elapsed_seconds": 839.361,
+    "exit_code": 0,
+    "log": "initialization-errorprone.log"
+  }
+]
